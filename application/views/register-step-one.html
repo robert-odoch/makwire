@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>About Robert Odoch</title>
+        <link rel="stylesheet" href="styles/bootstrap.min.css">
+        
+        <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+        <link rel="stylesheet" href="styles/ie10-viewport-bug-workaround.css">
+        
+        <!-- Custom styles for this site -->
+        <link href="styles/styles.css" rel="stylesheet">
+        
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        <style>
+            /* Dev styles */
+        </style>
+    </head>
+    <body>
+        <header>
+            <nav role="navigation" class="navbar navbar-inverse navbar-fixed-top">
+                <div class="wrapper">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#">Mak Wire</a>
+                    </div>
+                    <div id="navbar" class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav">
+                            <li><a href="">Home</a></li>
+                            <li class="dropdown">
+                                <a href="" role="button" class="dropdown-toggle" data-toggle="dropdown"
+                                   aria-haspopup="true" aria-expanded="false">
+                                    News <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="">Entertainment</a></li>
+                                    <li><a href="">Sports</a></li>
+                                    <li><a href="">Politics</a></li>
+                                    <li><a href="">Education</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="" role="button" class="dropdown-toggle" data-toggle="dropdown"
+                                   aria-haspopup="true" aria-expanded="false">
+                                    Activities <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="">Beauty Contest</a></li>
+                                    <li><a href="">Opinion Poll</a></li>
+                                    <li><a href="">Vote</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="">Market</a></li>
+                            <li><a href="">Places</a></li>
+                            <li><a href="">Photos</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <div class="wrap-single">
+            <div role="main" class="main">
+                <div id="content-header">
+                    <h3>Create Your Account</h3>
+                </div>
+                <div class="box">
+                    <form action="register-step-two.html" method="post" accept-charset="utf-8" role="form">
+                        <fieldset>
+                            <legend>Step 1 of 2: <strong>Your Identity</strong></legend>
+                            <div class="form-group">
+                                <label for="first-name">First Name</label>
+                                <input type="text" name="fname" id="first-name" size="30">
+                            </div>
+                            <div class="form-group">
+                                <label for="last-name">Last Name</label>
+                                <input type="text" name="lname" id="last-name" size="30">
+                            </div>
+                            <div class="input-group">
+                                <p>Gender</p>
+                                <div class="radio-inline">
+                                    <label for="male">
+                                        <input type="radio" name="gender" id="male" value="male"> Male
+                                    </label>
+                                </div>
+                                <div class="radio-inline">
+                                    <label for="female">
+                                        <input type="radio" name="gender" id="female" value="female"> Female
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="input-group">
+                                <p>Date of Birth</p>
+                                <div>
+                                    <label for="date">Date</label>
+                                    <select name="date" id="date">
+                                        <optgroup>
+                                            <option value="">01</option>
+                                            <option value="">02</option>
+                                            <option value="">03</option>
+                                            <option value="">04</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="month">Month</label>
+                                    <select name="date" id="month">
+                                        <optgroup>
+                                            <option value="">Jan</option>
+                                            <option value="">Feb</option>
+                                            <option value="">Mar</option>
+                                            <option value="">Apr</option>
+                                        </optgroup>
+                                    </select>
+                                </div>                                
+                                <div>
+                                    <label for="Year">Year</label>
+                                    <select name="Year" id="Year">
+                                        <optgroup>
+                                            <option value="">2000</option>
+                                            <option value="">1999</option>
+                                            <option value="">1998</option>
+                                            <option value="">1997</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <span class="help-block">Your Makerere University email address e.g., name@college.mak.ac.ug</span>
+                                <input type="email" name="email" id="email" size="30">                                        
+                            </div>
+                        </fieldset>
+                        <input type="submit" value="Next &rarr;" class="btn">
+                    </form>
+                </div><!-- box -->
+            </div><!-- main -->
+        </div> <!-- .wrap-single -->
+        
+        <footer role="contentinfo" class="footer">
+            <div class="wrapper">
+                <a href="#" class="pull-right">Back to top</a>
+                <span>&copy; 2016 Mak Wire</span>
+                <a href="">Terms of Use</a><span> &middot; </span>
+                <a href="">Privacy Policy</a><span> &middot; </span>
+                <a href="">Advertising</a><span> &middot; </span>
+                <a href="">About Us</a><span> &middot; </span>
+                <a href="">Contact Us</a>
+            </div>
+        </footer>
+        
+        <!-- Need JQuery to support Bootstrap JQuery plugins -->
+        <script src="scripts/jquery-1.11.3.js"></script>
+
+        <!-- Bootsrap core JavaScript -->
+        <script src="scripts/bootstrap.min.js"></script>
+
+        <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+        <script src="scripts/ie10-viewport-bug-workaround.js"></script>
+    </body>
+</html>
