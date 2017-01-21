@@ -4,22 +4,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require_once("common/user-page-start.php");
 ?>
                         <div class="box">
-                            <article class="comment">
+                            <article id="comment">
                                 <header>
                                     <h4>
                                     <?php
                                     print "<a href='" .base_url("user/index/{$comment['commenter_id']}") . "'>{$comment['commenter']}</a>"
                                     ?>
                                     </h4>
-                                    <small><span class="glyphicon glyphicon-time"></span> <?= $comment['timespan']; ?> ago</small>
                                 </header>
                                 <p>
                                     <?= $comment['comment']; ?>
                                 </p>
                                 <footer>
+                                    <small><span class="glyphicon glyphicon-time"></span> <?= $comment['timespan']; ?> ago</small>
                                     <?php
                                     if ($comment['num_likes'] > 0) {
-                                        print "<a href='" . base_url("comment/likes/{$comment['comment_id']}") . "'>{$comment['num_likes']}";
+                                        print "<span> &middot; </span><a href='" . base_url("comment/likes/{$comment['comment_id']}") . "'>{$comment['num_likes']}";
                                         print ($comment['num_likes'] == 1) ? " like" : " likes";
                                         print "</a>";
                                     }

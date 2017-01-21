@@ -58,7 +58,6 @@ function can_share_post($user_id, $post)
                                             }
                                             ?>
                                             </h4>
-                                            <small class="time"><span class="glyphicon glyphicon-time"></span> <?php print $post['timespan']; ?> ago</small>
                                         </header>
                                         <p class="post">
                                             <?php 
@@ -69,9 +68,10 @@ function can_share_post($user_id, $post)
                                             ?>
                                         </p>
                                         <footer>
+                                            <small class="time"><span class="glyphicon glyphicon-time"></span> <?php print $post['timespan']; ?> ago</small>
                                             <?php
                                             if ($post['num_likes'] > 0) {
-                                                print "<a href='" . base_url("post/likes/{$post['post_id']}") . "'>{$post['num_likes']}";
+                                                print "<span> &middot; </span><a href='" . base_url("post/likes/{$post['post_id']}") . "'>{$post['num_likes']}";
                                                 print ($post['num_likes'] == 1) ? ' like' : ' likes';
                                                 print '</a>';
                                             }

@@ -11,11 +11,10 @@ class Post extends CI_Controller
         $this->load->model('user_model');
     }
     
-    public function like($post_id, $return_model, $return_function, $target_id)
+    public function like($post_id)
     {
-        $return_uri = $return_model . '/' . $return_function . '/' . $target_id;
         $this->post_model->like($post_id);
-        redirect(base_url($return_uri));
+        redirect(base_url("user/post/{$post_id}"));
         exit();
     }
     
@@ -45,7 +44,7 @@ class Post extends CI_Controller
         $data['num_friend_requests'] = $this->user_model->get_num_friend_requests();
         $data['visitor'] = ($_SESSION['user_id'] === $user_id) ? FALSE : TRUE;
         if ($data['visitor']) {
-            $data['can_add_friend'] = $this->user_model->can_add_friend($user_id);
+            $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
         }
         $data['title'] = 'Comment on this post';
         $this->load->view('common/header', $data);
@@ -88,7 +87,7 @@ class Post extends CI_Controller
         $data['num_friend_requests'] = $this->user_model->get_num_friend_requests();
         $data['visitor'] = ($_SESSION['user_id'] === $user_id) ? FALSE : TRUE;
         if ($data['visitor']) {
-            $data['can_add_friend'] = $this->user_model->can_add_friend($user_id);
+            $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
         }
         $data['title'] = "People who liked this post";
         $this->load->view("common/header", $data);
@@ -124,7 +123,7 @@ class Post extends CI_Controller
         $data['num_friend_requests'] = $this->user_model->get_num_friend_requests();
         $data['visitor'] = ($_SESSION['user_id'] === $user_id) ? FALSE : TRUE;
         if ($data['visitor']) {
-            $data['can_add_friend'] = $this->user_model->can_add_friend($user_id);
+            $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
         }
         $data['title'] = 'Comments on this post';
         $this->load->view("common/header", $data);
@@ -158,7 +157,7 @@ class Post extends CI_Controller
         $data['num_friend_requests'] = $this->user_model->get_num_friend_requests();
         $data['visitor'] = ($_SESSION['user_id'] === $user_id) ? FALSE : TRUE;
         if ($data['visitor']) {
-            $data['can_add_friend'] = $this->user_model->can_add_friend($user_id);
+            $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
         }
         $data['title'] = "People who shared this post";
         $this->load->view("common/header", $data);

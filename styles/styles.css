@@ -360,17 +360,21 @@ div.wrap-single legend {
     border-bottom: 1px solid #8FBC8F;
 }
 
-/*article.post header,
-article.comment header {
+article.post header,
+article#reply header,
+article#comment header {
     border-bottom: 1px solid #8FBC8F;
-}*/
+}
+
 article.comment p,
-article.message p {
+article.message p,
+article.reply p {
     display: inline;
     margin-right: 10px;
 }
 article.comment footer,
-article.message footer {
+article.message footer,
+article.reply footer {
     display: inline-block;
 }
 article header h4 {

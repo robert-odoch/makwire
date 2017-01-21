@@ -15,6 +15,7 @@ class Reply extends CI_Controller
     public function like($reply_id)
     {
         $this->reply_model->like($reply_id);
+        redirect(base_url("reply/likes/{$reply_id}"));
     }
     
     public function likes($reply_id, $offset=0)

@@ -16,7 +16,6 @@ require_once("common/user-page-start.php");
                                     }
                                     ?>
                                     </h4>
-                                    <small><span class="glyphicon glyphicon-time"></span> <?= $post['timespan']; ?> ago</small>
                                 </header>
                                 <p>
                                     <?php
@@ -27,9 +26,10 @@ require_once("common/user-page-start.php");
                                     ?>
                                 </p>
                                 <footer>
+                                    <small><span class="glyphicon glyphicon-time"></span> <?= $post['timespan']; ?> ago</small>
                                     <?php
                                     if ($post['num_shares'] > 0) {
-                                        print "<a href='" . base_url("post/shares/{$post['post_id']}") . "'>{$post['num_shares']}";
+                                        print "<span> &middot; </span><a href='" . base_url("post/shares/{$post['post_id']}") . "'>{$post['num_shares']}";
                                         print ($post['num_shares'] == 1) ? " share" : " shares";
                                         print "</a>";
                                     }

@@ -334,7 +334,7 @@ class User_model extends CI_Model
         return $notifications;
     }
     
-    public function friendship_status($user_id)
+    public function get_friendship_status($user_id)
     {
         // Check whether the two users are already friends.
         $q = sprintf("SELECT id FROM friends WHERE user_id=%d AND friend_id=%d " .
@@ -407,7 +407,7 @@ class User_model extends CI_Model
         $users = array();
         foreach ($results as $user) {
             // Only add to list if they are not friends and friend request hasn't been sent.
-            $fr_status = $this->friendship_status($user['user_id']);
+            $fr_status = $this->get_friendship_status($user['user_id']);
             if (!$fr_status['friends'] && !$fr_status['fr_sent']) {
                 $user['full_name'] = ucfirst(strtolower($user['lname'])) . ' ' . ucfirst(strtolower($user['fname']));
                 array_push($users, $user);

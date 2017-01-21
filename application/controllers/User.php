@@ -98,7 +98,7 @@ class User extends CI_Controller
         
         $data['visitor'] = ($_SESSION['user_id'] === $user_id) ? FALSE : TRUE;
         if ($data['visitor']) {
-            $data['friendship_status'] = $this->user_model->friendship_status($user_id);
+            $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
         }        
         $data['user'] = $this->user_model->get_full_name($user_id);
         $data['title'] = "{$data['user']}'s Posts";
@@ -139,7 +139,7 @@ class User extends CI_Controller
         $data['user_id'] = $_SESSION['user_id'];
         $data['visitor'] = FALSE;
         if ($data['visitor']) {
-            $data['friendship_status'] = $this->user_model->friendship_status($user_id);
+            $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
         } 
         $this->load->view('common/header', $data);
         
@@ -179,7 +179,7 @@ class User extends CI_Controller
         $data['user_id'] = $user_id;
         $data['visitor'] = TRUE;
         if ($data['visitor']) {
-            $data['friendship_status'] = $this->user_model->friendship_status($user_id);
+            $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
         } 
         $this->load->view('common/header', $data);
         
@@ -247,7 +247,7 @@ class User extends CI_Controller
         $data['user_id'] = $user_id;
         $data['visitor'] = ($_SESSION['user_id'] === $user_id) ? FALSE : TRUE;
         if ($data['visitor']) {
-            $data['friendship_status'] = $this->user_model->friendship_status($user_id);
+            $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
         } 
         $this->load->view('common/header', $data);
         
@@ -275,7 +275,7 @@ class User extends CI_Controller
         $data['num_friend_requests'] = $this->user_model->get_num_friend_requests();
         $data['user_id'] = $_SESSION['user_id'];
         $data['visitor'] = FALSE;if ($data['visitor']) {
-            $data['friendship_status'] = $this->user_model->friendship_status($user_id);
+            $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
         } 
         $this->load->view('common/header', $data);
         
@@ -321,7 +321,7 @@ class User extends CI_Controller
         $data['user_id'] = $_SESSION['user_id'];
         $data['visitor'] = FALSE;
         if ($data['visitor']) {
-            $data['friendship_status'] = $this->user_model->friendship_status($user_id);
+            $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
         } 
         $this->load->view('common/header', $data);
         
@@ -353,7 +353,7 @@ class User extends CI_Controller
         $data['user_id'] = $_SESSION['user_id'];
         $data['visitor'] = FALSE;
         if ($data['visitor']) {
-            $data['friendship_status'] = $this->user_model->friendship_status($user_id);
+            $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
         }
         $this->load->view('common/header', $data);
         
@@ -390,7 +390,7 @@ class User extends CI_Controller
         $data['user_id'] = $_SESSION['user_id'];
         $data['visitor'] = FALSE;
         if ($data['visitor']) {
-            $data['friendship_status'] = $this->user_model->friendship_status($user_id);
+            $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
         } 
         $this->load->view('common/header', $data);
         
@@ -436,7 +436,7 @@ class User extends CI_Controller
         $data['user_id'] = $_SESSION['user_id'];
         $data['visitor'] = FALSE;
         if ($data['visitor']) {
-            $data['friendship_status'] = $this->user_model->friendship_status($user_id);
+            $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
         } 
         $this->load->view('common/header', $data);
         
@@ -478,7 +478,7 @@ class User extends CI_Controller
         $data['user_id'] = $_SESSION['user_id'];
         $data['visitor'] = FALSE;
         if ($data['visitor']) {
-            $data['friendship_status'] = $this->user_model->friendship_status($user_id);
+            $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
         } 
         $this->load->view('common/header', $data);
         

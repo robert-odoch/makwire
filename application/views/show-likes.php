@@ -16,7 +16,6 @@ require_once("common/user-page-start.php");
                                     }
                                     ?>
                                     </h4>
-                                    <small><span class="glyphicon glyphicon-time"></span> <?= $post['timespan']; ?> ago</small>
                                 </header>
                                 <p>
                                     <?php
@@ -27,9 +26,10 @@ require_once("common/user-page-start.php");
                                     ?>
                                 </p>
                                 <footer>
+                                    <small><span class="glyphicon glyphicon-time"></span> <?= $post['timespan']; ?> ago</small>
                                     <?php
                                     if ($post['num_likes'] > 0) {
-                                        print "<a href='" . base_url("post/likes/{$post['post_id']}") . "'>{$post['num_likes']}";
+                                        print "<span> &middot; </span><a href='" . base_url("post/likes/{$post['post_id']}") . "'>{$post['num_likes']}";
                                         print ($post['num_likes'] == 1) ? " like" : " likes";
                                         print "</a>";
                                     }

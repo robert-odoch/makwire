@@ -4,17 +4,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require_once("common/user-page-start.php");
 ?>
                         <div class="box">
-                            <article>
+                            <article id="reply">
                                 <header>
-                                    <h4><?= $reply['replier']; ?></h4>
+                                    <h4><a href=""><?= $reply['replier']; ?></a></h4>
                                 </header>
-                                <p>
-                                    <?= $reply['comment']; ?>
-                                </p>
+                                <p><?= $reply['comment']; ?></p>
                                 <footer>
+                                    <small><span class="glyphicon glyphicon-time"></span> <?= $reply['timespan']; ?> ago</small>
                                     <?php
                                     if ($reply['num_likes'] > 0) {
-                                        print "<a href='" . base_url("reply/likes/{$reply['comment_id']}") . "'>{$reply['num_likes']}";
+                                        print "<span> &middot; </span><a href='" . base_url("reply/likes/{$reply['comment_id']}") . "'>{$reply['num_likes']}";
                                         print ($reply['num_likes'] == 1) ? ' like' : ' likes';
                                         print '</a>';
                                     }

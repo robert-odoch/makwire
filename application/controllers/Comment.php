@@ -15,6 +15,7 @@ class Comment extends CI_Controller
     public function like($comment_id)
     {
         $this->comment_model->like($comment_id);
+        redirect(base_url("comment/likes/{$comment_id}"));
     }
     
     public function reply($comment_id)

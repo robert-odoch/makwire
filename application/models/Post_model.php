@@ -376,7 +376,7 @@ class Post_model extends CI_Model
                 exit(1);
             }
             
-            $sharer = ucfirst(strtolower($query->row(0)->fname)) . ' ' . ucfirst(strtolower($query->row(0)->lname));
+            $sharer = ucfirst(strtolower($query->row(0)->lname)) . ' ' . ucfirst(strtolower($query->row(0)->fname));
             $share['sharer'] = $sharer;
             array_push($shares, $share);
         }

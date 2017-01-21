@@ -16,40 +16,40 @@ require_once('common/user-page-start.php');
                                     switch ($notif['activity']) {
                                     case 'friend_request':
                                         print "<li><a href='" . base_url("user/friend_requests/") . "'><strong class='object'>{$notif['user']}</strong> sent you a friend request.</a> " .
-                                            "<small class='time'><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";
+                                            "<small><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";
                                         break;
                                     case 'confirmed_friend_request':
                                         print "<li><a href='" . base_url("user/index/{$notif['trigger_id']}") . "'><strong class='object'>{$notif['user']}</strong> accepted your friend request.</a> " .
-                                            "<small class='time'><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";
+                                            "<small><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";
                                         break;
                                     case 'like':
                                         if ($notif['source_type'] == 'post') {
                                             print "<li><a href='" . base_url("post/likes/{$notif['source_id']}") . "'><strong class='object'>{$notif['user']}</strong> liked your post \"{$notif['post']}\"</a> " .
-                                            "<small class='time'><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";
+                                            "<small><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";
                                         }
                                         else if ($notif['source_type'] == "comment") {
                                             print "<li><a href='" . base_url("comment/likes/{$notif['source_id']}") . "'><strong class='object'>{$notif['user']}</strong> liked your comment \"{$notif['comment']}\".</a>" .
-                                            "<small class='time'><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";;
+                                            "<small><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";;
                                         }
                                         else if ($notif['source_type'] == "reply") {
                                             print "<li><a href='" . base_url("reply/likes/{$notif['source_id']}") . "'><strong class='object'>{$notif['user']}</strong> liked your reply \"{$notif['reply']}\".</a>" .
-                                                  "<small class='time'><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";
+                                                  "<small><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";
                                         }
                                         break;
                                     case 'comment':
                                         if ($notif['source_type'] == 'post') {
                                             print "<li><a href='" . base_url("post/comments/{$notif['source_id']}") . "'><strong class='object'>{$notif['user']}</strong> commented your post \"{$notif['post']}\"</a> " .
-                                            "<small class='time'><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";
+                                            "<small><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";
                                         }
                                         break;
                                     case 'reply':
                                         print "<li><a href='" . base_url("comment/replies/{$notif['source_id']}") . "'><strong class='object'>{$notif['user']}</strong> replied to your comment \"{$notif['comment']}\".</a>" .
-                                        "<small class='time'><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";
+                                        "<small><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";
                                         break;
                                     case 'share':
                                         if ($notif['source_type'] == 'post') {
                                             print "<li><a href='" . base_url("/user/post/{$notif['trigger_id']}/{$notif['new_post_id']}") . "'><strong class='object'>{$notif['user']}</strong> shared your post \"{$notif['post']}\" on his timeline.</a> " .
-                                            "<small class='time'><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";
+                                            "<small><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";
                                         }
                                         break;
                                     }
