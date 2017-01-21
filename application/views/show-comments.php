@@ -47,36 +47,39 @@ require_once("common/user-page-start.php");
                             <ul class="comments">
                                 <?php foreach($comments as $comment): ?>
                                 <li>
-                                    <a href="<?= base_url("user/index/{$comment['commenter_id']}"); ?>"><strong><?php print $comment['commenter']; ?></strong></a>
-                                    <p class="comment"><?= $comment['comment']; ?>
-                                    <?php
-                                    print "<small><span class='glyphicon glyphicon-time'></span> {$comment['timespan']} ago</small>";
-                                    
-                                    // Hide these two links from the commenter if she is the one currently
-                                    // viewing this page.
-                                    if ($comment['commenter_id'] != $_SESSION['user_id']) {
-                                        print "<span> &middot; </span>" .
-                                              "<a href='" . base_url("comment/like/{$comment['comment_id']}") . "'>Like</a>" .
-                                              "<span> &middot; </span>" .
-                                              "<a href='" . base_url("comment/reply/{$comment['comment_id']}") . "'>Reply</a>";
-                                    }
-                                    
-                                    if ($comment['num_likes'] > 0) {
-                                        print "<span> &middot; </span>" .
-                                              "<a href='" . base_url("comment/likes/{$comment['comment_id']}") . "'>{$comment['num_likes']}";
-                                        print ($comment['num_likes'] == 1) ? " like" : " likes";
-                                        print "</a>";
-                                    }
-                                    if ($comment['num_replies'] > 0) {
-                                        print "<span> &middot; </span>" .
-                                              "<a href='" . base_url("comment/replies/{$comment['comment_id']}") . "'>{$comment['num_replies']}";
-                                        print ($comment['num_replies'] == 1) ? " reply" : " replies";
-                                        print "</a>";
-                                    }
-                                    
-                                    /*** Remember this ***/
-                                    print "</p>";
-                                    ?>
+                                    <article class="comment">
+                                        <header>
+                                            <a href="<?= base_url("user/index/{$comment['commenter_id']}"); ?>"><strong><?php print $comment['commenter']; ?></strong></a>
+                                        </header>
+                                        <p class="comment"><?= $comment['comment']; ?></p>
+                                        <footer>
+                                            <?php
+                                            print "<small>&mdash; <span class='glyphicon glyphicon-time'></span> {$comment['timespan']} ago</small>";
+                                            
+                                            // Hide these two links from the commenter if she is the one currently
+                                            // viewing this page.
+                                            if ($comment['commenter_id'] != $_SESSION['user_id']) {
+                                                print "<span> &middot; </span>" .
+                                                      "<a href='" . base_url("comment/like/{$comment['comment_id']}") . "'>Like</a>" .
+                                                      "<span> &middot; </span>" .
+                                                      "<a href='" . base_url("comment/reply/{$comment['comment_id']}") . "'>Reply</a>";
+                                            }
+                                            
+                                            if ($comment['num_likes'] > 0) {
+                                                print "<span> &middot; </span>" .
+                                                      "<a href='" . base_url("comment/likes/{$comment['comment_id']}") . "'>{$comment['num_likes']}";
+                                                print ($comment['num_likes'] == 1) ? " like" : " likes";
+                                                print "</a>";
+                                            }
+                                            if ($comment['num_replies'] > 0) {
+                                                print "<span> &middot; </span>" .
+                                                      "<a href='" . base_url("comment/replies/{$comment['comment_id']}") . "'>{$comment['num_replies']}";
+                                                print ($comment['num_replies'] == 1) ? " reply" : " replies";
+                                                print "</a>";
+                                            }
+                                            ?>
+                                        </footer>
+                                    </article>
                                 </li>
                                 <?php endforeach; ?>
                             </ul>

@@ -12,13 +12,13 @@ require_once('common/user-page-start.php');
                             <ul class="messages">
                                 <?php foreach ($messages as $m): ?>
                                 <li>
-                                    <article>
+                                    <article class="message">
                                         <header>
                                             <a href="<?= base_url("user/send_message/{$m['sender_id']}"); ?>" title="Reply"><?= $m['sender']; ?></a>
                                         </header>
                                         <p><?= $m['message']; ?></p>
                                         <footer>
-                                            <small><span class="glyphicon glyphicon-time"></span> <?= $m['timespan']; ?> ago</small>
+                                            <small>&mdash; <span class="glyphicon glyphicon-time"></span> <?= $m['timespan']; ?> ago</small>
                                         </footer>
                                     </article>
                                 </li>

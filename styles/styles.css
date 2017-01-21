@@ -360,9 +360,18 @@ div.wrap-single legend {
     border-bottom: 1px solid #8FBC8F;
 }
 
-article.post header,
+/*article.post header,
 article.comment header {
     border-bottom: 1px solid #8FBC8F;
+}*/
+article.comment p,
+article.message p {
+    display: inline;
+    margin-right: 10px;
+}
+article.comment footer,
+article.message footer {
+    display: inline-block;
 }
 article header h4 {
     margin-top: 3px;

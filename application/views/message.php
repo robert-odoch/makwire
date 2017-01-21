@@ -26,14 +26,13 @@ require_once('common/user-page-start.php');
                             <ul class="messages bordered">
                                 <?php foreach ($messages as $m): ?>
                                 <li>
-                                    <article>
+                                    <article class="message">
                                         <header>
                                             <a href="<?= base_url("user/index/{$m['sender_id']}"); ?>"><strong><?= $m['sender']; ?></strong></a>
                                         </header>
                                         <p><?= $m['message']; ?></p>
-                                        <footer>
-                                            
-                                        <small><span class="glyphicon glyphicon-time"></span> <?= $m['timespan']; ?> ago</small>
+                                        <footer>                                            
+                                            <small>&mdash; <span class="glyphicon glyphicon-time"></span> <?= $m['timespan']; ?> ago</small>
                                         </footer>
                                     </article>
                                 </li>
