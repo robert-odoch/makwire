@@ -20,7 +20,7 @@ class User_model extends CI_Model
     {
         $query = $this->db->query($q);
         if ( ! $query) {
-            handle_error($this->db->error());
+            $this->handle_error($this->db->error());
         }
 
         return $query;

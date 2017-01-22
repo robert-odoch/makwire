@@ -7,34 +7,42 @@ class College_model extends CI_Model
     {
         parent::__construct();
     }
-    
+
+    /*** Utility ***/
+    private function handle_error($error)
+    {
+        print($error);
+        exit(1);
+    }
+
+    private function run_query($q)
+    {
+        $query = $this->db->query($q);
+        if ( ! $query) {
+            $this->handle_error($this->db->error());
+        }
+
+        return $query;
+    }
+    /*** End Utility ***/
+
     public function get_colleges()
     {
         $q = sprintf("SELECT college_id, name FROM colleges");
-        $query = $this->db->query($q);
-        if ( ! $query) {
-            $error = $this->db->error();
-            print $error;
-            exit(1);
-        }
-        
+        $query = $this->run_query($q);
+
         return $query->result_array();
     }
-    
+
     public function college_and_school_exists($college_id, $school_id)
     {
         $q = sprintf("SELECT * FROM mak_schools WHERE (school_id=%d AND college_id=%d) LIMIT 1",
                      $school_id, $college_id);
-        $query = $this->db->query($q);
-        if ( ! $query) {
-            $error = $this->db->error();
-            print $error;
-            exit(1);
-        }
+        $query = $this->run_query($q);
         if ($query->num_rows() == 1) {
             return TRUE;
         }
-        
+
         return FALSE;
     }
 }

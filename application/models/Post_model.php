@@ -9,6 +9,24 @@ class Post_model extends CI_Model
         $this->load->model("comment_model");
     }
 
+    /*** Utility ***/
+    private function handle_error($error)
+    {
+        print($error);
+        exit(1);
+    }
+
+    private function run_query($q)
+    {
+        $query = $this->db->query($q);
+        if ( ! $query) {
+            $this->handle_error($this->db->error());
+        }
+
+        return $query;
+    }
+    /*** End Utility ***/
+
     public function get_short_post($post, $num_chars)
     {
         $short_post = array();
@@ -37,12 +55,7 @@ class Post_model extends CI_Model
     {
         $q = sprintf("SELECT * FROM posts WHERE post_id=%d LIMIT 1",
                      $post_id);
-        $query = $this->db->query($q);
-        if ( ! $query) {
-            $error = $this->db->error();
-            print $error;
-            exit(1);
-        }
+        $query = $this->run_query($q);
 
         $post = $query->row_array();
 
@@ -70,12 +83,7 @@ class Post_model extends CI_Model
             // Get the name and ID of the source.
             $q = sprintf("SELECT author_id FROM posts WHERE post_id=%d LIMIT 1",
                          $post['parent_id']);
-            $query = $this->db->query($q);
-            if ( ! $query) {
-                $error = $this->db->error();
-                print $error;
-                exit(1);
-            }
+            $query = $this->run_query($q);
             $source_id = $query->row()->author_id;
 
             $post['source_id'] = $source_id;
@@ -96,12 +104,7 @@ class Post_model extends CI_Model
                      "LIMIT %d",
                      $post_id, $this->db->escape("post"),
                      $user_id, 1);
-        $query = $this->db->query($q);
-        if ( ! $query) {
-            $error = $this->db->error();
-            print $error;
-            exit(1);
-        }
+        $query = $this->run_query($q);
 
         if ($query->num_rows() === 1) {
             return TRUE;
@@ -114,14 +117,9 @@ class Post_model extends CI_Model
     {
         $q = sprintf("SELECT fname, lname FROM users WHERE user_id=%d LIMIT 1",
                      $author_id);
-        $query = $this->db->query($q);
-        if ( ! $query) {
-            $error = $this->db->error();
-            print $error;
-            exit(1);
-        }
-
+        $query = $this->run_query($q);
         $author = ucfirst(strtolower($query->row()->fname)) . ' ' . ucfirst(strtolower($query->row()->lname));
+
         return $author;
     }
 
@@ -129,12 +127,7 @@ class Post_model extends CI_Model
     {
         $q = sprintf("SELECT like_id FROM likes WHERE (source_id=%d AND source_type=%s)",
                      $post_id, $this->db->escape("post"));
-        $query = $this->db->query($q);
-        if (! $query) {
-            $error = $this->db->error();
-            print $error;
-            exit(1);
-        }
+        $query = $this->run_query($q);
 
         return $query->num_rows();
     }
@@ -144,12 +137,7 @@ class Post_model extends CI_Model
         $q = sprintf("SELECT comment_id FROM comments " .
                      "WHERE (source_type=%s AND source_id=%d AND parent_id=%d)",
                      $this->db->escape("post"), $post_id, 0);
-        $query = $this->db->query($q);
-        if ( ! $query) {
-            $error = $this->db->error();
-            print $error;
-            exit(1);
-        }
+        $query = $this->run_query($q);
 
         return $query->num_rows();
     }
@@ -158,12 +146,7 @@ class Post_model extends CI_Model
     {
         $q = sprintf("SELECT post_id FROM posts WHERE parent_id=%d",
                      $post_id);
-        $query = $this->db->query($q);
-        if ( ! $query) {
-            $error = $this->db->error();
-            print $error;
-            exit(1);
-        }
+        $query = $this->run_query($q);
 
         return $query->num_rows();
     }
@@ -172,7 +155,8 @@ class Post_model extends CI_Model
     {
         $q = sprintf("INSERT INTO posts (audience_id, post, author_id) VALUES (%d, %s, %d)",
                      $audience_id, $this->db->escape($post), $_SESSION['user_id']);
-        if ($this->db->query($q)) {
+        $query = $this->run_query($q);
+        if ($query) {
             return TRUE;
         }
         else {
@@ -185,22 +169,12 @@ class Post_model extends CI_Model
         $q = sprintf("INSERT INTO likes (liker_id, source_id, source_type) " .
                      "VALUES (%d, %d, %s)",
                      $_SESSION['user_id'], $post_id, $this->db->escape("post"));
-        $query = $this->db->query($q);
-        if ( ! $query) {
-            $error = $this->db->error();
-            print $error;
-            exit(1);
-        }
+        $query = $this->run_query($q);
 
         // Get the id of the user who posted.
         $q = sprintf("SELECT author_id FROM posts WHERE post_id=%d LIMIT 1",
                      $post_id);
-        $query = $this->db->query($q);
-        if ( ! $query) {
-            $error = $this->db->error();
-            print $error;
-            exit(1);
-        }
+        $query = $this->run_query($q);
 
         $parent_id = $query->row()->author_id;
 
@@ -210,12 +184,7 @@ class Post_model extends CI_Model
                      $_SESSION['user_id'], $parent_id, $post_id,
                      $this->db->escape('post'), $this->db->escape('like'),
                      $this->db->escape('timeline'));
-        $query = $this->db->query($q);
-        if ( ! $query) {
-            $error = $this->db->error();
-            print $error;
-            exit(1);
-        }
+        $query = $this->run_query($q);
     }
     public function comment($post_id, $comment)
     {
@@ -224,22 +193,12 @@ class Post_model extends CI_Model
                      "VALUES (%d, %d, %d, %s, %s)",
                      $_SESSION['user_id'], 0, $post_id,
                      $this->db->escape("post"), $this->db->escape($comment));
-        $query = $this->db->query($q);
-        if ( ! $query) {
-            $error = $this->db->error();
-            print $error;
-            exit(1);
-        }
+        $query = $this->run_query($q);
 
         // Get the parent_id.
         $q = sprintf("SELECT author_id FROM posts WHERE post_id=%d LIMIT 1",
                      $post_id);
-        $query = $this->db->query($q);
-        if ( ! $query) {
-            $error = $this->db->error();
-            print $error;
-            exit(1);
-        }
+        $query = $this->run_query($q);
 
         $parent_id = $query->row()->author_id;
 
@@ -249,24 +208,14 @@ class Post_model extends CI_Model
                      $_SESSION['user_id'], $parent_id, $post_id,
                      $this->db->escape('post'), $this->db->escape('comment'),
                      $this->db->escape('timeline'));
-        $query = $this->db->query($q);
-        if ( ! $query) {
-            $error = $this->db->error();
-            print $error;
-            exit(1);
-        }
+        $query = $this->run_query($q);
     }
     public function share($post_id, $audience, $audience_id)
     {
         // Get the post that is being shared.
         $q = sprintf("SELECT author_id, post FROM posts WHERE post_id=%d LIMIT %d",
                      $post_id, 1);
-        $query = $this->db->query($q);
-        if ( ! $query) {
-            $error = $this->db->error();
-            print $error;
-            exit(1);
-        }
+        $query = $this->run_query($q);
         $post = $query->row()->post;
         $post_author = $query->row()->author_id;
 
@@ -276,12 +225,7 @@ class Post_model extends CI_Model
                      $post_id, $_SESSION['user_id'], $audience_id,
                      $this->db->escape($audience), $this->db->escape($post));
 
-        $query = $this->db->query($q);
-        if ( ! $query) {
-            $error = $this->db->error();
-            print $error;
-            exit(1);
-        }
+        $query = $this->run_query($q);
 
         // Dispatch an activity.
         $q = sprintf("INSERT INTO activities (trigger_id, parent_id, source_id, source_type, activity, audience) " .
@@ -289,12 +233,7 @@ class Post_model extends CI_Model
                      $_SESSION['user_id'], $post_author, $post_id,
                      $this->db->escape('post'), $this->db->escape('share'),
                      $this->db->escape('timeline'));
-        $query = $this->db->query($q);
-        if ( ! $query) {
-            $error = $this->db->error();
-            print $error;
-            exit(1);
-        }
+        $query = $this->run_query($q);
     }
 
     public function get_likes($post_id, $offset, $limit)
@@ -302,12 +241,7 @@ class Post_model extends CI_Model
         $q = sprintf("SELECT * FROM likes WHERE (source_type=%s AND source_id=%d) " .
                      "ORDER BY date_liked DESC LIMIT %d, %d",
                      $this->db->escape("post"), $post_id, $offset, $limit);
-        $query = $this->db->query($q);
-        if ( ! $query) {
-            $error = $this->db->error();
-            print $error;
-            exit(1);
-        }
+        $query = $this->run_query($q);
         $results = $query->result_array();
 
         $likes = array();
@@ -315,12 +249,7 @@ class Post_model extends CI_Model
             // Get the name of the liker.
             $q = sprintf("SELECT fname, lname FROM users WHERE user_id=%d LIMIT 1",
                          $like['liker_id']);
-            $query = $this->db->query($q);
-            if ( ! $query) {
-                $error = $this->db->error();
-                print $error;
-                exit(1);
-            }
+            $query = $this->run_query($q);
 
             $liker = ucfirst(strtolower($query->row(0)->lname)) . ' ' . ucfirst(strtolower($query->row(0)->fname));
             $like['liker'] = $liker;
@@ -334,19 +263,13 @@ class Post_model extends CI_Model
         $q = sprintf("SELECT comment_id FROM comments WHERE (source_type=%s AND source_id=%d AND parent_id=%d) " .
                      "ORDER BY date_entered DESC LIMIT %d, %d",
                      $this->db->escape("post"), $post_id, 0, $offset, $limit);
-        $query = $this->db->query($q);
-        if ( ! $query) {
-            $error = $this->db->error();
-            print $error;
-            exit(1);
-        }
+        $query = $this->run_query($q);
         $results = $query->result_array();
 
         $comments = array();
         foreach ($results as $r) {
             // Get the detailed comment.
             $comment = $this->comment_model->get_comment($r['comment_id']);
-
             array_push($comments, $comment);
         }
 
@@ -356,12 +279,7 @@ class Post_model extends CI_Model
     {
         $q = sprintf("SELECT author_id AS sharer_id FROM posts WHERE parent_id=%d LIMIT 1",
                      $post_id);
-        $query = $this->db->query($q);
-        if ( ! $query) {
-            $error = $this->db->error();
-            print $error;
-            exit(1);
-        }
+        $query = $this->run_query($q);
         $results = $query->result_array();
 
         $shares = array();
@@ -369,12 +287,7 @@ class Post_model extends CI_Model
             // Get the name of the user who shared.
             $q = sprintf("SELECT fname, lname FROM users WHERE user_id=%d LIMIT 1",
                          $share['sharer_id']);
-            $query = $this->db->query($q);
-            if ( ! $query) {
-                $error = $this->db->error();
-                print $error;
-                exit(1);
-            }
+            $query = $this->run_query($q);
 
             $sharer = ucfirst(strtolower($query->row(0)->lname)) . ' ' . ucfirst(strtolower($query->row(0)->fname));
             $share['sharer'] = $sharer;

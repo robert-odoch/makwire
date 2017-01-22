@@ -7,17 +7,30 @@ class Programme_model extends CI_Model
     {
         parent::__construct();
     }
-    
+
+    /*** Utility ***/
+    private function handle_error($error)
+    {
+        print($error);
+        exit(1);
+    }
+
+    private function run_query($q)
+    {
+        $query = $this->db->query($q);
+        if ( ! $query) {
+            $this->handle_error($this->db->error());
+        }
+
+        return $query;
+    }
+    /*** End Utility ***/
+
     public function get_programmes()
     {
         $q = sprintf("SELECT programme_id, name FROM programmes");
-        $query = $this->db->query($q);
-        if ( ! $query) {
-            $error = $this->db->error();
-            print $error;
-            exit(1);
-        }
-        
+        $query = $this->run_query($q);
+
         return $query->result_array();
     }
 }
