@@ -28,7 +28,7 @@ require_once('common/user-page-start.php');
                                     </h4>
                                 </header>
                                 <p class="post">
-                                    <?php print htmlspecialchars($post['post']); ?>
+                                    <?php print(htmlspecialchars($post['post'])); ?>
                                 </p>
                                 <footer>
                                     <small><span class="glyphicon glyphicon-time"></span> <?= $post['timespan']; ?> ago</small>
@@ -96,7 +96,7 @@ require_once('common/user-page-start.php');
                                         <header>
                                             <a href="<?= base_url("user/index/{$comment['commenter_id']}"); ?>"><strong><?= $comment['commenter']; ?></strong></a>
                                         </header>
-                                        <p class="comment"><?= $comment['comment']; ?></p>
+                                        <p class="comment"><?= htmlspecialchars($comment['comment']); ?></p>
                                         <footer>
                                             <?php
                                             print "<small>&mdash; <span class='glyphicon glyphicon-time'></span> {$comment['timespan']} ago</small>";

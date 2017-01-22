@@ -13,7 +13,7 @@ require_once("common/user-page-start.php");
                                     </h4>
                                 </header>
                                 <p>
-                                    <?= $comment['comment']; ?>
+                                    <?= htmlspecialchars($comment['comment']); ?>
                                 </p>
                                 <footer>
                                     <small><span class="glyphicon glyphicon-time"></span> <?= $comment['timespan']; ?> ago</small>
@@ -37,7 +37,7 @@ require_once("common/user-page-start.php");
                                         <header>
                                             <a href=""><strong><?= $reply['replier']; ?></strong></a>
                                         </header>
-                                        <p class="comment"><?= $reply['comment']; ?></p>
+                                        <p class="comment"><?= htmlspecialchars($reply['comment']); ?></p>
                                         <footer>
                                         <small>&mdash; <span class="glyphicon glyphicon-time"></span> <?= $reply['timespan']; ?> ago</small>
                                         <?php
@@ -47,7 +47,7 @@ require_once("common/user-page-start.php");
                                             print "<span> &middot; </span>" .
                                                   "<a href='" . base_url("reply/like/{$reply['comment_id']}") . "'>Like</a>";
                                         }
-                                        
+
                                         if ($reply['num_likes'] > 0) {
                                             print "<span> &middot; </span>" .
                                                   "<a href='" . base_url("reply/likes/{$reply['comment_id']}") . "'>{$reply['num_likes']}";
@@ -56,7 +56,7 @@ require_once("common/user-page-start.php");
                                         }
                                         ?>
                                         </footer>
-                                    </article>                                    
+                                    </article>
                                 </li>
                                 <?php endforeach; ?>
                             </ul>
@@ -69,7 +69,7 @@ require_once("common/user-page-start.php");
                         <?php endif; ?>
                     </div><!-- .main-content -->
                 </div><!-- main -->
-                
+
                 <div class="suggestions">
                     <?php require_once("common/suggested-users.php"); ?>
                 </div>

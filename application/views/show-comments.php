@@ -19,7 +19,7 @@ require_once("common/user-page-start.php");
                                 </header>
                                 <p>
                                     <?php
-                                    print $post['post'];
+                                    print htmlspecialchars($post['post']);
                                     if ($post['has_more']) {
                                         print "<a href='" . base_url("user/post/{$post['author_id']}/{$post['post_id']}") . "' class='more'>view more</a>";
                                     }
@@ -51,7 +51,7 @@ require_once("common/user-page-start.php");
                                         <header>
                                             <a href="<?= base_url("user/index/{$comment['commenter_id']}"); ?>"><strong><?php print $comment['commenter']; ?></strong></a>
                                         </header>
-                                        <p class="comment"><?= $comment['comment']; ?></p>
+                                        <p class="comment"><?= htmlspecialchars($comment['comment']); ?></p>
                                         <footer>
                                             <?php
                                             print "<small>&mdash; <span class='glyphicon glyphicon-time'></span> {$comment['timespan']} ago</small>";

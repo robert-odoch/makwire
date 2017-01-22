@@ -93,7 +93,7 @@ function can_share_post($user_id, $post)
                                         </header>
                                         <p class="post">
                                             <?php
-                                            print $post['post'];
+                                            print(htmlspecialchars($post['post']));
                                             if ($post['has_more']) {
                                                 print "<a href='" . base_url("user/post/{$post['post_id']}") . "' class='more'>view more</a>";
                                             }

@@ -30,7 +30,7 @@ require_once('common/user-page-start.php');
                                         <header>
                                             <a href="<?= base_url("user/index/{$m['sender_id']}"); ?>"><strong><?= $m['sender']; ?></strong></a>
                                         </header>
-                                        <p><?= $m['message']; ?></p>
+                                        <p><?= htmlspecialchars($m['message']); ?></p>
                                         <footer>
                                             <small>&mdash; <span class="glyphicon glyphicon-time"></span> <?= $m['timespan']; ?> ago</small>
                                         </footer>

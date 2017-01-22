@@ -8,7 +8,7 @@ require_once("common/user-page-start.php");
                                 <header>
                                     <h4><a href=""><?= $reply['replier']; ?></a></h4>
                                 </header>
-                                <p><?= $reply['comment']; ?></p>
+                                <p><?= htmlspecialchars($reply['comment']); ?></p>
                                 <footer>
                                     <small><span class="glyphicon glyphicon-time"></span> <?= $reply['timespan']; ?> ago</small>
                                     <?php
@@ -45,7 +45,7 @@ require_once("common/user-page-start.php");
                         <?php endif; ?>
                     </div><!-- .main-content -->
                 </div><!-- main -->
-                
+
                 <div class="suggestions">
                     <?php require_once("common/suggested-users.php"); ?>
                 </div>

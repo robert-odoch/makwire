@@ -19,7 +19,7 @@ require_once("common/user-page-start.php");
                                 </header>
                                 <p>
                                     <?php
-                                    print $post['post'];
+                                    print htmlspecialchars($post['post']);
                                     if ($post['has_more']) {
                                         print "<a href='" . base_url("user/post/{$post['post_id']}") . "' class='more'>view more</a>";
                                     }
@@ -61,7 +61,7 @@ require_once("common/user-page-start.php");
                         <?php endif; ?>
                     </div><!-- .main-content -->
                 </div><!-- main -->
-                
+
                 <div class="suggestions">
                     <?php require_once("common/suggested-users.php"); ?>
                 </div>

@@ -19,7 +19,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 </header>
                                 <p class="post">
                                     <?php
-                                    print htmlspecialchars($post['post']);
+                                    print(htmlspecialchars($post['post']));
                                     if ($post['has_more']) {
                                         print("<a href='" . base_url("user/post/{$post['post_id']}") . "' class='more'>view more</a>");
                                     }
@@ -62,7 +62,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                 <strong><?= $comment['commenter']; ?></strong>
                                             </a>
                                         </header>
-                                        <p class="comment"><?php print $comment['comment']; ?></p>
+                                        <p class="comment"><?php print(htmlspecialchars($comment['comment'])); ?></p>
                                         <footer>
                                         <?php
                                         print "<small>&mdash; " .

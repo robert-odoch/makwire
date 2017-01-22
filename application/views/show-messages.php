@@ -16,7 +16,7 @@ require_once('common/user-page-start.php');
                                         <header>
                                             <a href="<?= base_url("user/send_message/{$m['sender_id']}"); ?>" title="Reply"><?= $m['sender']; ?></a>
                                         </header>
-                                        <p><?= $m['message']; ?></p>
+                                        <p><?= htmlspecialchars($m['message']); ?></p>
                                         <footer>
                                             <small>&mdash; <span class="glyphicon glyphicon-time"></span> <?= $m['timespan']; ?> ago</small>
                                         </footer>
@@ -33,7 +33,7 @@ require_once('common/user-page-start.php');
                         <?php endif; ?>
                     </div><!-- .main-content -->
                 </div><!-- main -->
-                
+
                 <div class="suggestions">
                     <?php require_once("common/suggested-users.php"); ?>
                 </div>

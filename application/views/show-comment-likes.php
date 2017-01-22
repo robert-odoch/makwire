@@ -13,7 +13,7 @@ require_once("common/user-page-start.php");
                                     </h4>
                                 </header>
                                 <p>
-                                    <?= $comment['comment']; ?>
+                                    <?= htmlspecialchars($comment['comment']); ?>
                                 </p>
                                 <footer>
                                     <small><span class="glyphicon glyphicon-time"></span> <?= $comment['timespan']; ?> ago</small>
@@ -51,7 +51,7 @@ require_once("common/user-page-start.php");
                         <?php endif; ?>
                     </div><!-- .main-content -->
                 </div><!-- main -->
-                
+
                 <div class="suggestions">
                     <?php require_once("common/suggested-users.php"); ?>
                 </div>
