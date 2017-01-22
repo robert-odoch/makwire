@@ -8,10 +8,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <h4>
                                     <?php
                                     if ($post['shared']) {
-                                        print "<a href='" . base_url("user/index/{$post['author_id']}") . "'>{$post['author']}</a> shared <a href='" . base_url("user/index/{$post['source_id']}") . "'>{$post['source']}</a>'s post";
+                                        print("<a href='" . base_url("user/index/{$post['author_id']}") . "'>{$post['author']}</a> " .
+                                              "shared <a href='" . base_url("user/index/{$post['source_id']}") . "'>{$post['source']}</a>'s post");
                                     }
                                     else {
-                                        print "<a href='" . base_url("user/index/{$post['author_id']}") . "'>{$post['author']}</a>";
+                                        print("<a href='" . base_url("user/index/{$post['author_id']}") . "'>{$post['author']}</a>");
                                     }
                                     ?>
                                     </h4>
@@ -20,7 +21,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <?php
                                     print htmlspecialchars($post['post']);
                                     if ($post['has_more']) {
-                                        print "<a href='" . base_url("user/post/{$post['post_id']}") . "' class='more'>view more</a>";
+                                        print("<a href='" . base_url("user/post/{$post['post_id']}") . "' class='more'>view more</a>");
                                     }
                                     ?>
                                 </p>
