@@ -12,10 +12,10 @@ class Reply extends CI_Controller
         $this->load->model("reply_model");
     }
 
-    public function like($reply_id)
+    public function like($reply_id, $comment_id)
     {
         $this->reply_model->like($reply_id);
-        redirect(base_url("reply/likes/{$reply_id}"));
+        redirect(base_url("comment/replies/{$comment_id}"));
     }
 
     public function likes($reply_id, $offset=0)

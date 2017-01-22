@@ -40,7 +40,7 @@ class Login_model extends CI_Model
             $q = sprintf("UPDATE users SET logged_in=%d WHERE uname=%s LIMIT 1",
                          1, $this->db->escape($username));
 
-            $query = $this->run_query($q);
+            $this->run_query($q);
 
             session_start();
             session_regenerate_id(TRUE);

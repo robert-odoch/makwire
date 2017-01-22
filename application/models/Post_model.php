@@ -169,7 +169,7 @@ class Post_model extends CI_Model
         $q = sprintf("INSERT INTO likes (liker_id, source_id, source_type) " .
                      "VALUES (%d, %d, %s)",
                      $_SESSION['user_id'], $post_id, $this->db->escape("post"));
-        $query = $this->run_query($q);
+        $this->run_query($q);
 
         // Get the id of the user who posted.
         $q = sprintf("SELECT author_id FROM posts WHERE post_id=%d LIMIT 1",
@@ -184,7 +184,7 @@ class Post_model extends CI_Model
                      $_SESSION['user_id'], $parent_id, $post_id,
                      $this->db->escape('post'), $this->db->escape('like'),
                      $this->db->escape('timeline'));
-        $query = $this->run_query($q);
+        $this->run_query($q);
     }
     public function comment($post_id, $comment)
     {
@@ -193,7 +193,7 @@ class Post_model extends CI_Model
                      "VALUES (%d, %d, %d, %s, %s)",
                      $_SESSION['user_id'], 0, $post_id,
                      $this->db->escape("post"), $this->db->escape($comment));
-        $query = $this->run_query($q);
+        $this->run_query($q);
 
         // Get the parent_id.
         $q = sprintf("SELECT author_id FROM posts WHERE post_id=%d LIMIT 1",
@@ -208,7 +208,7 @@ class Post_model extends CI_Model
                      $_SESSION['user_id'], $parent_id, $post_id,
                      $this->db->escape('post'), $this->db->escape('comment'),
                      $this->db->escape('timeline'));
-        $query = $this->run_query($q);
+        $this->run_query($q);
     }
     public function share($post_id, $audience, $audience_id)
     {
@@ -224,8 +224,7 @@ class Post_model extends CI_Model
                      "VALUES (%d, %d, %d, %s, %s)",
                      $post_id, $_SESSION['user_id'], $audience_id,
                      $this->db->escape($audience), $this->db->escape($post));
-
-        $query = $this->run_query($q);
+        $this->run_query($q);
 
         // Dispatch an activity.
         $q = sprintf("INSERT INTO activities (trigger_id, parent_id, source_id, source_type, activity, audience) " .
@@ -233,7 +232,7 @@ class Post_model extends CI_Model
                      $_SESSION['user_id'], $post_author, $post_id,
                      $this->db->escape('post'), $this->db->escape('share'),
                      $this->db->escape('timeline'));
-        $query = $this->run_query($q);
+        $this->run_query($q);
     }
 
     public function get_likes($post_id, $offset, $limit)

@@ -15,7 +15,6 @@ class Post extends CI_Controller
     {
         $this->post_model->like($post_id);
         redirect(base_url("user/post/{$post_id}"));
-        exit();
     }
 
     public function comment($post_id)
@@ -23,7 +22,7 @@ class Post extends CI_Controller
         $comment_errors = array();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (empty($this->input->post('comment'))) {
+            if (empty(trim($this->input->post('comment')))) {
                 $comment_errors['comment'] = "Comment can't be empty";
             }
             else {

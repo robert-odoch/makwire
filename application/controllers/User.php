@@ -145,7 +145,7 @@ class User extends CI_Controller
         $data['title'] = "Send a message to {$data['secondary-user']}";
         $data['message_errors'] = array();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (empty($this->input->post('message'))) {
+            if (empty(trim($this->input->post('message')))) {
                 $data['message_errors']['message'] = "Message can't be empty!";
             }
             else {

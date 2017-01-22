@@ -32,7 +32,7 @@ class Logout_model extends CI_Model
         $q = sprintf("UPDATE users SET logged_in=%d WHERE user_id=%d",
                      0, $_SESSION['user_id']);
 
-        $query = $this->run_query($q);
+        $this->run_query($q);
 
         $_SESSION = array();
         session_destroy();

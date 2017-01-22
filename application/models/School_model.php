@@ -38,7 +38,7 @@ class School_model extends CI_Model
     {
         $q = sprintf("UPDATE user_profile SET school_id=%d WHERE user_id=%d LIMIT 1",
                      $school_id, $_SESSION['user_id']);
-        $query = $this->run_query($q);
+        $this->run_query($q);
     }
 }
 ?>

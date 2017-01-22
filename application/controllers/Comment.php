@@ -12,10 +12,10 @@ class Comment extends CI_Controller
         $this->load->model("comment_model");
     }
 
-    public function like($comment_id)
+    public function like($comment_id, $post_id)
     {
         $this->comment_model->like($comment_id);
-        redirect(base_url("comment/likes/{$comment_id}"));
+        redirect(base_url("post/comment/{$post_id}"));
     }
 
     public function reply($comment_id)
@@ -23,7 +23,7 @@ class Comment extends CI_Controller
         $reply_errors = array();
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
-            if (empty($this->input->post("reply"))) {
+            if (empty(trim($this->input->post("reply")))) {
                 $reply_errors['reply'] = "Reply can't be empty!";
             }
             else {

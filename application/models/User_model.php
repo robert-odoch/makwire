@@ -50,7 +50,7 @@ class User_model extends CI_Model
                      $this->db->escape($user['firstname']), $this->db->escape($user['lastname']),
                      $this->db->escape($user['email']), $this->db->escape($user['gender']),
                      $this->db->escape($user['username']), $this->db->escape(password_hash($user['password'], PASSWORD_BCRYPT)));
-        $query = $this->run_query($q);
+        $this->run_query($q);
     }
 
     public function get_full_name($user_id)
@@ -105,7 +105,7 @@ class User_model extends CI_Model
             if (isset($msg['seen']) && ($msg['seen'] == 0) && ($msg['receiver_id'] == $_SESSION['user_id'])) {
                 $q = sprintf("UPDATE messages SET seen=%d WHERE (message_id=%d) LIMIT 1",
                              1, $msg['message_id']);
-                $query = $this->run_query($q);
+                $this->run_query($q);
             }
 
             $msg['timespan'] = timespan(mysql_to_unix($msg['date_sent']), now(), 1);
@@ -244,7 +244,7 @@ class User_model extends CI_Model
 			if (isset($notif['seen']) && ($notif['seen'] == 0)) {
                 $q = sprintf("UPDATE activities SET seen=%d WHERE (activity_id=%d) LIMIT 1",
                              1, $notif['activity_id']);
-                $query = $this->run_query($q);
+                $this->run_query($q);
             }
 
             // If it is a like, comment, or share on of a post,
@@ -399,7 +399,7 @@ class User_model extends CI_Model
                 $q = sprintf("UPDATE friend_requests SET seen=TRUE " .
                              "WHERE (target_id=%d AND user_id=%d)",
                              $_SESSION['user_id'], $fr['user_id']);
-                $query = $this->run_query($q);
+                $this->run_query($q);
             }
 
             $fr['name'] = $this->get_full_name($fr['user_id']);
@@ -413,14 +413,14 @@ class User_model extends CI_Model
     {
         $q = sprintf("INSERT INTO friend_requests (user_id, target_id) VALUES (%d, %d)",
                      $_SESSION['user_id'], $target_id);
-        $query = $this->run_query($q);
+        $this->run_query($q);
 
         // Dispatch an activity.
         $q = sprintf("INSERT INTO activities (trigger_id, parent_id, source_id, source_type, activity, audience) " .
                      "VALUES (%d, %d, %d, %s, %s, %s)",
                      $_SESSION['user_id'], $target_id, $target_id, $this->db->escape('user'),
                      $this->db->escape('friend_request'), $this->db->escape('user'));
-        $query = $this->run_query($q);
+        $this->run_query($q);
     }
 
     public function confirm_friend_request($friend_id)
@@ -428,26 +428,26 @@ class User_model extends CI_Model
         // Add the user to the list of friends.
         $q = sprintf("INSERT INTO friends (user_id, friend_id) VALUES (%d, %d)",
                      $_SESSION['user_id'], $friend_id);
-        $query = $this->run_query($q);
+        $this->run_query($q);
 
         // Update the friend_requests table.
         $q = sprintf("UPDATE friend_requests SET confirmed=%d WHERE user_id=%d AND target_id=%d",
                      1, $friend_id, $_SESSION['user_id']);
-        $query = $this->run_query($q);
+        $this->run_query($q);
 
         // Dispatch an activity.
         $q = sprintf("INSERT INTO activities (trigger_id, parent_id, source_id, activity, audience) " .
                      "VALUES (%d, %d, %d, %s, %s)",
                      $_SESSION['user_id'], $friend_id, $friend_id,
                      $this->db->escape('confirmed_friend_request'), $this->db->escape('user'));
-        $query = $this->run_query($q);
+        $this->run_query($q);
     }
 
     public function send_message($receiver_id, $message)
     {
         $q = sprintf("INSERT INTO messages (sender_id, receiver_id, message) VALUES (%d, %d, %s)",
                      $_SESSION['user_id'], $receiver_id, $this->db->escape($message));
-        $query = $this->run_query($q);
+        $this->run_query($q);
     }
 
     public function get_num_conversation($user_id)
@@ -487,7 +487,7 @@ class User_model extends CI_Model
             if (isset($msg['seen']) && ($msg['seen'] == 0) && ($msg['receiver_id'] == $_SESSION['user_id'])) {
                 $q = sprintf("UPDATE messages SET seen=%d WHERE (message_id=%d) LIMIT 1",
                              1, $msg['message_id']);
-                $query = $this->run_query($q);
+                $this->run_query($q);
             }
 
             // Add the timespan.
@@ -503,7 +503,7 @@ class User_model extends CI_Model
         $q = sprintf("INSERT INTO user_profile (user_id, college_id) " .
                      "VALUES (%d, %d)",
                      $_SESSION['user_id'], $college_id);
-        $query = $this->run_query($q);
+        $this->run_query($q);
     }
 }
 ?>

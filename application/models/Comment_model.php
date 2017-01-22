@@ -122,7 +122,7 @@ class Comment_model extends CI_Model
         $q = sprintf("INSERT INTO likes (liker_id, source_id, source_type) " .
                      "VALUES (%d, %d, %s)",
                      $_SESSION['user_id'], $comment_id, $this->db->escape("comment"));
-        $query = $this->run_query($q);
+        $this->run_query($q);
 
         // Get the id of the user who commented.
         $q = sprintf("SELECT commenter_id FROM comments WHERE (comment_id=%d) LIMIT %d",
@@ -135,7 +135,7 @@ class Comment_model extends CI_Model
                      "VALUES (%d, %d, %d, %s, %s)",
                      $_SESSION['user_id'], $parent_id, $comment_id,
                      $this->db->escape("comment"), $this->db->escape("like"));
-        $query = $this->run_query($q);
+        $this->run_query($q);
     }
 
     public function reply($comment_id, $reply)
@@ -145,7 +145,7 @@ class Comment_model extends CI_Model
                      "VALUES (%d, %d, %d, %s, %s)",
                      $_SESSION['user_id'], $comment_id, $comment_id,
                      $this->db->escape("comment"), $this->db->escape($reply));
-        $query = $this->run_query($q);
+        $this->run_query($q);
 
         // Get the id of the user who commented.
         $q = sprintf("SELECT commenter_id FROM comments WHERE (comment_id=%d) LIMIT %d",
@@ -158,7 +158,7 @@ class Comment_model extends CI_Model
                      "VALUES (%d, %d, %d, %s, %s)",
                      $_SESSION['user_id'], $parent_id, $comment_id,
                      $this->db->escape("comment"), $this->db->escape("reply"));
-        $query = $this->run_query($q);
+        $this->run_query($q);
     }
 }
 ?>
