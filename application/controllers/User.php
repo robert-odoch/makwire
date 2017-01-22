@@ -6,6 +6,11 @@ class User extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+        $this->load->model('user_model');
+        $this->load->model('post_model');
+        $this->load->model("college_model");
+        $this->load->model("school_model");
+        $this->load->model("programme_model");
 
         session_start();
         if ( ! isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
@@ -14,34 +19,7 @@ class User extends CI_Controller
         }
         else {
             // Check whether the user hasn't been logged out from some where else.
-            $this->confirm_logged_in();
-        }
-
-        $this->load->model('user_model');
-        $this->load->model('post_model');
-        $this->load->model("college_model");
-        $this->load->model("school_model");
-        $this->load->model("programme_model");
-    }
-
-    private function confirm_logged_in()
-    {
-        $q = sprintf("SELECT logged_in FROM users WHERE user_id=%d",
-                     $_SESSION['user_id']);
-        $query = $this->db->query($q);
-        if ( ! $query) {
-            $error = $this->db->error();
-            echo $error;
-            exit(1);
-        }
-
-        if ($query->row()->logged_in == 0) {
-            unset($_SESSION['user_id']);
-            $_SESSION = array();
-            $_SESSION['message'] = "This account was logged out from another location, " .
-                                   "please log in again to continue using this account. " .
-                                   "We are sorry for bothering you.";
-            redirect(base_url("login/"));
+            $this->user_model->confirm_logged_in();
         }
     }
 
@@ -95,11 +73,11 @@ class User extends CI_Controller
     private function initialize_user()
     {
         $data['primary_user'] = $this->user_model->get_full_name($_SESSION['user_id']);
-        $data['num_new_messages'] = $this->user_model->get_num_messages(TRUE);
-        $data['num_active_friends'] = $this->user_model->get_num_chat_users(TRUE);
-        $data['num_new_notifs'] = $this->user_model->get_num_notifs(TRUE);
-        $data['num_friend_requests'] = $this->user_model->get_num_friend_requests();
         $data['suggested_users'] = $this->user_model->get_suggested_users(0, 4, TRUE);
+        $data['num_friend_requests'] = $this->user_model->get_num_friend_requests();
+        $data['num_active_friends'] = $this->user_model->get_num_chat_users(TRUE);
+        $data['num_new_messages'] = $this->user_model->get_num_messages(TRUE);
+        $data['num_new_notifs'] = $this->user_model->get_num_notifs(TRUE);
         $data['chat_users'] = $this->user_model->get_chat_users(TRUE);
 
         return $data;
@@ -112,14 +90,15 @@ class User extends CI_Controller
         $data = $this->initialize_user();
         $data['visitor'] = ($_SESSION['user_id'] === $user_id) ? FALSE : TRUE;
         if ($data['visitor']) {
-            $data['suid'] = $user_id;
-            $data['secondary_user'] = $this->user_model->get_full_name($user_id);
             $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
+            $data['secondary_user'] = $this->user_model->get_full_name($user_id);
             $data['title'] = "{$data['secondary_user']}'s Posts";
+            $data['suid'] = $user_id;
         }
         else {
             $data['title'] = "{$data['primary_user']}'s Posts";
         }
+
         $this->load->view('common/header', $data);
 
         $data['post_errors'] = array();
@@ -127,14 +106,16 @@ class User extends CI_Controller
             $data['post_errors'] = $_SESSION['post_errors'];
             unset($_SESSION['post_errors']);
         }
+
         $limit = 10;
-        $data['posts'] = $this->posts_model->get_posts($user_id, $offset, $limit);
         $data['has_next'] = FALSE;
         $num_posts = $this->posts_model->get_num_posts($user_id);
         if (($num_posts - $offset) > $limit) {
             $data['has_next'] = TRUE;
             $data['next_offset'] = ($offset + $limit);
         }
+
+        $data['posts'] = $this->posts_model->get_posts($user_id, $offset, $limit);
         $this->load->view('show-user', $data);
         $this->load->view('common/footer');
     }
@@ -182,6 +163,7 @@ class User extends CI_Controller
             $data['has_next'] = TRUE;
             $data['next_offset'] = ($offset + $limit);
         }
+
         $data['messages'] = $this->user_model->get_conversation($user_id, $offset, $limit, TRUE);
         $this->load->view('message', $data);
         $this->load->view('common/footer');
@@ -189,8 +171,6 @@ class User extends CI_Controller
 
     public function new_post($audience='timeline')
     {
-        $this->load->model('post_model');
-
         $post_errors = array();
         if (empty(trim($this->input->post('post')))) {
             $post_errors['post'] = 'Please enter what to post!';
@@ -223,8 +203,6 @@ class User extends CI_Controller
 
     public function post($post_id)
     {
-        $this->load->model('post_model');
-
         $data = $this->initialize_user();
         $data['title'] = "{$data['primary_user']}'s Post";
         $this->load->view('common/header', $data);
@@ -233,12 +211,13 @@ class User extends CI_Controller
 
         $offset = 0;
         $limit = 10;
-        $data['comments'] = $this->post_model->get_comments($post_id, $offset, $limit);
         $data['has_next'] = FALSE;
         if (($data['post']['num_comments'] - $offset) > $limit) {
             $data['has_next'] = TRUE;
             $data['next_offset'] = ($offset + $limit);
         }
+
+        $data['comments'] = $this->post_model->get_comments($post_id, $offset, $limit);
         $this->load->view('show-post', $data);
         $this->load->view('common/footer');
     }
@@ -274,6 +253,7 @@ class User extends CI_Controller
 		        $data['next_offset'] = ($offset + $limit);
 		    }
 		}
+
         $this->load->view('show-notifications', $data);
         $this->load->view('common/footer');
     }
@@ -285,13 +265,14 @@ class User extends CI_Controller
         $this->load->view('common/header', $data);
 
         $limit = 10;
-        $data['suggested_users'] = $this->user_model->get_suggested_users(0, 4, TRUE);
         $num_suggested_users = $this->user_model->get_num_suggested_users();
         $data['has_next'] = FALSE;
         if (($num_suggested_users - $offset) > $limit) {
             $data['has_next'] = TRUE;
             $data['next_offset'] = ($offset + $limit);
         }
+
+        $data['suggested_users'] = $this->user_model->get_suggested_users(0, 4, TRUE);
         $this->load->view('find-friends', $data);
         $this->load->view('common/footer');
     }
@@ -308,6 +289,7 @@ class User extends CI_Controller
             $data['has_next'] = TRUE;
             $data['next_offset'] = ($limit + $offset);
         }
+
         $data['friend_requests'] = $this->user_model->get_friend_requests();
         $this->load->view('friend-requests', $data);
         $this->load->view('common/footer');
@@ -355,6 +337,7 @@ class User extends CI_Controller
                 $data['next_offset'] = ($offset + $limit);
             }
         }
+
         $this->load->view('show-messages', $data);
         $this->load->view('common/footer');
     }
