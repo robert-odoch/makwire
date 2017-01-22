@@ -92,15 +92,24 @@ class User extends CI_Controller
         }
     }
 
-    public function index($user_id, $offset=0)
+    private function initialize_user()
     {
-        $this->load->model('posts_model');
-
         $data['primary_user'] = $this->user_model->get_full_name($_SESSION['user_id']);
         $data['num_new_messages'] = $this->user_model->get_num_messages(TRUE);
         $data['num_active_friends'] = $this->user_model->get_num_chat_users(TRUE);
         $data['num_new_notifs'] = $this->user_model->get_num_notifs(TRUE);
         $data['num_friend_requests'] = $this->user_model->get_num_friend_requests();
+        $data['suggested_users'] = $this->user_model->get_suggested_users(0, 4, TRUE);
+        $data['chat_users'] = $this->user_model->get_chat_users(TRUE);
+
+        return $data;
+    }
+
+    public function index($user_id, $offset=0)
+    {
+        $this->load->model('posts_model');
+
+        $data = $this->initialize_user();
         $data['visitor'] = ($_SESSION['user_id'] === $user_id) ? FALSE : TRUE;
         if ($data['visitor']) {
             $data['suid'] = $user_id;
@@ -113,8 +122,6 @@ class User extends CI_Controller
         }
         $this->load->view('common/header', $data);
 
-        $data['suggested_users'] = $this->user_model->get_suggested_users(0, 4, TRUE);
-        $data['chat_users'] = $this->user_model->get_chat_users(TRUE);
         $data['post_errors'] = array();
         if (isset($_SESSION['post_errors']) && ! empty($_SESSION['post_errors'])) {
             $data['post_errors'] = $_SESSION['post_errors'];
@@ -134,12 +141,8 @@ class User extends CI_Controller
 
     public function chat($offset=0)
     {
-        $data['primary_user'] = $this->user_model->get_full_name($_SESSION['user_id']);
+        $data = $this->initialize_user();
         $data['title'] = "Chat With Friends";
-        $data['num_new_messages'] = $this->user_model->get_num_messages(TRUE);
-        $data['num_active_friends'] = $this->user_model->get_num_chat_users(TRUE);
-        $data['num_new_notifs'] = $this->user_model->get_num_notifs(TRUE);
-        $data['num_friend_requests'] = $this->user_model->get_num_friend_requests();
         $this->load->view('common/header', $data);
 
         $limit = 10;
@@ -149,16 +152,17 @@ class User extends CI_Controller
             $data['next_offset'] = ($offset + $limit);
         }
 
-        $data['suggested_users'] = $this->user_model->get_suggested_users(0, 4, TRUE);
-        $data['chat_users'] = $this->user_model->get_chat_users(TRUE);
         $this->load->view('chat', $data);
         $this->load->view('common/footer');
     }
 
     public function send_message($user_id, $offset=0)
     {
+        $data = $this->initialize_user();
+        $data['suid'] = $user_id;
+        $data['secondary-user'] = $this->user_model->get_full_name($user_id);
+        $data['title'] = "Send a message to {$data['secondary-user']}";
         $data['message_errors'] = array();
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (empty($this->input->post('message'))) {
                 $data['message_errors']['message'] = "Message can't be empty!";
@@ -169,18 +173,8 @@ class User extends CI_Controller
             }
         }
 
-        $data['suid'] = $user_id;
-        $data['secondary-user'] = $this->user_model->get_full_name($user_id);
-        $data['primary_user'] = $this->user_model->get_full_name($_SESSION['user_id']);
-        $data['title'] = "Send a message to {$data['secondary-user']}";
-        $data['num_new_messages'] = $this->user_model->get_num_messages(TRUE);
-        $data['num_active_friends'] = $this->user_model->get_num_chat_users(TRUE);
-        $data['num_new_notifs'] = $this->user_model->get_num_notifs(TRUE);
-        $data['num_friend_requests'] = $this->user_model->get_num_friend_requests();
         $this->load->view('common/header', $data);
 
-        $data['suggested_users'] = $this->user_model->get_suggested_users(0, 4, TRUE);
-        $data['chat_users'] = $this->user_model->get_chat_users(TRUE);
         $limit = 10;
         $num_convo = $this->user_model->get_num_conversation($user_id);
         $data['has_next'] = FALSE;
@@ -198,7 +192,6 @@ class User extends CI_Controller
         $this->load->model('post_model');
 
         $post_errors = array();
-
         if (empty(trim($this->input->post('post')))) {
             $post_errors['post'] = 'Please enter what to post!';
             $_SESSION['post_errors'] = $post_errors;
@@ -232,14 +225,8 @@ class User extends CI_Controller
     {
         $this->load->model('post_model');
 
-        $data['primary_user'] = $this->user_model->get_full_name($_SESSION['user_id']);
+        $data = $this->initialize_user();
         $data['title'] = "{$data['primary_user']}'s Post";
-        $data['num_new_messages'] = $this->user_model->get_num_messages(TRUE);
-        $data['num_active_friends'] = $this->user_model->get_num_chat_users(TRUE);
-        $data['num_new_notifs'] = $this->user_model->get_num_notifs(TRUE);
-        $data['num_friend_requests'] = $this->user_model->get_num_friend_requests();
-        $data['suggested_users'] = $this->user_model->get_suggested_users(0, 4, TRUE);
-        $data['chat_users'] = $this->user_model->get_chat_users(TRUE);
         $this->load->view('common/header', $data);
 
         $data['post'] = $this->post_model->get_post($post_id);
@@ -258,16 +245,10 @@ class User extends CI_Controller
 
     public function notifications($offset=0)
     {
-        $data['primary_user'] = $this->user_model->get_full_name($_SESSION['user_id']);
+        $data = $this->initialize_user();
         $data['title'] = "Your Notifications";
-        $data['num_new_messages'] = $this->user_model->get_num_messages(TRUE);
-        $data['num_active_friends'] = $this->user_model->get_num_chat_users(TRUE);
-        $data['num_new_notifs'] = $this->user_model->get_num_notifs(TRUE);
-        $data['num_friend_requests'] = $this->user_model->get_num_friend_requests();
         $this->load->view('common/header', $data);
 
-        $data['suggested_users'] = $this->user_model->get_suggested_users(0, 4, TRUE);
-        $data['chat_users'] = $this->user_model->get_chat_users(TRUE);
 		$limit = 10;
 		$data['has_next'] = FALSE;
 		if ($data['num_new_notifs'] > 0) {
@@ -299,16 +280,9 @@ class User extends CI_Controller
 
     public function find_friends($offset=0)
     {
-        $data['primary_user'] = $this->user_model->get_full_name($_SESSION['user_id']);
+        $data = $this->initialize_user();
         $data['title'] = "Find Friends";
-        $data['num_new_messages'] = $this->user_model->get_num_messages(TRUE);
-        $data['num_active_friends'] = $this->user_model->get_num_chat_users(TRUE);
-        $data['num_new_notifs'] = $this->user_model->get_num_notifs(TRUE);
-        $data['num_friend_requests'] = $this->user_model->get_num_friend_requests();
         $this->load->view('common/header', $data);
-
-        $data['suggested_users'] = $this->user_model->get_suggested_users($offset, $limit, TRUE);
-        $data['chat_users'] = $this->user_model->get_chat_users(TRUE);
 
         $limit = 10;
         $data['suggested_users'] = $this->user_model->get_suggested_users(0, 4, TRUE);
@@ -324,14 +298,8 @@ class User extends CI_Controller
 
     public function friend_requests($offset=0)
     {
-        $data['primary_user'] = $this->user_model->get_full_name($_SESSION['user_id']);
+        $data = $this->initialize_user();
         $data['title'] = "Your Friend Requests";
-        $data['num_new_messages'] = $this->user_model->get_num_messages(TRUE);
-        $data['num_active_friends'] = $this->user_model->get_num_chat_users(TRUE);
-        $data['num_new_notifs'] = $this->user_model->get_num_notifs(TRUE);
-        $data['num_friend_requests'] = $this->user_model->get_num_friend_requests();
-        $data['suggested_users'] = $this->user_model->get_suggested_users(0, 4, TRUE);
-        $data['chat_users'] = $this->user_model->get_chat_users(TRUE);
         $this->load->view('common/header', $data);
 
         $limit = 10;
@@ -358,16 +326,10 @@ class User extends CI_Controller
     }
     public function messages($offset=0)
     {
-        $data['primary_user'] = $this->user_model->get_full_name($_SESSION['user_id']);
+        $data = $this->initialize_user();
         $data['title'] = "Your Messages";
-        $data['num_new_messages'] = $this->user_model->get_num_messages(TRUE);
-        $data['num_active_friends'] = $this->user_model->get_num_chat_users(TRUE);
-        $data['num_new_notifs'] = $this->user_model->get_num_notifs(TRUE);
-        $data['num_friend_requests'] = $this->user_model->get_num_friend_requests();
         $this->load->view('common/header', $data);
 
-        $data['suggested_users'] = $this->user_model->get_suggested_users(0, 4, TRUE);
-        $data['chat_users'] = $this->user_model->get_chat_users(TRUE);
         $limit = 10;
         $data['has_next'] = FALSE;
         if ($data['num_new_messages'] > 0) {  // There are new messages.
@@ -399,16 +361,9 @@ class User extends CI_Controller
 
     public function edit_college()
     {
-        $data['primary_user'] = $this->user_model->get_full_name($_SESSION['user_id']);
+        $data = $this->initialize_user();
         $data['title'] = "Edit your college";
-        $data['num_new_messages'] = $this->user_model->get_num_messages(TRUE);
-        $data['num_active_friends'] = $this->user_model->get_num_chat_users(TRUE);
-        $data['num_new_notifs'] = $this->user_model->get_num_notifs(TRUE);
-        $data['num_friend_requests'] = $this->user_model->get_num_friend_requests();
         $this->load->view('common/header', $data);
-
-        $data['suggested_users'] = $this->user_model->get_suggested_users(0, 4, TRUE);
-        $data['chat_users'] = $this->user_model->get_chat_users(TRUE);
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $college_id = $this->input->post("college");
@@ -436,16 +391,9 @@ class User extends CI_Controller
 
     public function edit_programme()
     {
-        $data['primary_user'] = $this->user_model->get_full_name($_SESSION['user_id']);
+        $data = $this->initialize_user();
         $data['title'] = "Edit your programme";
-        $data['num_new_messages'] = $this->user_model->get_num_messages(TRUE);
-        $data['num_active_friends'] = $this->user_model->get_num_chat_users(TRUE);
-        $data['num_new_notifs'] = $this->user_model->get_num_notifs(TRUE);
-        $data['num_friend_requests'] = $this->user_model->get_num_friend_requests();
         $this->load->view('common/header', $data);
-
-        $data['suggested_users'] = $this->user_model->get_suggested_users(0, 4, TRUE);
-        $data['chat_users'] = $this->user_model->get_chat_users(TRUE);
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $data['programme_id'] = $this->input->post("programme");
