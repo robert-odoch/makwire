@@ -112,11 +112,14 @@ div#secondary-user ul li a {
 div#secondary-user ul li a:hover {
     background-color: #2E8B57;
 }
-div#user {
+div#primary-user {
     padding-bottom: 2px;
     color: #2E8B57;
     font-weight: bold;
     margin-bottom: 5px;
+}
+div#primary-user a:hover {
+    text-decoration: none;
 }
 .gallery {
     margin: 0 -20px;
