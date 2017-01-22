@@ -118,7 +118,7 @@ class Post_model extends CI_Model
         $q = sprintf("SELECT fname, lname FROM users WHERE user_id=%d LIMIT 1",
                      $author_id);
         $query = $this->run_query($q);
-        $author = ucfirst(strtolower($query->row()->fname)) . ' ' . ucfirst(strtolower($query->row()->lname));
+        $author = ucfirst(strtolower($query->row()->lname)) . ' ' . ucfirst(strtolower($query->row()->fname));
 
         return $author;
     }
