@@ -73,6 +73,45 @@ a:focus {
     height: 50px;
     border-radius: 3px;
 }
+div#secondary-user .profile-pic {
+    width: 100%;
+    max-width: 100%;
+    height: 80px;
+}
+div#secondary-user figure {
+    width: 19%;
+    float: left;
+    margin-bottom: 5px;
+}
+div#secondary-user div {
+    float: right;
+    width: 80%;
+}
+div#secondary-user div > a {
+    text-decoration: none;
+}
+div#secondary-user div > a:first-child {
+    font-weight: bold;
+    display: block;
+}
+div#secondary-user ul {
+    background-color: #8FBC8F;
+    clear: both;
+}
+div#secondary-user ul li {
+    margin-right: -5px;
+    display: inline;
+}
+div#secondary-user ul li a {
+    color: #000;
+    display: inline-block;
+    padding: 5px;
+    font-weight: bold;
+    text-decoration: none;
+}
+div#secondary-user ul li a:hover {
+    background-color: #2E8B57;
+}
 div#user {
     padding-bottom: 2px;
     color: #2E8B57;
@@ -113,7 +152,7 @@ ul.dropdown-menu li:last-child {
 }
 .user-nav li a:hover,
 .user-nav li a:focus {
-    background-color: #2E8B57;    
+    background-color: #2E8B57;
 }
 .user-nav > ul > li:first-child > a:hover,
 .user-nav > ul > li:first-child > a:focus {
@@ -395,7 +434,7 @@ article p a.more {
 }
 article footer ul {
     margin-top: 5px;
-    border-top: 1px solid #8FBC8F;                
+    border-top: 1px solid #8FBC8F;
 }
 article footer > ul > li {
     display: inline;
@@ -530,7 +569,7 @@ div.previous a {
         width: 100% !important;
     }
     .wrapper .col-small {
-        display: none; 
+        display: none;
     }
     .wrapper .col-large .side-content,
     .wrapper .col-large .suggestions {

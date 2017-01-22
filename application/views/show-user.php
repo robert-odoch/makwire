@@ -7,12 +7,44 @@ function can_share_post($user_id, $post)
         ($post['shared'] && $post['source_id']===$_SESSION['user_id'])) {
         return FALSE;
     }
-    
+
     return TRUE;
 }
 ?>
 
         <?php require_once('common/user-page-start.php'); ?>
+                        <?php if ($visitor): ?>
+                        <div id="secondary-user" class="box">
+                            <figure>
+                                <img src="<?= base_url("images/kasumba.jpg"); ?>" alt="<?= $secondary_user; ?>'s photo" class="profile-pic">
+                            </figure>
+                            <div>
+                                <a href="<?= base_url("user/index/{$suid}"); ?>"><?= $secondary_user; ?></a>
+                                <?php
+                                if ($friendship_status['friends']) {
+                                    // Do nothing.
+                                }
+                                elseif ($friendship_status['fr_sent'] && $friendship_status['target_id']==$_SESSION['user_id']) {
+                                    print("<a href='" . base_url("user/accept_friend/{$suid}") . "' class='btn'>Confirm Friend</a>");
+                                }
+                                elseif ($friendship_status['fr_sent'] && $friendship_status['user_id']==$_SESSION['user_id']) {
+                                    print("<a href='' class='btn'>Friend Request Sent</a>");
+                                }
+                                else {
+                                    print("<a href='" . base_url("user/add_friend/{$suid}") . "' class='btn'>Add Friend</a>");
+                                }
+                                ?>
+                            </div>
+                            <ul>
+                                <li><a href="">Timeline</a></li>
+                                <li><a href="">About</a></li>
+                                <li><a href="">Friends</a></li>
+                                <li><a href="">Groups</a></li>
+                                <li><a href="">Photos</a></li>
+                            </ul>
+                            <span class="clearfix"></span>
+                        </div>
+                        <?php endif; ?>
                         <?php if ( ! $visitor): ?>
                         <div class="box">
                             <form action="<?php echo base_url('user/new_post/timeline/'); ?>" method="post" accept-charset="utf-8" role="form">
@@ -31,7 +63,7 @@ function can_share_post($user_id, $post)
                                     }
                                     ?>
                                 </div>
-                                
+
                                 <input type="submit" value="Post" class="btn">
                                 <a href="attach-post-photo.html"><span class="glyphicon glyphicon-picture"></span> Add photo</a>
                             </form>
@@ -60,10 +92,10 @@ function can_share_post($user_id, $post)
                                             </h4>
                                         </header>
                                         <p class="post">
-                                            <?php 
+                                            <?php
                                             print $post['post'];
                                             if ($post['has_more']) {
-                                                print "<a href='" . base_url("user/post/{$post['author_id']}/{$post['post_id']}") . "' class='more'>view more</a>";
+                                                print "<a href='" . base_url("user/post/{$post['post_id']}") . "' class='more'>view more</a>";
                                             }
                                             ?>
                                         </p>
@@ -77,7 +109,7 @@ function can_share_post($user_id, $post)
                                             }
                                             if ($post['num_likes'] > 0 && $post['num_comments'] > 0) {
                                                 print '<span> &middot; </span>';
-                                            } 
+                                            }
                                             if ($post['num_comments'] > 0) {
                                                 print '<a href="' . base_url('post/comments/' . $post['post_id']) . '">' . $post['num_comments'];
                                                 print ($post['num_comments'] == 1) ? ' comment' : ' comments';
@@ -99,15 +131,15 @@ function can_share_post($user_id, $post)
                                                     print "<span title='You liked this post'><span class='glyphicon glyphicon-thumbs-up'></span> Like</span>";
                                                 }
                                                 else {
-                                                    print "<a href='" . base_url("post/like/{$post['post_id']}") . "/user/index/{$user_id}' title='Like this post'><span class='glyphicon glyphicon-thumbs-up'></span> Like</a>";
+                                                    print "<a href='" . base_url("post/like/{$post['post_id']}") . "' title='Like this post'><span class='glyphicon glyphicon-thumbs-up'></span> Like</a>";
                                                 }
                                                 ?>
                                                 <span> &middot; </span></li>
-                                                <li><a href="<?php echo base_url("post/comment/{$post['post_id']}/{$_SESSION['user_id']}"); ?>" title="Comment on this post"><span class="glyphicon glyphicon-comment"></span> Comment</a></li>
+                                                <li><a href="<?php echo base_url("post/comment/{$post['post_id']}"); ?>" title="Comment on this post"><span class="glyphicon glyphicon-comment"></span> Comment</a></li>
                                                 <?php if (can_share_post($_SESSION['user_id'], $post)): ?>
                                                 <li>
                                                     <span> &middot; </span>
-                                                    <a href="<?= base_url("post/share/{$post['post_id']}/timeline/{$_SESSION['user_id']}"); ?>" role="button" title="Share this post">
+                                                    <a href="<?= base_url("post/share/{$post['post_id']}"); ?>" role="button" title="Share this post">
                                                         <span class="glyphicon glyphicon-share"></span> Share
                                                     </a>
                                                 </li>
@@ -128,12 +160,12 @@ function can_share_post($user_id, $post)
                         <?php endif; ?>
                     </div><!-- .main-content -->
                 </div><!-- .main -->
-                
+
                 <div class="suggestions">
                     <?php require_once("common/suggested-users.php"); ?>
                 </div>
             </div><!-- .col-large -->
-            
+
             <div class="col-small">
                 <?php require_once('common/active-users.php'); ?>
             </div>

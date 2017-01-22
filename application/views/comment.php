@@ -20,7 +20,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <?php
                                     print htmlspecialchars($post['post']);
                                     if ($post['has_more']) {
-                                        print "<a href='" . base_url("user/post/{$user_id}/{$post['post_id']}") . "' class='more'>view more</a>";
+                                        print "<a href='" . base_url("user/post/{$post['post_id']}") . "' class='more'>view more</a>";
                                     }
                                     ?>
                                 </p>
@@ -33,7 +33,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         print "</a>";
                                     }
                                     ?>
-                                    <form action="<?= base_url("post/comment/{$post['post_id']}/{$user_id}"); ?>" method="post" accept-charset="utf-8" role="form">
+                                    <form action="<?= base_url("post/comment/{$post['post_id']}"); ?>" method="post" accept-charset="utf-8" role="form">
                                         <input type="text" name="comment" placeholder="Write a comment..." class="fluid
                                         <?php
                                         if (array_key_exists('comment', $comment_errors)) {
@@ -67,7 +67,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         print "<small>&mdash; " .
                                               "<span class='glyphicon glyphicon-time'></span> {$comment['timespan']} ago" .
                                               "</small>";
-                                        
+
                                         // Hide these two links from the commenter if she is the one currently
                                         // viewing this page.
                                         if ($comment['commenter_id'] != $_SESSION['user_id']) {
@@ -76,7 +76,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                   "<span> &middot; </span>" .
                                                   "<a href='" . base_url("comment/reply/{$comment['comment_id']}") . "'>Reply</a>";
                                         }
-                                        
+
                                         if ($comment['num_likes'] > 0) {
                                             print "<span> &middot; </span>" .
                                                   "<a href='" . base_url("comment/likes/{$comment['comment_id']}") . "'>{$comment['num_likes']}";
@@ -89,7 +89,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                             print ($comment['num_replies'] == 1) ? " reply" : " replies";
                                             print "</a>";
                                         }
-                                        ?>                                        
+                                        ?>
                                         </footer>
                                     </article>
                                 </li>
@@ -104,7 +104,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <?php endif; ?>
                     </div><!-- .main-content -->
                 </div><!-- main -->
-                
+
                 <div class="suggestions">
                     <?php require_once("common/suggested-users.php"); ?>
                 </div>

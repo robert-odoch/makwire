@@ -7,7 +7,7 @@ function can_share_post($user_id, $post)
         ($post['shared'] && $post['source_id']===$_SESSION['user_id'])) {
         return FALSE;
     }
-    
+
     return TRUE;
 }
 
@@ -38,13 +38,13 @@ require_once('common/user-page-start.php');
                                         print ($post['num_likes'] == 1) ? " like" : " likes";
                                         print "</a>";
                                     }
-                                    
+
                                     if ($post['num_comments'] > 0) {
                                         print "<span> &middot; </span><a href='" . base_url("post/comments/{$post['post_id']}") . "'>{$post['num_comments']}";
                                         print ($post['num_comments'] == 1) ? " comment" : " comments";
                                         print "</a>";
                                     }
-                                    
+
                                     if ($post['num_shares'] > 0) {
                                         print "<span> &middot; </span>" .
                                               "<a href='" . base_url("post/shares/{$post['post_id']}") . "'>{$post['num_shares']}";
@@ -62,23 +62,23 @@ require_once('common/user-page-start.php');
                                         }
                                         ?>
                                         <span> &middot; </span></li>
-                                        <li><a href="<?php echo base_url('post/comment/' . "{$post['post_id']}/{$user_id}"); ?>" title="Comment on this post"><span class="glyphicon glyphicon-comment"></span> Comment</a></li>
+                                        <li><a href="<?php echo base_url('post/comment/' . "{$post['post_id']}"); ?>" title="Comment on this post"><span class="glyphicon glyphicon-comment"></span> Comment</a></li>
                                         <?php if (can_share_post($_SESSION['user_id'], $post)): ?>
                                         <li>
                                             <span> &middot; </span>
-                                            <a href="<?= base_url("post/share/{$post['post_id']}/timeline/{$_SESSION['user_id']}"); ?>" role="button" title="Share this post">
+                                            <a href="<?= base_url("post/share/{$post['post_id']}"); ?>" role="button" title="Share this post">
                                                 <span class="glyphicon glyphicon-share"></span> Share
                                             </a>
                                         </li>
                                         <?php endif; ?>
                                     </ul>
-                                    <form action="<?php echo base_url('post/comment/' . "{$post['post_id']}/{$user_id}"); ?>" method="post" accept-charset="utf-8" role="form">
+                                    <form action="<?= base_url("post/comment/{$post['post_id']}"); ?>" method="post" accept-charset="utf-8" role="form">
                                         <input type="text" name="comment" placeholder="Write a comment..." class="fluid">
                                     </form>
                                 </footer>
                             </article>
                         </div><!-- box -->
-                        
+
                         <?php if (count($comments) > 0): ?>
                         <div class="box">
                             <h4>Comments</h4>
@@ -93,7 +93,7 @@ require_once('common/user-page-start.php');
                                         <footer>
                                             <?php
                                             print "<small>&mdash; <span class='glyphicon glyphicon-time'></span> {$comment['timespan']} ago</small>";
-                                            
+
                                             // Hide these two links from the commenter if she is the one currently
                                             // viewing this page.
                                             if ($comment['commenter_id'] != $_SESSION['user_id']) {
@@ -102,7 +102,7 @@ require_once('common/user-page-start.php');
                                                       "<span> &middot; </span>" .
                                                       "<a href='" . base_url("comment/reply/{$comment['comment_id']}") . "'>Reply</a>";
                                             }
-                                            
+
                                             if ($comment['num_likes'] > 0) {
                                                 print "<span> &middot; </span>" .
                                                       "<a href='" . base_url("comment/likes/{$comment['comment_id']}") . "'>{$comment['num_likes']}";
@@ -130,12 +130,12 @@ require_once('common/user-page-start.php');
                         <?php endif; ?>
                     </div><!-- .main-content -->
                 </div><!-- .main -->
-                
+
                 <div class="suggestions">
                     <?php require_once("common/suggested-users.php"); ?>
                 </div>
             </div><!-- .col-large -->
-            
+
             <div class="col-small">
                 <?php require_once("common/active-users.php"); ?>
             </div>
