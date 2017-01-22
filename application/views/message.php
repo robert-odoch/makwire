@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require_once('common/user-page-start.php');
 ?>
                         <div class="box">
-                            <form action="<?= base_url("user/send_message/{$user_id}"); ?>" method="post" accept-charset="utf-8" role="form" id="reply-message">
+                            <form action="<?= base_url("user/send-message/{$suid}"); ?>" method="post" accept-charset="utf-8" role="form" id="reply-message">
                                 <fieldset>
                                     <div class="form-group">
                                         <label for="message" class="sr-only">New Message</label>
@@ -31,7 +31,7 @@ require_once('common/user-page-start.php');
                                             <a href="<?= base_url("user/index/{$m['sender_id']}"); ?>"><strong><?= $m['sender']; ?></strong></a>
                                         </header>
                                         <p><?= $m['message']; ?></p>
-                                        <footer>                                            
+                                        <footer>
                                             <small>&mdash; <span class="glyphicon glyphicon-time"></span> <?= $m['timespan']; ?> ago</small>
                                         </footer>
                                     </article>
@@ -41,12 +41,12 @@ require_once('common/user-page-start.php');
                         </div><!-- box -->
                         <?php if ($has_next): ?>
                         <div class="box more previous">
-                            <a href="<?= base_url("user/send_message/{$user_id}/{$next_offset}"); ?>">View previous messages</a>
+                            <a href="<?= base_url("user/send-message/{$suid}/{$next_offset}"); ?>">View previous messages</a>
                         </div>
                         <?php endif; ?>
                     </div><!-- .main-content -->
                 </div><!-- main -->
-                
+
                 <div class="suggestions">
                     <?php require_once("common/suggested-users.php"); ?>
                 </div>

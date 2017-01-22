@@ -47,7 +47,7 @@ function can_share_post($user_id, $post)
                         <?php endif; ?>
                         <?php if ( ! $visitor): ?>
                         <div class="box">
-                            <form action="<?php echo base_url('user/new_post/timeline/'); ?>" method="post" accept-charset="utf-8" role="form">
+                            <form action="<?php echo base_url('user/new-post'); ?>" method="post" accept-charset="utf-8" role="form">
                                 <div class="form-group">
                                     <label for="post" class="hidden">New Post</label>
                                     <textarea name="post" placeholder="What's new?" class="fluid
@@ -107,20 +107,13 @@ function can_share_post($user_id, $post)
                                                 print ($post['num_likes'] == 1) ? ' like' : ' likes';
                                                 print '</a>';
                                             }
-                                            if ($post['num_likes'] > 0 && $post['num_comments'] > 0) {
-                                                print '<span> &middot; </span>';
-                                            }
                                             if ($post['num_comments'] > 0) {
-                                                print '<a href="' . base_url('post/comments/' . $post['post_id']) . '">' . $post['num_comments'];
+                                                print '<span> &middot; </span><a href="' . base_url('post/comments/' . $post['post_id']) . '">' . $post['num_comments'];
                                                 print ($post['num_comments'] == 1) ? ' comment' : ' comments';
                                                 print '</a>';
                                             }
-                                            if ($post['num_comments'] > 0 && $post['num_shares'] > 0 ||
-                                                $post['num_likes'] > 0 && $post['num_shares'] > 0) {
-                                                print '<span> &middot; </span>';
-                                            }
                                             if ($post['num_shares'] > 0) {
-                                                print '<a href="' . base_url('post/shares/' . $post['post_id']) . '">' . $post['num_shares'];
+                                                print '<span> &middot; </span><a href="' . base_url('post/shares/' . $post['post_id']) . '">' . $post['num_shares'];
                                                 print ($post['num_shares'] == 1) ? ' share' : ' shares';
                                                 print '</a>';
                                             }

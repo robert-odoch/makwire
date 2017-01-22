@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 require_once('common/user-page-start.php');
 ?>
-                        <div class="box">   
+                        <div class="box">
                             <h4>Notifications</h4>
                             <?php if (count($notifications) == 0): ?>
                             <div class="alert alert-info">
@@ -24,7 +24,7 @@ require_once('common/user-page-start.php');
                                         break;
                                     case 'like':
                                         if ($notif['source_type'] == 'post') {
-                                            print "<li><a href='" . base_url("post/likes/{$notif['source_id']}") . "'><strong class='object'>{$notif['user']}</strong> liked your post \"{$notif['post']}\"</a> " .
+                                            print "<li><a href='" . base_url("user/post/{$notif['source_id']}") . "'><strong class='object'>{$notif['user']}</strong> liked your post \"{$notif['post']}\"</a> " .
                                             "<small><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";
                                         }
                                         else if ($notif['source_type'] == "comment") {
@@ -48,7 +48,7 @@ require_once('common/user-page-start.php');
                                         break;
                                     case 'share':
                                         if ($notif['source_type'] == 'post') {
-                                            print "<li><a href='" . base_url("/user/post/{$notif['trigger_id']}/{$notif['new_post_id']}") . "'><strong class='object'>{$notif['user']}</strong> shared your post \"{$notif['post']}\" on his timeline.</a> " .
+                                            print "<li><a href='" . base_url("/user/post/{$notif['new_post_id']}") . "'><strong class='object'>{$notif['user']}</strong> shared your post \"{$notif['post']}\" on his timeline.</a> " .
                                             "<small><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";
                                         }
                                         break;
@@ -65,7 +65,7 @@ require_once('common/user-page-start.php');
                         <?php endif; ?>
                     </div><!-- .main-content -->
                 </div><!-- main -->
-                
+
                 <div class="suggestions">
                     <?php require_once("common/suggested-users.php"); ?>
                 </div>

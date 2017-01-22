@@ -169,8 +169,10 @@ class User extends CI_Controller
             }
         }
 
+        $data['suid'] = $user_id;
+        $data['secondary-user'] = $this->user_model->get_full_name($user_id);
         $data['primary_user'] = $this->user_model->get_full_name($_SESSION['user_id']);
-        $data['title'] = "Send a message to {$data['user']}";
+        $data['title'] = "Send a message to {$data['secondary-user']}";
         $data['num_new_messages'] = $this->user_model->get_num_messages(TRUE);
         $data['num_active_friends'] = $this->user_model->get_num_chat_users(TRUE);
         $data['num_new_notifs'] = $this->user_model->get_num_notifs(TRUE);
@@ -191,13 +193,13 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function new_post($audience)
+    public function new_post($audience='timeline')
     {
         $this->load->model('post_model');
 
         $post_errors = array();
 
-        if (empty($this->input->post('post'))) {
+        if (empty(trim($this->input->post('post')))) {
             $post_errors['post'] = 'Please enter what to post!';
             $_SESSION['post_errors'] = $post_errors;
             if ($audience === 'group') {

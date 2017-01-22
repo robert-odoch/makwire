@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 require_once('common/user-page-start.php');
 ?>
-                        <div class="box">   
+                        <div class="box">
                             <h4>Chat</h4>
                             <?php if (count($chat_users) == 0): ?>
                             <div class="alert alert-info">
@@ -16,7 +16,7 @@ require_once('common/user-page-start.php');
                                     <figure>
                                         <img src="<?= base_url("images/kasumba.jpg"); ?>" alt="<?= $cu['full_name']; ?>">
                                     </figure>
-                                    <span><a href="<?= base_url("user/send_message/{$cu['friend_id']}"); ?>"><?= $cu['full_name']; ?></a> <span class="logged-in"></span></span>
+                                    <span><a href="<?= base_url("user/send-message/{$cu['friend_id']}"); ?>"><?= $cu['full_name']; ?></a> <span class="logged-in"></span></span>
                                 </li>
                                 <?php endforeach; ?>
                             </ul>
@@ -29,7 +29,7 @@ require_once('common/user-page-start.php');
                         <?php endif; ?>
                     </div><!-- .main-content -->
                 </div><!-- .main -->
-                
+
                 <div class="suggestions">
                     <?php require_once("common/suggested-users.php"); ?>
                 </div>
