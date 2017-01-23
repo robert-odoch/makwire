@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 require_once('common/user-page-start.php');
 ?>
-                        <div class="box">   
+                        <div class="box">
                             <h4>Edit College</h4>
                             <?php if (isset($success_message)): ?>
                             <div class="alert alert-success">
@@ -22,20 +22,20 @@ require_once('common/user-page-start.php');
                                             <optgroup>
                                             <?php
                                             foreach ($colleges as $c) {
-                                                print "<option value='{$c['college_id']}'>{$c['name']}</option>";
+                                                print "<option value='{$c['college_id']}'>{$c['college_name']}</option>";
                                             }
                                             ?>
                                             </optgroup>
                                         </select>
                                     </div>
-                                    
+
                                     <div class="form-group">
                                         <label for="school">School</label>
                                         <select name="school" id="school" class="form-control">
                                             <optgroup>
                                             <?php
                                             foreach ($schools as $s) {
-                                                print "<option value='{$s['school_id']}'>{$s['name']}</option>";
+                                                print "<option value='{$s['school_id']}'>{$s['school_name']}</option>";
                                             }
                                             ?>
                                             </optgroup>
@@ -48,7 +48,7 @@ require_once('common/user-page-start.php');
                         </div><!-- box -->
                     </div><!-- .main-content -->
                 </div><!-- main -->
-                
+
                 <div class="suggestions">
                     <?php require_once("common/suggested-users.php"); ?>
                 </div>

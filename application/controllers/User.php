@@ -8,9 +8,7 @@ class User extends CI_Controller
         parent::__construct();
         $this->load->model('user_model');
         $this->load->model('post_model');
-        $this->load->model("college_model");
-        $this->load->model("school_model");
-        $this->load->model("programme_model");
+        $this->load->model('profile_model');
 
         session_start();
         if ( ! isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
@@ -384,21 +382,21 @@ class User extends CI_Controller
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $college_id = $this->input->post("college");
             $school_id = $this->input->post("school");
-            if ($this->college_model->college_and_school_exists($college_id, $school_id)) {
-                $this->user_model->add_college($college_id);
-                $this->school_model->add_school($school_id);
+            if ($this->profile_model->college_and_school_exists($college_id, $school_id)) {
+                $this->profile_model->add_college($college_id);
+                $this->profile_model->add_school($school_id);
 
                 $data['success_message'] = "Your college and school have been succesfully saved.";
             }
             else {
                 $data['error_message'] = "Your college and school do not match! Please try again.";
-                $data['colleges'] = $this->college_model->get_colleges();
-                $data['schools'] = $this->school_model->get_schools();
+                $data['colleges'] = $this->profile_model->get_colleges();
+                $data['schools'] = $this->profile_model->get_schools();
             }
         }
         else {
-            $data['colleges'] = $this->college_model->get_colleges();
-            $data['schools'] = $this->school_model->get_schools();
+            $data['colleges'] = $this->profile_model->get_colleges();
+            $data['schools'] = $this->profile_model->get_schools();
         }
 
         $this->load->view("edit-college", $data);
@@ -421,17 +419,76 @@ class User extends CI_Controller
             if ($data['end_year'] < $data['start_year'] ||
                 $data['end_year'] == $data['start_year']) {
                 $data['error_message'] = "Invalid years entered! Please try again.";
-                $data['programmes'] = $this->programme_model->get_programmes();
+                $data['programmes'] = $this->profile_model->get_programmes();
             }
             else {
-                $this->user_model->add_programme($data);
+                $this->profile_model->add_programme($data);
                 $data['success_message'] = "Your programme details have been successfully saved.";
             }
         }
         else {
-            $data['programmes'] = $this->programme_model->get_programmes();
+            $data['programmes'] = $this->profile_model->get_programmes();
         }
         $this->load->view("edit-programme", $data);
+        $this->load->view("common/footer");
+    }
+
+    public function edit_hall()
+    {
+        $data = $this->initialize_user();
+        $data['title'] = "Edit hall of attachment";
+        $this->load->view('common/header', $data);
+
+        if ($_SERVER['REQUEST_METHOD'] === "POST") {
+            $data['hall_id'] = $this->input->post("hall");
+            $data['resident'] = $this->input->post("resident");
+            $data['start_month'] = $this->input->post("start-month");
+            $data['start_year'] = $this->input->post("start-year");
+            $data['end_month'] = $this->input->post("end-month");
+            $data['end_year'] = $this->input->post("end-year");
+            if ($data['end_year'] < $data['start_year'] ||
+                $data['end_year'] == $data['start_year']) {
+                $data['error_message'] = "Invalid years entered! Please try again.";
+                $data['halls'] = $this->profile_model->get_halls();
+            }
+            else {
+                $this->profile_model->add_hall($data);
+                $data['success_message'] = "Your hall details have been successfully saved.";
+            }
+        }
+        else {
+            $data['halls'] = $this->profile_model->get_halls();
+        }
+        $this->load->view("edit-hall", $data);
+        $this->load->view("common/footer");
+    }
+
+    public function edit_hostel()
+    {
+        $data = $this->initialize_user();
+        $data['title'] = "Edit hostel";
+        $this->load->view('common/header', $data);
+
+        if ($_SERVER['REQUEST_METHOD'] === "POST") {
+            $data['hostel_id'] = $this->input->post("hostel");
+            $data['start_month'] = $this->input->post("start-month");
+            $data['start_year'] = $this->input->post("start-year");
+            $data['end_month'] = $this->input->post("end-month");
+            $data['end_year'] = $this->input->post("end-year");
+            if ($data['end_year'] < $data['start_year'] ||
+                $data['end_year'] == $data['start_year']) {
+                $data['error_message'] = "Invalid years entered! Please try again.";
+                $data['hostels'] = $this->profile_model->get_hostels();
+            }
+            else {
+                $this->profile_model->add_hostel($data);
+                $data['success_message'] = "Your hostel details have been successfully saved.";
+            }
+        }
+        else {
+            $data['hostels'] = $this->profile_model->get_hostels();
+        }
+        $this->load->view("edit-hostel", $data);
         $this->load->view("common/footer");
     }
 }

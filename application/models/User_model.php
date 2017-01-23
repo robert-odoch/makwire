@@ -509,13 +509,5 @@ class User_model extends CI_Model
 
         return $messages;
     }
-
-    public function add_college($college_id)
-    {
-        $q = sprintf("INSERT INTO user_profile (user_id, college_id) " .
-                     "VALUES (%d, %d)",
-                     $_SESSION['user_id'], $college_id);
-        $this->run_query($q);
-    }
 }
 ?>
