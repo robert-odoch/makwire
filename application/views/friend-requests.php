@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 require_once('common/user-page-start.php');
 ?>
-                        <div class="box">   
+                        <div class="box">
                             <h4>Friends Requests</h4>
                             <?php if (count($friend_requests) == 0): ?>
                             <div class="alert alert-info">
@@ -28,7 +28,7 @@ require_once('common/user-page-start.php');
                         <?php endif; ?>
                     </div><!-- .main-content -->
                 </div><!-- .main -->
-                
+
                 <div class="suggestions">
                     <?php require_once("common/suggested-users.php"); ?>
                 </div>

@@ -72,7 +72,7 @@ class Post_model extends CI_Model
         $post['num_shares'] = $this->get_num_shares($post['post_id']);
 
         // Has the user liked this post?
-        $post['liked'] = $this->has_liked($post_id, $_SESSION['user_id']);
+        $post['liked'] = $this->has_liked($post_id);
 
         // Is it a shared post.
         $post['shared'] = FALSE;
@@ -97,13 +97,13 @@ class Post_model extends CI_Model
         return $post;
     }
 
-    private function has_liked($post_id, $user_id)
+    private function has_liked($post_id)
     {
         $q = sprintf("SELECT like_id FROM likes " .
                      "WHERE (source_id=%d AND source_type=%s AND liker_id=%d) " .
                      "LIMIT %d",
                      $post_id, $this->db->escape("post"),
-                     $user_id, 1);
+                     $_SESSION['user_id'], 1);
         $query = $this->run_query($q);
 
         if ($query->num_rows() === 1) {
@@ -111,6 +111,10 @@ class Post_model extends CI_Model
         }
 
         return FALSE;
+    }
+
+    private function user_can_like_post($post) {
+
     }
 
     public function get_post_author($author_id)

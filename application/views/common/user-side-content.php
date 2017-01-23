@@ -10,7 +10,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <nav role="navigation" class="user-nav">
                                 <ul>
                                     <li><a href="">Edit Profile</a></li>
-                                    <li><a href="">Friends</a></li>
+                                    <li><a href="<?= base_url("user/friends"); ?>">Friends</a></li>
                                     <li><a href="">Groups</a></li>
                                     <li><a href="">Photos</a></li>
                                 </ul>

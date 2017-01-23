@@ -134,25 +134,37 @@ class User_model extends CI_Model
         return FALSE;
     }
 
-    public function get_friends($user_id)
+    public function get_num_friends($user_id) {
+        $q = sprintf("SELECT user_id, friend_id FROM friends " .
+                     "WHERE (user_id=%d) OR (friend_id=%d)",
+                     $user_id, $user_id);
+        $query = $this->run_query($q);
+
+        return $query->num_rows();
+    }
+
+    public function get_friends($user_id, $use_limit=TRUE, $offset=0, $limit=0)
     {
-        // Get the friends who sent her friend requests.
-        $q = sprintf("SELECT friend_id FROM friends WHERE user_id=%d",
-                     $_SESSION['user_id']);
+        if ($use_limit) {
+            $q = sprintf("SELECT user_id, friend_id FROM friends " .
+                         "WHERE (user_id=%d) OR (friend_id=%d) LIMIT %d, %d",
+                         $user_id, $user_id, $offset, $limit);
+        }
+        else {
+            $q = sprintf("SELECT user_id, friend_id FROM friends " .
+                         "WHERE (user_id=%d) OR (friend_id=%d)",
+                         $user_id, $user_id);
+        }
         $query = $this->run_query($q);
         $results = $query->result_array();
 
-        // Get friends whom she sent friend requests.
-        $q = sprintf("SELECT user_id FROM friends WHERE friend_id=%d",
-                     $_SESSION['user_id']);
-        $query = $this->run_query($q);
-        $results1 = $query->result_array();
-
-        // Make friend_id uniform and merge the two arrays.
-        foreach ($results1 as $r) {
-            $r['friend_id'] = $r['user_id'];
-            unset($r['user_id']);
-            array_push($results, $r);
+        $i = 0;
+        foreach ($results as $r) {
+            if ($r['friend_id'] == $user_id) {
+                $results[$i]['friend_id'] = $r['user_id'];
+            }
+            unset($results[$i]['user_id']);
+            ++$i;
         }
 
         $friends = array();
@@ -171,7 +183,7 @@ class User_model extends CI_Model
         $chat_users = array();
 
         // Get this user's friends.
-        $friends = $this->get_friends($_SESSION['user_id']);
+        $friends = $this->get_friends($_SESSION['user_id'], FALSE);
 
         if ($filter) {
             // Get the active friends.

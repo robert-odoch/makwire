@@ -342,6 +342,39 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
+    public function friends($user_id=null, $offset=0)
+    {
+        if ($user_id === null) {
+            $user_id = $_SESSION['user_id'];
+        }
+
+        $data = $this->initialize_user();
+        $data['visitor'] = ($_SESSION['user_id'] === $user_id) ? FALSE : TRUE;
+        if ($data['visitor']) {
+            $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
+            $data['secondary_user'] = $this->user_model->get_full_name($user_id);
+            $data['title'] = "{$data['secondary_user']}'s Friends";
+            $data['suid'] = $user_id;
+        }
+        else {
+            $data['title'] = "{$data['primary_user']}'s Friends";
+        }
+
+        $this->load->view("common/header", $data);
+
+        $limit = 10;
+        $data['has_next'] = FALSE;
+        $num_friends = $this->user_model->get_num_friends($user_id);
+        if (($num_friends - $offset) > $limit) {
+            $data['has_next'] = TRUE;
+            $data['next_offset'] = ($limit + $offset);
+        }
+
+        $data['friends'] = $this->user_model->get_friends($user_id, TRUE, $offset, $limit);
+        $this->load->view("show-friends", $data);
+        $this->load->view("common/footer");
+    }
+
     public function edit_college()
     {
         $data = $this->initialize_user();
