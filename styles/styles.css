@@ -35,6 +35,9 @@ a:focus {
     color: #2E8B57;
     text-decoration: underline;
 }
+a.active {
+    background-color: #2E8B57;
+}
 .wrap-single {
     width: 50%;
     margin: auto;

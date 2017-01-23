@@ -36,9 +36,9 @@ function can_share_post($user_id, $post)
                                 ?>
                             </div>
                             <ul>
-                                <li><a href="">Timeline</a></li>
+                                <li><a href="<?= base_url("user/index/{$suid}"); ?>" class="active">Timeline</a></li>
                                 <li><a href="">About</a></li>
-                                <li><a href="">Friends</a></li>
+                                <li><a href="<?= base_url("user/friends/{$suid}"); ?>">Friends</a></li>
                                 <li><a href="">Groups</a></li>
                                 <li><a href="">Photos</a></li>
                             </ul>
