@@ -26,6 +26,143 @@ class Profile_model extends CI_Model
     }
     /*** End Utility ***/
 
+    public function get_profile($user_id)
+    {
+        // college, school, programme, hall, hostel.
+        // Get the level, year of study, country and district.
+        $q = sprintf("SELECT level, year_of_study, country_id, district_id FROM user_profile WHERE (user_id=%d)",
+                     $user_id);
+        $query = $this->run_query($q);
+        if ($query->num_rows() == 1) {
+            $data = $query->row_array();
+
+            // Get the name of the country.
+            if ($data['country_id']) {
+                $q = sprintf("SELECT country_name FROM countries WHERE (country_id=%d)",
+                             $data['country_id']);
+                $query = $this->run_query($q);
+                $data['country'] = $query->row()->country_name;
+            }
+            else {
+                $data['country'] = NULL;
+            }
+
+            // Get the name of the district.
+            if ($data['district_id']) {
+                $q = sprintf("SELECT district_name FROM districts WHERE (district_id=%d)",
+                             $data['district_id']);
+                $query = $this->run_query($q);
+                $data['district'] = $query->row()->district_name;
+            }
+            else {
+                $data['district'] = NULL;
+            }
+        }
+        else {
+            $data = array(
+                'level'=>NULL,
+                'year_of_study'=>NULL,
+                'country'=>NULL,
+                'district'=>NULL
+            );
+        }
+
+        // Get the colleges.
+        $q = sprintf("SELECT college_id, date_from, date_to FROM user_colleges WHERE (user_id=%d)",
+                     $user_id);
+        $query = $this->run_query($q);
+
+        $data['colleges'] = array();
+        if ($query->num_rows() > 0) {
+            $results = $query->result_array();
+            foreach ($results as $r) {
+                // Get the college name.
+                $q = sprintf("SELECT college_name FROM colleges WHERE (college_id=%d)",
+                             $r['college_id']);
+                $query = $this->run_query($q);
+                $r['college_name'] = $query->row()->college_name;
+
+                array_push($data['colleges'], $r);
+            }
+        }
+
+        // Get the schools.
+        $q = sprintf("SELECT school_id, date_from, date_to FROM user_schools WHERE (user_id=%d)",
+                     $user_id);
+        $query = $this->run_query($q);
+
+        $data['schools'] = array();
+        if ($query->num_rows() > 0) {
+            $results = $query->result_array();
+            foreach ($results as $r) {
+                // Get the school name.
+                $q = sprintf("SELECT school_name FROM schools WHERE (school_id=%d)",
+                             $r['school_id']);
+                $query = $this->run_query($q);
+                $r['school_name'] = $query->row()->school_name;
+
+                array_push($data['schools'], $r);
+            }
+        }
+
+        // Get the programmes.
+        $q = sprintf("SELECT programme_id, date_from, date_to FROM user_programmes " .
+                     "WHERE (user_id=%d)", $user_id);
+        $query = $this->run_query($q);
+
+        $data['programmes'] = array();
+        if ($query->num_rows() > 0) {
+            $results = $query->result_array();
+            foreach ($results as $r) {
+                // Get the programme name.
+                $q = sprintf("SELECT programme_name FROM programmes WHERE (programme_id=%d)",
+                             $r['programme_id']);
+                $query = $this->run_query($q);
+                $r['programme_name'] = $query->row()->programme_name;
+
+                array_push($data['programmes'], $r);
+            }
+        }
+
+        // Get the halls.
+        $q = sprintf("SELECT hall_id FROM user_halls WHERE (user_id=%d)",
+                     $user_id);
+        $query = $this->run_query($q);
+
+        $data['halls'] = array();
+        if ($query->num_rows() > 0) {
+            $results = $query->result_array();
+            foreach ($results as $r) {
+                // Get the hall name.
+                $q = sprintf("SELECT hall_name FROM halls WHERE (hall_id=%d)",
+                             $r['hall_id']);
+                $query = $this->run_query($q);
+                $r['hall_name'] = $query->row()->hall_name;
+
+                array_push($data['halls'], $r);
+            }
+        }
+
+        // Get the hostel.
+        $q = sprintf("SELECT hostel_id FROM user_hostels WHERE (user_id=%d)",
+                     $user_id);
+        $query = $this->run_query($q);
+
+        $data['hostels'] = array();
+        if ($query->num_rows() > 0) {
+            $results = $query->result_array();
+            foreach ($results as $r) {
+                // Get the hostel name.
+                $q = sprintf("SELECT hostel_name FROM hostels WHERE (hostel_id=%d)",
+                             $r['hostel_id']);
+                $query = $this->run_query($q);
+                $r['hostel_name'] = $query->row()->hall_name;
+
+                array_push($data['hostels'], $r);
+            }
+        }
+    }
+
     public function get_halls()
     {
         $q = sprintf("SELECT hall_id, hall_name FROM halls");
@@ -115,7 +252,7 @@ class Profile_model extends CI_Model
     public function get_districts($district)
     {
         $q = sprintf("SELECT district_id, district_name FROM districts " .
-                     "WHERE district_name LIKE %%s%", $this->db->escape($district));
+                     "WHERE district_name LIKE '*%s*'", $district);
         $query = $this->run_query($q);
 
         return $query->result_array();

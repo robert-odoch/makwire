@@ -5,7 +5,16 @@ require_once('common/user-page-start.php');
 ?>
                         <div class="box">
                             <h4>Edit Hall</h4>
-                            <form action="<?= base_url("user/edit-hall")?>" method="post" accept-charset="utf-8" role="form">
+                            <?php if (isset($success_message)): ?>
+                            <div class="alert alert-success">
+                                <p><?= "{$success_message}"; ?></p>
+                            </div>
+                            <?php else: if (isset($error_message)): ?>
+                            <div class="alert alert-danger">
+                                <p><?= "{$error_message}"; ?></p>
+                            </div>
+                            <?php endif; ?>
+                            <form action="<?= base_url("user/edit-hall"); ?>" method="post" accept-charset="utf-8" role="form">
                                 <fieldset>
                                     <div class="form-group">
                                         <label for="hall">Select Hall</label>
@@ -33,6 +42,18 @@ require_once('common/user-page-start.php');
                                 <fieldset>
                                     <div class="input-group">
                                         <p>From</p>
+                                        <div>
+                                            <label for="start-day">Date</label>
+                                            <select name="start-day" id="start-day">
+                                                <optgroup>
+                                                    <?php
+                                                    for ($i=1; $i < 32; $i++) {
+                                                        print("<option value='{$i}'>{$i}</option>");
+                                                    }
+                                                    ?>
+                                                </optgroup>
+                                            </select>
+                                        </div>
                                         <div>
                                             <label for="start-month">Month</label>
                                             <select name="start-month" id="start-month">
@@ -68,6 +89,18 @@ require_once('common/user-page-start.php');
                                     <div class="input-group">
                                         <p>To</p>
                                         <div>
+                                            <label for="end-day">Date</label>
+                                            <select name="end-day" id="end-day">
+                                                <optgroup>
+                                                    <?php
+                                                    for ($i=1; $i < 32; $i++) {
+                                                        print("<option value='{$i}'>{$i}</option>");
+                                                    }
+                                                    ?>
+                                                </optgroup>
+                                            </select>
+                                        </div>
+                                        <div>
                                             <label for="end-month">Month</label>
                                             <select name="end-month" id="end-month">
                                                 <optgroup>
@@ -97,6 +130,7 @@ require_once('common/user-page-start.php');
                                 </fieldset>
                                 <input type="submit" value="Save" class="btn">
                             </form>
+                            <?php endif; ?>
                         </div><!-- box -->
                     </div><!-- .main-content -->
                 </div><!-- main -->

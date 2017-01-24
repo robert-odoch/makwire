@@ -175,7 +175,7 @@ ul.dropdown-menu li a:hover {
     background-color: #2E8B57;
 }
 
-ul.about,
+ul.about li,
 ul.profile li,
 ul.likes li,
 ul.groups li,
@@ -298,6 +298,7 @@ ul.notifications li a {
     display: block;
     color: #000;
 }
+ul.about li:last-child,
 ul.likes li:last-child,
 ul.groups li:last-child,
 ul.members li:last-child,

@@ -11,7 +11,11 @@ require_once('common/user-page-start.php');
                             </div>
                             <?php else: if (isset($error_message)): ?>
                             <div class="alert alert-danger">
-                                <p><?= "<strong>Error:</strong> {$error_message}"; ?></p>
+                                <?php
+                                foreach ($error_message as $error) {
+                                    print("<p>{$error}</p>");
+                                }
+                                ?>
                             </div>
                             <?php endif; ?>
                             <form action="<?= base_url("user/edit_college"); ?>" method="post" accept-charset="utf-8" role="form">
@@ -44,6 +48,18 @@ require_once('common/user-page-start.php');
                                 </fieldset><fieldset>
                                     <div class="input-group">
                                         <p>From</p>
+                                        <div>
+                                            <label for="start-day">Date</label>
+                                            <select name="start-day" id="start-day">
+                                                <optgroup>
+                                                    <?php
+                                                    for ($i=1; $i < 32; $i++) {
+                                                        print("<option value='{$i}'>{$i}</option>");
+                                                    }
+                                                    ?>
+                                                </optgroup>
+                                            </select>
+                                        </div>
                                         <div>
                                             <label for="start-month">Month</label>
                                             <select name="start-month" id="start-month">
@@ -78,6 +94,18 @@ require_once('common/user-page-start.php');
 
                                     <div class="input-group">
                                         <p>To</p>
+                                        <div>
+                                            <label for="end-day">Date</label>
+                                            <select name="end-day" id="end-day">
+                                                <optgroup>
+                                                    <?php
+                                                    for ($i=1; $i < 32; $i++) {
+                                                        print("<option value='{$i}'>{$i}</option>");
+                                                    }
+                                                    ?>
+                                                </optgroup>
+                                            </select>
+                                        </div>
                                         <div>
                                             <label for="end-month">Month</label>
                                             <select name="end-month" id="end-month">

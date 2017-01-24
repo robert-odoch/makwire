@@ -6,22 +6,22 @@ require_once('common/user-page-start.php');
                         <div class="box edit-profile">
                             <h4>Education</h4>
                             <ul class="profile">
-                                <li>College: College of Computing and Information Sciences <a href="<?= base_url("user/edit-college"); ?>">Edit</a></li>
-                                <li>School: School of Computing and Informatics Technology</li>
-                                <li>Programme: BSc. Software Engineering <a href="<?= base_url("user/edit-programme"); ?>">Edit</a></li>
-                                <li>Year: II</li>
+                                <li><b>College</b>: College of Computing and Information Sciences <a href="<?= base_url("user/edit-college"); ?>">Edit</a></li>
+                                <li><b>School</b>: School of Computing and Informatics Technology</li>
+                                <li><b>Programme</b>: BSc. Software Engineering <a href="<?= base_url("user/edit-programme"); ?>">Edit</a></li>
+                                <li><b>Year</b>: II</li>
                             </ul>
 
                             <h4>Residence</h4>
                             <ul class="profile">
-                                <li>Hall: Lumumba <a href="<?= base_url("user/edit-hall"); ?>">Edit</a></li>
-                                <li>Hostel: Paramount <a href="<?= base_url("user/edit-hostel"); ?>">Edit</a></li>
+                                <li><b>Hall</b>: Lumumba <a href="<?= base_url("user/edit-hall"); ?>">Edit</a></li>
+                                <li><b>Hostel</b>: Paramount <a href="<?= base_url("user/edit-hostel"); ?>">Edit</a></li>
                             </ul>
 
                             <h4>Origin</h4>
                             <ul class="profile">
-                                <li>District: Oyam <a href="<?= base_url("user/edit-district"); ?>">Edit</a></li>
-                                <li>Country: Uganda <a href="<?= base_url("user/edit-country"); ?>">Edit</a></li>
+                                <li><b>District</b>: Oyam <a href="<?= base_url("user/edit-district"); ?>">Edit</a></li>
+                                <li><b>Country</b>: Uganda <a href="<?= base_url("user/edit-country"); ?>">Edit</a></li>
                             </ul>
 
                             <h4>Work</h4>

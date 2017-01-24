@@ -373,6 +373,27 @@ class User extends CI_Controller
         $this->load->view("common/footer");
     }
 
+    public function profile($user_id)
+    {
+        $data = $this->initialize_user();
+        $data['visitor'] = ($_SESSION['user_id'] === $user_id) ? FALSE : TRUE;
+        if ($data['visitor']) {
+            $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
+            $data['secondary_user'] = $this->user_model->get_full_name($user_id);
+            $data['title'] = "{$data['secondary_user']}'s Profile";
+            $data['suid'] = $user_id;
+        }
+        else {
+            $data['title'] = "{$data['primary_user']}'s Profile";
+        }
+
+        $this->load->view("common/header", $data);
+
+        $data['profile'] = $this->profile_model->get_profile($user_id);
+        $this->load->view("profile", $data);
+        $this->load->view("common/footer");
+    }
+
     public function edit_profile()
     {
         $data = $this->initialize_user();
@@ -393,13 +414,15 @@ class User extends CI_Controller
             $data['college_id'] = $this->input->post("college");
             $data['school_id'] = $this->input->post("school");
 
+            $start_day = $this->input->post("start-day");
             $start_month = $this->input->post("start-month");
             $start_year = $this->input->post("start-year");
-            $data['start_date'] = "{$start_month}-{$start_year}";
+            $data['start_date'] = "{$start_year}-{$start_month}-{$start_day}";
 
+            $end_day = $this->input->post("end-day");
             $end_month = $this->input->post("end-month");
             $end_year = $this->input->post("end-year");
-            $data['end_date'] = "{$end_month}-{$end_year}";
+            $data['end_date'] = "{$end_year}-{$end_month}-{$end_day}";
             if ($end_year < $start_year ||
                 $start_month < 1 || $start_month > 12 ||
                 $end_month < 1 || $end_month > 12) {
@@ -440,13 +463,15 @@ class User extends CI_Controller
             $data['programme_id'] = $this->input->post("programme");
             $data['year_of_study'] = $this->input->post("ystudy");
 
+            $start_day = $this->input->post("start-day");
             $start_month = $this->input->post("start-month");
             $start_year = $this->input->post("start-year");
-            $data['start_date'] = "{$start_month}-{$start_year}";
+            $data['start_date'] = "{$start_year}-{$start_month}-{$start_day}";
 
+            $end_day = $this->input->post("end-day");
             $end_month = $this->input->post("end-month");
             $end_year = $this->input->post("end-year");
-            $data['end_date'] = "{$end_month}-{$end_year}";
+            $data['end_date'] = "{$end_year}-{$end_month}-{$end_day}";
             if ($end_year < $start_year ||
                 $start_month < 1 || $start_month > 12 ||
                 $end_month < 1 || $end_month > 12) {
@@ -476,13 +501,15 @@ class User extends CI_Controller
             $resident = $this->input->post("resident");
             $data['resident'] = ($resident) ? 1 : 0;
 
+            $start_day = $this->input->post("start-day");
             $start_month = $this->input->post("start-month");
             $start_year = $this->input->post("start-year");
-            $data['start_date'] = "{$start_month}-{$start_year}";
+            $data['start_date'] = "{$start_year}-{$start_month}-{$start_day}";
 
+            $end_day = $this->input->post("end-day");
             $end_month = $this->input->post("end-month");
             $end_year = $this->input->post("end-year");
-            $data['end_date'] = "{$end_month}-{$end_year}";
+            $data['end_date'] = "{$end_year}-{$end_month}-{$end_day}";
             if ($end_year < $start_year ||
                 $start_month < 1 || $start_month > 12 ||
                 $end_month < 1 || $end_month > 12) {
@@ -510,13 +537,15 @@ class User extends CI_Controller
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $data['hostel_id'] = $this->input->post("hostel");
 
+            $start_day = $this->input->post("start-day");
             $start_month = $this->input->post("start-month");
             $start_year = $this->input->post("start-year");
-            $data['start_date'] = "{$start_month}-{$start_year}";
+            $data['start_date'] = "{$start_year}-{$start_month}-{$start_day}";
 
+            $end_day = $this->input->post("end-day");
             $end_month = $this->input->post("end-month");
             $end_year = $this->input->post("end-year");
-            $data['end_date'] = "{$end_month}-{$end_year}";
+            $data['end_date'] = "{$end_year}-{$end_month}-{$end_day}";
             if ($end_year < $start_year ||
                 $start_month < 1 || $start_month > 12 ||
                 $end_month < 1 || $end_month > 12) {
@@ -568,11 +597,10 @@ class User extends CI_Controller
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $data['district'] = $this->input->post("district");
             if (empty(trim($data['district']))) {
-                $data['error_message'] = "Please enter a district/state";
+                $data['error_message'] = "Please enter a district/state.";
             }
             else {
-                //$data['districts'] = $this->profile_model->get_districts($district);
-                $data['districts'] = [array('district_id' => 1, 'district_name' => 'Oyam'), array('district_id' => 2, 'district_name' => 'Kampala')];
+                $data['districts'] = $this->profile_model->get_districts($data['district']);
             }
         }
         elseif ($save_district) {
