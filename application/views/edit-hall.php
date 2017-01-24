@@ -20,7 +20,7 @@ require_once('common/user-page-start.php');
                                     <div class="input-group">
                                         <div class="radio-inline">
                                             <label for="resident">
-                                                <input type="radio" name="resident" id="resident" value="resident"> Resident
+                                                <input type="radio" name="resident" id="resident" value="1"> Resident
                                             </label>
                                         </div>
                                         <div class="radio-inline">

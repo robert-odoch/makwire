@@ -175,6 +175,8 @@ ul.dropdown-menu li a:hover {
     background-color: #2E8B57;
 }
 
+ul.about,
+ul.profile li,
 ul.likes li,
 ul.groups li,
 ul.members li,
@@ -206,6 +208,8 @@ ul.active-users li:hover {
 ul.active-users li:hover span a {
     color: #fff;
 }
+
+ul.about li:last-child,
 ul.likes li:last-child,
 ul.groups li:last-child,
 ul.members li:last-child,
@@ -217,7 +221,8 @@ ul.following li:last-child,
 ul.chat-friends li:last-child,
 ul.notifications li:last-child,
 ul.suggested-users li:last-child,
-ul.suggested-groups li:last-child {
+ul.suggested-groups li:last-child,
+div.edit-profile ul:last-child li:last-child {
     padding-bottom: 0;
     margin-bottom: 0;
 }
@@ -305,7 +310,8 @@ ul.active-users li:last-child,
 ul.chat-friends li:last-child,
 ul.notifications li:last-child,
 ul.suggested-users li:last-child,
-ul.suggested-groups li:last-child {
+ul.suggested-groups li:last-child,
+div.edit-profile ul:last-child li:last-child {
     border-bottom: none;
     margin-bottom: 0;
 }
@@ -403,6 +409,16 @@ div.box > h4 {
 div.wrap-single legend {
     padding-bottom: 5px;
     border-bottom: 1px solid #8FBC8F;
+}
+
+div.edit-profile h4 {
+    color: #2E8B57;
+}
+ul.profile {
+    margin-bottom: 15px;
+}
+div.edit-profile ul:last-child {
+    margin-bottom: 0;
 }
 
 article.post header,

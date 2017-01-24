@@ -60,7 +60,7 @@ class Profile_model extends CI_Model
 
     public function college_and_school_exists($college_id, $school_id)
     {
-        $q = sprintf("SELECT * FROM schools WHERE (school_id=%d AND college_id=%d) LIMIT 1",
+        $q = sprintf("SELECT school_id FROM schools WHERE (school_id=%d AND college_id=%d) LIMIT 1",
                      $school_id, $college_id);
         $query = $this->run_query($q);
         if ($query->num_rows() == 1) {
@@ -78,18 +78,83 @@ class Profile_model extends CI_Model
         return $query->result_array();
     }
 
-    public function add_school($school_id)
+    public function add_school($data)
     {
-        $q = sprintf("UPDATE user_profile SET school_id=%d WHERE user_id=%d LIMIT 1",
-                     $school_id, $_SESSION['user_id']);
+        $q = sprintf("INSERT INTO user_schools (user_id, school_id, date_from, date_to ) " .
+                     "VALUES (%d, %d, %s, %s)", $_SESSION['user_id'], $data['college_id'],
+                     $this->db->escape($data['date_from']), $this->db->escape($data['date_to']));
         $this->run_query($q);
     }
 
-    public function add_college($college_id)
+    public function add_college($data)
     {
-        $q = sprintf("INSERT INTO user_profile (user_id, college_id) " .
-                     "VALUES (%d, %d)",
-                     $_SESSION['user_id'], $college_id);
+        $q = sprintf("INSERT INTO user_colleges (user_id, college_id, date_from, date_to) " .
+                     "VALUES (%d, %d, %s, %s)", $_SESSION['user_id'], $data['college_id'],
+                     $this->db->escape($data['date_from']), $this->db->escape($data['date_to']));
+        $this->run_query($q);
+    }
+
+    public function get_countries()
+    {
+        $q = sprintf("SELECT country_id, country_name FROM countries");
+        $query = $this->run_query($q);
+
+        return $query->result_array();
+    }
+
+    public function add_country($country_id)
+    {
+        $q = sprintf("UPDATE user_profile SET country_id=%d " .
+                     "WHERE user_id=%d", $country_id, $_SESSION['user_id']);
+        $this->run_query($q);
+    }
+
+    /**
+     * Get the districts matching a given district name.
+     */
+    public function get_districts($district)
+    {
+        $q = sprintf("SELECT district_id, district_name FROM districts " .
+                     "WHERE district_name LIKE %%s%", $this->db->escape($district));
+        $query = $this->run_query($q);
+
+        return $query->result_array();
+    }
+
+    public function add_district($district_id)
+    {
+        $q = sprintf("UPDATE user_profile SET district_id=%d " .
+                     "WHERE user_id=%d", $district_id, $_SESSION['user_id']);
+        $this->run_query($q);
+    }
+
+    public function add_programme($data)
+    {
+        $q = sprintf("INSERT INTO user_programmes (user_id, programme_id, date_from, date_to) " .
+                     "VALUES(%d, %d, %s, %s)",
+                    $_SESSION['user_id'], $data['programme_id'],
+                    $this->db->escape($data['start_date']), $this->db->escape($data['end_date']));
+        $this->run_query($q);
+
+        $q = sprintf("UPDATE user_profile SET year_of_study=%d WHERE (user_id=%d)",
+                     $data['year_of_study'], $_SESSION['user_id']);
+        $this->run_query($q);
+    }
+
+    public function add_hall($data)
+    {
+        $q = sprintf("INSERT INTO user_halls (user_id, hall_id, date_from, date_to, resident) " .
+                     "VALUES (%d, %d, %s, %s)", $_SESSION['user_id'], $data['hall_id'],
+                     $this->db->escape($data['start_date']), $this->db->escape($data['end_date']),
+                     $data['resident']);
+        $this->run_query($q);
+    }
+
+    public function add_hostel($data)
+    {
+        $q = sprintf("INSERT INTO user_hostels (user_id, hostel_id, date_from, date_to) " .
+                     "VALUES (%d, %d, %s, %s)", $_SESSION['user_id'], $data['hostel_id'],
+                     $this->db->escape($data['start_date']), $this->db->escape($data['end_date']));
         $this->run_query($q);
     }
 }

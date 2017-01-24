@@ -373,6 +373,15 @@ class User extends CI_Controller
         $this->load->view("common/footer");
     }
 
+    public function edit_profile()
+    {
+        $data = $this->initialize_user();
+        $data['title'] = "Edit your profile";
+        $this->load->view('common/header', $data);
+        $this->load->view('edit-profile', $data);
+        $this->load->view('common/footer');
+    }
+
     public function edit_college()
     {
         $data = $this->initialize_user();
@@ -380,18 +389,36 @@ class User extends CI_Controller
         $this->load->view('common/header', $data);
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
-            $college_id = $this->input->post("college");
-            $school_id = $this->input->post("school");
-            if ($this->profile_model->college_and_school_exists($college_id, $school_id)) {
-                $this->profile_model->add_college($college_id);
-                $this->profile_model->add_school($school_id);
+            $data['error_message'] = array();
+            $data['college_id'] = $this->input->post("college");
+            $data['school_id'] = $this->input->post("school");
 
-                $data['success_message'] = "Your college and school have been succesfully saved.";
+            $start_month = $this->input->post("start-month");
+            $start_year = $this->input->post("start-year");
+            $data['start_date'] = "{$start_month}-{$start_year}";
+
+            $end_month = $this->input->post("end-month");
+            $end_year = $this->input->post("end-year");
+            $data['end_date'] = "{$end_month}-{$end_year}";
+            if ($end_year < $start_year ||
+                $start_month < 1 || $start_month > 12 ||
+                $end_month < 1 || $end_month > 12) {
+                $data['error_message'][] = "Invalid years entered! Please try again.";
             }
-            else {
-                $data['error_message'] = "Your college and school do not match! Please try again.";
+
+            if ( ! $this->profile_model->college_and_school_exists($data['college_id'], $data['school_id'])) {
+                $data['error_message'][] = "Your college and school do not match! Please try again.";
+            }
+
+            if ($data['error_message']) {
                 $data['colleges'] = $this->profile_model->get_colleges();
                 $data['schools'] = $this->profile_model->get_schools();
+            }
+            else {
+                $this->profile_model->add_college($data);
+                $this->profile_model->add_school($data);
+
+                $data['success_message'] = "Your college and school have been succesfully saved.";
             }
         }
         else {
@@ -411,13 +438,18 @@ class User extends CI_Controller
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $data['programme_id'] = $this->input->post("programme");
-            $data['start_month'] = $this->input->post("start-month");
-            $data['start_year'] = $this->input->post("start-year");
-            $data['end_month'] = $this->input->post("end-month");
-            $data['end_year'] = $this->input->post("end-year");
             $data['year_of_study'] = $this->input->post("ystudy");
-            if ($data['end_year'] < $data['start_year'] ||
-                $data['end_year'] == $data['start_year']) {
+
+            $start_month = $this->input->post("start-month");
+            $start_year = $this->input->post("start-year");
+            $data['start_date'] = "{$start_month}-{$start_year}";
+
+            $end_month = $this->input->post("end-month");
+            $end_year = $this->input->post("end-year");
+            $data['end_date'] = "{$end_month}-{$end_year}";
+            if ($end_year < $start_year ||
+                $start_month < 1 || $start_month > 12 ||
+                $end_month < 1 || $end_month > 12) {
                 $data['error_message'] = "Invalid years entered! Please try again.";
                 $data['programmes'] = $this->profile_model->get_programmes();
             }
@@ -441,13 +473,19 @@ class User extends CI_Controller
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $data['hall_id'] = $this->input->post("hall");
-            $data['resident'] = $this->input->post("resident");
-            $data['start_month'] = $this->input->post("start-month");
-            $data['start_year'] = $this->input->post("start-year");
-            $data['end_month'] = $this->input->post("end-month");
-            $data['end_year'] = $this->input->post("end-year");
-            if ($data['end_year'] < $data['start_year'] ||
-                $data['end_year'] == $data['start_year']) {
+            $resident = $this->input->post("resident");
+            $data['resident'] = ($resident) ? 1 : 0;
+
+            $start_month = $this->input->post("start-month");
+            $start_year = $this->input->post("start-year");
+            $data['start_date'] = "{$start_month}-{$start_year}";
+
+            $end_month = $this->input->post("end-month");
+            $end_year = $this->input->post("end-year");
+            $data['end_date'] = "{$end_month}-{$end_year}";
+            if ($end_year < $start_year ||
+                $start_month < 1 || $start_month > 12 ||
+                $end_month < 1 || $end_month > 12) {
                 $data['error_message'] = "Invalid years entered! Please try again.";
                 $data['halls'] = $this->profile_model->get_halls();
             }
@@ -471,12 +509,17 @@ class User extends CI_Controller
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $data['hostel_id'] = $this->input->post("hostel");
-            $data['start_month'] = $this->input->post("start-month");
-            $data['start_year'] = $this->input->post("start-year");
-            $data['end_month'] = $this->input->post("end-month");
-            $data['end_year'] = $this->input->post("end-year");
-            if ($data['end_year'] < $data['start_year'] ||
-                $data['end_year'] == $data['start_year']) {
+
+            $start_month = $this->input->post("start-month");
+            $start_year = $this->input->post("start-year");
+            $data['start_date'] = "{$start_month}-{$start_year}";
+
+            $end_month = $this->input->post("end-month");
+            $end_year = $this->input->post("end-year");
+            $data['end_date'] = "{$end_month}-{$end_year}";
+            if ($end_year < $start_year ||
+                $start_month < 1 || $start_month > 12 ||
+                $end_month < 1 || $end_month > 12) {
                 $data['error_message'] = "Invalid years entered! Please try again.";
                 $data['hostels'] = $this->profile_model->get_hostels();
             }
@@ -489,6 +532,55 @@ class User extends CI_Controller
             $data['hostels'] = $this->profile_model->get_hostels();
         }
         $this->load->view("edit-hostel", $data);
+        $this->load->view("common/footer");
+    }
+
+    public function edit_country()
+    {
+        $data = $this->initialize_user();
+        $data['title'] = "Edit your country of origin";
+        $this->load->view('common/header', $data);
+
+        if ($_SERVER['REQUEST_METHOD'] === "POST") {
+            $data['country_id'] = $this->input->post("country");
+            if ($this->input->post("country_unavailable") == TRUE) {
+                // Display a form allowing the user to enter his/her country
+                // and notifiy the admin.
+            }
+            else {
+                $this->profile_model->add_country($data);
+                $data['success_message'] = "Your country details have been successfully saved.";
+            }
+        }
+        else {
+            $data['countries'] = $this->profile_model->get_countries();
+        }
+        $this->load->view("edit-country", $data);
+        $this->load->view("common/footer");
+    }
+
+    public function edit_district($district_name=null, $save_district=FALSE, $district_id=null)
+    {
+        $data = $this->initialize_user();
+        $data['title'] = "Edit your district";
+        $this->load->view('common/header', $data);
+
+        if ($_SERVER['REQUEST_METHOD'] === "POST") {
+            $data['district'] = $this->input->post("district");
+            if (empty(trim($data['district']))) {
+                $data['error_message'] = "Please enter a district/state";
+            }
+            else {
+                //$data['districts'] = $this->profile_model->get_districts($district);
+                $data['districts'] = [array('district_id' => 1, 'district_name' => 'Oyam'), array('district_id' => 2, 'district_name' => 'Kampala')];
+            }
+        }
+        elseif ($save_district) {
+            $this->profile_model->add_district($district_id, $district_name);
+            $data['success_message'] = "Your district details have been successfully updated";
+        }
+
+        $this->load->view("edit-district", $data);
         $this->load->view("common/footer");
     }
 }
