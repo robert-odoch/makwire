@@ -6,7 +6,7 @@ require_once('common/user-page-start.php');
                         <div class="box edit-profile">
                             <h4>Education</h4>
                             <ul class="profile">
-                                <li>College: College of Computing and Information Sciences <a href="<?= base_url("user/edit-college"); ?>"></a></li>
+                                <li>College: College of Computing and Information Sciences <a href="<?= base_url("user/edit-college"); ?>">Edit</a></li>
                                 <li>School: School of Computing and Informatics Technology</li>
                                 <li>Programme: BSc. Software Engineering <a href="<?= base_url("user/edit-programme"); ?>">Edit</a></li>
                                 <li>Year: II</li>
