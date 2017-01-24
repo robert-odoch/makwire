@@ -219,7 +219,7 @@ class Profile_model extends CI_Model
     {
         $q = sprintf("INSERT INTO user_schools (user_id, school_id, date_from, date_to ) " .
                      "VALUES (%d, %d, %s, %s)", $_SESSION['user_id'], $data['college_id'],
-                     $this->db->escape($data['date_from']), $this->db->escape($data['date_to']));
+                     $this->db->escape($data['start_date']), $this->db->escape($data['end_date']));
         $this->run_query($q);
     }
 
@@ -227,7 +227,7 @@ class Profile_model extends CI_Model
     {
         $q = sprintf("INSERT INTO user_colleges (user_id, college_id, date_from, date_to) " .
                      "VALUES (%d, %d, %s, %s)", $_SESSION['user_id'], $data['college_id'],
-                     $this->db->escape($data['date_from']), $this->db->escape($data['date_to']));
+                     $this->db->escape($data['start_date']), $this->db->escape($data['end_date']));
         $this->run_query($q);
     }
 
@@ -281,7 +281,7 @@ class Profile_model extends CI_Model
     public function add_hall($data)
     {
         $q = sprintf("INSERT INTO user_halls (user_id, hall_id, date_from, date_to, resident) " .
-                     "VALUES (%d, %d, %s, %s)", $_SESSION['user_id'], $data['hall_id'],
+                     "VALUES (%d, %d, %s, %s, %d)", $_SESSION['user_id'], $data['hall_id'],
                      $this->db->escape($data['start_date']), $this->db->escape($data['end_date']),
                      $data['resident']);
         $this->run_query($q);

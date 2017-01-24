@@ -12,8 +12,7 @@ class User extends CI_Controller
 
         session_start();
         if ( ! isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
-            redirect(base_url('login/'));
-            exit(0);
+            redirect(base_url('login'));
         }
         else {
             // Check whether the user hasn't been logged out from some where else.
@@ -410,30 +409,34 @@ class User extends CI_Controller
         $this->load->view('common/header', $data);
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
-            $data['error_message'] = array();
+            $data['error_messages'] = array();
             $data['college_id'] = $this->input->post("college");
             $data['school_id'] = $this->input->post("school");
 
-            $start_day = $this->input->post("start-day");
-            $start_month = $this->input->post("start-month");
-            $start_year = $this->input->post("start-year");
-            $data['start_date'] = "{$start_year}-{$start_month}-{$start_day}";
+            $data['start_day'] = $this->input->post("start-day");
+            $data['start_month'] = $this->input->post("start-month");
+            $data['start_year'] = $this->input->post("start-year");
 
-            $end_day = $this->input->post("end-day");
-            $end_month = $this->input->post("end-month");
-            $end_year = $this->input->post("end-year");
-            $data['end_date'] = "{$end_year}-{$end_month}-{$end_day}";
-            if ($end_year < $start_year ||
-                $start_month < 1 || $start_month > 12 ||
-                $end_month < 1 || $end_month > 12) {
-                $data['error_message'][] = "Invalid years entered! Please try again.";
+            $data['end_day'] = $this->input->post("end-day");
+            $data['end_month'] = $this->input->post("end-month");
+            $data['end_year'] = $this->input->post("end-year");
+            if ($data['end_year'] < $data['start_year']) {
+                $data['error_messages'][] = "Invalid dates entered! Please check the order of the dates and try again.";
+            }
+            elseif (checkdate($data['start_month'], $data['start_day'], $data['start_year']) &&
+                    checkdate($data['end_month'], $data['end_day'], $data['end_year'])) {
+                $data['start_date'] = "{$data['start_year']}-{$data['start_month']}-{$data['start_day']}";
+                $data['end_date'] = "{$data['end_year']}-{$data['end_month']}-{$data['end_day']}";
+            }
+            else {
+                $data['error_messages'][] = "Invalid dates entered! Please check the dates and try again.";
             }
 
             if ( ! $this->profile_model->college_and_school_exists($data['college_id'], $data['school_id'])) {
-                $data['error_message'][] = "Your college and school do not match! Please try again.";
+                $data['error_messages'][] = "Your college and school do not match! Please try again.";
             }
 
-            if ($data['error_message']) {
+            if ($data['error_messages']) {
                 $data['colleges'] = $this->profile_model->get_colleges();
                 $data['schools'] = $this->profile_model->get_schools();
             }
@@ -463,19 +466,26 @@ class User extends CI_Controller
             $data['programme_id'] = $this->input->post("programme");
             $data['year_of_study'] = $this->input->post("ystudy");
 
-            $start_day = $this->input->post("start-day");
-            $start_month = $this->input->post("start-month");
-            $start_year = $this->input->post("start-year");
-            $data['start_date'] = "{$start_year}-{$start_month}-{$start_day}";
+            $data['start_day'] = $this->input->post("start-day");
+            $data['start_month'] = $this->input->post("start-month");
+            $data['start_year'] = $this->input->post("start-year");
 
-            $end_day = $this->input->post("end-day");
-            $end_month = $this->input->post("end-month");
-            $end_year = $this->input->post("end-year");
-            $data['end_date'] = "{$end_year}-{$end_month}-{$end_day}";
-            if ($end_year < $start_year ||
-                $start_month < 1 || $start_month > 12 ||
-                $end_month < 1 || $end_month > 12) {
-                $data['error_message'] = "Invalid years entered! Please try again.";
+            $data['end_day'] = $this->input->post("end-day");
+            $data['end_month'] = $this->input->post("end-month");
+            $data['end_year'] = $this->input->post("end-year");
+            if ($data['end_year'] < $data['start_year']) {
+                $data['error_message'] = "Invalid dates entered! Please check the order of the dates and try again.";
+            }
+            elseif (checkdate($data['start_month'], $data['start_day'], $data['start_year']) &&
+                    checkdate($data['end_month'], $data['end_day'], $data['end_year'])) {
+                $data['start_date'] = "{$data['start_year']}-{$data['start_month']}-{$data['start_day']}";
+                $data['end_date'] = "{$data['end_year']}-{$data['end_month']}-{$data['end_day']}";
+            }
+            else {
+                $data['error_message'] = "Invalid dates entered! Please check the dates and try again.";
+            }
+
+            if (isset($data['error_message'])) {
                 $data['programmes'] = $this->profile_model->get_programmes();
             }
             else {
@@ -486,6 +496,7 @@ class User extends CI_Controller
         else {
             $data['programmes'] = $this->profile_model->get_programmes();
         }
+
         $this->load->view("edit-programme", $data);
         $this->load->view("common/footer");
     }
@@ -498,22 +509,29 @@ class User extends CI_Controller
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $data['hall_id'] = $this->input->post("hall");
-            $resident = $this->input->post("resident");
-            $data['resident'] = ($resident) ? 1 : 0;
+            $resident_status = $this->input->post("resident");
+            $data['resident'] = ($resident_status == 'resident') ? 1 : 0;
 
-            $start_day = $this->input->post("start-day");
-            $start_month = $this->input->post("start-month");
-            $start_year = $this->input->post("start-year");
-            $data['start_date'] = "{$start_year}-{$start_month}-{$start_day}";
+            $data['start_day'] = $this->input->post("start-day");
+            $data['start_month'] = $this->input->post("start-month");
+            $data['start_year'] = $this->input->post("start-year");
 
-            $end_day = $this->input->post("end-day");
-            $end_month = $this->input->post("end-month");
-            $end_year = $this->input->post("end-year");
-            $data['end_date'] = "{$end_year}-{$end_month}-{$end_day}";
-            if ($end_year < $start_year ||
-                $start_month < 1 || $start_month > 12 ||
-                $end_month < 1 || $end_month > 12) {
-                $data['error_message'] = "Invalid years entered! Please try again.";
+            $data['end_day'] = $this->input->post("end-day");
+            $data['end_month'] = $this->input->post("end-month");
+            $data['end_year'] = $this->input->post("end-year");
+            if ($data['end_year'] < $data['start_year']) {
+                $data['error_message'] = "Invalid dates entered! Please check the order of the dates and try again.";
+            }
+            elseif (checkdate($data['start_month'], $data['start_day'], $data['start_year']) &&
+                    checkdate($data['end_month'], $data['end_day'], $data['end_year'])) {
+                $data['start_date'] = "{$data['start_year']}-{$data['start_month']}-{$data['start_day']}";
+                $data['end_date'] = "{$data['end_year']}-{$data['end_month']}-{$data['end_day']}";
+            }
+            else {
+                $data['error_message'] = "Invalid dates entered! Please check the dates and try again.";
+            }
+
+            if (isset($data['error_message'])) {
                 $data['halls'] = $this->profile_model->get_halls();
             }
             else {
@@ -524,6 +542,7 @@ class User extends CI_Controller
         else {
             $data['halls'] = $this->profile_model->get_halls();
         }
+
         $this->load->view("edit-hall", $data);
         $this->load->view("common/footer");
     }
@@ -537,19 +556,26 @@ class User extends CI_Controller
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $data['hostel_id'] = $this->input->post("hostel");
 
-            $start_day = $this->input->post("start-day");
-            $start_month = $this->input->post("start-month");
-            $start_year = $this->input->post("start-year");
-            $data['start_date'] = "{$start_year}-{$start_month}-{$start_day}";
+            $data['start_day'] = $this->input->post("start-day");
+            $data['start_month'] = $this->input->post("start-month");
+            $data['start_year'] = $this->input->post("start-year");
 
-            $end_day = $this->input->post("end-day");
-            $end_month = $this->input->post("end-month");
-            $end_year = $this->input->post("end-year");
-            $data['end_date'] = "{$end_year}-{$end_month}-{$end_day}";
-            if ($end_year < $start_year ||
-                $start_month < 1 || $start_month > 12 ||
-                $end_month < 1 || $end_month > 12) {
-                $data['error_message'] = "Invalid years entered! Please try again.";
+            $data['end_day'] = $this->input->post("end-day");
+            $data['end_month'] = $this->input->post("end-month");
+            $data['end_year'] = $this->input->post("end-year");
+            if ($data['end_year'] < $data['start_year']) {
+                $data['error_message'] = "Invalid datess entered! Please check the order of the dates and try again.";
+            }
+            elseif (checkdate($data['start_month'], $data['start_day'], $data['start_year']) &&
+                    checkdate($data['end_month'], $data['end_day'], $data['end_year'])) {
+                $data['start_date'] = "{$data['start_year']}-{$data['start_month']}-{$data['start_day']}";
+                $data['end_date'] = "{$data['end_year']}-{$data['end_month']}-{$data['end_day']}";
+            }
+            else {
+                $data['error_message'] = "Invalid dates entered! Please check the dates and try again.";
+            }
+
+            if (isset($data['error_message'])) {
                 $data['hostels'] = $this->profile_model->get_hostels();
             }
             else {
@@ -560,6 +586,7 @@ class User extends CI_Controller
         else {
             $data['hostels'] = $this->profile_model->get_hostels();
         }
+
         $this->load->view("edit-hostel", $data);
         $this->load->view("common/footer");
     }
@@ -571,13 +598,14 @@ class User extends CI_Controller
         $this->load->view('common/header', $data);
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
-            $data['country_id'] = $this->input->post("country");
-            if ($this->input->post("country_unavailable") == TRUE) {
+            $country_id = $this->input->post("country");
+            if ($country_id == "none") {
                 // Display a form allowing the user to enter his/her country
                 // and notifiy the admin.
+                redirect(base_url("request-admin/add-country"));
             }
             else {
-                $this->profile_model->add_country($data);
+                $this->profile_model->add_country($country_id);
                 $data['success_message'] = "Your country details have been successfully saved.";
             }
         }
@@ -588,7 +616,7 @@ class User extends CI_Controller
         $this->load->view("common/footer");
     }
 
-    public function edit_district($district_name=null, $save_district=FALSE, $district_id=null)
+    public function edit_district($save_district=FALSE, $district_id=null, $district_name=null)
     {
         $data = $this->initialize_user();
         $data['title'] = "Edit your district";
@@ -597,7 +625,7 @@ class User extends CI_Controller
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $data['district'] = $this->input->post("district");
             if (empty(trim($data['district']))) {
-                $data['error_message'] = "Please enter a district/state.";
+                $data['error_message'] = "Please enter the name of your district or state and try again.";
             }
             else {
                 $data['districts'] = $this->profile_model->get_districts($data['district']);

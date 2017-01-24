@@ -29,7 +29,7 @@ require_once('common/user-page-start.php');
                                     <div class="input-group">
                                         <div class="radio-inline">
                                             <label for="resident">
-                                                <input type="radio" name="resident" id="resident" value="1"> Resident
+                                                <input type="radio" name="resident" id="resident" value="resident"> Resident
                                             </label>
                                         </div>
                                         <div class="radio-inline">
@@ -39,95 +39,7 @@ require_once('common/user-page-start.php');
                                         </div>
                                     </div>
                                 </fieldset>
-                                <fieldset>
-                                    <div class="input-group">
-                                        <p>From</p>
-                                        <div>
-                                            <label for="start-day">Date</label>
-                                            <select name="start-day" id="start-day">
-                                                <optgroup>
-                                                    <?php
-                                                    for ($i=1; $i < 32; $i++) {
-                                                        print("<option value='{$i}'>{$i}</option>");
-                                                    }
-                                                    ?>
-                                                </optgroup>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label for="start-month">Month</label>
-                                            <select name="start-month" id="start-month">
-                                                <optgroup>
-                                                <?php
-                                                $months = array(1=>'Jan',2=>'Feb',3=>'Mar',
-                                                                4=>'Apr',5=>'May',6=>'Jun',
-                                                                7=>'Jul',8=>'Aug',9=>'Sep',
-                                                                10=>'Oct',11=>'Nov',12=>'Dec');
-                                                foreach ($months as $k => $v) {
-                                                    print "<option value='{$k}'>{$v}</option>";
-                                                }
-                                                ?>
-                                                </optgroup>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label for="start-year">Year</label>
-                                            <select name="start-year" id="start-year">
-                                                <optgroup>
-                                                <?php
-                                                $starting_year = date('Y');
-                                                for ($i = 0; $i != 20; ++$i) {
-                                                    $year = $starting_year - $i;
-                                                    print "<option value='{$year}'>{$year}</option>";
-                                                }
-                                                ?>
-                                                </optgroup>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="input-group">
-                                        <p>To</p>
-                                        <div>
-                                            <label for="end-day">Date</label>
-                                            <select name="end-day" id="end-day">
-                                                <optgroup>
-                                                    <?php
-                                                    for ($i=1; $i < 32; $i++) {
-                                                        print("<option value='{$i}'>{$i}</option>");
-                                                    }
-                                                    ?>
-                                                </optgroup>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label for="end-month">Month</label>
-                                            <select name="end-month" id="end-month">
-                                                <optgroup>
-                                                <?php
-                                                foreach ($months as $k => $v) {
-                                                    print "<option value='{$k}'>{$v}</option>";
-                                                }
-                                                ?>
-                                                </optgroup>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label for="end-year">Year</label>
-                                            <select name="end-year" id="end-year">
-                                                <optgroup>
-                                                <?php
-                                                $starting_year = date('Y') + 6;
-                                                for ($i = 0; $i != 24; ++$i) {
-                                                    $year = $starting_year - $i;
-                                                    print "<option value='{$year}'>{$year}</option>";
-                                                }
-                                                ?>
-                                                </optgroup>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </fieldset>
+                                <?php require_once("common/show-date-input.php"); ?>
                                 <input type="submit" value="Save" class="btn">
                             </form>
                             <?php endif; ?>
