@@ -26,7 +26,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             </div>
                             <ul>
                                 <li><a href="<?= base_url("user/index/{$suid}"); ?>">Timeline</a></li>
-                                <li><a href="<?= base_url("user/about/{$suid}"); ?>">About</a></li>
+                                <li><a href="<?= base_url("user/profile/{$suid}"); ?>">About</a></li>
                                 <li><a href="<?= base_url("user/friends/{$suid}"); ?>" class="active">Friends</a></li>
                                 <li><a href="">Groups</a></li>
                                 <li><a href="">Photos</a></li>

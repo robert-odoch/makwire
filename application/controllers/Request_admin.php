@@ -7,16 +7,16 @@ class Request_admin extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model("user_model");
 
         session_start();
         if ( ! isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
             redirect(base_url('login'));
         }
-        else {
-            // Check whether the user hasn't been logged out from some where else.
-            $this->user_model->confirm_logged_in();
-        }
+
+        $this->load->model("user_model");
+
+        // Check whether the user hasn't been logged out from some where else.
+        $this->user_model->confirm_logged_in();
     }
 
     private function initialize_user()

@@ -6,9 +6,17 @@ class Post extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+
         session_start();
+        if ( ! isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
+            redirect(base_url('login'));
+        }
+
         $this->load->model('post_model');
         $this->load->model('user_model');
+
+        // Check whether the user hasn't been logged out from some where else.
+        $this->user_model->confirm_logged_in();
     }
 
     private function initialize_user()

@@ -150,6 +150,7 @@ class Profile_model extends CI_Model
 
         $data['hostels'] = array();
         if ($query->num_rows() > 0) {
+            print_r($query);
             $results = $query->result_array();
             foreach ($results as $r) {
                 // Get the hostel name.

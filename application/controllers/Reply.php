@@ -8,8 +8,15 @@ class Reply extends CI_Controller
         parent::__construct();
 
         session_start();
+        if ( ! isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
+            redirect(base_url('login'));
+        }
+
         $this->load->model("user_model");
         $this->load->model("reply_model");
+
+        // Check whether the user hasn't been logged out from some where else.
+        $this->user_model->confirm_logged_in();
     }
 
     private function initialize_user()

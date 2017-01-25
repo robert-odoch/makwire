@@ -20,10 +20,10 @@ require_once('common/user-page-start.php');
                                                 <option value="<?= $country['country_id']; ?>"><?= $country['country_name']; ?></option>
                                                 <?php endforeach; ?>
                                                 <option value="none">I don't see my country in this list</option>
-                                            </optgroup>
                                         </select>
                                     </div>
                                 </fieldset>
+                            </optgroup>
                                 <input type="submit" value="Submit" class="btn">
                             </form>
                             <?php } ?>

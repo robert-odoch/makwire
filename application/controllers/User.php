@@ -6,18 +6,18 @@ class User extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('user_model');
-        $this->load->model('post_model');
-        $this->load->model('profile_model');
 
         session_start();
         if ( ! isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
             redirect(base_url('login'));
         }
-        else {
-            // Check whether the user hasn't been logged out from some where else.
-            $this->user_model->confirm_logged_in();
-        }
+
+        $this->load->model('user_model');
+        $this->load->model('post_model');
+        $this->load->model('profile_model');
+
+        // Check whether the user hasn't been logged out from some where else.
+        $this->user_model->confirm_logged_in();
     }
 
     public function dummy()
@@ -372,8 +372,12 @@ class User extends CI_Controller
         $this->load->view("common/footer");
     }
 
-    public function profile($user_id)
+    public function profile($user_id=NULL)
     {
+        if ($user_id === NULL) {
+            $user_id = $_SESSION['user_id'];
+        }
+
         $data = $this->initialize_user();
         $data['visitor'] = ($_SESSION['user_id'] === $user_id) ? FALSE : TRUE;
         if ($data['visitor']) {

@@ -10,13 +10,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title><?php echo $title; ?></title>
         <link rel="stylesheet" href="<?php echo base_url('styles/bootstrap.min.css'); ?>">
-        
+
         <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
         <link rel="stylesheet" href="<?php echo base_url('styles/ie10-viewport-bug-workaround.css'); ?>">
-        
+
         <!-- Custom styles for this site -->
         <link href="<?php echo base_url('styles/styles.css'); ?>" rel="stylesheet">
-        
+
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
           <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -41,7 +41,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <?php
                             if (isset($_SESSION['user_id'])): ?>
                             <li>
-                                <a href="<?= base_url('user/chat/'); ?>">Chat
+                                <a href="<?= base_url('user/chat'); ?>">Chat
                                 <?php
                                 if ($num_active_friends > 0) {
                                     print "<span class='badge'>{$num_active_friends}</span>";
@@ -50,7 +50,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 </a>
                             </li>
                             <li>
-                                <a href="<?php echo base_url('user/messages/'); ?>">
+                                <a href="<?php echo base_url('user/messages'); ?>">
                                 <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> Messages
                                 <?php
                                 if ($num_new_messages > 0) {
@@ -60,7 +60,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 </a>
                             </li>
                             <li>
-                                <a href="<?php echo base_url('user/notifications/'); ?>">
+                                <a href="<?php echo base_url('user/notifications'); ?>">
                                 <span class="glyphicon glyphicon-bell" aria-hidden="true"></span> Notifications
                                 <?php
                                 if ($num_new_notifs > 0) {
@@ -70,7 +70,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 </a>
                             </li>
                             <li>
-                                <a href="<?= base_url('user/friend_requests/'); ?>"><span class="glyphicon glyphicon-user"></span> Friends
+                                <a href="<?= base_url('user/friend_requests'); ?>"><span class="glyphicon glyphicon-user"></span> Friends
                                 <?php
                                 if ($num_friend_requests > 0) {
                                     print " <span class='badge'>{$num_friend_requests}</span>";
@@ -78,9 +78,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 ?>
                                 </a>
                             </li>
-                            <li><a href="<?php echo base_url('logout/'); ?>"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
+                            <li><a href="<?php echo base_url('logout'); ?>"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
                             <?php else: ?>
-                            <li><a href="<?php echo base_url('login/'); ?>"><span class="glyphicon glyphicon-log-out"></span> Log In</a></li>
+                            <li><a href="<?php echo base_url('login'); ?>"><span class="glyphicon glyphicon-log-out"></span> Log In</a></li>
                             <?php endif; ?>
                         </ul>
                     </div>

@@ -37,9 +37,6 @@ class Logout_model extends CI_Model
         $_SESSION = array();
         session_destroy();
         setcookie(session_name(), '', time()-300);
-
-        redirect(base_url('login/'));
-        exit(0);
     }
 }
 ?>

@@ -27,7 +27,7 @@ require_once('common/user-page-start.php');
                             </div>
                             <ul>
                                 <li><a href="<?= base_url("user/index/{$suid}"); ?>">Timeline</a></li>
-                                <li><a href="<?= base_url("user/profile"); ?>" class="active">About</a></li>
+                                <li><a href="<?= base_url("user/profile/{$suid}"); ?>" class="active">About</a></li>
                                 <li><a href="<?= base_url("user/friends/{$suid}"); ?>">Friends</a></li>
                                 <li><a href="">Groups</a></li>
                                 <li><a href="">Photos</a></li>

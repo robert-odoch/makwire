@@ -27,7 +27,7 @@ class Login_model extends CI_Model
     }
     /*** End Utility ***/
 
-    public function is_valid($username, $password)
+    public function user_exists($username, $password)
     {
         $q = sprintf("SELECT user_id, passwd FROM users WHERE uname=%s", $this->db->escape($username));
         $query = $this->run_query($q);
