@@ -49,8 +49,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <ul class="friends">
                                 <?php foreach($friends as $fr): ?>
                                 <li>
-                                    <figure><img src="<?= base_url('images/kasumba.jpg'); ?>" alt="<?= $fr['full_name']; ?>"></figure>
-                                    <span><a href="<?= base_url("user/index/{$fr['friend_id']}"); ?>"><?= $fr['full_name']; ?></a></span>
+                                    <figure><img src="<?= base_url('images/kasumba.jpg'); ?>" alt="<?= $fr['display_name']; ?>"></figure>
+                                    <span><a href="<?= base_url("user/index/{$fr['friend_id']}"); ?>"><?= $fr['display_name']; ?></a></span>
                                 </li>
                                 <?php endforeach; ?>
                             </ul>

@@ -29,7 +29,8 @@ class Login_model extends CI_Model
 
     public function user_exists($username, $password)
     {
-        $q = sprintf("SELECT user_id, passwd FROM users WHERE uname=%s", $this->db->escape($username));
+        $q = sprintf("SELECT user_id, passwd FROM users WHERE uname=%s",
+                     $this->db->escape($username));
         $query = $this->run_query($q);
 
         if ($query->num_rows() === 0) {
@@ -37,8 +38,8 @@ class Login_model extends CI_Model
         }
 
         if (password_verify($password, $query->row()->passwd)) {
-            $q = sprintf("UPDATE users SET logged_in=%d WHERE uname=%s LIMIT 1",
-                         1, $this->db->escape($username));
+            $q = sprintf("UPDATE users SET logged_in=1 WHERE uname=%s LIMIT 1",
+                         $this->db->escape($username));
 
             $this->run_query($q);
 

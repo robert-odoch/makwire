@@ -29,24 +29,20 @@ class Posts_model extends CI_Model
 
     public function get_num_posts($user_id)
     {
-        return count($this->get_posts($user_id, 0, 0, FALSE));
+        $q = sprintf("SELECT post_id FROM posts " .
+                     "WHERE (audience='timeline') AND (author_id=%d)",
+                     $user_id);
+        $query = $this->run_query($q);
+
+        return $query->num_rows();
     }
 
-    public function get_posts($user_id, $offset, $limit, $use_limit=TRUE)
+    public function get_posts($user_id, $offset, $limit)
     {
-        if ($use_limit) {
-            $q = sprintf("SELECT post_id FROM posts " .
-                         "WHERE (audience=%s AND author_id=%d) " .
-                         "ORDER BY date_posted DESC LIMIT %d, %d",
-                         $this->db->escape('timeline'), $user_id, $offset, $limit);
-        }
-        else {
-            $q = sprintf("SELECT post_id FROM posts " .
-                         "WHERE (audience=%s AND author_id=%d) " .
-                         "ORDER BY date_posted DESC",
-                         $this->db->escape('timeline'), $user_id);
-        }
-
+        $q = sprintf("SELECT post_id FROM posts " .
+                     "WHERE (audience='timeline' AND author_id=%d) " .
+                     "ORDER BY date_posted DESC LIMIT %d, %d",
+                     $user_id, $offset, $limit);
         $query = $this->run_query($q);
         $results = $query->result_array();
 

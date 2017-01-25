@@ -46,7 +46,7 @@ require_once("common/user-page-start.php");
                                         if ($reply['commenter_id'] != $_SESSION['user_id']) {
                                             if (!$reply['liked']) {
                                                 print("<span> &middot; </span>" .
-                                                      "<a href='" . base_url("reply/like/{$reply['comment_id']}") . "'>Like</a>");
+                                                      "<a href='" . base_url("reply/like/{$comment['comment_id']}/{$reply['comment_id']}") . "'>Like</a>");
                                                 }
                                         }
 

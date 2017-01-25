@@ -100,10 +100,9 @@ class Post_model extends CI_Model
     private function has_liked($post_id)
     {
         $q = sprintf("SELECT like_id FROM likes " .
-                     "WHERE (source_id=%d AND source_type=%s AND liker_id=%d) " .
-                     "LIMIT %d",
-                     $post_id, $this->db->escape("post"),
-                     $_SESSION['user_id'], 1);
+                     "WHERE (source_id=%d AND source_type='post' AND liker_id=%d) " .
+                     "LIMIT 1",
+                     $post_id, $_SESSION['user_id']);
         $query = $this->run_query($q);
 
         if ($query->num_rows() === 1) {
@@ -120,18 +119,19 @@ class Post_model extends CI_Model
 
     public function get_post_author($author_id)
     {
-        $q = sprintf("SELECT fname, lname FROM users WHERE user_id=%d LIMIT 1",
+        $q = sprintf("SELECT display_name FROM users WHERE user_id=%d",
                      $author_id);
         $query = $this->run_query($q);
-        $author = ucfirst(strtolower($query->row()->lname)) . ' ' . ucfirst(strtolower($query->row()->fname));
+        $author = ucfirst($query->row()->display_name);
 
         return $author;
     }
 
     public function get_num_likes($post_id)
     {
-        $q = sprintf("SELECT like_id FROM likes WHERE (source_id=%d AND source_type=%s)",
-                     $post_id, $this->db->escape("post"));
+        $q = sprintf("SELECT like_id FROM likes " .
+                     "WHERE (source_id=%d AND source_type='post')",
+                     $post_id);
         $query = $this->run_query($q);
 
         return $query->num_rows();
@@ -140,8 +140,8 @@ class Post_model extends CI_Model
     public function get_num_comments($post_id)
     {
         $q = sprintf("SELECT comment_id FROM comments " .
-                     "WHERE (source_type=%s AND source_id=%d AND parent_id=%d)",
-                     $this->db->escape("post"), $post_id, 0);
+                     "WHERE (source_type='post' AND source_id=%d AND parent_id=0)",
+                     $post_id);
         $query = $this->run_query($q);
 
         return $query->num_rows();
@@ -176,8 +176,8 @@ class Post_model extends CI_Model
         }
 
         $q = sprintf("INSERT INTO likes (liker_id, source_id, source_type) " .
-                     "VALUES (%d, %d, %s)",
-                     $_SESSION['user_id'], $post_id, $this->db->escape("post"));
+                     "VALUES (%d, %d, 'post')",
+                     $_SESSION['user_id'], $post_id);
         $this->run_query($q);
 
         // Get the id of the user who posted.
@@ -189,10 +189,8 @@ class Post_model extends CI_Model
 
         // Dispatch an activity.
         $q = sprintf("INSERT INTO activities (trigger_id, parent_id, source_id, source_type, activity, audience) " .
-                     " VALUES (%d, %d, %s, %s, %s, %s)",
-                     $_SESSION['user_id'], $parent_id, $post_id,
-                     $this->db->escape('post'), $this->db->escape('like'),
-                     $this->db->escape('timeline'));
+                     " VALUES (%d, %d, %d, 'post', 'like', 'timeline')",
+                     $_SESSION['user_id'], $parent_id, $post_id);
         $this->run_query($q);
     }
 
@@ -200,9 +198,8 @@ class Post_model extends CI_Model
     {
         // Record the comment.
         $q = sprintf("INSERT INTO comments (commenter_id, parent_id, source_id, source_type, comment) " .
-                     "VALUES (%d, %d, %d, %s, %s)",
-                     $_SESSION['user_id'], 0, $post_id,
-                     $this->db->escape("post"), $this->db->escape($comment));
+                     "VALUES (%d, %d, %d, 'post', %s)",
+                     $_SESSION['user_id'], 0, $post_id, $this->db->escape($comment));
         $this->run_query($q);
 
         // Get the parent_id.
@@ -214,18 +211,16 @@ class Post_model extends CI_Model
 
         // Dispatch an activity.
         $q = sprintf("INSERT INTO activities (trigger_id, parent_id, source_id, source_type, activity, audience) " .
-                     " VALUES (%d, %d, %s, %s, %s, %s)",
-                     $_SESSION['user_id'], $parent_id, $post_id,
-                     $this->db->escape('post'), $this->db->escape('comment'),
-                     $this->db->escape('timeline'));
+                     " VALUES (%d, %d, %d, 'post', 'comment', 'timeline')",
+                     $_SESSION['user_id'], $parent_id, $post_id);
         $this->run_query($q);
     }
 
     public function share($post_id, $audience, $audience_id)
     {
         // Get the post that is being shared.
-        $q = sprintf("SELECT author_id, post FROM posts WHERE post_id=%d LIMIT %d",
-                     $post_id, 1);
+        $q = sprintf("SELECT author_id, post FROM posts WHERE post_id=%d LIMIT 1",
+                     $post_id);
         $query = $this->run_query($q);
         $post = $query->row()->post;
         $post_author = $query->row()->author_id;
@@ -239,18 +234,16 @@ class Post_model extends CI_Model
 
         // Dispatch an activity.
         $q = sprintf("INSERT INTO activities (trigger_id, parent_id, source_id, source_type, activity, audience) " .
-                     " VALUES (%d, %d, %s, %s, %s, %s)",
-                     $_SESSION['user_id'], $post_author, $post_id,
-                     $this->db->escape('post'), $this->db->escape('share'),
-                     $this->db->escape('timeline'));
+                     " VALUES (%d, %d, %d, 'post', 'share', 'timeline')",
+                     $_SESSION['user_id'], $post_author, $post_id);
         $this->run_query($q);
     }
 
     public function get_likes($post_id, $offset, $limit)
     {
-        $q = sprintf("SELECT * FROM likes WHERE (source_type=%s AND source_id=%d) " .
+        $q = sprintf("SELECT * FROM likes WHERE (source_type='post' AND source_id=%d) " .
                      "ORDER BY date_liked DESC LIMIT %d, %d",
-                     $this->db->escape("post"), $post_id, $offset, $limit);
+                     $post_id, $offset, $limit);
         $query = $this->run_query($q);
         $results = $query->result_array();
 
@@ -270,9 +263,9 @@ class Post_model extends CI_Model
     }
     public function get_comments($post_id, $offset, $limit)
     {
-        $q = sprintf("SELECT comment_id FROM comments WHERE (source_type=%s AND source_id=%d AND parent_id=%d) " .
+        $q = sprintf("SELECT comment_id FROM comments WHERE (source_type='post' AND source_id=%d AND parent_id=0) " .
                      "ORDER BY date_entered DESC LIMIT %d, %d",
-                     $this->db->escape("post"), $post_id, 0, $offset, $limit);
+                     $post_id, $offset, $limit);
         $query = $this->run_query($q);
         $results = $query->result_array();
 

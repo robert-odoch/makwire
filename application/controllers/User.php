@@ -69,9 +69,9 @@ class User extends CI_Controller
 
     private function initialize_user()
     {
-        $data['primary_user'] = $this->user_model->get_full_name($_SESSION['user_id']);
-        $data['suggested_users'] = $this->user_model->get_suggested_users(0, 4, TRUE);
-        $data['num_friend_requests'] = $this->user_model->get_num_friend_requests();
+        $data['primary_user'] = $this->user_model->get_name($_SESSION['user_id']);
+        $data['suggested_users'] = $this->user_model->get_suggested_users(0, 4);
+        $data['num_friend_requests'] = $this->user_model->get_num_friend_requests(TRUE);
         $data['num_active_friends'] = $this->user_model->get_num_chat_users(TRUE);
         $data['num_new_messages'] = $this->user_model->get_num_messages(TRUE);
         $data['num_new_notifs'] = $this->user_model->get_num_notifs(TRUE);
@@ -88,7 +88,7 @@ class User extends CI_Controller
         $data['visitor'] = ($_SESSION['user_id'] === $user_id) ? FALSE : TRUE;
         if ($data['visitor']) {
             $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
-            $data['secondary_user'] = $this->user_model->get_full_name($user_id);
+            $data['secondary_user'] = $this->user_model->get_name($user_id);
             $data['title'] = "{$data['secondary_user']}'s Posts";
             $data['suid'] = $user_id;
         }
@@ -138,7 +138,7 @@ class User extends CI_Controller
     {
         $data = $this->initialize_user();
         $data['suid'] = $user_id;
-        $data['secondary-user'] = $this->user_model->get_full_name($user_id);
+        $data['secondary-user'] = $this->user_model->get_name($user_id);
         $data['title'] = "Send a message to {$data['secondary-user']}";
         $data['message_errors'] = array();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -161,7 +161,7 @@ class User extends CI_Controller
             $data['next_offset'] = ($offset + $limit);
         }
 
-        $data['messages'] = $this->user_model->get_conversation($user_id, $offset, $limit, TRUE);
+        $data['messages'] = $this->user_model->get_conversation($user_id, $offset, $limit);
         $this->load->view('message', $data);
         $this->load->view('common/footer');
     }
@@ -229,7 +229,7 @@ class User extends CI_Controller
 		$data['has_next'] = FALSE;
 		if ($data['num_new_notifs'] > 0) {
 		    // First show only the new notifications.
-			$data['notifications'] = $this->user_model->get_notifications($offset, $limit, TRUE, TRUE);
+			$data['notifications'] = $this->user_model->get_notifications($offset, $limit, TRUE);
 			if (($data['num_new_notifs'] - $offset) > $limit) {
 				$data['has_next'] = TRUE;
 				$data['next_offset'] = ($offset + $limit);
@@ -244,7 +244,7 @@ class User extends CI_Controller
 		}
 		else {
 		    $num_notifications = $this->user_model->get_num_notifs(FALSE);
-		    $data['notifications'] = $this->user_model->get_notifications($offset, $limit, TRUE, FALSE);
+		    $data['notifications'] = $this->user_model->get_notifications($offset, $limit, FALSE);
 		    if (($num_notifications - $offset) > $limit) {
 		        $data['has_next'] = TRUE;
 		        $data['next_offset'] = ($offset + $limit);
@@ -282,12 +282,13 @@ class User extends CI_Controller
 
         $limit = 10;
         $data['has_next'] = FALSE;
-        if (($data['num_friend_requests'] - $offset) > $limit) {
+        $num_friend_requests = $this->user_model->get_num_friend_requests(FALSE);
+        if (($num_friend_requests - $offset) > $limit) {
             $data['has_next'] = TRUE;
             $data['next_offset'] = ($limit + $offset);
         }
 
-        $data['friend_requests'] = $this->user_model->get_friend_requests();
+        $data['friend_requests'] = $this->user_model->get_friend_requests($offset, $limit);
         $this->load->view('friend-requests', $data);
         $this->load->view('common/footer');
     }
@@ -313,7 +314,7 @@ class User extends CI_Controller
         $data['has_next'] = FALSE;
         if ($data['num_new_messages'] > 0) {  // There are new messages.
             // First show only the new messages.
-            $data['messages'] = $this->user_model->get_messages($offset, $limit, TRUE, TRUE);
+            $data['messages'] = $this->user_model->get_messages($offset, $limit, TRUE);
             if (($data['num_new_messages'] - $offset) > $limit) {
                 $data['has_next'] = TRUE;
                 $data['next_offset'] = ($offset + $limit);
@@ -328,7 +329,7 @@ class User extends CI_Controller
         }
         else {
             $num_messages = $this->user_model->get_num_messages(FALSE);
-            $data['messages'] = $this->user_model->get_messages($offset, $limit, TRUE, FALSE);
+            $data['messages'] = $this->user_model->get_messages($offset, $limit, FALSE);
             if (($num_messages - $offset) > $limit) {
                 $data['has_next'] = TRUE;
                 $data['next_offset'] = ($offset + $limit);
@@ -349,7 +350,7 @@ class User extends CI_Controller
         $data['visitor'] = ($_SESSION['user_id'] === $user_id) ? FALSE : TRUE;
         if ($data['visitor']) {
             $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
-            $data['secondary_user'] = $this->user_model->get_full_name($user_id);
+            $data['secondary_user'] = $this->user_model->get_name($user_id);
             $data['title'] = "{$data['secondary_user']}'s Friends";
             $data['suid'] = $user_id;
         }
@@ -367,7 +368,7 @@ class User extends CI_Controller
             $data['next_offset'] = ($limit + $offset);
         }
 
-        $data['friends'] = $this->user_model->get_friends($user_id, TRUE, $offset, $limit);
+        $data['friends'] = $this->user_model->get_friends($user_id, $offset, $limit);
         $this->load->view("show-friends", $data);
         $this->load->view("common/footer");
     }
@@ -382,7 +383,7 @@ class User extends CI_Controller
         $data['visitor'] = ($_SESSION['user_id'] === $user_id) ? FALSE : TRUE;
         if ($data['visitor']) {
             $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
-            $data['secondary_user'] = $this->user_model->get_full_name($user_id);
+            $data['secondary_user'] = $this->user_model->get_name($user_id);
             $data['title'] = "{$data['secondary_user']}'s Profile";
             $data['suid'] = $user_id;
         }

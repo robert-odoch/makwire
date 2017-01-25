@@ -14,9 +14,9 @@ require_once('common/user-page-start.php');
                                 <?php foreach ($chat_users as $cu): ?>
                                 <li>
                                     <figure>
-                                        <img src="<?= base_url("images/kasumba.jpg"); ?>" alt="<?= $cu['full_name']; ?>">
+                                        <img src="<?= base_url("images/kasumba.jpg"); ?>" alt="<?= $cu['display_name']; ?>">
                                     </figure>
-                                    <span><a href="<?= base_url("user/send-message/{$cu['friend_id']}"); ?>"><?= $cu['full_name']; ?></a> <span class="logged-in"></span></span>
+                                    <span><a href="<?= base_url("user/send-message/{$cu['friend_id']}"); ?>"><?= $cu['display_name']; ?></a> <span class="logged-in"></span></span>
                                 </li>
                                 <?php endforeach; ?>
                             </ul>

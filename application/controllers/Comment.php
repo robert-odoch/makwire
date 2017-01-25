@@ -14,15 +14,15 @@ class Comment extends CI_Controller
 
         $this->load->model("user_model");
         $this->load->model("comment_model");
-        
+
         // Check whether the user hasn't been logged out from some where else.
         $this->user_model->confirm_logged_in();
     }
 
     private function initialize_user()
     {
-        $data['primary_user'] = $this->user_model->get_full_name($_SESSION['user_id']);
-        $data['suggested_users'] = $this->user_model->get_suggested_users(0, 4, TRUE);
+        $data['primary_user'] = $this->user_model->get_name($_SESSION['user_id']);
+        $data['suggested_users'] = $this->user_model->get_suggested_users(0, 4);
         $data['num_friend_requests'] = $this->user_model->get_num_friend_requests();
         $data['num_active_friends'] = $this->user_model->get_num_chat_users(TRUE);
         $data['num_new_messages'] = $this->user_model->get_num_messages(TRUE);
@@ -32,10 +32,16 @@ class Comment extends CI_Controller
         return $data;
     }
 
-    public function like($comment_id, $post_id)
+    public function like($post_id, $comment_id)
     {
         $this->comment_model->like($comment_id);
-        redirect(base_url("post/comment/{$post_id}"));
+
+        $offset = ($comment_id - 1);
+        if ($offset == 0) {
+            redirect(base_url("post/comments/{$post_id}"));
+        }
+
+        redirect(base_url("post/comments/{$post_id}/{$offset}"));
     }
 
     public function reply($comment_id)

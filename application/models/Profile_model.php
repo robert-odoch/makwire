@@ -30,7 +30,8 @@ class Profile_model extends CI_Model
     {
         // college, school, programme, hall, hostel.
         // Get the level, year of study, country and district.
-        $q = sprintf("SELECT level, year_of_study, country_id, district_id FROM user_profile WHERE (user_id=%d)",
+        $q = sprintf("SELECT level, year_of_study, country_id, district_id " .
+                     "FROM user_profile WHERE (user_id=%d)",
                      $user_id);
         $query = $this->run_query($q);
         if ($query->num_rows() == 1) {
@@ -198,7 +199,8 @@ class Profile_model extends CI_Model
 
     public function college_and_school_exists($college_id, $school_id)
     {
-        $q = sprintf("SELECT school_id FROM schools WHERE (school_id=%d AND college_id=%d) LIMIT 1",
+        $q = sprintf("SELECT school_id FROM schools " .
+                     "WHERE (school_id=%d AND college_id=%d) LIMIT 1",
                      $school_id, $college_id);
         $query = $this->run_query($q);
         if ($query->num_rows() == 1) {
@@ -219,7 +221,8 @@ class Profile_model extends CI_Model
     public function add_school($data)
     {
         $q = sprintf("INSERT INTO user_schools (user_id, school_id, date_from, date_to ) " .
-                     "VALUES (%d, %d, %s, %s)", $_SESSION['user_id'], $data['college_id'],
+                     "VALUES (%d, %d, %s, %s)",
+                     $_SESSION['user_id'], $data['college_id'],
                      $this->db->escape($data['start_date']), $this->db->escape($data['end_date']));
         $this->run_query($q);
     }
@@ -227,7 +230,8 @@ class Profile_model extends CI_Model
     public function add_college($data)
     {
         $q = sprintf("INSERT INTO user_colleges (user_id, college_id, date_from, date_to) " .
-                     "VALUES (%d, %d, %s, %s)", $_SESSION['user_id'], $data['college_id'],
+                     "VALUES (%d, %d, %s, %s)",
+                     $_SESSION['user_id'], $data['college_id'],
                      $this->db->escape($data['start_date']), $this->db->escape($data['end_date']));
         $this->run_query($q);
     }
@@ -243,7 +247,8 @@ class Profile_model extends CI_Model
     public function add_country($country_id)
     {
         $q = sprintf("UPDATE user_profile SET country_id=%d " .
-                     "WHERE user_id=%d", $country_id, $_SESSION['user_id']);
+                     "WHERE user_id=%d",
+                     $country_id, $_SESSION['user_id']);
         $this->run_query($q);
     }
 
@@ -253,7 +258,8 @@ class Profile_model extends CI_Model
     public function get_districts($district)
     {
         $q = sprintf("SELECT district_id, district_name FROM districts " .
-                     "WHERE district_name LIKE '*%s*'", $district);
+                     "WHERE district_name LIKE '*%s*'",
+                     $district);
         $query = $this->run_query($q);
 
         return $query->result_array();
@@ -262,7 +268,8 @@ class Profile_model extends CI_Model
     public function add_district($district_id)
     {
         $q = sprintf("UPDATE user_profile SET district_id=%d " .
-                     "WHERE user_id=%d", $district_id, $_SESSION['user_id']);
+                     "WHERE user_id=%d",
+                     $district_id, $_SESSION['user_id']);
         $this->run_query($q);
     }
 
@@ -282,7 +289,8 @@ class Profile_model extends CI_Model
     public function add_hall($data)
     {
         $q = sprintf("INSERT INTO user_halls (user_id, hall_id, date_from, date_to, resident) " .
-                     "VALUES (%d, %d, %s, %s, %d)", $_SESSION['user_id'], $data['hall_id'],
+                     "VALUES (%d, %d, %s, %s, %d)",
+                     $_SESSION['user_id'], $data['hall_id'],
                      $this->db->escape($data['start_date']), $this->db->escape($data['end_date']),
                      $data['resident']);
         $this->run_query($q);
@@ -291,7 +299,8 @@ class Profile_model extends CI_Model
     public function add_hostel($data)
     {
         $q = sprintf("INSERT INTO user_hostels (user_id, hostel_id, date_from, date_to) " .
-                     "VALUES (%d, %d, %s, %s)", $_SESSION['user_id'], $data['hostel_id'],
+                     "VALUES (%d, %d, %s, %s)",
+                     $_SESSION['user_id'], $data['hostel_id'],
                      $this->db->escape($data['start_date']), $this->db->escape($data['end_date']));
         $this->run_query($q);
     }

@@ -58,7 +58,7 @@ require_once('common/user-page-start.php');
                                             // Show nothing for now.
                                         }
                                         else {
-                                            print '<a href="' . base_url('post/like/' . $post['post_id']) . '" title="Like this post"><span class="glyphicon glyphicon-thumbs-up"></span> Like</a>';
+                                            print '<a href="' . base_url("post/like/{$post['post_id']}") . '" title="Like this post"><span class="glyphicon glyphicon-thumbs-up"></span> Like</a>';
                                             print("<span> &middot; </span>");
                                         }
                                         ?>
@@ -105,7 +105,7 @@ require_once('common/user-page-start.php');
                                             // viewing this page.
                                             if ($comment['commenter_id'] != $_SESSION['user_id']) {
                                                 print "<span> &middot; </span>" .
-                                                      "<a href='" . base_url("comment/like/{$comment['comment_id']}") . "'>Like</a>" .
+                                                      "<a href='" . base_url("comment/like/{$post['post_id']}/{$comment['comment_id']}") . "'>Like</a>" .
                                                       "<span> &middot; </span>" .
                                                       "<a href='" . base_url("comment/reply/{$comment['comment_id']}") . "'>Reply</a>";
                                             }

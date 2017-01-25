@@ -21,8 +21,8 @@ class Reply extends CI_Controller
 
     private function initialize_user()
     {
-        $data['primary_user'] = $this->user_model->get_full_name($_SESSION['user_id']);
-        $data['suggested_users'] = $this->user_model->get_suggested_users(0, 4, TRUE);
+        $data['primary_user'] = $this->user_model->get_name($_SESSION['user_id']);
+        $data['suggested_users'] = $this->user_model->get_suggested_users(0, 4);
         $data['num_friend_requests'] = $this->user_model->get_num_friend_requests();
         $data['num_active_friends'] = $this->user_model->get_num_chat_users(TRUE);
         $data['num_new_messages'] = $this->user_model->get_num_messages(TRUE);
@@ -32,10 +32,16 @@ class Reply extends CI_Controller
         return $data;
     }
 
-    public function like($reply_id, $comment_id)
+    public function like($comment_id, $reply_id)
     {
         $this->reply_model->like($reply_id);
-        redirect(base_url("comment/replies/{$comment_id}"));
+
+        $offset = ($reply_id - 1);
+        if ($offset == 0) {
+            redirect(base_url("comment/replies/{$comment_id}"));
+        }
+
+        redirect(base_url("comment/replies/{$comment_id}/{$offset}"));
     }
 
     public function likes($reply_id, $offset=0)

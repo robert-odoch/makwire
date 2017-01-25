@@ -39,7 +39,7 @@ class User_model extends CI_Model
             $_SESSION['message'] = "This account was logged out from another location, " .
                                    "please log in again to continue using this account. " .
                                    "We are sorry for bothering you.";
-            redirect(base_url("login/"));
+            redirect(base_url("login"));
         }
     }
 
@@ -53,58 +53,52 @@ class User_model extends CI_Model
         $this->run_query($q);
     }
 
-    public function get_full_name($user_id)
+    public function get_name($user_id)
     {
-        $q = sprintf("SELECT fname, lname FROM users WHERE user_id=%d", $user_id);
+        $q = sprintf("SELECT display_name FROM users WHERE user_id=%d",
+                     $user_id);
         $query = $this->run_query($q);
-        $full_name = ucfirst(strtolower($query->row()->lname)) . ' ' . ucfirst(strtolower($query->row()->fname));
 
-        return $full_name;
+        return $query->row()->display_name;
     }
 
     public function get_num_messages($filter=TRUE)
     {
-        if ($filter)
-            return count($this->get_messages(0, 0, FALSE, TRUE));
-        else
-            return count($this->get_messages(0, 0, FALSE, FALSE));
-    }
-
-    public function get_messages($offset, $limit, $use_limit=TRUE, $filter=TRUE)
-    {
-        if ($use_limit) {
-            if ($filter) {
-                $q = sprintf("SELECT message_id, sender_id, receiver_id, message, seen, date_sent FROM messages " .
-                             "WHERE (seen=%d AND receiver_id=%d) ORDER BY date_sent DESC LIMIT %d, %d",
-                             0, $_SESSION['user_id'], $offset, $limit);
-            }
-            else {
-                $q = sprintf("SELECT message_id, sender_id, receiver_id, message, seen, date_sent FROM messages " .
-                             "WHERE receiver_id=%d ORDER BY date_sent DESC LIMIT %d, %d",
-                             $_SESSION['user_id'], $offset, $limit);
-            }
+        if ($filter) {
+            $q = sprintf("SELECT message_id FROM messages " .
+                         "WHERE (seen IS FALSE AND receiver_id=%d)",
+                         $_SESSION['user_id']);
         }
         else {
-            if ($filter) {
-                $q = sprintf("SELECT sender_id, message, date_sent FROM messages " .
-                             "WHERE (seen=%d AND receiver_id=%d)",
-                             0, $_SESSION['user_id']);
-            }
-            else {
-                $q = sprintf("SELECT sender_id, message, date_sent FROM messages WHERE receiver_id=%d",
-                             $_SESSION['user_id']);
-            }
+            $q = sprintf("SELECT message_id FROM messages WHERE receiver_id=%d",
+                         $_SESSION['user_id']);
         }
+        $query = $this->run_query($q);
 
+        return $query->num_rows();
+    }
+
+    public function get_messages($offset, $limit, $filter=TRUE)
+    {
+        if ($filter) {
+            $q = sprintf("SELECT message_id, sender_id, receiver_id, message, seen, date_sent FROM messages " .
+                         "WHERE (seen IS FALSE AND receiver_id=%d) ORDER BY date_sent DESC LIMIT %d, %d",
+                         $_SESSION['user_id'], $offset, $limit);
+        }
+        else {
+            $q = sprintf("SELECT message_id, sender_id, receiver_id, message, seen, date_sent FROM messages " .
+                         "WHERE receiver_id=%d ORDER BY date_sent DESC LIMIT %d, %d",
+                         $_SESSION['user_id'], $offset, $limit);
+        }
         $query = $this->run_query($q);
         $results = $query->result_array();
 
         $messages = array();
         foreach ($results as $msg) {
-            $msg['sender'] = $this->get_full_name($msg['sender_id']);
-            if (isset($msg['seen']) && ($msg['seen'] == 0) && ($msg['receiver_id'] == $_SESSION['user_id'])) {
-                $q = sprintf("UPDATE messages SET seen=%d WHERE (message_id=%d) LIMIT 1",
-                             1, $msg['message_id']);
+            $msg['sender'] = $this->get_name($msg['sender_id']);
+            if (!$msg['seen'] && ($msg['receiver_id'] == $_SESSION['user_id'])) {
+                $q = sprintf("UPDATE messages SET seen=1 WHERE (message_id=%d) LIMIT 1",
+                             $msg['message_id']);
                 $this->run_query($q);
             }
 
@@ -114,11 +108,6 @@ class User_model extends CI_Model
         }
 
         return $messages;
-    }
-
-    public function get_num_chat_users($filter=TRUE)
-    {
-        return count($this->get_chat_users(TRUE));
     }
 
     public function active($user_id)
@@ -135,7 +124,7 @@ class User_model extends CI_Model
     }
 
     public function get_num_friends($user_id) {
-        $q = sprintf("SELECT user_id, friend_id FROM friends " .
+        $q = sprintf("SELECT user_id FROM friends " .
                      "WHERE (user_id=%d) OR (friend_id=%d)",
                      $user_id, $user_id);
         $query = $this->run_query($q);
@@ -143,18 +132,11 @@ class User_model extends CI_Model
         return $query->num_rows();
     }
 
-    public function get_friends($user_id, $use_limit=TRUE, $offset=0, $limit=0)
+    public function get_friends($user_id, $offset, $limit)
     {
-        if ($use_limit) {
-            $q = sprintf("SELECT user_id, friend_id FROM friends " .
-                         "WHERE (user_id=%d) OR (friend_id=%d) LIMIT %d, %d",
-                         $user_id, $user_id, $offset, $limit);
-        }
-        else {
-            $q = sprintf("SELECT user_id, friend_id FROM friends " .
-                         "WHERE (user_id=%d) OR (friend_id=%d)",
-                         $user_id, $user_id);
-        }
+        $q = sprintf("SELECT user_id, friend_id FROM friends " .
+                     "WHERE (user_id=%d) OR (friend_id=%d) LIMIT %d, %d",
+                     $user_id, $user_id, $offset, $limit);
         $query = $this->run_query($q);
         $results = $query->result_array();
 
@@ -170,7 +152,7 @@ class User_model extends CI_Model
         $friends = array();
         foreach ($results as $friend) {
             // Get this friend's name.
-            $friend['full_name'] = $this->get_full_name($friend['friend_id']);
+            $friend['display_name'] = $this->get_name($friend['friend_id']);
 
             array_push($friends, $friend);
         }
@@ -178,12 +160,45 @@ class User_model extends CI_Model
         return $friends;
     }
 
+    public function get_all_friends($user_id)
+    {
+        $q = sprintf("SELECT user_id, friend_id FROM friends " .
+                     "WHERE (user_id=%d) OR (friend_id=%d)",
+                     $user_id, $user_id);
+        $query = $this->run_query($q);
+        $results = $query->result_array();
+
+        $i = 0;
+        foreach ($results as $r) {
+            if ($r['friend_id'] == $user_id) {
+                $results[$i]['friend_id'] = $r['user_id'];
+            }
+            unset($results[$i]['user_id']);
+            ++$i;
+        }
+
+        $friends = array();
+        foreach ($results as $friend) {
+            // Get this friend's name.
+            $friend['display_name'] = $this->get_name($friend['friend_id']);
+
+            array_push($friends, $friend);
+        }
+
+        return $friends;
+    }
+
+    public function get_num_chat_users($filter=TRUE)
+    {
+        return count($this->get_chat_users(TRUE));
+    }
+
     public function get_chat_users($filter=TRUE)
     {
         $chat_users = array();
 
         // Get this user's friends.
-        $friends = $this->get_friends($_SESSION['user_id'], FALSE);
+        $friends = $this->get_all_friends($_SESSION['user_id']);
 
         if ($filter) {
             // Get the active friends.
@@ -206,56 +221,47 @@ class User_model extends CI_Model
     public function get_num_notifs($filter=TRUE)
     {
         if ($filter) {
-			return count($this->get_notifications(0, 0, FALSE, TRUE));
+            $q = sprintf("SELECT activity_id FROM activities " .
+                         "WHERE (parent_id=%d AND trigger_id != %d AND seen IS FALSE) ",
+                         $_SESSION['user_id'], $_SESSION['user_id']);
         }
+        else {
+            $q = sprintf("SELECT activity_id FROM activities " .
+                         "WHERE (parent_id=%d AND trigger_id != %d) ",
+                         $_SESSION['user_id'], $_SESSION['user_id']);
+        }
+        $query = $this->run_query($q);
 
-        return count($this->get_notifications(0, 0, FALSE, FALSE));
+        return $query->num_rows();
     }
 
-    public function get_notifications($offset, $limit, $use_limit=TRUE, $filter=TRUE)
+    public function get_notifications($offset, $limit, $filter=TRUE)
     {
-        $notifications = array();
-
         // Get notifications from activities.
 		if ($filter) {
-			if ($use_limit) {
-				$q = sprintf("SELECT activity_id, trigger_id, source_id, parent_id, source_type, activity, seen, date_entered " .
-				             "FROM activities WHERE (parent_id=%d AND trigger_id != %d AND seen=%d) " .
-				             "ORDER BY date_entered DESC LIMIT %d, %d",
-							 $_SESSION['user_id'], $_SESSION['user_id'], 0, $offset, $limit);
-			}
-			else {
-				$q = sprintf("SELECT trigger_id, source_id, parent_id, source_type, activity, date_entered " .
-				             "FROM activities WHERE (parent_id=%d AND trigger_id != %d AND seen=%d) " .
-				             "ORDER BY date_entered DESC",
-							 $_SESSION['user_id'], $_SESSION['user_id'], 0);
-			}
+			$q = sprintf("SELECT activity_id, trigger_id, source_id, parent_id, source_type, activity, seen, date_entered " .
+			             "FROM activities WHERE (parent_id=%d AND trigger_id != %d AND seen IS FALSE) " .
+			             "ORDER BY date_entered DESC LIMIT %d, %d",
+						 $_SESSION['user_id'], $_SESSION['user_id'], $offset, $limit);
 		}
 		else {
-			if ($use_limit) {
-				$q = sprintf("SELECT activity_id, trigger_id, source_id, parent_id, source_type, activity, seen, date_entered " .
-				             "FROM activities WHERE (parent_id=%d AND trigger_id != %d) " .
-				             "ORDER BY date_entered DESC LIMIT %d, %d",
-							 $_SESSION['user_id'], $_SESSION['user_id'], $offset, $limit);
-			}
-			else {
-				$q = sprintf("SELECT trigger_id, source_id, parent_id, source_type, activity, date_entered " .
-				             "FROM activities WHERE (parent_id=%d AND trigger_id != %d) " .
-				             "ORDER BY date_entered DESC",
-							 $_SESSION['user_id'], $_SESSION['user_id']);
-			}
+			$q = sprintf("SELECT activity_id, trigger_id, source_id, parent_id, source_type, activity, seen, date_entered " .
+			             "FROM activities WHERE (parent_id=%d AND trigger_id != %d) " .
+			             "ORDER BY date_entered DESC LIMIT %d, %d",
+						 $_SESSION['user_id'], $_SESSION['user_id'], $offset, $limit);
 		}
-
         $query = $this->run_query($q);
         $results = $query->result_array();
+
+        $notifications = array();
         foreach ($results as $notif) {
             // Get the name of the user who performed this activity.
-            $notif['user'] = $this->get_full_name($notif['trigger_id']);
+            $notif['user'] = $this->get_name($notif['trigger_id']);
 
 			// If the notification is beeing displayed to the user, update to reflect that it has been seen.
-			if (isset($notif['seen']) && ($notif['seen'] == 0)) {
-                $q = sprintf("UPDATE activities SET seen=%d WHERE (activity_id=%d) LIMIT 1",
-                             1, $notif['activity_id']);
+			if (!$notif['seen']) {
+                $q = sprintf("UPDATE activities SET seen=1 WHERE (activity_id=%d) LIMIT 1",
+                             $notif['activity_id']);
                 $this->run_query($q);
             }
 
@@ -320,8 +326,8 @@ class User_model extends CI_Model
     public function get_friendship_status($user_id)
     {
         // Check whether the two users are already friends.
-        $q = sprintf("SELECT id FROM friends WHERE user_id=%d AND friend_id=%d " .
-                     "OR user_id=%d AND friend_id=%d LIMIT 1",
+        $q = sprintf("SELECT id FROM friends " .
+                     "WHERE (user_id=%d AND friend_id=%d) OR (user_id=%d AND friend_id=%d) LIMIT 1",
                      $_SESSION['user_id'], $user_id, $user_id, $_SESSION['user_id']);
         $query = $this->run_query($q);
         $friends = FALSE;
@@ -336,8 +342,7 @@ class User_model extends CI_Model
         else {
             // Check to see if a friend request has already been sent.
             $q = sprintf("SELECT request_id, user_id, target_id FROM friend_requests " .
-                         "WHERE (user_id=%d AND target_id=%d) " .
-                         "OR (user_id=%d AND target_id=%d) LIMIT 1",
+                         "WHERE (user_id=%d AND target_id=%d) OR (user_id=%d AND target_id=%d) LIMIT 1",
                          $_SESSION['user_id'], $user_id, $user_id, $_SESSION['user_id']);
             $query = $this->run_query($q);
 
@@ -356,29 +361,27 @@ class User_model extends CI_Model
 
     public function get_num_suggested_users()
     {
-        return count($this->get_suggested_users(0, 0, FALSE));
-    }
-
-    public function get_suggested_users($offset, $limit, $use_limit=TRUE)
-    {
-        if ($use_limit) {
-            $q = sprintf("SELECT user_id, fname, lname FROM users " .
-                         "WHERE (user_id != %d) LIMIT %d, %d",
-                         $_SESSION['user_id'], $offset, $limit);
-        }
-        else {
-            $q = sprintf("SELECT user_id, fname, lname FROM users");
-        }
-
+        $q = sprintf("SELECT user_id FROM user WHERE (user_id != %d)",
+                     $_SESSION['user_id']);
         $query = $this->run_query($q);
 
+        return $query->num_rows();
+    }
+
+    public function get_suggested_users($offset, $limit)
+    {
+        $q = sprintf("SELECT user_id, display_name FROM users " .
+                     "WHERE (user_id != %d) LIMIT %d, %d",
+                     $_SESSION['user_id'], $offset, $limit);
+        $query = $this->run_query($q);
         $results = $query->result_array();
+
         $users = array();
         foreach ($results as $user) {
             // Only add to list if they are not friends and friend request hasn't been sent.
             $fr_status = $this->get_friendship_status($user['user_id']);
             if (!$fr_status['friends'] && !$fr_status['fr_sent']) {
-                $user['full_name'] = ucfirst(strtolower($user['lname'])) . ' ' . ucfirst(strtolower($user['fname']));
+                $user['display_name'] = ucfirst($user['display_name']);
                 array_push($users, $user);
             }
         }
@@ -386,35 +389,41 @@ class User_model extends CI_Model
         return $users;
     }
 
-    public function get_num_friend_requests()
-    {
-        return count($this->get_friend_requests(TRUE));
-    }
-
-    public function get_friend_requests($filter=FALSE)
+    public function get_num_friend_requests($filter=TRUE)
     {
         if ($filter) {
-            $q = sprintf("SELECT user_id, seen FROM friend_requests " .
+            $q = sprintf("SELECT user_id FROM friend_requests " .
                          "WHERE (target_id=%d AND seen IS FALSE AND confirmed IS FALSE)",
                          $_SESSION['user_id']);
         }
         else {
-            $q = sprintf("SELECT user_id, seen FROM friend_requests " .
-                         "WHERE (target_id=%d AND confirmed IS FALSE) ORDER BY date_entered DESC",
+            $q = sprintf("SELECT user_id FROM friend_requests " .
+                         "WHERE (target_id=%d AND confirmed IS FALSE)",
                          $_SESSION['user_id']);
         }
         $query = $this->run_query($q);
+
+        return $query->num_rows();
+    }
+
+    public function get_friend_requests()
+    {
+        $q = sprintf("SELECT user_id, seen FROM friend_requests " .
+                     "WHERE (target_id=%d AND confirmed IS FALSE) ORDER BY date_entered DESC",
+                     $_SESSION['user_id']);
+        $query = $this->run_query($q);
         $results = $query->result_array();
+
         $friend_requests = array();
         foreach ($results as $fr) {
-            if (!$filter && isset($fr['seen']) && $fr['seen']==0) {
-                $q = sprintf("UPDATE friend_requests SET seen=TRUE " .
+            if (!$fr['seen']) {
+                $q = sprintf("UPDATE friend_requests SET seen=1 " .
                              "WHERE (target_id=%d AND user_id=%d)",
                              $_SESSION['user_id'], $fr['user_id']);
                 $this->run_query($q);
             }
 
-            $fr['name'] = $this->get_full_name($fr['user_id']);
+            $fr['name'] = $this->get_name($fr['user_id']);
             array_push($friend_requests, $fr);
         }
 
@@ -429,9 +438,8 @@ class User_model extends CI_Model
 
         // Dispatch an activity.
         $q = sprintf("INSERT INTO activities (trigger_id, parent_id, source_id, source_type, activity, audience) " .
-                     "VALUES (%d, %d, %d, %s, %s, %s)",
-                     $_SESSION['user_id'], $target_id, $target_id, $this->db->escape('user'),
-                     $this->db->escape('friend_request'), $this->db->escape('user'));
+                     "VALUES (%d, %d, %d, 'user', 'friend_request', 'user')",
+                     $_SESSION['user_id'], $target_id, $target_id);
         $this->run_query($q);
     }
 
@@ -443,51 +451,48 @@ class User_model extends CI_Model
         $this->run_query($q);
 
         // Update the friend_requests table.
-        $q = sprintf("UPDATE friend_requests SET confirmed=%d WHERE user_id=%d AND target_id=%d",
-                     1, $friend_id, $_SESSION['user_id']);
+        $q = sprintf("UPDATE friend_requests SET confirmed=1 " .
+                     "WHERE (user_id=%d AND target_id=%d)",
+                     $friend_id, $_SESSION['user_id']);
         $this->run_query($q);
 
         // Dispatch an activity.
-        $q = sprintf("INSERT INTO activities (trigger_id, parent_id, source_id, activity, audience) " .
-                     "VALUES (%d, %d, %d, %s, %s)",
-                     $_SESSION['user_id'], $friend_id, $friend_id,
-                     $this->db->escape('confirmed_friend_request'), $this->db->escape('user'));
+        $q = sprintf("INSERT INTO activities (trigger_id, parent_id, source_id, source_type, activity, audience) " .
+                     "VALUES (%d, %d, %d, 'user', 'confirmed_friend_request', 'user')",
+                     $_SESSION['user_id'], $friend_id, $friend_id);
         $this->run_query($q);
     }
 
     public function send_message($receiver_id, $message)
     {
-        $q = sprintf("INSERT INTO messages (sender_id, receiver_id, message) VALUES (%d, %d, %s)",
+        $q = sprintf("INSERT INTO messages (sender_id, receiver_id, message) " .
+                     "VALUES (%d, %d, %s)",
                      $_SESSION['user_id'], $receiver_id, $this->db->escape($message));
         $this->run_query($q);
     }
 
     public function get_num_conversation($user_id)
     {
-        return count($this->get_conversation($user_id, 0, 0, FALSE));
+        $q = sprintf("SELECT message_id FROM messages " .
+                     "WHERE (receiver_id=%d AND sender_id=%d) OR (receiver_id=%d AND sender_id=%d)",
+                     $user_id, $_SESSION['user_id'], $_SESSION['user_id'], $user_id);
+        $query = $this->run_query($q);
+
+        return $query->num_rows();
     }
 
-    public function get_conversation($user_id, $offset, $limit, $use_limit=TRUE)
+    public function get_conversation($user_id, $offset, $limit)
     {
-        // Get the messages sent to this user.
-        if ($use_limit) {
-            $q = sprintf("SELECT message_id, sender_id, receiver_id, message, seen, date_sent FROM messages " .
-                         "WHERE (receiver_id=%d AND sender_id=%d) OR (receiver_id=%d AND sender_id=%d) " .
-                         "ORDER BY date_sent DESC LIMIT %d, %d",
-                         $user_id, $_SESSION['user_id'], $_SESSION['user_id'], $user_id, $offset, $limit);
-        }
-        else {
-            $q = sprintf("SELECT sender_id, receiver_id, message, date_sent FROM messages " .
-                         "WHERE (receiver_id=%d AND sender_id=%d) OR (receiver_id=%d AND sender_id=%d) " .
-                         "ORDER BY date_sent DESC",
-                         $user_id, $_SESSION['user_id'], $_SESSION['user_id'], $user_id);
-        }
+        $q = sprintf("SELECT message_id, sender_id, receiver_id, message, seen, date_sent FROM messages " .
+                     "WHERE (receiver_id=%d AND sender_id=%d) OR (receiver_id=%d AND sender_id=%d) " .
+                     "ORDER BY date_sent DESC LIMIT %d, %d",
+                     $user_id, $_SESSION['user_id'], $_SESSION['user_id'], $user_id, $offset, $limit);
         $query = $this->run_query($q);
         $results = $query->result_array();
 
         $messages = array();
-        $sender = $this->get_full_name($_SESSION['user_id']);
-        $receiver = $this->get_full_name($user_id);
+        $sender = $this->get_name($_SESSION['user_id']);
+        $receiver = $this->get_name($user_id);
         foreach ($results as $msg) {
             if ($msg['sender_id'] == $_SESSION['user_id']) {
                 $msg['sender'] = $sender;
@@ -496,9 +501,9 @@ class User_model extends CI_Model
                 $msg['sender'] = $receiver;
             }
 
-            if (isset($msg['seen']) && ($msg['seen'] == 0) && ($msg['receiver_id'] == $_SESSION['user_id'])) {
-                $q = sprintf("UPDATE messages SET seen=%d WHERE (message_id=%d) LIMIT 1",
-                             1, $msg['message_id']);
+            if (($msg['seen'] == 0) && ($msg['receiver_id'] == $_SESSION['user_id'])) {
+                $q = sprintf("UPDATE messages SET seen=1 WHERE (message_id=%d) LIMIT 1",
+                             $msg['message_id']);
                 $this->run_query($q);
             }
 
