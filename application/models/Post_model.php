@@ -113,6 +113,7 @@ class Post_model extends CI_Model
         return FALSE;
     }
 
+    // Checks whether a user has the proper permision to like a given post
     private function user_can_like_post($post) {
 
     }
@@ -170,6 +171,10 @@ class Post_model extends CI_Model
 
     public function like($post_id)
     {
+        if ($this->has_liked($post_id)) {
+            return;
+        }
+
         $q = sprintf("INSERT INTO likes (liker_id, source_id, source_type) " .
                      "VALUES (%d, %d, %s)",
                      $_SESSION['user_id'], $post_id, $this->db->escape("post"));
@@ -190,6 +195,7 @@ class Post_model extends CI_Model
                      $this->db->escape('timeline'));
         $this->run_query($q);
     }
+
     public function comment($post_id, $comment)
     {
         // Record the comment.
@@ -214,6 +220,7 @@ class Post_model extends CI_Model
                      $this->db->escape('timeline'));
         $this->run_query($q);
     }
+
     public function share($post_id, $audience, $audience_id)
     {
         // Get the post that is being shared.

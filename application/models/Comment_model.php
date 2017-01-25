@@ -27,11 +27,24 @@ class Comment_model extends CI_Model
     }
     /*** End Utility ***/
 
+    private function has_liked($comment_id)
+    {
+        $q = sprintf("SELECT like_id FROM likes " .
+                     "WHERE (source_id=%d AND source_type=%s AND liker_id=%d) " .
+                     "LIMIT %d", $comment_id, $this->db->escape("comment"), $_SESSION['user_id'], 1);
+        $query = $this->run_query($q);
+
+        if ($query->num_rows() === 1) {
+            return TRUE;
+        }
+
+        return FALSE;
+    }
+
     public function get_comment($comment_id)
     {
         $q = sprintf("SELECT commenter_id, comment, date_entered FROM comments " .
-                     "WHERE (comment_id=%d AND parent_id=%d)",
-                     $comment_id, 0);
+                     "WHERE (comment_id=%d AND parent_id=%d)", $comment_id, 0);
         $query = $this->run_query($q);
         $comment = $query->row_array();
 
@@ -52,6 +65,9 @@ class Comment_model extends CI_Model
 
         // Add the timespan.
         $comment['timespan'] = timespan(mysql_to_unix($comment['date_entered']), now(), 1);
+
+        // Has the user liked this comment?
+        $comment['liked'] = $this->has_liked($comment_id);
 
         return $comment;
     }
@@ -108,7 +124,6 @@ class Comment_model extends CI_Model
         foreach ($results as $r) {
             // Get the detailed reply.
             $reply = $this->reply_model->get_reply($r['comment_id']);
-            $reply['num_likes'] = $this->reply_model->get_num_likes($reply['comment_id']);
 
             array_push($replies, $reply);
         }
@@ -118,6 +133,10 @@ class Comment_model extends CI_Model
 
     public function like($comment_id)
     {
+        if ($this->has_liked($comment_id)) {
+            return;
+        }
+
         // Record the like.
         $q = sprintf("INSERT INTO likes (liker_id, source_id, source_type) " .
                      "VALUES (%d, %d, %s)",

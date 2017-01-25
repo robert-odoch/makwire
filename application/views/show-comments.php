@@ -58,11 +58,14 @@ require_once("common/user-page-start.php");
 
                                             // Hide these two links from the commenter if she is the one currently
                                             // viewing this page.
-                                            if ($comment['commenter_id'] != $_SESSION['user_id']) {
-                                                print "<span> &middot; </span>" .
-                                                      "<a href='" . base_url("comment/like/{$comment['comment_id']}/{$post['post_id']}") . "'>Like</a>" .
-                                                      "<span> &middot; </span>" .
-                                                      "<a href='" . base_url("comment/reply/{$comment['comment_id']}") . "'>Reply</a>";
+                                            if (($comment['commenter_id'] != $_SESSION['user_id'])) {
+                                                if (!$comment['liked']) {
+                                                    print("<span> &middot; </span>" .
+                                                          "<a href='" . base_url("comment/like/{$comment['comment_id']}/{$post['post_id']}") . "'>Like</a>");
+                                                }
+
+                                                print("<span> &middot; </span>" .
+                                                      "<a href='" . base_url("comment/reply/{$comment['comment_id']}") . "'>Reply</a>");
                                             }
 
                                             if ($comment['num_likes'] > 0) {

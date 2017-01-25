@@ -26,6 +26,22 @@ class Reply_model extends CI_Model
     }
     /*** End Utility ***/
 
+    private function has_liked($reply_id)
+    {
+        $q = sprintf("SELECT like_id FROM likes " .
+                     "WHERE (source_id=%d AND source_type=%s AND liker_id=%d) " .
+                     "LIMIT %d",
+                     $reply_id, $this->db->escape("reply"),
+                     $_SESSION['user_id'], 1);
+        $query = $this->run_query($q);
+
+        if ($query->num_rows() === 1) {
+            return TRUE;
+        }
+
+        return FALSE;
+    }
+
     public function get_reply($reply_id)
     {
         $q = sprintf("SELECT * FROM comments WHERE (comment_id=%s AND parent_id!=%d)",
@@ -44,6 +60,9 @@ class Reply_model extends CI_Model
         // Add the timespan.
         $reply['timespan'] = timespan(mysql_to_unix($reply['date_entered']), now(), 1);
 
+        // Has the user liked this reply?
+        $reply['liked'] = $this->has_liked($reply['commenter_id']);
+
         // Add the number of likes.
         $reply['num_likes'] = $this->get_num_likes($reply_id);
 
@@ -52,6 +71,10 @@ class Reply_model extends CI_Model
 
     public function like($reply_id)
     {
+        if ($this->has_liked) {
+            return;
+        }
+
         // Record the like.
         $q = sprintf("INSERT INTO likes (liker_id, source_id, source_type) " .
                      "VALUES (%d, %d, %s)",

@@ -44,8 +44,10 @@ require_once("common/user-page-start.php");
                                         // Hide this link from the replier if she is the one currently
                                         // viewing this page.
                                         if ($reply['commenter_id'] != $_SESSION['user_id']) {
-                                            print "<span> &middot; </span>" .
-                                                  "<a href='" . base_url("reply/like/{$reply['comment_id']}") . "'>Like</a>";
+                                            if (!$reply['liked']) {
+                                                print("<span> &middot; </span>" .
+                                                      "<a href='" . base_url("reply/like/{$reply['comment_id']}") . "'>Like</a>");
+                                                }
                                         }
 
                                         if ($reply['num_likes'] > 0) {
