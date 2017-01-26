@@ -32,11 +32,10 @@ class Comment extends CI_Controller
         return $data;
     }
 
-    public function like($post_id, $comment_id)
+    public function like($comment_id, $post_id, $offset)
     {
         $this->comment_model->like($comment_id);
 
-        $offset = ($comment_id - 1);
         if ($offset == 0) {
             redirect(base_url("post/comments/{$post_id}"));
         }
@@ -46,26 +45,19 @@ class Comment extends CI_Controller
 
     public function reply($comment_id)
     {
-        $reply_errors = array();
+        $data = $this->initialize_user();
+        $data['title'] = "Reply to Comment";
+        $this->load->view("common/header", $data);
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
             if (empty(trim($this->input->post("reply")))) {
-                $reply_errors['reply'] = "Reply can't be empty!";
+                $data['reply_error'] = "Reply can't be empty!";
             }
             else {
                 $reply = $this->input->post("reply");
                 $this->comment_model->reply($comment_id, $reply);
             }
         }
-
-        $this->show_reply_form($comment_id, $reply_errors);
-    }
-
-    private function show_reply_form($comment_id, $reply_errors)
-    {
-        $data = $this->initialize_user();
-        $data['title'] = "Reply to Comment";
-        $this->load->view("common/header", $data);
 
         $data['comment'] = $this->comment_model->get_comment($comment_id);
 
@@ -76,7 +68,8 @@ class Comment extends CI_Controller
             $data['has_next'] = TRUE;
             $data['next_offset'] = ($offset + $limit);
         }
-        $data['reply_errors'] = $reply_errors;
+
+        $data['num_prev'] = $offset;
         $data['replies'] = $this->comment_model->get_replies($comment_id, $offset, $limit);
         $this->load->view("reply-comment", $data);
         $this->load->view("common/footer");
@@ -102,7 +95,7 @@ class Comment extends CI_Controller
         $this->load->view("common/footer");
     }
 
-    public function replies($comment_id, $offset=0, $limit=null)
+    public function replies($comment_id, $offset=0)
     {
         $data = $this->initialize_user();
         $data['title'] = "People who replied to this comment";
@@ -110,16 +103,14 @@ class Comment extends CI_Controller
 
         $data['comment'] = $this->comment_model->get_comment($comment_id);
 
-        if (! $limit) {
-            $limit = 10;
-        }
-
+        $limit = 10;
         $data['has_next'] = FALSE;
         if (($data['comment']['num_replies'] - $offset) > $limit) {
             $data['has_next'] = TRUE;
             $data['next_offset'] = ($offset + $limit);
         }
 
+        $data['num_prev'] = $offset;
         $data['replies'] = $this->comment_model->get_replies($comment_id, $offset, $limit);
         $this->load->view("show-comment-replies", $data);
         $this->load->view("common/footer");

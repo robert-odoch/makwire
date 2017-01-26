@@ -198,7 +198,7 @@ class User extends CI_Controller
         exit(0);
     }
 
-    public function post($post_id)
+    public function post($post_id, $offset=0)
     {
         $data = $this->initialize_user();
         $data['title'] = "{$data['primary_user']}'s Post";
@@ -206,7 +206,6 @@ class User extends CI_Controller
 
         $data['post'] = $this->post_model->get_post($post_id);
 
-        $offset = 0;
         $limit = 10;
         $data['has_next'] = FALSE;
         if (($data['post']['num_comments'] - $offset) > $limit) {
@@ -214,6 +213,7 @@ class User extends CI_Controller
             $data['next_offset'] = ($offset + $limit);
         }
 
+        $data['num_prev'] = $offset;
         $data['comments'] = $this->post_model->get_comments($post_id, $offset, $limit);
         $this->load->view('show-post', $data);
         $this->load->view('common/footer');

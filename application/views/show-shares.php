@@ -56,7 +56,7 @@ require_once("common/user-page-start.php");
                         </div><!-- box -->
                         <?php if ($has_next): ?>
                         <div class="box more">
-                            <a href="<?= base_url("post/likes/{$post['post_id']}/{$next_offset}"); ?>">View previous comments</a>
+                            <a href="<?= base_url("post/shares/{$post['post_id']}/{$next_offset}"); ?>">View previous comments</a>
                         </div>
                         <?php endif; ?>
                     </div><!-- .main-content -->
@@ -71,4 +71,3 @@ require_once("common/user-page-start.php");
             </div>
             <span class="clearfix"></span>
         </div> <!-- #wrapper -->
-        

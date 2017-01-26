@@ -90,7 +90,10 @@ require_once('common/user-page-start.php');
                         <div class="box">
                             <h4>Comments</h4>
                             <ul class="comments">
-                                <?php foreach($comments as $comment): ?>
+                                <?php
+                                $i = $num_prev;
+                                foreach($comments as $comment):
+                                ?>
                                 <li>
                                     <article class="comment">
                                         <header>
@@ -104,10 +107,13 @@ require_once('common/user-page-start.php');
                                             // Hide these two links from the commenter if she is the one currently
                                             // viewing this page.
                                             if ($comment['commenter_id'] != $_SESSION['user_id']) {
-                                                print "<span> &middot; </span>" .
-                                                      "<a href='" . base_url("comment/like/{$post['post_id']}/{$comment['comment_id']}") . "'>Like</a>" .
-                                                      "<span> &middot; </span>" .
-                                                      "<a href='" . base_url("comment/reply/{$comment['comment_id']}") . "'>Reply</a>";
+                                                if (!$comment['liked']) {
+                                                    print "<span> &middot; </span>" .
+                                                          "<a href='" . base_url("comment/like/{$comment['comment_id']}/{$post['post_id']}/{$i}") . "'>Like</a>";
+                                                }
+
+                                                print("<span> &middot; </span>" .
+                                                      "<a href='" . base_url("comment/reply/{$comment['comment_id']}") . "'>Reply</a>");
                                             }
 
                                             if ($comment['num_likes'] > 0) {
@@ -126,7 +132,10 @@ require_once('common/user-page-start.php');
                                         </footer>
                                     </article>
                                 </li>
-                                <?php endforeach; ?>
+                                <?php
+                                ++$i;
+                                endforeach;
+                                ?>
                             </ul>
                         </div><!-- box -->
                         <?php if ($has_next): ?>

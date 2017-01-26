@@ -32,11 +32,10 @@ class Reply extends CI_Controller
         return $data;
     }
 
-    public function like($comment_id, $reply_id)
+    public function like($reply_id, $comment_id, $offset)
     {
         $this->reply_model->like($reply_id);
 
-        $offset = ($reply_id - 1);
         if ($offset == 0) {
             redirect(base_url("comment/replies/{$comment_id}"));
         }

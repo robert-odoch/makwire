@@ -29,13 +29,13 @@ require_once("common/user-page-start.php");
                                     <form action="<?= base_url("comment/reply/{$comment['comment_id']}"); ?>" method="post" accept-charset="utf-8" role="form">
                                         <input type="text" name="reply" placeholder="Write a reply..." class="fluid
                                         <?php
-                                        if (isset($reply_errors['reply'])) {
+                                        if (isset($reply_error)) {
                                             print " has-error";
                                         }
                                         ?>">
                                         <?php
-                                        if (isset($reply_errors['reply'])) {
-                                            print "<span class='error'>{$reply_errors['reply']}</span>";
+                                        if (isset($reply_error)) {
+                                            print "<span class='error'>{$reply_error}</span>";
                                         }
                                         ?>
                                     </form>
@@ -46,7 +46,10 @@ require_once("common/user-page-start.php");
                         <div class="box">
                             <h4>Replies</h4>
                             <ul class="comments">
-                                <?php foreach ($replies as $reply): ?>
+                                <?php
+                                $i = $num_prev;
+                                foreach ($replies as $reply):
+                                ?>
                                 <li>
                                     <article class="reply">
                                         <header>
@@ -61,7 +64,7 @@ require_once("common/user-page-start.php");
                                             if ($reply['commenter_id'] != $_SESSION['user_id']) {
                                                 if (!$reply['liked']) {
                                                     print("<span> &middot; </span>" .
-                                                          "<a href='" . base_url("reply/like/{$comment['comment_id']}/{$reply['comment_id']}") . "'>Like</a>");
+                                                          "<a href='" . base_url("reply/like/{$reply['comment_id']}/{$comment['comment_id']}/{$i}") . "'>Like</a>");
                                                 }
                                             }
 
@@ -75,12 +78,15 @@ require_once("common/user-page-start.php");
                                         </footer>
                                     </article>
                                 </li>
-                                <?php endforeach; ?>
+                                <?php
+                                ++$i;
+                                endforeach;
+                                ?>
                             </ul>
                         </div><!-- box -->
                         <?php if ($has_next): ?>
                         <div class="box previous">
-                            <a>View previous replies</a>
+                            <a href="<?= base_url("comment/replies/{$comment['comment_id']}/{$next_offset}"); ?>">View previous replies</a>
                         </div>
                         <?php endif; ?>
                         <?php endif; ?>

@@ -45,7 +45,10 @@ require_once("common/user-page-start.php");
                             </div>
                             <?php else: ?>
                             <ul class="comments">
-                                <?php foreach($comments as $comment): ?>
+                                <?php
+                                $i = $num_prev;
+                                foreach($comments as $comment):
+                                ?>
                                 <li>
                                     <article class="comment">
                                         <header>
@@ -61,7 +64,7 @@ require_once("common/user-page-start.php");
                                             if (($comment['commenter_id'] != $_SESSION['user_id'])) {
                                                 if (!$comment['liked']) {
                                                     print("<span> &middot; </span>" .
-                                                          "<a href='" . base_url("comment/like/{$post['post_id']}/{$comment['comment_id']}/{$post['post_id']}") . "'>Like</a>");
+                                                          "<a href='" . base_url("comment/like/{$comment['comment_id']}/{$post['post_id']}/{$i}") . "'>Like</a>");
                                                 }
 
                                                 print("<span> &middot; </span>" .
@@ -84,7 +87,10 @@ require_once("common/user-page-start.php");
                                         </footer>
                                     </article>
                                 </li>
-                                <?php endforeach; ?>
+                                <?php
+                                ++$i;
+                                endforeach;
+                                ?>
                             </ul>
                             <?php endif; ?>
                         </div><!-- box -->

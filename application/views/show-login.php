@@ -6,7 +6,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <div role="main" class="main">
                 <div id="content-header">
                     <?php if (isset($message)): ?>
-                    <h3>Log In Required</h3>
+                    <h3>Log in to continue</h3>
                     <?php else: ?>
                     <h3>Log In</h3>
                     <?php endif; ?>
@@ -25,7 +25,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <fieldset>
                             <div class="form-group">
                                 <label for="username">Username</label>
-                                <input type="text" name="username" id="username" size="30"<?php if (isset($login_errors) && array_key_exists('username', $login_errors)) { print " class='has-error'"; } ?>>
+                                <input type="text" name="username" id="username" size="30"<?php
+                                if (isset($login_errors) && array_key_exists('username', $login_errors)) {
+                                    print " class='has-error'";
+                                }
+
+                                if (isset($username)) {
+                                    print(" value='{$username}'");
+                                }
+                                ?>>
                                 <?php
                                 if (isset($login_errors) && array_key_exists('username', $login_errors)) {
                                     print "<span class='error'>{$login_errors['username']}</span>\n";

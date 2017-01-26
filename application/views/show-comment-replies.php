@@ -27,11 +27,13 @@ require_once("common/user-page-start.php");
                                 </footer>
                             </article>
                         </div><!-- box -->
-                        <?php if (count($replies) > 0): ?>
+                        <?php if (count($replies) > 0) { ?>
                         <div class="box">
                             <h4>Replies</h4>
                             <ul class="comments">
-                                <?php foreach ($replies as $reply): ?>
+                                <?php
+                                $i = $num_prev;
+                                foreach ($replies as $reply): ?>
                                 <li>
                                     <article class="comment">
                                         <header>
@@ -43,11 +45,12 @@ require_once("common/user-page-start.php");
                                         <?php
                                         // Hide this link from the replier if she is the one currently
                                         // viewing this page.
+
                                         if ($reply['commenter_id'] != $_SESSION['user_id']) {
                                             if (!$reply['liked']) {
                                                 print("<span> &middot; </span>" .
-                                                      "<a href='" . base_url("reply/like/{$comment['comment_id']}/{$reply['comment_id']}") . "'>Like</a>");
-                                                }
+                                                      "<a href='" . base_url("reply/like/{$reply['comment_id']}/{$comment['comment_id']}/{$i}") . "'>Like</a>");
+                                            }
                                         }
 
                                         if ($reply['num_likes'] > 0) {
@@ -60,15 +63,24 @@ require_once("common/user-page-start.php");
                                         </footer>
                                     </article>
                                 </li>
-                                <?php endforeach; ?>
+                                <?php
+                                ++$i;
+                                endforeach;
+                                ?>
                             </ul>
                         </div><!-- box -->
-                        <?php if ($has_next): ?>
+                        <?php if ($has_next) { ?>
                         <div class="box previous">
-                            <a>View previous replies</a>
+                            <a href="<?= base_url("comment/replies/{$comment['comment_id']}/{$next_offset}"); ?>">View previous replies</a>
                         </div>
-                        <?php endif; ?>
-                        <?php endif; ?>
+                        <?php } ?>
+                        <?php } else { ?>
+                            <div class="box">
+                                <div class="alert alert-info">
+                                    <p>No replies to show.</p>
+                                </div>
+                            </div>
+                        <?php } ?>
                     </div><!-- .main-content -->
                 </div><!-- main -->
 

@@ -33,7 +33,7 @@ class User_model extends CI_Model
                      $_SESSION['user_id']);
         $query = $this->run_query($q);
 
-        if ($query->row()->logged_in == 0) {
+        if (!$query->row()->logged_in) {
             unset($_SESSION['user_id']);
             $_SESSION = array();
             $_SESSION['message'] = "This account was logged out from another location, " .
@@ -361,18 +361,21 @@ class User_model extends CI_Model
 
     public function get_num_suggested_users()
     {
-        $q = sprintf("SELECT user_id FROM user WHERE (user_id != %d)",
-                     $_SESSION['user_id']);
-        $query = $this->run_query($q);
-
-        return $query->num_rows();
+        return count($this->get_suggested_users(NULL, NULL, FALSE));
     }
 
-    public function get_suggested_users($offset, $limit)
+    public function get_suggested_users($offset, $limit, $use_limit=TRUE)
     {
-        $q = sprintf("SELECT user_id, display_name FROM users " .
-                     "WHERE (user_id != %d) LIMIT %d, %d",
-                     $_SESSION['user_id'], $offset, $limit);
+        if ($use_limit) {
+            $q = sprintf("SELECT user_id, display_name FROM users " .
+                         "WHERE (user_id != %d) LIMIT %d, %d",
+                         $_SESSION['user_id'], $offset, $limit);
+        }
+        else {
+            $q = sprintf("SELECT user_id, display_name FROM users " .
+                         "WHERE (user_id != %d)",
+                         $_SESSION['user_id']);
+        }
         $query = $this->run_query($q);
         $results = $query->result_array();
 

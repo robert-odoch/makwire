@@ -40,7 +40,7 @@ require_once("common/user-page-start.php");
                         </div><!-- box -->
                         <?php if ($has_next): ?>
                         <div class="box more">
-                            <a href="<?= base_url("comment/likes/{$comment['comment_id']}/{$next_offset}"); ?>">View previous likes</a>
+                            <a href="<?= base_url("reply/likes/{$reply['comment_id']}/{$next_offset}"); ?>">View previous likes</a>
                         </div>
                         <?php endif; ?>
                     </div><!-- .main-content -->

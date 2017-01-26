@@ -37,13 +37,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <form action="<?= base_url("post/comment/{$post['post_id']}"); ?>" method="post" accept-charset="utf-8" role="form">
                                         <input type="text" name="comment" placeholder="Write a comment..." class="fluid
                                         <?php
-                                        if (array_key_exists('comment', $comment_errors)) {
+                                        if (isset($comment_error)) {
                                             print ' has-error';
                                         }
                                         ?>">
                                         <?php
-                                        if (array_key_exists('comment', $comment_errors)) {
-                                            print "<span class='error'>{$comment_errors['comment']}</span>\n";
+                                        if (isset($comment_error)) {
+                                            print "<span class='error'>{$comment_error}</span>\n";
                                         }
                                         ?>
                                     </form>
@@ -54,7 +54,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <div class="box">
                             <h4>Comments</h4>
                             <ul class="comments">
-                                <?php foreach($comments as $comment): ?>
+                                <?php
+                                $i = $num_prev;
+                                foreach($comments as $comment):
+                                ?>
                                 <li>
                                     <article class="comment">
                                         <header>
@@ -74,11 +77,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         if ($comment['commenter_id'] != $_SESSION['user_id']) {
                                             if (!$comment['liked']) {
                                                 print("<span> &middot; </span>" .
-                                                      "<a href='" . base_url("comment/like/{$post['post_id']}/{$comment['comment_id']}") . "'>Like</a>");
-                                                }
+                                                      "<a href='" . base_url("comment/like/{$comment['comment_id']}/{$post['post_id']}/{$i}") . "'>Like</a>");
+                                            }
 
-                                                print("<span> &middot; </span>" .
-                                                      "<a href='" . base_url("comment/reply/{$comment['comment_id']}") . "'>Reply</a>");
+                                            print("<span> &middot; </span>" .
+                                                  "<a href='" . base_url("comment/reply/{$comment['comment_id']}") . "'>Reply</a>");
                                         }
 
                                         if ($comment['num_likes'] > 0) {
@@ -97,7 +100,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         </footer>
                                     </article>
                                 </li>
-                                <?php endforeach; ?>
+                                <?php
+                                ++$i;
+                                endforeach;
+                                ?>
                             </ul>
                         </div><!-- box -->
                         <?php if ($has_next): ?>

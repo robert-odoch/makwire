@@ -40,28 +40,19 @@ class Post extends CI_Controller
 
     public function comment($post_id)
     {
-        $comment_errors = array();
+        $data = $this->initialize_user();
+        $data['title'] = 'Comment on this post';
+        $this->load->view('common/header', $data);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (empty(trim($this->input->post('comment')))) {
-                $comment_errors['comment'] = "Comment can't be empty";
+                $data['comment_error'] = "Comment can't be empty";
             }
             else {
                 $comment = $this->input->post('comment');
                 $this->post_model->comment($post_id, $comment);
             }
         }
-
-        $this->show_comment_form($post_id, $comment_errors);
-    }
-
-    public function show_comment_form($post_id, $comment_errors)
-    {
-        $data = $this->initialize_user();
-        $data['title'] = 'Comment on this post';
-        $this->load->view('common/header', $data);
-
-        $data['comment_errors'] = $comment_errors;
 
         $post = $this->post_model->get_post($post_id);
         $short_post = $this->post_model->get_short_post($post['post'], 540);
@@ -72,12 +63,12 @@ class Post extends CI_Controller
         $offset = 0;
         $limit = 10;
         $data['has_next'] = FALSE;
-        $num_comments = $this->post_model->get_num_comments($post_id);
-        if ($num_comments > $limit) {
+        if ($post['num_comments'] > $limit) {
             $data['has_next'] = TRUE;
             $data['next_offset'] = ($offset + $limit);
         }
 
+        $data['num_prev'] = $offset;
         $data['comments'] = $this->post_model->get_comments($post_id, $offset, $limit);
         $this->load->view('comment', $data);
         $this->load->view('common/footer');
@@ -137,6 +128,7 @@ class Post extends CI_Controller
             $data['next_offset'] = ($offset + $limit);
         }
 
+        $data['num_prev'] = $offset;
         $data['comments'] = $this->post_model->get_comments($post_id, $offset, $limit);
         $this->load->view("show-comments", $data);
         $this->load->view("common/footer");

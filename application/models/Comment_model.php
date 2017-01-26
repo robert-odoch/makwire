@@ -91,7 +91,7 @@ class Comment_model extends CI_Model
     public function get_likes($comment_id, $offset, $limit)
     {
         $q = sprintf("SELECT * FROM likes WHERE (source_type='comment' AND source_id=%d) " .
-                     "ORDER BY date_liked DESC LIMIT %d, %d",
+                     "LIMIT %d, %d",
                      $comment_id, $offset, $limit);
         $query = $this->run_query($q);
         $results = $query->result_array();
@@ -121,7 +121,7 @@ class Comment_model extends CI_Model
     {
         $q = sprintf("SELECT comment_id FROM comments " .
                      "WHERE (source_type='comment' AND parent_id=%d) " .
-                     "ORDER BY date_entered DESC LIMIT %d, %d",
+                     "LIMIT %d, %d",
                      $comment_id, $offset, $limit);
         $query = $this->run_query($q);
         $results = $query->result_array();

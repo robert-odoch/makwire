@@ -25,6 +25,14 @@ class Post_model extends CI_Model
 
         return $query;
     }
+
+    private function get_name($user_id) {
+        $q = sprintf("SELECT display_name FROM users WHERE user_id=%d",
+                     $user_id);
+        $query = $this->run_query($q);
+
+        return $query->row()->display_name;
+    }
     /*** End Utility ***/
 
     public function get_short_post($post, $num_chars)
@@ -60,7 +68,7 @@ class Post_model extends CI_Model
         $post = $query->row_array();
 
         // Get the name of the author.
-        $post['author'] = $this->get_post_author($post['author_id']);
+        $post['author'] = $this->get_name($post['author_id']);
 
         // Get the number of likes.
         $post['num_likes'] = $this->get_num_likes($post['post_id']);
@@ -87,7 +95,7 @@ class Post_model extends CI_Model
             $source_id = $query->row()->author_id;
 
             $post['source_id'] = $source_id;
-            $post['source'] = $this->get_post_author($source_id);
+            $post['source'] = $this->get_name($source_id);
         }
 
         // Get the timespan.
@@ -115,16 +123,6 @@ class Post_model extends CI_Model
     // Checks whether a user has the proper permision to like a given post
     private function user_can_like_post($post) {
 
-    }
-
-    public function get_post_author($author_id)
-    {
-        $q = sprintf("SELECT display_name FROM users WHERE user_id=%d",
-                     $author_id);
-        $query = $this->run_query($q);
-        $author = ucfirst($query->row()->display_name);
-
-        return $author;
     }
 
     public function get_num_likes($post_id)
@@ -189,7 +187,7 @@ class Post_model extends CI_Model
 
         // Dispatch an activity.
         $q = sprintf("INSERT INTO activities (trigger_id, parent_id, source_id, source_type, activity, audience) " .
-                     " VALUES (%d, %d, %d, 'post', 'like', 'timeline')",
+                     "VALUES (%d, %d, %d, 'post', 'like', 'timeline')",
                      $_SESSION['user_id'], $parent_id, $post_id);
         $this->run_query($q);
     }
@@ -211,7 +209,7 @@ class Post_model extends CI_Model
 
         // Dispatch an activity.
         $q = sprintf("INSERT INTO activities (trigger_id, parent_id, source_id, source_type, activity, audience) " .
-                     " VALUES (%d, %d, %d, 'post', 'comment', 'timeline')",
+                     "VALUES (%d, %d, %d, 'post', 'comment', 'timeline')",
                      $_SESSION['user_id'], $parent_id, $post_id);
         $this->run_query($q);
     }
@@ -234,28 +232,26 @@ class Post_model extends CI_Model
 
         // Dispatch an activity.
         $q = sprintf("INSERT INTO activities (trigger_id, parent_id, source_id, source_type, activity, audience) " .
-                     " VALUES (%d, %d, %d, 'post', 'share', 'timeline')",
+                     "VALUES (%d, %d, %d, 'post', 'share', 'timeline')",
                      $_SESSION['user_id'], $post_author, $post_id);
         $this->run_query($q);
     }
 
     public function get_likes($post_id, $offset, $limit)
     {
-        $q = sprintf("SELECT * FROM likes WHERE (source_type='post' AND source_id=%d) " .
-                     "ORDER BY date_liked DESC LIMIT %d, %d",
+        $q = sprintf("SELECT * FROM likes " .
+                     "WHERE (source_type='post' AND source_id=%d) " .
+                     "LIMIT %d, %d",
                      $post_id, $offset, $limit);
         $query = $this->run_query($q);
         $results = $query->result_array();
 
         $likes = array();
         foreach ($results as $like) {
-            // Get the name of the liker.
-            $q = sprintf("SELECT fname, lname FROM users WHERE user_id=%d LIMIT 1",
-                         $like['liker_id']);
-            $query = $this->run_query($q);
-
-            $liker = ucfirst(strtolower($query->row(0)->lname)) . ' ' . ucfirst(strtolower($query->row(0)->fname));
+            // Get the name of the user who liked.
+            $liker = $this->get_name($like['liker_id']);
             $like['liker'] = $liker;
+
             array_push($likes, $like);
         }
 
@@ -263,8 +259,9 @@ class Post_model extends CI_Model
     }
     public function get_comments($post_id, $offset, $limit)
     {
-        $q = sprintf("SELECT comment_id FROM comments WHERE (source_type='post' AND source_id=%d AND parent_id=0) " .
-                     "ORDER BY date_entered DESC LIMIT %d, %d",
+        $q = sprintf("SELECT comment_id FROM comments " .
+                     "WHERE (source_type='post' AND source_id=%d AND parent_id=0) " .
+                     "LIMIT %d, %d",
                      $post_id, $offset, $limit);
         $query = $this->run_query($q);
         $results = $query->result_array();
@@ -280,7 +277,8 @@ class Post_model extends CI_Model
     }
     public function get_shares($post_id)
     {
-        $q = sprintf("SELECT author_id AS sharer_id FROM posts WHERE parent_id=%d LIMIT 1",
+        $q = sprintf("SELECT author_id AS sharer_id FROM posts " .
+                     "WHERE (parent_id=%d) LIMIT 1",
                      $post_id);
         $query = $this->run_query($q);
         $results = $query->result_array();
@@ -288,12 +286,9 @@ class Post_model extends CI_Model
         $shares = array();
         foreach ($results as $share) {
             // Get the name of the user who shared.
-            $q = sprintf("SELECT fname, lname FROM users WHERE user_id=%d LIMIT 1",
-                         $share['sharer_id']);
-            $query = $this->run_query($q);
-
-            $sharer = ucfirst(strtolower($query->row(0)->lname)) . ' ' . ucfirst(strtolower($query->row(0)->fname));
+            $sharer = $this->get_name($share['sharer_id']);
             $share['sharer'] = $sharer;
+
             array_push($shares, $share);
         }
 

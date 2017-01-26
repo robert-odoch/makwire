@@ -64,7 +64,7 @@ class Reply_model extends CI_Model
         $reply['timespan'] = timespan(mysql_to_unix($reply['date_entered']), now(), 1);
 
         // Has the user liked this reply?
-        $reply['liked'] = $this->has_liked($reply['commenter_id']);
+        $reply['liked'] = $this->has_liked($reply['comment_id']);
 
         // Add the number of likes.
         $reply['num_likes'] = $this->get_num_likes($reply_id);
@@ -74,7 +74,7 @@ class Reply_model extends CI_Model
 
     public function like($reply_id)
     {
-        if ($this->has_liked) {
+        if ($this->has_liked($reply_id)) {
             return;
         }
 
@@ -109,7 +109,7 @@ class Reply_model extends CI_Model
     public function get_likes($reply_id, $offset, $limit)
     {
         $q = sprintf("SELECT * FROM likes WHERE (source_type='reply' AND source_id=%d) " .
-                     "ORDER BY date_liked DESC LIMIT %d, %d",
+                     "LIMIT %d, %d",
                      $reply_id, $offset, $limit);
         $query = $this->run_query($q);
         $results = $query->result_array();

@@ -23,7 +23,7 @@ require_once('common/user-page-start.php');
                         </div><!-- .box -->
                         <?php if ($has_next): ?>
                         <div class="box more">
-                            <a href="">View more requests</a>
+                            <a href="<?= base_url("user/friend-requests/{$next_offset}") ?>">View more requests</a>
                         </div>
                         <?php endif; ?>
                     </div><!-- .main-content -->
