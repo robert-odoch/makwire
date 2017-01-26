@@ -69,7 +69,8 @@ class Profile_model extends CI_Model
         }
 
         // Get the colleges.
-        $q = sprintf("SELECT college_id, date_from, date_to FROM user_colleges WHERE (user_id=%d)",
+        $q = sprintf("SELECT college_id, date_from, date_to FROM user_colleges " .
+                     "WHERE (user_id=%d) ORDER BY date_to DESC",
                      $user_id);
         $query = $this->run_query($q);
 
@@ -88,7 +89,8 @@ class Profile_model extends CI_Model
         }
 
         // Get the schools.
-        $q = sprintf("SELECT school_id, date_from, date_to FROM user_schools WHERE (user_id=%d)",
+        $q = sprintf("SELECT school_id, date_from, date_to FROM user_schools " .
+                     "WHERE (user_id=%d) ORDER BY date_to DESC",
                      $user_id);
         $query = $this->run_query($q);
 
@@ -108,7 +110,7 @@ class Profile_model extends CI_Model
 
         // Get the programmes.
         $q = sprintf("SELECT programme_id, date_from, date_to FROM user_programmes " .
-                     "WHERE (user_id=%d)", $user_id);
+                     "WHERE (user_id=%d) ORDER BY date_to DESC", $user_id);
         $query = $this->run_query($q);
 
         $data['programmes'] = array();
@@ -126,7 +128,8 @@ class Profile_model extends CI_Model
         }
 
         // Get the halls.
-        $q = sprintf("SELECT hall_id FROM user_halls WHERE (user_id=%d)",
+        $q = sprintf("SELECT hall_id, date_from, date_to, resident FROM user_halls " .
+                     "WHERE (user_id=%d) ORDER BY date_to DESC",
                      $user_id);
         $query = $this->run_query($q);
 
@@ -145,7 +148,8 @@ class Profile_model extends CI_Model
         }
 
         // Get the hostel.
-        $q = sprintf("SELECT hostel_id FROM user_hostels WHERE (user_id=%d)",
+        $q = sprintf("SELECT hostel_id FROM user_hostels " .
+                     "WHERE (user_id=%d) ORDER BY date_to DESC",
                      $user_id);
         $query = $this->run_query($q);
 
@@ -163,6 +167,8 @@ class Profile_model extends CI_Model
                 array_push($data['hostels'], $r);
             }
         }
+
+        return $data;
     }
 
     public function get_halls()

@@ -11,7 +11,7 @@ if ($visitor) {
 <div class="box">
     <?php
     // If there is nothing to show.
-    if (!$profile['programmes'] || !$profile['colleges'] || !$profile['schools'] ||
+    if (!$profile['programmes'] && !$profile['colleges'] && !$profile['schools'] &&
         !$profile['year_of_study'] && !$profile['halls'] && !$profile['hostels'] &&
         !$profile['country'] && !$profile['district']) {
         print("<div class='alert alert-info'><p>Nothing to show...</p></div>");
@@ -22,26 +22,32 @@ if ($visitor) {
         <li>
             <?php
             if ($profile['programmes']) {
-                print("Studies/Studied <a href=''>{$profile['programmes'][0]}</a>");
+                print("Studies/Studied <a href=''>{$profile['programmes'][0]['programme_name']}</a>");
             }
             if ($profile['colleges']) {
-                print(" at <a href=''>{$profile['colleges'][0]}</a>");
+                print(" at <a href=''>{$profile['colleges'][0]['college_name']}</a>");
             }
             if ($profile['schools']) {
-                print(", <a href=''>{$profile['schools'][0]}</a>.");
+                print(", <a href=''>{$profile['schools'][0]['school_name']}</a>.");
             }
             ?>
         </li>
         <?php endif; ?>
         <?php
         if ($profile['year_of_study']) {
-            print("<li>Currently in Year {$profile['year_of_study']}.</li>");
+            $years = array(1=>'I', 'II', 'III', 'IV', 'V');
+            print("<li>Currently in Year {$years[$profile['year_of_study']]}.</li>");
         }
         if ($profile['halls']) {
-            print("<li>Is/Was a residence/attached to <a href=''>{$profile['halls'][0]}</a>.</li>");
+            if ($profile['halls'][0]['resident']) {
+                print("<li>Is/Was a residence of <a href=''>{$profile['halls'][0]['hall_name']}</a>.</li>");
+            }
+            else {
+                print("<li>Is/Was attached to <a href=''>{$profile['halls'][0]['hall_name']}</a>.</li>");
+            }
         }
         if ($profile['hostels']) {
-            print("<li>Stays/Stayed at <a href=''>{$profile['hostels'][0]}</a>.</li>");
+            print("<li>Stays/Stayed at <a href=''>{$profile['hostels'][0]['hostel_name']}</a>.</li>");
         }
         if ($profile['country'] || $profile['district']) {
             print("<li>From ");
@@ -50,10 +56,13 @@ if ($visitor) {
             }
 
             if ($profile['country'] && $profile['district']) {
-                print(", {$profile['country']}");
+                print(", {$profile['country']}.");
             }
-            else {
-                print("{$profile['country']}");
+            elseif ($profile['country']) {
+                print("{$profile['country']}.");
+            }
+            elseif ($profile['district']) {
+                print(".");
             }
 
             print("</li>");
