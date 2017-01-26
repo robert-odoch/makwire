@@ -95,7 +95,17 @@ class Post extends CI_Controller
         $post['has_more'] = $short_post['has_more'];
         $data['post'] = $post;
 
+        // Maximum number of likes to display.
         $limit = 10;
+
+        if ($offset != 0) {
+            $data['has_prev'] = TRUE;
+            $data['prev_offset'] = 0;
+            if ($offset > $limit) {
+                $data['prev_offset'] = ($offset - $limit);
+            }
+        }
+
         $data['has_next'] = FALSE;
         $num_likes = $this->post_model->get_num_likes($post_id);
         if (($num_likes - $offset) > $limit) {
@@ -120,7 +130,17 @@ class Post extends CI_Controller
         $post['has_more'] = $short_post['has_more'];
         $data['post'] = $post;
 
+        // Maximum number of comments to display.
         $limit = 10;
+
+        if ($offset != 0) {
+            $data['has_prev'] = TRUE;
+            $data['prev_offset'] = 0;
+            if ($offset > $limit) {
+                $data['prev_offset'] = ($offset - $limit);
+            }
+        }
+
         $data['has_next'] = FALSE;
         $num_comments = $this->post_model->get_num_comments($post_id);
         if (($num_comments - $offset) > $limit) {
@@ -146,7 +166,17 @@ class Post extends CI_Controller
         $post['has_more'] = $short_post['has_more'];
         $data['post'] = $post;
 
+        // Maximum number of shares to display.
         $limit = 10;
+
+        if ($offset != 0) {
+            $data['has_prev'] = TRUE;
+            $data['prev_offset'] = 0;
+            if ($offset > $limit) {
+                $data['prev_offset'] = ($offset - $limit);
+            }
+        }
+
         $data['has_next'] = FALSE;
         $num_shares = $this->post_model->get_num_shares($post_id);
         if (($num_shares - $offset) > $limit) {

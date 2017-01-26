@@ -123,7 +123,17 @@ class User extends CI_Controller
         $data['title'] = "Chat With Friends";
         $this->load->view('common/header', $data);
 
+        // Maximum number of users to display.
         $limit = 10;
+
+        if ($offset != 0) {
+            $data['has_prev'] = TRUE;
+            $data['prev_offset'] = 0;
+            if ($offset > $limit) {
+                $data['prev_offset'] = ($offset - $limit);
+            }
+        }
+
         $data['has_next'] = FALSE;
         if (($data['num_active_friends'] - $offset) > $limit) {
             $data['has_next'] = TRUE;
@@ -153,7 +163,17 @@ class User extends CI_Controller
 
         $this->load->view('common/header', $data);
 
+        // Maximum number of messages to display.
         $limit = 10;
+
+        if ($offset != 0) {
+            $data['has_prev'] = TRUE;
+            $data['prev_offset'] = 0;
+            if ($offset > $limit) {
+                $data['prev_offset'] = ($offset - $limit);
+            }
+        }
+
         $num_convo = $this->user_model->get_num_conversation($user_id);
         $data['has_next'] = FALSE;
         if (($num_convo - $offset) > $limit) {
@@ -178,7 +198,6 @@ class User extends CI_Controller
             else {
                 redirect(base_url('user/index/' . $_SESSION['user_id']));
             }
-            exit(1);
         }
 
         $post = $this->input->post('post');
@@ -190,12 +209,11 @@ class User extends CI_Controller
         }
 
         if ($this->post_model->post($post, $audience_id) && $audience === 'group') {
-            redirect(base_url('group/index/' . $_SESSION['group_id']));
+            redirect(base_url("group/index/{$_SESSION['group_id']}"));
         }
         else {
-            redirect(base_url('user/index/'. $_SESSION['user_id']));
+            redirect(base_url("user/index/{$_SESSION['user_id']}"));
         }
-        exit(0);
     }
 
     public function post($post_id, $offset=0)
@@ -225,7 +243,17 @@ class User extends CI_Controller
         $data['title'] = "Your Notifications";
         $this->load->view('common/header', $data);
 
-		$limit = 10;
+        // Maximum number of notifications to display.
+        $limit = 10;
+
+        if ($offset != 0) {
+            $data['has_prev'] = TRUE;
+            $data['prev_offset'] = 0;
+            if ($offset > $limit) {
+                $data['prev_offset'] = ($offset - $limit);
+            }
+        }
+
 		$data['has_next'] = FALSE;
 		if ($data['num_new_notifs'] > 0) {
 		    // First show only the new notifications.
@@ -310,7 +338,17 @@ class User extends CI_Controller
         $data['title'] = "Your Messages";
         $this->load->view('common/header', $data);
 
+        // Maximum number of messages to display.
         $limit = 10;
+
+        if ($offset != 0) {
+            $data['has_prev'] = TRUE;
+            $data['prev_offset'] = 0;
+            if ($offset > $limit) {
+                $data['prev_offset'] = ($offset - $limit);
+            }
+        }
+
         $data['has_next'] = FALSE;
         if ($data['num_new_messages'] > 0) {  // There are new messages.
             // First show only the new messages.
@@ -384,11 +422,11 @@ class User extends CI_Controller
         if ($data['visitor']) {
             $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
             $data['secondary_user'] = $this->user_model->get_name($user_id);
-            $data['title'] = "{$data['secondary_user']}'s Profile";
+            $data['title'] = "About {$data['secondary_user']}";
             $data['suid'] = $user_id;
         }
         else {
-            $data['title'] = "{$data['primary_user']}'s Profile";
+            $data['title'] = "About {$data['primary_user']}'";
         }
 
         $this->load->view("common/header", $data);

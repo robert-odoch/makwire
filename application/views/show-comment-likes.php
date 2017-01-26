@@ -3,61 +3,57 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 require_once("common/user-page-start.php");
 ?>
-                        <div class="box">
-                            <article id="comment">
-                                <header>
-                                    <h4>
-                                    <?php
-                                    print "<a href='" .base_url("user/index/{$comment['commenter_id']}") . "'>{$comment['commenter']}</a>"
-                                    ?>
-                                    </h4>
-                                </header>
-                                <p>
-                                    <?= htmlspecialchars($comment['comment']); ?>
-                                </p>
-                                <footer>
-                                    <small><span class="glyphicon glyphicon-time"></span> <?= $comment['timespan']; ?> ago</small>
-                                    <?php
-                                    if ($comment['num_likes'] > 0) {
-                                        print "<span> &middot; </span><a href='" . base_url("comment/likes/{$comment['comment_id']}") . "'>{$comment['num_likes']}";
-                                        print ($comment['num_likes'] == 1) ? " like" : " likes";
-                                        print "</a>";
-                                    }
-                                    ?>
-                                </footer>
-                            </article>
-                        </div><!-- box -->
-                        <div class="box">
-                            <h4>Likes</h4>
-                            <?php if (count($likes) == 0): ?>
-                            <div class="alert alert-info">
-                                <p>No likes to show.</p>
-                            </div>
-                            <?php else: ?>
-                            <ul class="likes">
-                                <?php foreach($likes as $like): ?>
-                                <li>
-                                    <figure><img src="<?= base_url('images/kasumba.jpg'); ?>" alt="<?= $like['liker']; ?>"></figure>
-                                    <span><a href="<?= base_url("user/index/{$like['liker_id']}"); ?>"><?= $like['liker']; ?></a></span>
-                                </li>
-                                <?php endforeach; ?>
-                            </ul>
-                            <?php endif; ?>
-                        </div><!-- box -->
-                        <?php if ($has_next): ?>
-                        <div class="box more">
-                            <a href="<?= base_url("comment/likes/{$comment['comment_id']}/{$next_offset}"); ?>">View previous likes</a>
-                        </div>
-                        <?php endif; ?>
-                    </div><!-- .main-content -->
-                </div><!-- main -->
 
-                <div class="suggestions">
-                    <?php require_once("common/suggested-users.php"); ?>
-                </div>
-            </div>
-            <div class="col-small">
-                <?php require_once("common/active-users.php"); ?>
-            </div>
-            <span class="clearfix"></span>
-        </div> <!-- #wrapper -->
+<div class="box">
+    <article id="comment">
+        <header>
+            <h4>
+            <?php
+            print "<a href='" .base_url("user/index/{$comment['commenter_id']}") . "'>{$comment['commenter']}</a>"
+            ?>
+            </h4>
+        </header>
+        <p>
+            <?= htmlspecialchars($comment['comment']); ?>
+        </p>
+        <footer>
+            <small><span class="glyphicon glyphicon-time"></span> <?= $comment['timespan']; ?> ago</small>
+            <?php
+            if ($comment['num_likes'] > 0) {
+                print "<span> &middot; </span><a href='" . base_url("comment/likes/{$comment['comment_id']}") . "'>{$comment['num_likes']}";
+                print ($comment['num_likes'] == 1) ? " like" : " likes";
+                print "</a>";
+            }
+            ?>
+        </footer>
+    </article>
+</div><!-- box -->
+<div class="box">
+    <h4>Likes</h4>
+    <?php if (count($likes) == 0): ?>
+    <div class="alert alert-info">
+        <p>No likes to show.</p>
+    </div>
+    <?php else:
+    if (isset($has_prev)) { ?>
+        <li>
+            <a href="<?= base_url("comment/likes/{$comment['comment_id']}/{$prev_offset}"); ?>">
+                View previous likes.
+            </a>
+        </li>
+    <?php } ?>
+    <ul class="likes">
+        <?php foreach($likes as $like): ?>
+        <li>
+            <figure><img src="<?= base_url('images/kasumba.jpg'); ?>" alt="<?= $like['liker']; ?>"></figure>
+            <span><a href="<?= base_url("user/index/{$like['liker_id']}"); ?>"><?= $like['liker']; ?></a></span>
+        </li>
+        <?php endforeach; ?>
+    </ul>
+    <?php endif; ?>
+</div><!-- box -->
+<?php if ($has_next): ?>
+<div class="box more">
+    <a href="<?= base_url("comment/likes/{$comment['comment_id']}/{$next_offset}"); ?>">View more likes</a>
+</div>
+<?php endif; ?>

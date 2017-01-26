@@ -3,42 +3,30 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 require_once('common/user-page-start.php');
 ?>
-                        <div class="box">
-                            <h4>Request admin to add district</h4>
-                            <?php if (isset($success_message)) { ?>
-                                <div class="alert alert-success">
-                                    <p><?= "{$success_message}"; ?></p>
-                                </div>
-                            <?php } else { ?>
-                                <?php if (isset($error_message)) { ?>
-                                <div class="alert alert-danger">
-                                    <p><?= "{$error_message}"; ?></p>
-                                </div>
-                                <?php } else { ?>
-                                    <p>Please fill out and submit this form.</p>
-                                <?php } ?>
 
-                                <form action="<?= base_url("request-admin/add-district"); ?>" method="post" accept-charset="utf-8" role="form">
-                                    <fieldset>
-                                        <div class="form-group">
-                                            <label for="district">District</label>
-                                            <input type="text" name="district" id="district" size="30">
-                                        </div>
-                                    </fieldset>
-                                    <input type="submit" value="Submit" class="btn">
-                                </form>
-                            <?php } // isset($success_message). ?>
-                        </div><!-- box -->
-                    </div><!-- .main-content -->
-                </div><!-- main -->
+<div class="box">
+    <h4>Request admin to add district</h4>
+    <?php if (isset($success_message)) { ?>
+        <div class="alert alert-success">
+            <p><?= "{$success_message}"; ?></p>
+        </div>
+    <?php } else { ?>
+        <?php if (isset($error_message)) { ?>
+        <div class="alert alert-danger">
+            <p><?= "{$error_message}"; ?></p>
+        </div>
+        <?php } else { ?>
+            <p>Please fill out and submit this form.</p>
+        <?php } ?>
 
-                <div class="suggestions">
-                    <?php require_once("common/suggested-users.php"); ?>
+        <form action="<?= base_url("request-admin/add-district"); ?>" method="post" accept-charset="utf-8" role="form">
+            <fieldset>
+                <div class="form-group">
+                    <label for="district">District</label>
+                    <input type="text" name="district" id="district" size="30">
                 </div>
-            </div>
-
-            <div class="col-small">
-                <?php require_once("common/active-users.php"); ?>
-            </div>
-            <span class="clearfix"></span>
-        </div> <!-- #wrapper -->
+            </fieldset>
+            <input type="submit" value="Submit" class="btn">
+        </form>
+    <?php } // isset($success_message). ?>
+</div><!-- box -->

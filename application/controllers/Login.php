@@ -52,7 +52,7 @@ class Login extends CI_Controller
         }
 
         $this->load->view('show-login', $data);
-        $this->load->view('common/footer');
+        $this->load->view('common/external-page-footer');
     }
 }
 ?>

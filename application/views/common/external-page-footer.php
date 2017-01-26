@@ -2,19 +2,8 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 ?>
 
-                    </div><!-- .main-content -->
                 </div><!-- main -->
-
-                <div class="suggestions">
-                <?php require_once("suggested-users.php"); ?>
-                </div>
-            </div>
-
-            <div class="col-small">
-            <?php require_once("active-users.php"); ?>
-            </div>
-            <span class="clearfix"></span>
-        </div> <!-- #wrapper -->
+        </div> <!-- .wrap-single -->
 
         <footer role="contentinfo" class="footer">
             <div class="wrapper">

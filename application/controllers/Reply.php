@@ -51,7 +51,17 @@ class Reply extends CI_Controller
 
         $data['reply'] = $this->reply_model->get_reply($reply_id);
 
+        // Maximum number of likes to display.
         $limit = 10;
+
+        if ($offset != 0) {
+            $data['has_prev'] = TRUE;
+            $data['prev_offset'] = 0;
+            if ($offset > $limit) {
+                $data['prev_offset'] = ($offset - $limit);
+            }
+        }
+
         $data['has_next'] = FALSE;
         if (($data['reply']['num_likes'] - $offset) > $limit) {
             $data['has_next'] = TRUE;

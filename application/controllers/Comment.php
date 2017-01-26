@@ -83,7 +83,17 @@ class Comment extends CI_Controller
 
         $data['comment'] = $this->comment_model->get_comment($comment_id);
 
+        // Maximum number of likes to display.
         $limit = 10;
+
+        if ($offset != 0) {
+            $data['has_prev'] = TRUE;
+            $data['prev_offset'] = 0;
+            if ($offset > $limit) {
+                $data['prev_offset'] = ($offset - $limit);
+            }
+        }
+
         $data['has_next'] = FALSE;
         if (($data['comment']['num_likes'] - $offset) > $limit) {
             $data['has_next'] = TRUE;
@@ -103,7 +113,17 @@ class Comment extends CI_Controller
 
         $data['comment'] = $this->comment_model->get_comment($comment_id);
 
+        // Maximum number of replies to display.
         $limit = 10;
+
+        if ($offset != 0) {
+            $data['has_prev'] = TRUE;
+            $data['prev_offset'] = 0;
+            if ($offset > $limit) {
+                $data['prev_offset'] = ($offset - $limit);
+            }
+        }
+
         $data['has_next'] = FALSE;
         if (($data['comment']['num_replies'] - $offset) > $limit) {
             $data['has_next'] = TRUE;
