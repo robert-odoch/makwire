@@ -24,6 +24,16 @@ class Profile_model extends CI_Model
 
         return $query;
     }
+
+    private function are_conflicting_dates($data_date_from, $data_date_to, $rdate_from, $rdate_to) {
+        if (($data_date_from < $rdate_from) && ($data_date_to > $rdate_from) ||
+            ($data_date_from < $rdate_to) && ($data_date_to > $rdate_to) ||
+            ($data_date_from >= $rdate_from) && ($data_date_to <= $rdate_to)) {
+            return TRUE;
+        }
+
+        return FALSE;
+    }
     /*** End Utility ***/
 
     public function get_profile($user_id)
@@ -69,8 +79,8 @@ class Profile_model extends CI_Model
         }
 
         // Get the colleges.
-        $q = sprintf("SELECT college_id, date_from, date_to FROM user_colleges " .
-                     "WHERE (user_id=%d) ORDER BY date_to DESC",
+        $q = sprintf("SELECT college_id, date_from, date_to, YEAR(date_from) AS start_year, YEAR(date_to) AS end_year " .
+                     "FROM user_colleges WHERE (user_id=%d) ORDER BY date_to DESC",
                      $user_id);
         $query = $this->run_query($q);
 
@@ -128,8 +138,8 @@ class Profile_model extends CI_Model
         }
 
         // Get the halls.
-        $q = sprintf("SELECT hall_id, date_from, date_to, resident FROM user_halls " .
-                     "WHERE (user_id=%d) ORDER BY date_to DESC",
+        $q = sprintf("SELECT hall_id, date_from, date_to, YEAR(date_from) AS start_year, YEAR(date_to) AS end_year, resident " .
+                     "FROM user_halls WHERE (user_id=%d) ORDER BY date_to DESC",
                      $user_id);
         $query = $this->run_query($q);
 
@@ -148,8 +158,8 @@ class Profile_model extends CI_Model
         }
 
         // Get the hostel.
-        $q = sprintf("SELECT hostel_id FROM user_hostels " .
-                     "WHERE (user_id=%d) ORDER BY date_to DESC",
+        $q = sprintf("SELECT hostel_id, date_from, date_to, YEAR(date_from) AS start_year, YEAR(date_to) AS end_year " .
+                     "FROM user_hostels WHERE (user_id=%d) ORDER BY date_to DESC",
                      $user_id);
         $query = $this->run_query($q);
 
@@ -226,20 +236,62 @@ class Profile_model extends CI_Model
 
     public function add_school($data)
     {
+        // First check whether a school already exists in the range of years provided.
+        $q = sprintf("SELECT date_from, date_to FROM user_schools " .
+                     "WHERE (user_id=%d)",
+                     $_SESSION['user_id']);
+        $query = $this->run_query($q);
+        if ($query->num_rows() > 0) {
+            $results = $query->result_array();
+            $data_date_from = date_create($data['start_date']);
+            $data_date_to = date_create($data['end_date']);
+            foreach ($results as $r) {
+                $rdate_from = date_create($r['date_from']);
+                $rdate_to = date_create($r['date_to']);
+                if ($this->are_conflicting_dates($data_date_from, $data_date_to, $rdate_from, $rdate_to)) {
+                    return FALSE;
+                }
+            }
+        }
+
+        // If we have reached this point, then the dates are OK.
         $q = sprintf("INSERT INTO user_schools (user_id, school_id, date_from, date_to ) " .
                      "VALUES (%d, %d, %s, %s)",
                      $_SESSION['user_id'], $data['college_id'],
                      $this->db->escape($data['start_date']), $this->db->escape($data['end_date']));
         $this->run_query($q);
+
+        return TRUE;
     }
 
     public function add_college($data)
     {
+        // First check whether a college already exists in the range of years provided.
+        $q = sprintf("SELECT date_from, date_to FROM user_colleges " .
+                     "WHERE (user_id=%d)",
+                     $_SESSION['user_id']);
+        $query = $this->run_query($q);
+        if ($query->num_rows() > 0) {
+            $results = $query->result_array();
+            $data_date_from = date_create($data['start_date']);
+            $data_date_to = date_create($data['end_date']);
+            foreach ($results as $r) {
+                $rdate_from = date_create($r['date_from']);
+                $rdate_to = date_create($r['date_to']);
+                if ($this->are_conflicting_dates($data_date_from, $data_date_to, $rdate_from, $rdate_to)) {
+                    return FALSE;
+                }
+            }
+        }
+
+        // If we have reached this point, then the years are OK.
         $q = sprintf("INSERT INTO user_colleges (user_id, college_id, date_from, date_to) " .
                      "VALUES (%d, %d, %s, %s)",
                      $_SESSION['user_id'], $data['college_id'],
                      $this->db->escape($data['start_date']), $this->db->escape($data['end_date']));
         $this->run_query($q);
+
+        return TRUE;
     }
 
     public function get_countries()
@@ -281,33 +333,118 @@ class Profile_model extends CI_Model
 
     public function add_programme($data)
     {
+        // First check whether a programme already exists in the range of years provided.
+        $q = sprintf("SELECT date_from, date_to FROM user_programmes " .
+                     "WHERE (user_id=%d)",
+                     $_SESSION['user_id']);
+        $query = $this->run_query($q);
+        if ($query->num_rows() > 0) {
+            $results = $query->result_array();
+            $data_date_from = date_create($data['start_date']);
+            $data_date_to = date_create($data['end_date']);
+            foreach ($results as $r) {
+                $rdate_from = date_create($r['date_from']);
+                $rdate_to = date_create($r['date_to']);
+                if ($this->are_conflicting_dates($data_date_from, $data_date_to, $rdate_from, $rdate_to)) {
+                    return FALSE;
+                }
+            }
+        }
+
+        // If we have reached this point, then things are OK.
         $q = sprintf("INSERT INTO user_programmes (user_id, programme_id, date_from, date_to) " .
                      "VALUES(%d, %d, %s, %s)",
-                    $_SESSION['user_id'], $data['programme_id'],
-                    $this->db->escape($data['start_date']), $this->db->escape($data['end_date']));
+                     $_SESSION['user_id'], $data['programme_id'],
+                     $this->db->escape($data['start_date']), $this->db->escape($data['end_date']));
         $this->run_query($q);
 
         $q = sprintf("UPDATE user_profile SET year_of_study=%d WHERE (user_id=%d)",
                      $data['year_of_study'], $_SESSION['user_id']);
         $this->run_query($q);
+
+        return TRUE;
     }
 
     public function add_hall($data)
     {
+        // First check whether a hall already exists in the range of years provided.
+        $q = sprintf("SELECT date_from, date_to FROM user_halls " .
+                     "WHERE (user_id=%d)",
+                     $_SESSION['user_id']);
+        $query = $this->run_query($q);
+        if ($query->num_rows() > 0) {
+            $results = $query->result_array();
+            $data_date_from = date_create($data['start_date']);
+            $data_date_to = date_create($data['end_date']);
+            foreach ($results as $r) {
+                $rdate_from = date_create($r['date_from']);
+                $rdate_to = date_create($r['date_to']);
+                if ($this->are_conflicting_dates($data_date_from, $data_date_to, $rdate_from, $rdate_to)) {
+                    return FALSE;
+                }
+            }
+        }
+
+        // If we have reached this point, then things are OK.
         $q = sprintf("INSERT INTO user_halls (user_id, hall_id, date_from, date_to, resident) " .
                      "VALUES (%d, %d, %s, %s, %d)",
                      $_SESSION['user_id'], $data['hall_id'],
                      $this->db->escape($data['start_date']), $this->db->escape($data['end_date']),
                      $data['resident']);
         $this->run_query($q);
+
+        return TRUE;
     }
 
     public function add_hostel($data)
     {
+        // First check whether a hall already exists in the range of years provided,
+        // and the user is resident.
+        $q = sprintf("SELECT date_from, date_to, resident FROM user_halls " .
+                     "WHERE (user_id=%d)",
+                     $_SESSION['user_id']);
+        $query = $this->run_query($q);
+        if ($query->num_rows() > 0) {
+            $results = $query->result_array();
+            $data_date_from = date_create($data['start_date']);
+            $data_date_to = date_create($data['end_date']);
+            foreach ($results as $r) {
+                // Constraint only applies if the user is resident.
+                if ($r['resident']) {
+                    $rdate_from = date_create($r['date_from']);
+                    $rdate_to = date_create($r['date_to']);
+                    if ($this->are_conflicting_dates($data_date_from, $data_date_to, $rdate_from, $rdate_to)) {
+                        return FALSE;
+                    }
+                }
+            }
+        }
+
+        // Next check whether a hostel already exists in the range of years provided.
+        $q = sprintf("SELECT date_from, date_to FROM user_hostels " .
+                     "WHERE (user_id=%d)",
+                     $_SESSION['user_id']);
+        $query = $this->run_query($q);
+        if ($query->num_rows() > 0) {
+            $results = $query->result_array();
+            $data_date_from = date_create($data['start_date']);
+            $data_date_to = date_create($data['end_date']);
+            foreach ($results as $r) {
+                $rdate_from = date_create($r['date_from']);
+                $rdate_to = date_create($r['date_to']);
+                if ($this->are_conflicting_dates($data_date_from, $data_date_to, $rdate_from, $rdate_to)) {
+                    return FALSE;
+                }
+            }
+        }
+
+        // If we have reached this point, the things are OK.
         $q = sprintf("INSERT INTO user_hostels (user_id, hostel_id, date_from, date_to) " .
                      "VALUES (%d, %d, %s, %s)",
                      $_SESSION['user_id'], $data['hostel_id'],
                      $this->db->escape($data['start_date']), $this->db->escape($data['end_date']));
         $this->run_query($q);
+
+        return TRUE;
     }
 }

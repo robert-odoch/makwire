@@ -222,7 +222,7 @@ ul.chat-friends li:last-child,
 ul.notifications li:last-child,
 ul.suggested-users li:last-child,
 ul.suggested-groups li:last-child,
-div.edit-profile ul:last-child li:last-child {
+div.show-profile ul:last-child li:last-child {
     padding-bottom: 0;
     margin-bottom: 0;
 }
@@ -312,7 +312,7 @@ ul.chat-friends li:last-child,
 ul.notifications li:last-child,
 ul.suggested-users li:last-child,
 ul.suggested-groups li:last-child,
-div.edit-profile ul:last-child li:last-child {
+div.show-profile ul:last-child li:last-child {
     border-bottom: none;
     margin-bottom: 0;
 }
@@ -412,13 +412,20 @@ div.wrap-single legend {
     border-bottom: 1px solid #8FBC8F;
 }
 
-div.edit-profile h4 {
+div.show-profile h4 {
+    font-weight: bold;
     color: #2E8B57;
+}
+div.show-profile ul.profile > span {
+    display: block;
+    padding: 0 5px;
+    border-radius: 3px;
+    background-color: #8FBC8F;
 }
 ul.profile {
     margin-bottom: 15px;
 }
-div.edit-profile ul:last-child {
+div.show-profile ul:last-child {
     margin-bottom: 0;
 }
 

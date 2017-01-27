@@ -8,7 +8,7 @@ if ($visitor) {
 }
 ?>
 
-<div class="box">
+<div class="box show-profile">
     <?php
     // If there is nothing to show.
     if (!$profile['programmes'] && !$profile['colleges'] && !$profile['schools'] &&
@@ -16,57 +16,155 @@ if ($visitor) {
         !$profile['country'] && !$profile['district']) {
         print("<div class='alert alert-info'><p>Nothing to show...</p></div>");
     }
+    else {
     ?>
-    <ul class="about">
-        <?php if ($profile['programmes'] || $profile['colleges'] || $profile['schools']): ?>
-        <li>
+        <?php if (!$visitor || $profile['colleges']) { ?>
+            <h4>Education</h4>
+            <ul class="profile">
             <?php
-            if ($profile['programmes']) {
-                print("Studies/Studied <a href=''>{$profile['programmes'][0]['programme_name']}</a>");
-            }
             if ($profile['colleges']) {
-                print(" at <a href=''>{$profile['colleges'][0]['college_name']}</a>");
-            }
-            if ($profile['schools']) {
-                print(", <a href=''>{$profile['schools'][0]['school_name']}</a>.");
-            }
-            ?>
-        </li>
-        <?php endif; ?>
-        <?php
-        if ($profile['year_of_study']) {
-            $years = array(1=>'I', 'II', 'III', 'IV', 'V');
-            print("<li>Currently in Year {$years[$profile['year_of_study']]}.</li>");
-        }
-        if ($profile['halls']) {
-            if ($profile['halls'][0]['resident']) {
-                print("<li>Is/Was a residence of <a href=''>{$profile['halls'][0]['hall_name']}</a>.</li>");
-            }
-            else {
-                print("<li>Is/Was attached to <a href=''>{$profile['halls'][0]['hall_name']}</a>.</li>");
-            }
-        }
-        if ($profile['hostels']) {
-            print("<li>Stays/Stayed at <a href=''>{$profile['hostels'][0]['hostel_name']}</a>.</li>");
-        }
-        if ($profile['country'] || $profile['district']) {
-            print("<li>From ");
-            if ($profile['district']) {
-                print("{$profile['district']}");
-            }
+                foreach ($profile['colleges'] as $college) {
+                    print("<span><b>{$college['start_year']} - {$college['end_year']}</b></span>");
+                    print("<li><b>College: </b>{$college['college_name']}");
+                    if (!$visitor) {
+                        print(' <a href="' . base_url("user/edit-college") . '"><span class="glyphicon glyphicon-pencil"></span> <em>Edit</em></a>');
+                    }
+                    print("</li>");
 
-            if ($profile['country'] && $profile['district']) {
-                print(", {$profile['country']}.");
-            }
-            elseif ($profile['country']) {
-                print("{$profile['country']}.");
-            }
-            elseif ($profile['district']) {
-                print(".");
-            }
+                    if ($profile['schools']) {
+                        foreach ($profile['schools'] as $school) {
+                            if (($school['date_from'] == $college['date_from']) &&
+                                ($school['date_to'] == $college['date_to'])) {
+                                print("<li><b>School: </b>{$school['school_name']}</li>");
+                            }
+                        }
+                    }
 
-            print("</li>");
-        }
-        ?>
-    </ul>
+                    $has_programme = FALSE;
+                    if ($profile['programmes']) {
+                        foreach ($profile['programmes'] as $programme) {
+                            if (($programme['date_from'] == $college['date_from']) &&
+                                ($programme['date_to'] == $college['date_to'])) {
+                                $has_programme = TRUE;
+                                print("<li><b>Programme: </b>{$programme['programme_name']}");
+                                if (!$visitor) {
+                                    print(' <a href="' . base_url("user/edit-programme") . '"><span class="glyphicon glyphicon-pencil"></span> <em>Edit</em></a>');
+                                }
+                                print("</li>");
+                            }
+                        }
+                    }
+
+                    if (!$visitor && !$has_programme) {
+                        print('<li><a href="'. base_url("user/edit-programme") . '"><em>Add programme</em></a></li>');
+                    }
+                }  // End foreach.
+
+                if (!$visitor) {
+                    if ($profile['level'] && ($profile['level'] == "postgraduate")) {
+                        print('<li><a href="'. base_url("user/edit-college") . '"><em>Add college</em></a></li>');
+                    }
+                }
+            }
+            elseif (!$visitor) {
+                print('<li><a href="'. base_url("user/edit-college") . '"><em>Add college</em></a></li>');
+            } // ($profile['colleges']).
+
+            print("</ul>");
+        } // (!$visitor || $profile['colleges']) ?>
+
+        <?php if (!$visitor || ($profile['hostels'] || $profile['halls'])): ?>
+            <h4>Residence</h4>
+            <ul class="profile">
+                <?php
+                if ($profile['halls']) {
+                    foreach ($profile['halls'] as $hall) {
+                        if ($hall['resident']) {
+                            print("<li><b>{$hall['start_year']} - {$hall['end_year']}: </b>Resident of {$hall['hall_name']}");
+                            if (!$visitor) {
+                                print(' <a href="' . base_url("user/edit-hall") . '"><span class="glyphicon glyphicon-pencil"></span> <em>Edit</em></a>');
+                            }
+                            print("</li>");
+                        }
+                        else {
+                            print("<li><b>{$hall['start_year']} - {$hall['end_year']}: </b>Attached to {$hall['hall_name']}");
+                            if (!$visitor) {
+                                print(' <a href="' . base_url("user/edit-hall") . '"><span class="glyphicon glyphicon-pencil"></span> <em>Edit</em></a>');
+                            }
+                            print("</li>");
+                        }
+                    }
+
+                    if (!$visitor) {
+                        if ($profile['level'] && ($profile['level'] == "postgraduate")) {
+                            print('<li><a href="'. base_url("user/edit-hall") . '"><em>Add hall</em></a></li>');
+                        }
+                    }
+                }
+                else {
+                    print('<li><a href="'. base_url("user/edit-hall") . '"><em>Add hall</em></a></li>');
+                }
+
+                if ($profile['hostels']) {
+                    foreach ($profile['hostels'] as $hostel) {
+                        print("<li><b>{$hostel['start_year']} - {$hostel['end_year']}: </b>{$hostel['hostel_name']}");
+                        if (!$visitor) {
+                            print(' <a href="' . base_url("user/edit-hostel") . '"><span class="glyphicon glyphicon-pencil"></span> <em>Edit</em></a>');
+                        }
+                        print("</li>");
+                    }
+                }
+                if (!$visitor) {
+                    print('<li><a href="'. base_url("user/edit-hostel") . '"><em>Add hostel</em></a></li>');
+                }
+                ?>
+            </ul>
+        <?php endif; // if ($profile['halls'] || $profile['hostels']) ?>
+
+        <?php if (!$visitor || ($profile['country'] || $profile['district'])): ?>
+            <h4>Origin</h4>
+            <ul class="profile">
+                <?php
+                if (!$visitor) {
+                    if ($profile['district']) {
+                        print("<li><b>District: </b>{$profile['district']}</li>");
+                        print(' <a href="' . base_url("user/edit-district") . '"><span class="glyphicon glyphicon-pencil"></span> <em>Edit</em></a>');
+                        print("</li>");
+                    }
+                    else {
+                        print('<li><b>District: </b><a href="' . base_url("user/edit-district") . '"><em>Add district</em></a></li>');
+                    }
+
+                    if ($profile['country']) {
+                        print("<li><b>Country: </b>{$profile['country']}");
+                        print(' <a href="' . base_url("user/edit-country") . '"><span class="glyphicon glyphicon-pencil"></span> <em>Edit</em></a>');
+                        print("</li>");
+                    }
+                    else {
+                        print('<li><b>Country: </b><a href="' . base_url("user/edit-country") . '"><em>Add country</em></a></li>');
+                    }
+                } else {
+                ?>
+                    <li>From
+                    <?php
+                    if ($profile['district']) {
+                        print(" {$profile['district']}");
+                    }
+
+                    if ($profile['country'] && $profile['district']) {
+                        print(", {$profile['country']}.");
+                    }
+                    elseif ($profile['country']) {
+                        print(" {$profile['country']}.");
+                    }
+                    elseif ($profile['district']) {
+                        print(".");
+                    }
+                    print("</li>");
+                    ?>
+                    </li>
+                <?php } // (!$visitor) ?>
+            </ul>
+        <?php endif; // End (!$visitor \\ ($profile['country'] || $profile['district'])) ?>
+    <?php } // End nothing to show.?>
 </div><!-- box -->

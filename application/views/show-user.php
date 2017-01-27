@@ -42,7 +42,7 @@ if ( ! $visitor): ?>
     </div>
 <?php endif; ?>
 
-<?php if (empty($posts)): ?>
+<?php if (empty($posts) && $visitor): ?>
     <div class="box">
         <div class="alert alert-info">
             <p>No previous posts.</p>

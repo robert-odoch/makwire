@@ -15,7 +15,7 @@ require_once('common/user-page-start.php');
         <p><?= "{$error_message}"; ?></p>
     </div>
     <?php endif; ?>
-    <form action="" method="post" accept-charset="utf-8" role="form">
+    <form action="<?= base_url("user/edit-programme"); ?>" method="post" accept-charset="utf-8" role="form">
         <fieldset>
             <div class="form-group">
                 <label for="programme">Programme</label>

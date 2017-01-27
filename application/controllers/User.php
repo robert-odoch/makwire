@@ -426,7 +426,7 @@ class User extends CI_Controller
             $data['suid'] = $user_id;
         }
         else {
-            $data['title'] = "About {$data['primary_user']}'";
+            $data['title'] = "About {$data['primary_user']}";
         }
 
         $this->load->view("common/header", $data);
@@ -434,15 +434,6 @@ class User extends CI_Controller
         $data['profile'] = $this->profile_model->get_profile($user_id);
         $this->load->view("profile", $data);
         $this->load->view("common/footer");
-    }
-
-    public function edit_profile()
-    {
-        $data = $this->initialize_user();
-        $data['title'] = "Edit your profile";
-        $this->load->view('common/header', $data);
-        $this->load->view('edit-profile', $data);
-        $this->load->view('common/footer');
     }
 
     public function edit_college()
@@ -464,7 +455,7 @@ class User extends CI_Controller
             $data['end_month'] = $this->input->post("end-month");
             $data['end_year'] = $this->input->post("end-year");
             if ($data['end_year'] < $data['start_year']) {
-                $data['error_messages'][] = "Invalid dates entered! Please check the order of the dates and try again.";
+                $data['error_messages'][] = "Invalid dates entered!<br>Please check the order of the dates and try again.";
             }
             elseif (checkdate($data['start_month'], $data['start_day'], $data['start_year']) &&
                     checkdate($data['end_month'], $data['end_day'], $data['end_year'])) {
@@ -472,11 +463,11 @@ class User extends CI_Controller
                 $data['end_date'] = "{$data['end_year']}-{$data['end_month']}-{$data['end_day']}";
             }
             else {
-                $data['error_messages'][] = "Invalid dates entered! Please check the dates and try again.";
+                $data['error_messages'][] = "Invalid dates entered!<br>Please check the dates and try again.";
             }
 
             if ( ! $this->profile_model->college_and_school_exists($data['college_id'], $data['school_id'])) {
-                $data['error_messages'][] = "Your college and school do not match! Please try again.";
+                $data['error_messages'][] = "Your college and school do not match!<br>Please try again.";
             }
 
             if ($data['error_messages']) {
@@ -484,10 +475,16 @@ class User extends CI_Controller
                 $data['schools'] = $this->profile_model->get_schools();
             }
             else {
-                $this->profile_model->add_college($data);
-                $this->profile_model->add_school($data);
-
-                $data['success_message'] = "Your college and school have been succesfully saved.";
+                if ($this->profile_model->add_college($data)) {
+                    $this->profile_model->add_school($data);
+                    $data['success_message'] = "Your college and school have been succesfully saved.";
+                }
+                else {
+                    $data['error_messages'][] = "The years you entered conflict with one of your records.<br><strong>Remember</strong> that " .
+                                                "you cannot be at two colleges or schools at the same time.";
+                    $data['colleges'] = $this->profile_model->get_colleges();
+                    $data['schools'] = $this->profile_model->get_schools();
+                }
             }
         }
         else {
@@ -517,7 +514,7 @@ class User extends CI_Controller
             $data['end_month'] = $this->input->post("end-month");
             $data['end_year'] = $this->input->post("end-year");
             if ($data['end_year'] < $data['start_year']) {
-                $data['error_message'] = "Invalid dates entered! Please check the order of the dates and try again.";
+                $data['error_message'] = "Invalid dates entered!<br>Please check the order of the dates and try again.";
             }
             elseif (checkdate($data['start_month'], $data['start_day'], $data['start_year']) &&
                     checkdate($data['end_month'], $data['end_day'], $data['end_year'])) {
@@ -525,15 +522,21 @@ class User extends CI_Controller
                 $data['end_date'] = "{$data['end_year']}-{$data['end_month']}-{$data['end_day']}";
             }
             else {
-                $data['error_message'] = "Invalid dates entered! Please check the dates and try again.";
+                $data['error_message'] = "Invalid dates entered!<br>Please check the dates and try again.";
             }
 
             if (isset($data['error_message'])) {
                 $data['programmes'] = $this->profile_model->get_programmes();
             }
             else {
-                $this->profile_model->add_programme($data);
-                $data['success_message'] = "Your programme details have been successfully saved.";
+                if ($this->profile_model->add_programme($data)) {
+                    $data['success_message'] = "Your programme details have been successfully saved.";
+                }
+                else {
+                    $data['error_message'] = "The years you entered conflict with one of your records.<br><strong>Remember</strong> that " .
+                                             "you cannot study two programmes at the same time.";
+                    $data['programmes'] = $this->profile_model->get_programmes();
+                }
             }
         }
         else {
@@ -563,7 +566,7 @@ class User extends CI_Controller
             $data['end_month'] = $this->input->post("end-month");
             $data['end_year'] = $this->input->post("end-year");
             if ($data['end_year'] < $data['start_year']) {
-                $data['error_message'] = "Invalid dates entered! Please check the order of the dates and try again.";
+                $data['error_message'] = "Invalid dates entered!<br>Please check the order of the dates and try again.";
             }
             elseif (checkdate($data['start_month'], $data['start_day'], $data['start_year']) &&
                     checkdate($data['end_month'], $data['end_day'], $data['end_year'])) {
@@ -571,15 +574,21 @@ class User extends CI_Controller
                 $data['end_date'] = "{$data['end_year']}-{$data['end_month']}-{$data['end_day']}";
             }
             else {
-                $data['error_message'] = "Invalid dates entered! Please check the dates and try again.";
+                $data['error_message'] = "Invalid dates entered!<br>Please check the dates and try again.";
             }
 
             if (isset($data['error_message'])) {
                 $data['halls'] = $this->profile_model->get_halls();
             }
             else {
-                $this->profile_model->add_hall($data);
-                $data['success_message'] = "Your hall details have been successfully saved.";
+                if ($this->profile_model->add_hall($data)) {
+                    $data['success_message'] = "Your hall details have been successfully saved.";
+                }
+                else {
+                    $data['error_message'] = "The years you entered conflict with one of your records.<br><strong>Remember</strong> that " .
+                                             "you cannot be attached to or a resident of two halls at the same time.";
+                    $data['halls'] = $this->profile_model->get_halls();
+                }
             }
         }
         else {
@@ -607,7 +616,7 @@ class User extends CI_Controller
             $data['end_month'] = $this->input->post("end-month");
             $data['end_year'] = $this->input->post("end-year");
             if ($data['end_year'] < $data['start_year']) {
-                $data['error_message'] = "Invalid datess entered! Please check the order of the dates and try again.";
+                $data['error_message'] = "Invalid dates entered!<br>Please check the order of the dates and try again.";
             }
             elseif (checkdate($data['start_month'], $data['start_day'], $data['start_year']) &&
                     checkdate($data['end_month'], $data['end_day'], $data['end_year'])) {
@@ -615,15 +624,22 @@ class User extends CI_Controller
                 $data['end_date'] = "{$data['end_year']}-{$data['end_month']}-{$data['end_day']}";
             }
             else {
-                $data['error_message'] = "Invalid dates entered! Please check the dates and try again.";
+                $data['error_message'] = "Invalid dates entered!<br>Please check the dates and try again.";
             }
 
             if (isset($data['error_message'])) {
                 $data['hostels'] = $this->profile_model->get_hostels();
             }
             else {
-                $this->profile_model->add_hostel($data);
-                $data['success_message'] = "Your hostel details have been successfully saved.";
+                if ($this->profile_model->add_hostel($data)) {
+                    $data['success_message'] = "Your hostel details have been successfully saved.";
+                }
+                else {
+                    $data['error_message'] = "The hostel you entered conflicts with one of your records.<br>" .
+                                             "Either you indicated that you are a resident of a hall, Or<br>" .
+                                             "The date overlaps with that of one of the hostels you have been to.";
+                    $data['hostels'] = $this->profile_model->get_hostels();
+                }
             }
         }
         else {

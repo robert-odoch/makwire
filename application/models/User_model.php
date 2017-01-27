@@ -36,8 +36,8 @@ class User_model extends CI_Model
         if (!$query->row()->logged_in) {
             unset($_SESSION['user_id']);
             $_SESSION = array();
-            $_SESSION['message'] = "This account was logged out from another location, " .
-                                   "please log in again to continue using this account. " .
+            $_SESSION['message'] = "This account was logged out from another location.<br>" .
+                                   "Please log in again to continue using this account.<br>" .
                                    "We are sorry for bothering you.";
             redirect(base_url("login"));
         }
