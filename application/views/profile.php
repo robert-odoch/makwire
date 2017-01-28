@@ -27,7 +27,7 @@ if ($visitor) {
                     print("<span><b>{$college['start_year']} - {$college['end_year']}</b></span>");
                     print("<li><b>College: </b>{$college['college_name']}");
                     if (!$visitor) {
-                        print(' <a href="' . base_url("user/edit-college") . '"><span class="glyphicon glyphicon-pencil"></span> <em>Edit</em></a>');
+                        print(' <a href="' . base_url("user/edit-college/{$college['id']}") . '"><span class="glyphicon glyphicon-pencil"></span> <em>Edit</em></a>');
                     }
                     print("</li>");
 
@@ -48,7 +48,7 @@ if ($visitor) {
                                 $has_programme = TRUE;
                                 print("<li><b>Programme: </b>{$programme['programme_name']}");
                                 if (!$visitor) {
-                                    print(' <a href="' . base_url("user/edit-programme") . '"><span class="glyphicon glyphicon-pencil"></span> <em>Edit</em></a>');
+                                    print(' <a href="' . base_url("user/edit-programme/{$programme['id']}") . '"><span class="glyphicon glyphicon-pencil"></span> <em>Edit</em></a>');
                                 }
                                 print("</li>");
                             }
@@ -56,18 +56,16 @@ if ($visitor) {
                     }
 
                     if (!$visitor && !$has_programme) {
-                        print('<li><a href="'. base_url("user/edit-programme") . '"><em>Add programme</em></a></li>');
+                        print('<li><b>Programme: </b><a href="'. base_url("user/add-programme/{$college['id']}") . '"><em>Add programme</em></a></li>');
                     }
                 }  // End foreach.
 
                 if (!$visitor) {
-                    if ($profile['level'] && ($profile['level'] == "postgraduate")) {
-                        print('<li><a href="'. base_url("user/edit-college") . '"><em>Add college</em></a></li>');
-                    }
+                    print('<a href="'. base_url("user/add-college") . '"><em>Add college</em></a>');
                 }
             }
             elseif (!$visitor) {
-                print('<li><a href="'. base_url("user/edit-college") . '"><em>Add college</em></a></li>');
+                print('<a href="'. base_url("user/add-college") . '"><em>Add college</em></a>');
             } // ($profile['colleges']).
 
             print("</ul>");
@@ -96,13 +94,11 @@ if ($visitor) {
                     }
 
                     if (!$visitor) {
-                        if ($profile['level'] && ($profile['level'] == "postgraduate")) {
-                            print('<li><a href="'. base_url("user/edit-hall") . '"><em>Add hall</em></a></li>');
-                        }
+                        print('<a href="'. base_url("user/edit-hall") . '"><em>Add hall</em></a>');
                     }
                 }
                 else {
-                    print('<li><a href="'. base_url("user/edit-hall") . '"><em>Add hall</em></a></li>');
+                    print('<a href="'. base_url("user/edit-hall") . '"><em>Add hall</em></a>');
                 }
 
                 if ($profile['hostels']) {
@@ -115,7 +111,10 @@ if ($visitor) {
                     }
                 }
                 if (!$visitor) {
-                    print('<li><a href="'. base_url("user/edit-hostel") . '"><em>Add hostel</em></a></li>');
+                    if (!$profile['hostels']) {
+                        print(' &middot; ');
+                    }
+                    print('<a href="'. base_url("user/edit-hostel") . '"><em>Add hostel</em></a>');
                 }
                 ?>
             </ul>

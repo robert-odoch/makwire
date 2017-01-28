@@ -436,10 +436,10 @@ class User extends CI_Controller
         $this->load->view("common/footer");
     }
 
-    public function edit_college()
+    public function add_college()
     {
         $data = $this->initialize_user();
-        $data['title'] = "Edit your college";
+        $data['title'] = "Add your college";
         $this->load->view('common/header', $data);
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
@@ -476,7 +476,6 @@ class User extends CI_Controller
             }
             else {
                 if ($this->profile_model->add_college($data)) {
-                    $this->profile_model->add_school($data);
                     $data['success_message'] = "Your college and school have been succesfully saved.";
                 }
                 else {
@@ -492,11 +491,106 @@ class User extends CI_Controller
             $data['schools'] = $this->profile_model->get_schools();
         }
 
+        $data['heading'] = "Add College";
+        $data['form_action'] = "user/add-college";
         $this->load->view("edit-college", $data);
         $this->load->view("common/footer");
     }
 
-    public function edit_programme()
+    public function edit_college($user_college_id=NULL)
+    {
+        $data = $this->initialize_user();
+        $data['title'] = "Edit your college";
+        $this->load->view('common/header', $data);
+
+        if ($_SERVER['REQUEST_METHOD'] === "POST") {
+            $data['user_college_id'] = $this->input->post("user-college-id");
+            $data['college_id'] = $this->input->post("college");
+            $data['school_id'] = $this->input->post("school");
+
+            $data['error_messages'] = array();
+            if ( ! $this->profile_model->college_and_school_exists($data['college_id'], $data['school_id'])) {
+                $data['error_messages'][] = "Your college and school do not match!<br>Please try again.";
+            }
+
+            $data['start_day'] = $this->input->post("start-day");
+            $data['start_month'] = $this->input->post("start-month");
+            $data['start_year'] = $this->input->post("start-year");
+
+            $data['end_day'] = $this->input->post("end-day");
+            $data['end_month'] = $this->input->post("end-month");
+            $data['end_year'] = $this->input->post("end-year");
+
+            $data['old_start_date'] = $this->input->post("old-start-date");
+            $data['old_end_date'] = $this->input->post("old-end-date");
+            if ($data['end_year'] < $data['start_year']) {
+                $data['error_messages'][] = "Invalid dates entered!<br>Please check the order of the dates and try again.";
+            }
+            elseif (checkdate($data['start_month'], $data['start_day'], $data['start_year']) &&
+                    checkdate($data['end_month'], $data['end_day'], $data['end_year'])) {
+                $data['start_date'] = "{$data['start_year']}-{$data['start_month']}-{$data['start_day']}";
+                $data['end_date'] = "{$data['end_year']}-{$data['end_month']}-{$data['end_day']}";
+            }
+            else {
+                $data['error_messages'][] = "Invalid dates entered!<br>Please check the dates and try again.";
+            }
+
+            if ($data['error_messages']) {
+                $college_info = $this->profile_model->get_user_college($data['user_college_id']);
+                $data['colleges'] = $college_info['colleges'];
+                $data['schools'] = $college_info['schools'];
+            }
+            else {
+                if ($this->profile_model->update_college($data)) {
+                    $data['success_message'] = "Your edits have been succesfully saved.";
+                }
+                else {
+                    $data['error_messages'][] = "Sorry, but something went wrong.";
+                    $college_info = $this->profile_model->get_user_college($data['user_college_id']);
+                    $data['colleges'] = $college_info['colleges'];
+                    $data['schools'] = $college_info['schools'];
+
+                    $data['start_year'] = $data['colleges'][0]['start_year'];
+                    $data['start_month'] = $data['colleges'][0]['start_month'];
+                    $data['start_day'] = $data['colleges'][0]['start_day'];
+
+                    $data['end_year'] = $data['colleges'][0]['end_year'];
+                    $data['end_month'] = $data['colleges'][0]['end_month'];
+                    $data['end_day'] = $data['colleges'][0]['end_day'];
+                }
+            }
+        }
+        else {
+            $college_info = $this->profile_model->get_user_college($user_college_id);
+            if ($college_info) {
+                // Convert it to a form compatible with code in the view.
+                $data['user_college_id'] = $user_college_id;
+                $data['colleges'] = $college_info['colleges'];
+                $data['schools'] = $college_info['schools'];
+
+                $data['start_year'] = $data['colleges'][0]['start_year'];
+                $data['start_month'] = $data['colleges'][0]['start_month'];
+                $data['start_day'] = $data['colleges'][0]['start_day'];
+
+                $data['end_year'] = $data['colleges'][0]['end_year'];
+                $data['end_month'] = $data['colleges'][0]['end_month'];
+                $data['end_day'] = $data['colleges'][0]['end_day'];
+
+                $data['old_start_date'] = $college_info['colleges'][0]['date_from'];
+                $data['old_end_date'] = $college_info['colleges'][0]['date_to'];
+            }
+            else {
+                $data['error_messages'][] = "Sorry, but something went wrong.";
+            }
+        }
+
+        $data['heading'] = "Edit College";
+        $data['form_action'] = "user/edit-college";
+        $this->load->view("edit-college", $data);
+        $this->load->view("common/footer");
+    }
+
+    public function add_programme($user_college_id=NULL)
     {
         $data = $this->initialize_user();
         $data['title'] = "Edit your programme";
@@ -506,43 +600,95 @@ class User extends CI_Controller
             $data['programme_id'] = $this->input->post("programme");
             $data['year_of_study'] = $this->input->post("ystudy");
 
-            $data['start_day'] = $this->input->post("start-day");
-            $data['start_month'] = $this->input->post("start-month");
-            $data['start_year'] = $this->input->post("start-year");
-
-            $data['end_day'] = $this->input->post("end-day");
-            $data['end_month'] = $this->input->post("end-month");
-            $data['end_year'] = $this->input->post("end-year");
-            if ($data['end_year'] < $data['start_year']) {
-                $data['error_message'] = "Invalid dates entered!<br>Please check the order of the dates and try again.";
-            }
-            elseif (checkdate($data['start_month'], $data['start_day'], $data['start_year']) &&
-                    checkdate($data['end_month'], $data['end_day'], $data['end_year'])) {
-                $data['start_date'] = "{$data['start_year']}-{$data['start_month']}-{$data['start_day']}";
-                $data['end_date'] = "{$data['end_year']}-{$data['end_month']}-{$data['end_day']}";
+            $start_date = $this->input->post("start-date");
+            $end_date = $this->input->post("end-date");
+            if (date_create($start_date) && date_create($end_date)) {
+                $data['start_date'] = $start_date;
+                $data['end_date'] = $end_date;
             }
             else {
-                $data['error_message'] = "Invalid dates entered!<br>Please check the dates and try again.";
+                $data['error_message'] = "Sorry, but something went wrong.";
             }
 
             if (isset($data['error_message'])) {
-                $data['programmes'] = $this->profile_model->get_programmes();
+                $programmes = $this->profile_model->get_programmes($user_college_id);
+                if ($programmes) {
+                    $data['programmes'] = $programmes;
+                    $college_info = $this->profile_model->get_user_college($user_college_id);
+                    $data['start_date'] = $college_info['colleges'][0]['date_from'];
+                    $data['end_date'] = $college_info['colleges'][0]['date_to'];
+                }
             }
             else {
                 if ($this->profile_model->add_programme($data)) {
                     $data['success_message'] = "Your programme details have been successfully saved.";
                 }
                 else {
-                    $data['error_message'] = "The years you entered conflict with one of your records.<br><strong>Remember</strong> that " .
-                                             "you cannot study two programmes at the same time.";
-                    $data['programmes'] = $this->profile_model->get_programmes();
+                    $data['error_message'] = "Sorry, but something went wrong.";
                 }
             }
         }
         else {
-            $data['programmes'] = $this->profile_model->get_programmes();
+            $programmes = $this->profile_model->get_programmes($user_college_id);
+            if ($programmes) {
+                $data['programmes'] = $programmes;
+                $college_info = $this->profile_model->get_user_college($user_college_id);
+                $data['start_date'] = $college_info['colleges'][0]['date_from'];
+                $data['end_date'] = $college_info['colleges'][0]['date_to'];
+            }
+            else {
+                $data['error_message'] = "Sorry, but something went wrong.";
+            }
         }
 
+        $data['heading'] = "Add Programme";
+        $data['form_action'] = "user/add-programme";
+        $this->load->view("edit-programme", $data);
+        $this->load->view("common/footer");
+    }
+
+    public function edit_programme($user_programme_id=NULL)
+    {
+        $data = $this->initialize_user();
+        $data['title'] = "Edit your programme";
+        $this->load->view('common/header', $data);
+
+        if ($_SERVER['REQUEST_METHOD'] === "POST") {
+            $data['user_programme_id'] = $this->input->post("user-programme-id");
+            $data['programme_id'] = $this->input->post("programme");
+            $data['year_of_study'] = $this->input->post("ystudy");
+
+            $programme_info = $this->profile_model->get_user_programme($data['user_programme_id']);
+            if ($programme_info) {
+                $data['programmes'] = $programme_info['programmes'];
+                $data['programme_id'] = $data['programmes'][0]['programme_id'];
+                $data['start_date'] = $data['programmes'][0]['date_from'];
+                $data['end_date'] = $data['programmes'][0]['date_to'];
+
+                if ($this->profile_model->update_programme($data)) {
+                    $data['success_message'] = "Your edits have been successfully saved.";
+                }
+                else {
+                    $data['error_message'] = "Sorry, but someting went wrong.";
+                    $data['year_of_study'] = $data['programmes'][0]['year_of_study'];
+                }
+            }
+            else {
+                print("This path followed");
+                $data['error_message'] = "Sorry, but someting went wrong.";
+            }
+        }
+        else {
+            $programme_info = $this->profile_model->get_user_programme($user_programme_id);
+            if ($programme_info) {
+                $data['programmes'] = $programme_info['programmes'];
+                $data['user_programme_id'] = $user_programme_id;
+                $data['year_of_study'] = $data['programmes'][0]['year_of_study'];
+            }
+        }
+
+        $data['heading'] = "Edit Programme Details";
+        $data['form_action'] = "user/edit-programme";
         $this->load->view("edit-programme", $data);
         $this->load->view("common/footer");
     }
