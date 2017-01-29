@@ -4,6 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require_once('common/user-page-start.php');
 
 if ($visitor) {
+    define('PAGE', "about");
     require_once("common/secondary-user-nav.php");
 }
 ?>
@@ -11,7 +12,7 @@ if ($visitor) {
 <div class="box show-profile">
     <?php
     // If there is nothing to show.
-    if (!$profile['programmes'] && !$profile['colleges'] && !$profile['schools'] &&
+    if ($visitor && !$profile['programmes'] && !$profile['colleges'] && !$profile['schools'] &&
         !$profile['year_of_study'] && !$profile['halls'] && !$profile['hostels'] &&
         !$profile['country'] && !$profile['district']) {
         print("<div class='alert alert-info'><p>Nothing to show...</p></div>");
@@ -80,32 +81,32 @@ if ($visitor) {
                         if ($hall['resident']) {
                             print("<li><b>{$hall['start_year']} - {$hall['end_year']}: </b>Resident of {$hall['hall_name']}");
                             if (!$visitor) {
-                                print(' <a href="' . base_url("user/edit-hall") . '"><span class="glyphicon glyphicon-pencil"></span> <em>Edit</em></a>');
+                                print(' <a href="' . base_url("user/edit-hall/{$hall['id']}") . '"><span class="glyphicon glyphicon-pencil"></span> <em>Edit</em></a>');
                             }
                             print("</li>");
                         }
                         else {
                             print("<li><b>{$hall['start_year']} - {$hall['end_year']}: </b>Attached to {$hall['hall_name']}");
                             if (!$visitor) {
-                                print(' <a href="' . base_url("user/edit-hall") . '"><span class="glyphicon glyphicon-pencil"></span> <em>Edit</em></a>');
+                                print(' <a href="' . base_url("user/edit-hall/{$hall['id']}") . '"><span class="glyphicon glyphicon-pencil"></span> <em>Edit</em></a>');
                             }
                             print("</li>");
                         }
                     }
 
                     if (!$visitor) {
-                        print('<a href="'. base_url("user/edit-hall") . '"><em>Add hall</em></a>');
+                        print('<a href="'. base_url("user/add-hall") . '"><em>Add hall</em></a>');
                     }
                 }
                 else {
-                    print('<a href="'. base_url("user/edit-hall") . '"><em>Add hall</em></a>');
+                    print('<a href="'. base_url("user/add-hall") . '"><em>Add hall</em></a>');
                 }
 
                 if ($profile['hostels']) {
                     foreach ($profile['hostels'] as $hostel) {
                         print("<li><b>{$hostel['start_year']} - {$hostel['end_year']}: </b>{$hostel['hostel_name']}");
                         if (!$visitor) {
-                            print(' <a href="' . base_url("user/edit-hostel") . '"><span class="glyphicon glyphicon-pencil"></span> <em>Edit</em></a>');
+                            print(' <a href="' . base_url("user/edit-hostel/{$hostel['id']}") . '"><span class="glyphicon glyphicon-pencil"></span> <em>Edit</em></a>');
                         }
                         print("</li>");
                     }
@@ -114,7 +115,7 @@ if ($visitor) {
                     if (!$profile['hostels']) {
                         print(' &middot; ');
                     }
-                    print('<a href="'. base_url("user/edit-hostel") . '"><em>Add hostel</em></a>');
+                    print('<a href="'. base_url("user/add-hostel") . '"><em>Add hostel</em></a>');
                 }
                 ?>
             </ul>
@@ -131,7 +132,7 @@ if ($visitor) {
                         print("</li>");
                     }
                     else {
-                        print('<li><b>District: </b><a href="' . base_url("user/edit-district") . '"><em>Add district</em></a></li>');
+                        print('<li><b>District: </b><a href="' . base_url("user/add-district") . '"><em>Add district</em></a></li>');
                     }
 
                     if ($profile['country']) {
@@ -140,7 +141,7 @@ if ($visitor) {
                         print("</li>");
                     }
                     else {
-                        print('<li><b>Country: </b><a href="' . base_url("user/edit-country") . '"><em>Add country</em></a></li>');
+                        print('<li><b>Country: </b><a href="' . base_url("user/add-country") . '"><em>Add country</em></a></li>');
                     }
                 } else {
                 ?>

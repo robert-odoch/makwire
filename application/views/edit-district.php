@@ -5,7 +5,7 @@ require_once('common/user-page-start.php');
 ?>
 
 <div class="box">
-    <h4>Edit District</h4>
+    <h4><?= $heading; ?></h4>
     <?php if (isset($success_message)) { ?>
         <div class="alert alert-success">
             <p><?= "{$success_message}"; ?></p>
@@ -15,7 +15,7 @@ require_once('common/user-page-start.php');
             <p>Districts that matched</p>
             <ul>
                 <?php foreach($districts as $district): ?>
-                    <li><a href="<?= base_url("user/edit-district/1/{$district['district_id']}/{$district['district_name']}"); ?>"><?= $district['district_name']; ?></a></li>
+                    <li><a href="<?= base_url("user/add-district/{$district['district_id']}"); ?>"><?= $district['district_name']; ?></a></li>
                 <?php endforeach; ?>
             </ul>
         <?php } else { ?>
@@ -31,7 +31,7 @@ require_once('common/user-page-start.php');
         </div>
         <?php } ?>
 
-        <form action="<?= base_url("user/edit-district"); ?>" method="post" accept-charset="utf-8" role="form">
+        <form action="<?= base_url("user/add-district"); ?>" method="post" accept-charset="utf-8" role="form">
             <fieldset>
                 <div class="form-group">
                     <label for="district">District</label>

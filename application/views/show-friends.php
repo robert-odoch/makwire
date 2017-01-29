@@ -4,6 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require_once('common/user-page-start.php');
 
 if ($visitor) {
+    define('PAGE', 'friends');    
     require_once("common/secondary-user-nav.php");
 }
 ?>

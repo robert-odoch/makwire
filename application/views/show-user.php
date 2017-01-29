@@ -14,6 +14,7 @@ function can_share_post($user_id, $post)
 require_once('common/user-page-start.php');
 
 if ($visitor) {
+    define('PAGE', 'timeline');    
     require_once("common/secondary-user-nav.php");
 }
 

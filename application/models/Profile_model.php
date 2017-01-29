@@ -25,6 +25,7 @@ class Profile_model extends CI_Model
         return $query;
     }
 
+    // TODO: You can even make this function check for month and date.
     private function are_conflicting_dates($data_date_from, $data_date_to, $rdate_from, $rdate_to)
     {
         if (($data_date_from < $rdate_from) && ($data_date_to > $rdate_from) ||
@@ -137,7 +138,7 @@ class Profile_model extends CI_Model
         }
 
         // Get the halls.
-        $q = sprintf("SELECT hall_id, date_from, date_to, YEAR(date_from) AS start_year, YEAR(date_to) AS end_year, resident " .
+        $q = sprintf("SELECT id, hall_id, date_from, date_to, YEAR(date_from) AS start_year, YEAR(date_to) AS end_year, resident " .
                      "FROM user_halls WHERE (user_id=%d) ORDER BY date_to DESC",
                      $user_id);
         $query = $this->run_query($q);
@@ -157,21 +158,20 @@ class Profile_model extends CI_Model
         }
 
         // Get the hostel.
-        $q = sprintf("SELECT hostel_id, date_from, date_to, YEAR(date_from) AS start_year, YEAR(date_to) AS end_year " .
+        $q = sprintf("SELECT id, hostel_id, date_from, date_to, YEAR(date_from) AS start_year, YEAR(date_to) AS end_year " .
                      "FROM user_hostels WHERE (user_id=%d) ORDER BY date_to DESC",
                      $user_id);
         $query = $this->run_query($q);
 
         $data['hostels'] = array();
         if ($query->num_rows() > 0) {
-            print_r($query);
             $results = $query->result_array();
             foreach ($results as $r) {
                 // Get the hostel name.
                 $q = sprintf("SELECT hostel_name FROM hostels WHERE (hostel_id=%d)",
                              $r['hostel_id']);
                 $query = $this->run_query($q);
-                $r['hostel_name'] = $query->row()->hall_name;
+                $r['hostel_name'] = $query->row()->hostel_name;
 
                 array_push($data['hostels'], $r);
             }
@@ -221,31 +221,31 @@ class Profile_model extends CI_Model
                      $user_college_id, $_SESSION['user_id']);
         $query = $this->run_query($q);
 
-        if ($query->num_rows() === 1) {
-            // Get the name of the college.
-            $data['colleges'][] = $query->row_array();
-            $q = sprintf("SELECT college_name FROM colleges WHERE (college_id=%d)",
-                         $data['colleges'][0]['college_id']);
-            $query = $this->run_query($q);
-            $data['colleges'][0]['college_name'] = $query->row()->college_name;
-
-            // Get the school.
-            $q = sprintf("SELECT school_id FROM user_schools " .
-                         "WHERE (user_id=%d AND date_from='%s' AND date_to='%s')",
-                         $_SESSION['user_id'], $data['colleges'][0]['date_from'], $data['colleges'][0]['date_to']);
-            $query = $this->run_query($q);
-            $data['schools'][0]['school_id'] = $query->row_array()['school_id'];
-
-            // Get the name of the school.
-            $q = sprintf("SELECT school_name FROM schools WHERE (school_id=%d)",
-                         $data['schools'][0]['school_id']);
-            $query = $this->run_query($q);
-            $data['schools'][0]['school_name'] = $query->row_array()['school_name'];
-
-            return $data;
+        if ($query->num_rows() === 0) {
+            return NULL;
         }
 
-        return NULL;
+        // Get the name of the college.
+        $data['colleges'][] = $query->row_array();
+        $q = sprintf("SELECT college_name FROM colleges WHERE (college_id=%d)",
+                     $data['colleges'][0]['college_id']);
+        $query = $this->run_query($q);
+        $data['colleges'][0]['college_name'] = $query->row()->college_name;
+
+        // Get the school.
+        $q = sprintf("SELECT school_id FROM user_schools " .
+                     "WHERE (user_id=%d AND date_from='%s' AND date_to='%s')",
+                     $_SESSION['user_id'], $data['colleges'][0]['date_from'], $data['colleges'][0]['date_to']);
+        $query = $this->run_query($q);
+        $data['schools'][0]['school_id'] = $query->row_array()['school_id'];
+
+        // Get the name of the school.
+        $q = sprintf("SELECT school_name FROM schools WHERE (school_id=%d)",
+                     $data['schools'][0]['school_id']);
+        $query = $this->run_query($q);
+        $data['schools'][0]['school_name'] = $query->row_array()['school_name'];
+
+        return $data;
     }
 
     public function get_user_programme($user_programme_id) {
@@ -254,17 +254,62 @@ class Profile_model extends CI_Model
                      $user_programme_id, $_SESSION['user_id']);
         $query = $this->run_query($q);
 
-        if ($query->num_rows() === 1) {
-            // Get the name of the programme.
-            $data['programmes'][] = $query->row_array();
-            $q = sprintf("SELECT programme_name FROM programmes WHERE (programme_id=%d)",
-                         $data['programmes'][0]['programme_id']);
-            $query = $this->run_query($q);
-            $data['programmes'][0]['programme_name'] = $query->row()->programme_name;
-            return $data;
+        if ($query->num_rows() === 0) {
+            return NULL;
         }
 
-        return NULL;
+        // Get the name of the programme.
+        $data['programmes'][] = $query->row_array();
+        $q = sprintf("SELECT programme_name FROM programmes WHERE (programme_id=%d)",
+                     $data['programmes'][0]['programme_id']);
+        $query = $this->run_query($q);
+        $data['programmes'][0]['programme_name'] = $query->row()->programme_name;
+
+        return $data;
+    }
+
+    public function get_user_hall($user_hall_id)
+    {
+        $q = sprintf("SELECT hall_id, date_from, date_to, resident, " .
+                     "DAY(date_from) AS start_day, MONTH(date_from) AS start_month, YEAR(date_from) AS start_year, " .
+                     "DAY(date_to) AS end_day, MONTH(date_to) AS end_month, YEAR(date_to) AS end_year " .
+                     "FROM user_halls WHERE (id=%d AND user_id=%d)",
+                     $user_hall_id, $_SESSION['user_id']);
+        $query = $this->run_query($q);
+
+        if ($query->num_rows() === 0) {
+            return NULL;
+        }
+
+        $data['halls'][] = $query->row_array();
+        $q = sprintf("SELECT hall_name FROM halls WHERE (hall_id=%d)",
+                     $data['halls'][0]['hall_id']);
+        $query = $this->run_query($q);
+        $data['halls'][0]['hall_name'] = $query->row()->hall_name;
+
+        return $data;
+    }
+
+    public function get_user_hostel($user_hostel_id)
+    {
+        $q = sprintf("SELECT hostel_id, date_from, date_to, " .
+                     "DAY(date_from) AS start_day, MONTH(date_from) AS start_month, YEAR(date_from) AS start_year, " .
+                     "DAY(date_to) AS end_day, MONTH(date_to) AS end_month, YEAR(date_to) AS end_year " .
+                     "FROM user_hostels WHERE (id=%d AND user_id=%d)",
+                     $user_hostel_id, $_SESSION['user_id']);
+        $query = $this->run_query($q);
+
+        if ($query->num_rows() === 0) {
+            return NULL;
+        }
+
+        $data['hostels'][] = $query->row_array();
+        $q = sprintf("SELECT hostel_name FROM hostels WHERE (hostel_id=%d)",
+                     $data['hostels'][0]['hostel_id']);
+        $query = $this->run_query($q);
+        $data['hostels'][0]['hostel_name'] = $query->row()->hostel_name;
+
+        return $data;
     }
 
     public function get_colleges()
@@ -319,15 +364,15 @@ class Profile_model extends CI_Model
         // If we have reached this point, then the years are OK.
         $q = sprintf("INSERT INTO user_colleges (user_id, college_id, date_from, date_to) " .
                      "VALUES (%d, %d, %s, %s)",
-                     $_SESSION['user_id'], $data['college_id'],
-                     $this->db->escape($data['start_date']), $this->db->escape($data['end_date']));
+                     $_SESSION['user_id'], $data['college_id'], $this->db->escape($data['start_date']),
+                     $this->db->escape($data['end_date']));
         $this->run_query($q);
 
         // Also add the school.
         $q = sprintf("INSERT INTO user_schools (user_id, school_id, date_from, date_to ) " .
                      "VALUES (%d, %d, %s, %s)",
-                     $_SESSION['user_id'], $data['school_id'],
-                     $this->db->escape($data['start_date']), $this->db->escape($data['end_date']));
+                     $_SESSION['user_id'], $data['school_id'], $this->db->escape($data['start_date']),
+                     $this->db->escape($data['end_date']));
         $this->run_query($q);
 
         return TRUE;
@@ -355,9 +400,19 @@ class Profile_model extends CI_Model
      */
     public function get_districts($district)
     {
+        $keywords = preg_split("/[\s,]+/", $district);
+        for ($i=0; $i!=count($keywords); ++$i) {
+            $keywords[$i] = "+{$keywords[$i]}";
+        }
+
+        $key = '';
+        foreach ($keywords as $keyword) {
+            $key .= "{$keyword} ";
+        }
+
         $q = sprintf("SELECT district_id, district_name FROM districts " .
-                     "WHERE district_name LIKE '*%s*'",
-                     $district);
+                     "WHERE MATCH(district_name) AGAINST (%s IN BOOLEAN MODE)",
+                     $this->db->escape($key));
         $query = $this->run_query($q);
 
         return $query->result_array();
@@ -365,10 +420,30 @@ class Profile_model extends CI_Model
 
     public function add_district($district_id)
     {
+        // First check if a district with that id exists.
+        $q = sprintf("SELECT district_name FROM districts WHERE (district_id=%d)",
+                     $district_id);
+        $query = $this->run_query($q);
+        if ($query->num_rows() == 0) {
+            return FALSE;
+        }
+
+        // Next check if this user hasn't added district already.
+        $q = sprintf("SELECT district_id FROM user_profile " .
+                     "WHERE (user_id=%d AND district_id IS NOT NULL)",
+                     $_SESSION['user_id']);
+        $query = $this->run_query($q);
+        if ($query->num_rows() != 0) {
+            return FALSE;
+        }
+
+        $query = $this->run_query($q);
         $q = sprintf("UPDATE user_profile SET district_id=%d " .
                      "WHERE user_id=%d",
                      $district_id, $_SESSION['user_id']);
         $this->run_query($q);
+
+        return TRUE;
     }
 
     public function add_programme($data)
@@ -394,8 +469,8 @@ class Profile_model extends CI_Model
         // If we have reached this point, then the years are OK.
         $q = sprintf("INSERT INTO user_programmes (user_id, programme_id, date_from, date_to, year_of_study) " .
                      "VALUES(%d, %d, %s, %s, '%d')",
-                     $_SESSION['user_id'], $data['programme_id'],
-                     $this->db->escape($data['start_date']), $this->db->escape($data['end_date']), $data['year_of_study']);
+                     $_SESSION['user_id'], $data['programme_id'], $this->db->escape($data['start_date']),
+                     $this->db->escape($data['end_date']), $data['year_of_study']);
         $this->run_query($q);
 
         return TRUE;
@@ -424,9 +499,49 @@ class Profile_model extends CI_Model
         // If we have reached this point, then things are OK.
         $q = sprintf("INSERT INTO user_halls (user_id, hall_id, date_from, date_to, resident) " .
                      "VALUES (%d, %d, %s, %s, %d)",
-                     $_SESSION['user_id'], $data['hall_id'],
+                     $_SESSION['user_id'], $data['hall_id'], $this->db->escape($data['start_date']),
+                     $this->db->escape($data['end_date']), $data['resident']);
+        $this->run_query($q);
+
+        return TRUE;
+    }
+
+    public function update_hall($data)
+    {
+        // First make sure that what we are trying to update exists before attempting the edit.
+        $q = sprintf("SELECT id FROM user_halls " .
+                     "WHERE (user_id=%d AND hall_id=%d AND date_from=%s AND date_to=%s) " .
+                     "LIMIT 1",
+                     $_SESSION['user_id'], $data['hall_id'], $this->db->escape($data['old_start_date']),
+                     $this->db->escape($data['old_end_date']));
+        $query = $this->run_query($q);
+        if ($query->num_rows() === 0) {
+            return FALSE;
+        }
+
+        // If we have reached this point, then the hall exists.
+        // Next check whether a hall already exists in the range of years provided.
+        $q = sprintf("SELECT date_from, date_to FROM user_halls " .
+                     "WHERE (user_id=%d AND hall_id !=%d)",
+                     $_SESSION['user_id'], $data['hall_id']);
+        $query = $this->run_query($q);
+        if ($query->num_rows() > 0) {
+            $results = $query->result_array();
+            $data_date_from = date_create($data['start_date']);
+            $data_date_to = date_create($data['end_date']);
+            foreach ($results as $r) {
+                $rdate_from = date_create($r['date_from']);
+                $rdate_to = date_create($r['date_to']);
+                if ($this->are_conflicting_dates($data_date_from, $data_date_to, $rdate_from, $rdate_to)) {
+                    return FALSE;
+                }
+            }
+        }
+
+        // If we have reached this point, then attempt the update.
+        $q = sprintf("UPDATE user_halls SET date_from=%s, date_to=%s, resident=%d WHERE (id=%d)",
                      $this->db->escape($data['start_date']), $this->db->escape($data['end_date']),
-                     $data['resident']);
+                     $data['resident'], $data['user_hall_id']);
         $this->run_query($q);
 
         return TRUE;
@@ -447,8 +562,8 @@ class Profile_model extends CI_Model
             foreach ($results as $r) {
                 // Constraint only applies if the user is resident.
                 if ($r['resident']) {
-                    $rdate_from = date_create($r['date_from']);
-                    $rdate_to = date_create($r['date_to']);
+                $rdate_from = date_create($r['date_from']);
+                $rdate_to = date_create($r['date_to']);
                     if ($this->are_conflicting_dates($data_date_from, $data_date_to, $rdate_from, $rdate_to)) {
                         return FALSE;
                     }
@@ -484,13 +599,80 @@ class Profile_model extends CI_Model
         return TRUE;
     }
 
+    public function update_hostel($data)
+    {
+        // First make sure that what we are trying to update exists before attempting the edit.
+        $q = sprintf("SELECT id FROM user_hostels " .
+                     "WHERE (user_id=%d AND hostel_id=%d AND date_from=%s AND date_to=%s) " .
+                     "LIMIT 1",
+                     $_SESSION['user_id'], $data['hostel_id'], $this->db->escape($data['old_start_date']),
+                     $this->db->escape($data['old_end_date']));
+        $query = $this->run_query($q);
+        if ($query->num_rows() === 0) {
+            return FALSE;
+        }
+
+        // Next check whether a hall already exists in the range of years provided,
+        // and the user is resident.
+        $q = sprintf("SELECT date_from, date_to, resident FROM user_halls " .
+                     "WHERE (user_id=%d)",
+                     $_SESSION['user_id']);
+        $query = $this->run_query($q);
+        if ($query->num_rows() > 0) {
+            $results = $query->result_array();
+            $data_date_from = date_create($data['start_date']);
+            $data_date_to = date_create($data['end_date']);
+            foreach ($results as $r) {
+                // Constraint only applies if the user is resident.
+                if ($r['resident']) {
+                    $rdate_from = date_create($r['date_from']);
+                    $rdate_to = date_create($r['date_to']);
+                    if ($this->are_conflicting_dates($data_date_from, $data_date_to, $rdate_from, $rdate_to)) {
+                        return FALSE;
+                    }
+                }
+            }
+        }
+
+        // If we have reached this point, then the hostel exists.
+        // Last, check whether a hostel already exists in the range of years provided.
+        $q = sprintf("SELECT date_from, date_to FROM user_hostels " .
+                     "WHERE (user_id=%d AND hostel_id !=%d)",
+                     $_SESSION['user_id'], $data['hostel_id']);
+        $query = $this->run_query($q);
+        if ($query->num_rows() > 0) {
+            $results = $query->result_array();
+            $data_date_from = date_create($data['start_date']);
+            $data_date_to = date_create($data['end_date']);
+            foreach ($results as $r) {
+                $rdate_from = date_create($r['date_from']);
+                $rdate_to = date_create($r['date_to']);
+                if ($this->are_conflicting_dates($data_date_from, $data_date_to, $rdate_from, $rdate_to)) {
+                    return FALSE;
+                }
+            }
+        }
+
+        // If we have reached this point, then attempt the update.
+        $q = sprintf("UPDATE user_hostels SET date_from=%s, date_to=%s WHERE (id=%d)",
+                     $this->db->escape($data['start_date']), $this->db->escape($data['end_date']),
+                     $data['user_hostel_id']);
+        $this->run_query($q);
+        if ($this->db->affected_rows() == 0) {
+            return FALSE;
+        }
+
+        return TRUE;
+    }
+
     public function update_college($data)
     {
         // First make sure that what we are trying to update exists before attempting the edit.
         $q = sprintf("SELECT college_id FROM user_colleges " .
-                     "WHERE (user_id=%d AND college_id=%d AND date_from='%s' AND date_to='%s') " .
+                     "WHERE (user_id=%d AND college_id=%d AND date_from=%s AND date_to=%s) " .
                      "LIMIT 1",
-                     $_SESSION['user_id'], $data['college_id'], $data['old_start_date'], $data['old_end_date']);
+                     $_SESSION['user_id'], $data['college_id'], $this->db->escape($data['old_start_date']),
+                     $this->db->escape($data['old_end_date']));
         $query = $this->run_query($q);
         if ($query->num_rows() != 1) {
             return FALSE;
@@ -517,19 +699,22 @@ class Profile_model extends CI_Model
 
         // Get the id in the user_schools table.
         $q = sprintf("SELECT id FROM user_schools " .
-                     "WHERE (user_id=%d AND school_id=%d AND date_from='%s' AND date_to='%s') " .
+                     "WHERE (user_id=%d AND school_id=%d AND date_from=%s AND date_to=%s) " .
                      "LIMIT 1",
-                     $_SESSION['user_id'], $data['school_id'], $data['old_start_date'], $data['old_end_date']);
+                     $_SESSION['user_id'], $data['school_id'], $this->db->escape($data['old_start_date']),
+                     $this->db->escape($data['old_end_date']));
         $user_school_id = $this->run_query($q)->row_array()['id'];
 
         // If we have reached this point, then attempt the update.
-        $q = sprintf("UPDATE user_colleges SET date_from='%s', date_to='%s' WHERE (id=%d)",
-                     $data['start_date'], $data['end_date'], $data['user_college_id']);
+        $q = sprintf("UPDATE user_colleges SET date_from=%s, date_to=%s WHERE (id=%d)",
+                     $this->db->escape($data['start_date']), $this->db->escape($data['end_date']),
+                     $data['user_college_id']);
         $this->run_query($q);
 
         // Also update the user_schools table.
-        $q = sprintf("UPDATE user_schools SET date_from='%s', date_to='%s' WHERE (id=%d)",
-                     $data['start_date'], $data['end_date'], $user_school_id);
+        $q = sprintf("UPDATE user_schools SET date_from=%s, date_to=%s WHERE (id=%d)",
+                     $this->db->escape($data['start_date']), $this->db->escape($data['end_date']),
+                     $user_school_id);
         $this->run_query($q);
 
         return TRUE;
@@ -539,11 +724,12 @@ class Profile_model extends CI_Model
     {
         // First make sure that what we are trying to update exists before attempting the edit.
         $q = sprintf("SELECT programme_id FROM user_programmes " .
-                     "WHERE (user_id=%d AND programme_id=%d AND date_from='%s' AND date_to='%s') " .
+                     "WHERE (user_id=%d AND programme_id=%d AND date_from=%s AND date_to=%s) " .
                      "LIMIT 1",
-                     $_SESSION['user_id'], $data['programme_id'], $data['start_date'], $data['end_date']);
+                     $_SESSION['user_id'], $data['programme_id'], $this->db->escape($data['start_date']),
+                     $this->db->escape($data['end_date']));
         $query = $this->run_query($q);
-        if ($query->num_rows() != 1) {
+        if ($query->num_rows() == 0) {
             return FALSE;
         }
 
