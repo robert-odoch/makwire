@@ -25,7 +25,6 @@ class Profile_model extends CI_Model
         return $query;
     }
 
-    // TODO: You can even make this function check for month and date.
     private function are_conflicting_dates($data_date_from, $data_date_to, $rdate_from, $rdate_to)
     {
         if (($data_date_from < $rdate_from) && ($data_date_to > $rdate_from) ||
@@ -40,11 +39,17 @@ class Profile_model extends CI_Model
 
     public function get_profile($user_id)
     {
-        // Get the year of study, country and district.
+        // Get the country and district.
         $q = sprintf("SELECT country_id, district_id FROM user_profile WHERE (user_id=%d)",
                      $user_id);
         $query = $this->run_query($q);
-        if ($query->num_rows() == 1) {
+        if ($query->num_rows() === 0) {
+            $data = array(
+                'country'=>NULL,
+                'district'=>NULL
+            );
+        }
+        else {
             $data = $query->row_array();
 
             // Get the name of the country.
@@ -69,17 +74,10 @@ class Profile_model extends CI_Model
                 $data['district'] = NULL;
             }
         }
-        else {
-            $data = array(
-                'level'=>NULL,
-                'year_of_study'=>NULL,
-                'country'=>NULL,
-                'district'=>NULL
-            );
-        }
 
         // Get the colleges.
-        $q = sprintf("SELECT id, college_id, date_from, date_to, level, YEAR(date_from) AS start_year, YEAR(date_to) AS end_year " .
+        $q = sprintf("SELECT id, college_id, date_from, date_to, level, " .
+                     "YEAR(date_from) AS start_year, YEAR(date_to) AS end_year " .
                      "FROM user_colleges WHERE (user_id=%d) ORDER BY date_to DESC",
                      $user_id);
         $query = $this->run_query($q);
@@ -119,8 +117,9 @@ class Profile_model extends CI_Model
         }
 
         // Get the programmes.
-        $q = sprintf("SELECT id, programme_id, date_from, date_to FROM user_programmes " .
-                     "WHERE (user_id=%d) ORDER BY date_to DESC", $user_id);
+        $q = sprintf("SELECT id, programme_id, date_from, date_to, year_of_study " .
+                     "FROM user_programmes WHERE (user_id=%d) ORDER BY date_to DESC",
+                     $user_id);
         $query = $this->run_query($q);
 
         $data['programmes'] = array();
@@ -138,7 +137,8 @@ class Profile_model extends CI_Model
         }
 
         // Get the halls.
-        $q = sprintf("SELECT id, hall_id, date_from, date_to, YEAR(date_from) AS start_year, YEAR(date_to) AS end_year, resident " .
+        $q = sprintf("SELECT id, hall_id, date_from, date_to, " .
+                     "YEAR(date_from) AS start_year, YEAR(date_to) AS end_year, resident " .
                      "FROM user_halls WHERE (user_id=%d) ORDER BY date_to DESC",
                      $user_id);
         $query = $this->run_query($q);
@@ -158,7 +158,8 @@ class Profile_model extends CI_Model
         }
 
         // Get the hostel.
-        $q = sprintf("SELECT id, hostel_id, date_from, date_to, YEAR(date_from) AS start_year, YEAR(date_to) AS end_year " .
+        $q = sprintf("SELECT id, hostel_id, date_from, date_to, " .
+                     "YEAR(date_from) AS start_year, YEAR(date_to) AS end_year " .
                      "FROM user_hostels WHERE (user_id=%d) ORDER BY date_to DESC",
                      $user_id);
         $query = $this->run_query($q);
@@ -232,7 +233,7 @@ class Profile_model extends CI_Model
         $query = $this->run_query($q);
         $data['colleges'][0]['college_name'] = $query->row()->college_name;
 
-        // Get the school.
+        // Get the school id.
         $q = sprintf("SELECT school_id FROM user_schools " .
                      "WHERE (user_id=%d AND date_from='%s' AND date_to='%s')",
                      $_SESSION['user_id'], $data['colleges'][0]['date_from'], $data['colleges'][0]['date_to']);
@@ -248,7 +249,8 @@ class Profile_model extends CI_Model
         return $data;
     }
 
-    public function get_user_programme($user_programme_id) {
+    public function get_user_programme($user_programme_id)
+    {
         $q = sprintf("SELECT programme_id, date_from, date_to, year_of_study " .
                      "FROM user_programmes WHERE (id=%d AND user_id=%d)",
                      $user_programme_id, $_SESSION['user_id']);
@@ -394,10 +396,6 @@ class Profile_model extends CI_Model
         $this->run_query($q);
     }
 
-    /**
-     * Get the districts matching a given district name.
-     * TODO: A lot to be done.
-     */
     public function get_districts($district)
     {
         $keywords = preg_split("/[\s,]+/", $district);
@@ -733,7 +731,7 @@ class Profile_model extends CI_Model
             return FALSE;
         }
 
-        // If we have reached this point, then the college exists.
+        // If we have reached this point, then the programme exists.
         // Next check whether a programme already exists in the range of years provided.
         $q = sprintf("SELECT date_from, date_to FROM user_programmes " .
                      "WHERE (user_id=%d AND programme_id !=%d)",

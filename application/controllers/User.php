@@ -20,6 +20,7 @@ class User extends CI_Controller
         $this->user_model->confirm_logged_in();
     }
 
+    // TODO: Delete this funtion when everything is done.
     public function dummy()
     {
         $users = array(
@@ -144,6 +145,7 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
+    // TODO: check if they are friends.
     public function send_message($user_id, $offset=0)
     {
         $data = $this->initialize_user();
@@ -327,6 +329,7 @@ class User extends CI_Controller
         redirect(base_url("user/index/{$user_id}"));
     }
 
+    // TODO: check if a request exists.
     public function accept_friend($user_id)
     {
         $this->user_model->confirm_friend_request($user_id);
