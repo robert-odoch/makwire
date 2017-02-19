@@ -24,15 +24,6 @@ class Reply_model extends CI_Model
 
         return $query;
     }
-
-    private function get_name($user_id)
-    {
-        $q = sprintf("SELECT display_name FROM users WHERE user_id=%d",
-                     $user_id);
-        $query = $this->run_query($q);
-
-        return $query->row()->display_name;
-    }
     /*** End Utility ***/
 
     private function has_liked($reply_id)
@@ -58,7 +49,7 @@ class Reply_model extends CI_Model
         $reply = $query->row_array();
 
         // Get the name of the replier.
-        $reply['replier'] = ucfirst($this->get_name($reply['commenter_id']));
+        $reply['replier'] = $this->user_model->get_name($reply['commenter_id']);
 
         // Add the timespan.
         $reply['timespan'] = timespan(mysql_to_unix($reply['date_entered']), now(), 1);
@@ -116,7 +107,7 @@ class Reply_model extends CI_Model
         $likes = array();
         foreach ($results as $like) {
             // Get the name of the liker.
-            $like['liker'] = ucfirst($this->get_name($like['liker_id']));
+            $like['liker'] = $this->user_model->get_name($like['liker_id']);
 
             array_push($likes, $like);
         }

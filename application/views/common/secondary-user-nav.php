@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 <div id="secondary-user" class="box">
     <figure>
-        <img src="<?= base_url("images/kasumba.jpg"); ?>" alt="<?= $secondary_user; ?>'s photo" class="profile-pic">
+        <img src="<?= $su_profile_pic_path; ?>" alt="<?= $secondary_user; ?>'s photo" class="profile-pic">
     </figure>
     <div>
         <a href="<?= base_url("user/index/{$suid}"); ?>"><?= $secondary_user; ?></a>

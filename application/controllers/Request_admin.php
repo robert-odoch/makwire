@@ -19,22 +19,9 @@ class Request_admin extends CI_Controller
         $this->user_model->confirm_logged_in();
     }
 
-    private function initialize_user()
-    {
-        $data['primary_user'] = $this->user_model->get_name($_SESSION['user_id']);
-        $data['suggested_users'] = $this->user_model->get_suggested_users(0, 4);
-        $data['num_friend_requests'] = $this->user_model->get_num_friend_requests();
-        $data['num_active_friends'] = $this->user_model->get_num_chat_users(TRUE);
-        $data['num_new_messages'] = $this->user_model->get_num_messages(TRUE);
-        $data['num_new_notifs'] = $this->user_model->get_num_notifs(TRUE);
-        $data['chat_users'] = $this->user_model->get_chat_users(TRUE);
-
-        return $data;
-    }
-
     public function add_district()
     {
-        $data = $this->initialize_user();
+        $data = $this->user_model->initialize_user();
         $data['title'] = "Request admin to add your district or state";
         $this->load->view("common/header", $data);
 
@@ -57,7 +44,7 @@ class Request_admin extends CI_Controller
 
     public function add_country()
     {
-        $data = $this->initialize_user();
+        $data = $this->user_model->initialize_user();
         $data['title'] = "Request admin to add your country";
         $this->load->view("common/header", $data);
 

@@ -53,13 +53,86 @@ class User_model extends CI_Model
         $this->run_query($q);
     }
 
+    public function initialize_user()
+    {
+        $data['primary_user'] = $this->get_name($_SESSION['user_id']);
+        $data['suggested_users'] = $this->get_suggested_users(0, 4);
+        $data['num_friend_requests'] = $this->get_num_friend_requests(TRUE);
+        $data['num_active_friends'] = $this->get_num_chat_users(TRUE);
+        $data['num_new_messages'] = $this->get_num_messages(TRUE);
+        $data['num_new_notifs'] = $this->get_num_notifs(TRUE);
+        $data['chat_users'] = $this->get_chat_users(TRUE);
+        $data['profile_pic_path'] = $this->get_profile_picture($_SESSION['user_id']);
+
+        return $data;
+    }
+
     public function get_name($user_id)
     {
         $q = sprintf("SELECT display_name FROM users WHERE user_id=%d",
                      $user_id);
         $query = $this->run_query($q);
 
-        return $query->row()->display_name;
+        return ucfirst($query->row()->display_name);
+    }
+
+    public function get_profile_picture($user_id)
+    {
+        $q = sprintf("SELECT profile_pic_id FROM users " .
+                     "WHERE (user_id=%d AND profile_pic_id IS NOT NULL)",
+                     $user_id);
+        $query = $this->run_query($q);
+        if ($query->num_rows() == 0) {
+            // Use a dummy picture.
+            $profile_pic_path = base_url("images/missing_user.png");
+        }
+        else {
+            $image_id = $query->row_array()['profile_pic_id'];
+            // Get the full path of the profile picture.
+            $q = sprintf("SELECT full_path FROM user_images " .
+                         "WHERE (user_id=%d AND image_id=%d)",
+                         $user_id, $image_id);
+            $query = $this->run_query($q);
+            $profile_pic_path = $query->row_array()['full_path'];
+            $profile_pic_path = str_replace($_SERVER['DOCUMENT_ROOT'], '', $profile_pic_path);
+        }
+
+        return $profile_pic_path;
+    }
+    
+    public function get_num_posts($user_id)
+    {
+        $q = sprintf("SELECT post_id FROM posts " .
+                     "WHERE (audience='timeline') AND (author_id=%d)",
+                     $user_id);
+        $query = $this->run_query($q);
+
+        return $query->num_rows();
+    }
+
+    public function get_posts($user_id, $offset, $limit)
+    {
+        $q = sprintf("SELECT post_id FROM posts " .
+                     "WHERE (audience='timeline' AND author_id=%d) " .
+                     "ORDER BY date_posted DESC LIMIT %d, %d",
+                     $user_id, $offset, $limit);
+        $query = $this->run_query($q);
+        $results = $query->result_array();
+
+        $posts = array();
+        foreach($results as $r) {
+            // Get the detailed post.
+            $post = $this->post_model->get_post($r['post_id']);
+
+            // Get only 540 characters from post if possible.
+            $short_post = $this->post_model->get_short_post($post['post'], 540);
+            $post['post'] = $short_post['body'];
+            $post['has_more'] = $short_post['has_more'];
+
+            array_push($posts, $post);
+        }
+
+        return $posts;
     }
 
     public function get_num_messages($filter=TRUE)
@@ -153,6 +226,7 @@ class User_model extends CI_Model
         foreach ($results as $friend) {
             // Get this friend's name.
             $friend['display_name'] = $this->get_name($friend['friend_id']);
+            $friend['profile_pic_path'] = $this->get_profile_picture($friend['friend_id']);
 
             array_push($friends, $friend);
         }
@@ -205,6 +279,7 @@ class User_model extends CI_Model
             foreach ($friends as $friend) {
                 if ($this->active($friend['friend_id'])) {
                     $friend['active'] = TRUE;
+                    $friend['profile_pic_path'] = $this->get_profile_picture($friend['friend_id']);
                     array_push($chat_users, $friend);
                 }
             }
@@ -385,6 +460,7 @@ class User_model extends CI_Model
             $fr_status = $this->get_friendship_status($user['user_id']);
             if (!$fr_status['friends'] && !$fr_status['fr_sent']) {
                 $user['display_name'] = ucfirst($user['display_name']);
+                $user['profile_pic_path'] = $this->get_profile_picture($user['user_id']);
                 array_push($users, $user);
             }
         }

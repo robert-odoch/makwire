@@ -12,9 +12,9 @@ if ($visitor) {
 <div class="box show-profile">
     <?php
     // If there is nothing to show.
-    if ($visitor && !$profile['programmes'] && !$profile['colleges'] && !$profile['schools'] &&
-        !$profile['year_of_study'] && !$profile['halls'] && !$profile['hostels'] &&
-        !$profile['country'] && !$profile['district']) {
+    if ($visitor && !$profile['programmes']
+        && !$profile['colleges'] && !$profile['schools'] && !$profile['halls']
+        && !$profile['hostels'] && !$profile['country'] && !$profile['district']) {
         print("<div class='alert alert-info'><p>Nothing to show...</p></div>");
     }
     else {
@@ -127,7 +127,7 @@ if ($visitor) {
                 <?php
                 if (!$visitor) {
                     if ($profile['district']) {
-                        print("<li><b>District: </b>{$profile['district']}</li>");
+                        print("<li><b>District: </b>{$profile['district']}");
                         print(' <a href="' . base_url("user/edit-district") . '"><span class="glyphicon glyphicon-pencil"></span> <em>Edit</em></a>');
                         print("</li>");
                     }

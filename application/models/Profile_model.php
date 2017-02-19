@@ -117,7 +117,7 @@ class Profile_model extends CI_Model
         }
 
         // Get the programmes.
-        $q = sprintf("SELECT id, programme_id, date_from, date_to, year_of_study " .
+        $q = sprintf("SELECT id, programme_id, date_from, date_to " .
                      "FROM user_programmes WHERE (user_id=%d) ORDER BY date_to DESC",
                      $user_id);
         $query = $this->run_query($q);

@@ -19,19 +19,6 @@ class Post extends CI_Controller
         $this->user_model->confirm_logged_in();
     }
 
-    private function initialize_user()
-    {
-        $data['primary_user'] = $this->user_model->get_name($_SESSION['user_id']);
-        $data['suggested_users'] = $this->user_model->get_suggested_users(0, 4);
-        $data['num_friend_requests'] = $this->user_model->get_num_friend_requests();
-        $data['num_active_friends'] = $this->user_model->get_num_chat_users(TRUE);
-        $data['num_new_messages'] = $this->user_model->get_num_messages(TRUE);
-        $data['num_new_notifs'] = $this->user_model->get_num_notifs(TRUE);
-        $data['chat_users'] = $this->user_model->get_chat_users(TRUE);
-
-        return $data;
-    }
-
     public function like($post_id)
     {
         $this->post_model->like($post_id);
@@ -40,7 +27,7 @@ class Post extends CI_Controller
 
     public function comment($post_id)
     {
-        $data = $this->initialize_user();
+        $data = $this->user_model->initialize_user();
         $data['title'] = 'Comment on this post';
         $this->load->view('common/header', $data);
 
@@ -85,7 +72,7 @@ class Post extends CI_Controller
 
     public function likes($post_id, $offset=0)
     {
-        $data = $this->initialize_user();
+        $data = $this->user_model->initialize_user();
         $data['title'] = "People who liked this post";
         $this->load->view("common/header", $data);
 
@@ -120,7 +107,7 @@ class Post extends CI_Controller
 
     public function comments($post_id, $offset=0)
     {
-        $data = $this->initialize_user();
+        $data = $this->user_model->initialize_user();
         $data['title'] = 'Comments on this post';
         $this->load->view("common/header", $data);
 
@@ -156,7 +143,7 @@ class Post extends CI_Controller
 
     public function shares($post_id, $offset=0)
     {
-        $data = $this->initialize_user();
+        $data = $this->user_model->initialize_user();
         $data['title'] = "People who shared this post";
         $this->load->view("common/header", $data);
 

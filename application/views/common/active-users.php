@@ -7,7 +7,7 @@ if (count($chat_users) > 0):
     <ul class="active-users">
         <?php foreach($chat_users as $chat_user): ?>
         <li>
-            <figure><img src="<?= base_url('images/kasumba.jpg'); ?>" alt="<?= $chat_user['display_name']?>" class="user"></figure>
+            <figure><img src="<?= $chat_user['profile_pic_path']; ?>" alt="<?= $chat_user['display_name']?>" class="user"></figure>
             <span><a href="<?= base_url("user/send-message/{$chat_user['friend_id']}"); ?>"><?= $chat_user['display_name']; ?></a></span>
         </li>
         <?php endforeach; ?>

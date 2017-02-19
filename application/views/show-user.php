@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 function can_share_post($user_id, $post)
 {
     if (($post['author_id'] === $_SESSION['user_id']) ||
-        ($post['shared'] && $post['source_id']===$_SESSION['user_id'])) {
+        ($post['shared'] && $post['source_id'] === $_SESSION['user_id'])) {
         return FALSE;
     }
 
@@ -14,7 +14,7 @@ function can_share_post($user_id, $post)
 require_once('common/user-page-start.php');
 
 if ($visitor) {
-    define('PAGE', 'timeline');    
+    define('PAGE', 'timeline');
     require_once("common/secondary-user-nav.php");
 }
 

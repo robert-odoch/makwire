@@ -68,26 +68,12 @@ class User extends CI_Controller
         }
     }
 
-    private function initialize_user()
-    {
-        $data['primary_user'] = $this->user_model->get_name($_SESSION['user_id']);
-        $data['suggested_users'] = $this->user_model->get_suggested_users(0, 4);
-        $data['num_friend_requests'] = $this->user_model->get_num_friend_requests(TRUE);
-        $data['num_active_friends'] = $this->user_model->get_num_chat_users(TRUE);
-        $data['num_new_messages'] = $this->user_model->get_num_messages(TRUE);
-        $data['num_new_notifs'] = $this->user_model->get_num_notifs(TRUE);
-        $data['chat_users'] = $this->user_model->get_chat_users(TRUE);
-
-        return $data;
-    }
-
     public function index($user_id, $offset=0)
     {
-        $this->load->model('posts_model');
-
-        $data = $this->initialize_user();
+        $data = $this->user_model->initialize_user();
         $data['visitor'] = ($_SESSION['user_id'] === $user_id) ? FALSE : TRUE;
         if ($data['visitor']) {
+            $data['su_profile_pic_path'] = $this->user_model->get_profile_picture($user_id);
             $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
             $data['secondary_user'] = $this->user_model->get_name($user_id);
             $data['title'] = "{$data['secondary_user']}'s Posts";
@@ -107,20 +93,20 @@ class User extends CI_Controller
 
         $limit = 10;
         $data['has_next'] = FALSE;
-        $num_posts = $this->posts_model->get_num_posts($user_id);
+        $num_posts = $this->user_model->get_num_posts($user_id);
         if (($num_posts - $offset) > $limit) {
             $data['has_next'] = TRUE;
             $data['next_offset'] = ($offset + $limit);
         }
 
-        $data['posts'] = $this->posts_model->get_posts($user_id, $offset, $limit);
+        $data['posts'] = $this->user_model->get_posts($user_id, $offset, $limit);
         $this->load->view('show-user', $data);
         $this->load->view('common/footer');
     }
 
     public function chat($offset=0)
     {
-        $data = $this->initialize_user();
+        $data = $this->user_model->initialize_user();
         $data['title'] = "Chat With Friends";
         $this->load->view('common/header', $data);
 
@@ -148,7 +134,7 @@ class User extends CI_Controller
     // TODO: check if they are friends.
     public function send_message($user_id, $offset=0)
     {
-        $data = $this->initialize_user();
+        $data = $this->user_model->initialize_user();
         $data['suid'] = $user_id;
         $data['secondary-user'] = $this->user_model->get_name($user_id);
         $data['title'] = "Send a message to {$data['secondary-user']}";
@@ -220,7 +206,7 @@ class User extends CI_Controller
 
     public function post($post_id, $offset=0)
     {
-        $data = $this->initialize_user();
+        $data = $this->user_model->initialize_user();
         $data['title'] = "{$data['primary_user']}'s Post";
         $this->load->view('common/header', $data);
 
@@ -241,7 +227,7 @@ class User extends CI_Controller
 
     public function notifications($offset=0)
     {
-        $data = $this->initialize_user();
+        $data = $this->user_model->initialize_user();
         $data['title'] = "Your Notifications";
         $this->load->view('common/header', $data);
 
@@ -287,7 +273,7 @@ class User extends CI_Controller
 
     public function find_friends($offset=0)
     {
-        $data = $this->initialize_user();
+        $data = $this->user_model->initialize_user();
         $data['title'] = "Find Friends";
         $this->load->view('common/header', $data);
 
@@ -306,7 +292,7 @@ class User extends CI_Controller
 
     public function friend_requests($offset=0)
     {
-        $data = $this->initialize_user();
+        $data = $this->user_model->initialize_user();
         $data['title'] = "Your Friend Requests";
         $this->load->view('common/header', $data);
 
@@ -337,7 +323,7 @@ class User extends CI_Controller
     }
     public function messages($offset=0)
     {
-        $data = $this->initialize_user();
+        $data = $this->user_model->initialize_user();
         $data['title'] = "Your Messages";
         $this->load->view('common/header', $data);
 
@@ -387,9 +373,10 @@ class User extends CI_Controller
             $user_id = $_SESSION['user_id'];
         }
 
-        $data = $this->initialize_user();
+        $data = $this->user_model->initialize_user();
         $data['visitor'] = ($_SESSION['user_id'] === $user_id) ? FALSE : TRUE;
         if ($data['visitor']) {
+            $data['su_profile_pic_path'] = $this->user_model->get_profile_picture($user_id);
             $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
             $data['secondary_user'] = $this->user_model->get_name($user_id);
             $data['title'] = "{$data['secondary_user']}'s Friends";
@@ -420,9 +407,10 @@ class User extends CI_Controller
             $user_id = $_SESSION['user_id'];
         }
 
-        $data = $this->initialize_user();
+        $data = $this->user_model->initialize_user();
         $data['visitor'] = ($_SESSION['user_id'] === $user_id) ? FALSE : TRUE;
         if ($data['visitor']) {
+            $data['su_profile_pic_path'] = $this->user_model->get_profile_picture($user_id);
             $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
             $data['secondary_user'] = $this->user_model->get_name($user_id);
             $data['title'] = "About {$data['secondary_user']}";
@@ -441,7 +429,7 @@ class User extends CI_Controller
 
     public function add_college()
     {
-        $data = $this->initialize_user();
+        $data = $this->user_model->initialize_user();
         $data['title'] = "Add your college";
         $this->load->view('common/header', $data);
 
@@ -502,7 +490,7 @@ class User extends CI_Controller
 
     public function edit_college($user_college_id=NULL)
     {
-        $data = $this->initialize_user();
+        $data = $this->user_model->initialize_user();
         $data['title'] = "Edit your college";
         $this->load->view('common/header', $data);
 
@@ -595,7 +583,7 @@ class User extends CI_Controller
 
     public function add_programme($user_college_id=NULL)
     {
-        $data = $this->initialize_user();
+        $data = $this->user_model->initialize_user();
         $data['title'] = "Add your programme";
         $this->load->view('common/header', $data);
 
@@ -652,7 +640,7 @@ class User extends CI_Controller
 
     public function edit_programme($user_programme_id=NULL)
     {
-        $data = $this->initialize_user();
+        $data = $this->user_model->initialize_user();
         $data['title'] = "Edit your programme";
         $this->load->view('common/header', $data);
 
@@ -700,7 +688,7 @@ class User extends CI_Controller
 
     public function add_hall()
     {
-        $data = $this->initialize_user();
+        $data = $this->user_model->initialize_user();
         $data['title'] = "Add hall of attachment";
         $this->load->view('common/header', $data);
 
@@ -753,7 +741,7 @@ class User extends CI_Controller
 
     public function edit_hall($user_hall_id=NULL)
     {
-        $data = $this->initialize_user();
+        $data = $this->user_model->initialize_user();
         $data['title'] = "Edit hall of attachment";
         $this->load->view('common/header', $data);
 
@@ -837,7 +825,7 @@ class User extends CI_Controller
 
     public function add_hostel()
     {
-        $data = $this->initialize_user();
+        $data = $this->user_model->initialize_user();
         $data['title'] = "Add hostel";
         $this->load->view('common/header', $data);
 
@@ -890,7 +878,7 @@ class User extends CI_Controller
 
     public function edit_hostel($user_hostel_id=NULL)
     {
-        $data = $this->initialize_user();
+        $data = $this->user_model->initialize_user();
         $data['title'] = "Edit hostel";
         $this->load->view('common/header', $data);
 
@@ -968,7 +956,7 @@ class User extends CI_Controller
 
     public function edit_country()
     {
-        $data = $this->initialize_user();
+        $data = $this->user_model->initialize_user();
         $data['title'] = "Edit your country of origin";
         $this->load->view('common/header', $data);
 
@@ -993,7 +981,7 @@ class User extends CI_Controller
 
     public function add_district($district_id=null)
     {
-        $data = $this->initialize_user();
+        $data = $this->user_model->initialize_user();
         $data['title'] = "Add your district";
         $this->load->view('common/header', $data);
 

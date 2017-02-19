@@ -25,14 +25,6 @@ class Post_model extends CI_Model
 
         return $query;
     }
-
-    private function get_name($user_id) {
-        $q = sprintf("SELECT display_name FROM users WHERE user_id=%d",
-                     $user_id);
-        $query = $this->run_query($q);
-
-        return $query->row()->display_name;
-    }
     /*** End Utility ***/
 
     public function get_short_post($post, $num_chars)
@@ -68,7 +60,7 @@ class Post_model extends CI_Model
         $post = $query->row_array();
 
         // Get the name of the author.
-        $post['author'] = $this->get_name($post['author_id']);
+        $post['author'] = $this->user_model->get_name($post['author_id']);
 
         // Get the number of likes.
         $post['num_likes'] = $this->get_num_likes($post['post_id']);
@@ -95,7 +87,7 @@ class Post_model extends CI_Model
             $source_id = $query->row()->author_id;
 
             $post['source_id'] = $source_id;
-            $post['source'] = $this->get_name($source_id);
+            $post['source'] = $this->user_model->get_name($source_id);
         }
 
         // Get the timespan.
@@ -249,14 +241,15 @@ class Post_model extends CI_Model
         $likes = array();
         foreach ($results as $like) {
             // Get the name of the user who liked.
-            $liker = $this->get_name($like['liker_id']);
-            $like['liker'] = $liker;
+            $like['liker'] = $this->user_model->get_name($like['liker_id']);
+            $like['profile_pic_path'] = $this->user_model->get_profile_picture($like['liker_id']);
 
             array_push($likes, $like);
         }
 
         return $likes;
     }
+
     public function get_comments($post_id, $offset, $limit)
     {
         $q = sprintf("SELECT comment_id FROM comments " .
@@ -286,8 +279,8 @@ class Post_model extends CI_Model
         $shares = array();
         foreach ($results as $share) {
             // Get the name of the user who shared.
-            $sharer = $this->get_name($share['sharer_id']);
-            $share['sharer'] = $sharer;
+            $share['sharer'] = $this->user_model->get_name($share['sharer_id']);
+            $share['profile_pic_path'] = $this->user_model->get_profile_picture($share['sharer_id']);
 
             array_push($shares, $share);
         }

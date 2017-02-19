@@ -25,15 +25,6 @@ class Comment_model extends CI_Model
 
         return $query;
     }
-
-    private function get_name($user_id)
-    {
-        $q = sprintf("SELECT display_name FROM users WHERE user_id=%d",
-                     $user_id);
-        $query = $this->run_query($q);
-
-        return $query->row()->display_name;
-    }
     /*** End Utility ***/
 
     private function has_liked($comment_id)
@@ -60,7 +51,7 @@ class Comment_model extends CI_Model
         $comment = $query->row_array();
 
         // Get the name of the commenter.
-        $comment['commenter'] = ucfirst($this->get_name($comment['commenter_id']));
+        $comment['commenter'] = $this->user_model->get_name($comment['commenter_id']);
 
         // Add the number of likes and replies.
         $comment['num_likes'] = $this->get_num_likes($comment_id);
@@ -99,7 +90,8 @@ class Comment_model extends CI_Model
         $likes = array();
         foreach ($results as $like) {
             // Get the name of the liker.
-            $like['liker'] = ucfirst($this->get_name($like['liker_id']));
+            $like['liker'] = $this->user_model->get_name($like['liker_id']);
+            $like['profile_pic_path'] = $this->user_model->get_profile_picture($like['liker_id']);
 
             array_push($likes, $like);
         }

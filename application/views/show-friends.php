@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require_once('common/user-page-start.php');
 
 if ($visitor) {
-    define('PAGE', 'friends');    
+    define('PAGE', 'friends');
     require_once("common/secondary-user-nav.php");
 }
 ?>
@@ -24,7 +24,7 @@ if ($visitor) {
     <ul class="friends">
         <?php foreach($friends as $fr): ?>
         <li>
-            <figure><img src="<?= base_url('images/kasumba.jpg'); ?>" alt="<?= $fr['display_name']; ?>"></figure>
+            <figure><img src="<?= $fr['profile_pic_path']; ?>" alt="<?= $fr['display_name']; ?>"></figure>
             <span><a href="<?= base_url("user/index/{$fr['friend_id']}"); ?>"><?= $fr['display_name']; ?></a></span>
         </li>
         <?php endforeach; ?>
