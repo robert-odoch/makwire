@@ -25,7 +25,7 @@ require_once('common/user-page-start.php');
                         "<small><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";
                     break;
                 case 'confirmed_friend_request':
-                    print "<li><a href='" . base_url("user/index/{$notif['trigger_id']}") . "'><strong class='object'>{$notif['user']}</strong> accepted your friend request.</a> " .
+                    print "<li><a href='" . base_url("user/index/{$notif['actor_id']}") . "'><strong class='object'>{$notif['user']}</strong> accepted your friend request.</a> " .
                         "<small><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";
                     break;
                 case 'like':
@@ -34,11 +34,11 @@ require_once('common/user-page-start.php');
                         "<small><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";
                     }
                     else if ($notif['source_type'] == "comment") {
-                        print "<li><a href='" . base_url("comment/likes/{$notif['source_id']}") . "'><strong class='object'>{$notif['user']}</strong> liked your comment \"{$notif['comment']}\".</a>" .
+                        print "<li><a href='" . base_url("comment/likes/{$notif['source_id']}") . "'><strong class='object'>{$notif['user']}</strong> liked your comment \"{$notif['comment']}\"</a>" .
                         "<small><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";;
                     }
                     else if ($notif['source_type'] == "reply") {
-                        print "<li><a href='" . base_url("reply/likes/{$notif['source_id']}") . "'><strong class='object'>{$notif['user']}</strong> liked your reply \"{$notif['reply']}\".</a>" .
+                        print "<li><a href='" . base_url("reply/likes/{$notif['source_id']}") . "'><strong class='object'>{$notif['user']}</strong> liked your reply \"{$notif['reply']}\"</a>" .
                               "<small><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";
                     }
                     break;
@@ -49,7 +49,7 @@ require_once('common/user-page-start.php');
                     }
                     break;
                 case 'reply':
-                    print "<li><a href='" . base_url("comment/replies/{$notif['source_id']}") . "'><strong class='object'>{$notif['user']}</strong> replied to your comment \"{$notif['comment']}\".</a>" .
+                    print "<li><a href='" . base_url("comment/replies/{$notif['source_id']}") . "'><strong class='object'>{$notif['user']}</strong> replied to your comment \"{$notif['comment']}\"</a>" .
                     "<small><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";
                     break;
                 case 'share':
@@ -57,6 +57,13 @@ require_once('common/user-page-start.php');
                         print "<li><a href='" . base_url("/user/post/{$notif['new_post_id']}") . "'><strong class='object'>{$notif['user']}</strong> shared your post \"{$notif['post']}\" on his timeline.</a> " .
                         "<small><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";
                     }
+                    break;
+                case 'birthday':
+                    print("<li><a href=''>Today is <strong class='object'>{$notif['user']}</strong>'s birthday.</a></li>");
+                    break;
+                case 'profile_pic_change':
+                    print("<li><a href=''><strong class='object'>{$notif['user']}</strong> updated his profile picture.</a>" .
+                          "<small><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>");
                     break;
                 }
             }

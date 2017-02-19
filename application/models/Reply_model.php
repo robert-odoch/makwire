@@ -82,7 +82,7 @@ class Reply_model extends CI_Model
         $parent_id = $query->row()->commenter_id;
 
         // Dispatch an activity.
-        $q = sprintf("INSERT INTO activities (trigger_id, parent_id, source_id, source_type, activity) " .
+        $q = sprintf("INSERT INTO activities (actor_id, subject_id, source_id, source_type, activity) " .
                      "VALUES (%d, %d, %d, 'reply', 'like')",
                      $_SESSION['user_id'], $parent_id, $reply_id);
         $this->run_query($q);

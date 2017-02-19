@@ -145,12 +145,12 @@ class Comment_model extends CI_Model
         $q = sprintf("SELECT commenter_id FROM comments WHERE (comment_id=%d) LIMIT 1",
                      $comment_id);
         $query = $this->run_query($q);
-        $parent_id = $query->row()->commenter_id;
+        $subject_id = $query->row()->commenter_id;
 
         // Dispatch an activity.
-        $q = sprintf("INSERT INTO activities (trigger_id, parent_id, source_id, source_type, activity) " .
+        $q = sprintf("INSERT INTO activities (actor_id, subject_id, source_id, source_type, activity) " .
                      "VALUES (%d, %d, %d, 'comment', 'like')",
-                     $_SESSION['user_id'], $parent_id, $comment_id);
+                     $_SESSION['user_id'], $subject_id, $comment_id);
         $this->run_query($q);
     }
 
@@ -166,12 +166,12 @@ class Comment_model extends CI_Model
         $q = sprintf("SELECT commenter_id FROM comments WHERE (comment_id=%d) LIMIT 1",
                      $comment_id);
         $query = $this->run_query($q);
-        $parent_id = $query->row()->commenter_id;
+        $subject_id = $query->row()->commenter_id;
 
         // Dispatch an activity.
-        $q = sprintf("INSERT INTO activities (trigger_id, parent_id, source_id, source_type, activity) " .
+        $q = sprintf("INSERT INTO activities (actor_id, subject_id, source_id, source_type, activity) " .
                      "VALUES (%d, %d, %d, 'comment', 'reply')",
-                     $_SESSION['user_id'], $parent_id, $comment_id);
+                     $_SESSION['user_id'], $subject_id, $comment_id);
         $this->run_query($q);
     }
 }

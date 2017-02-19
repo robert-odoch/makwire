@@ -207,10 +207,9 @@ class User extends CI_Controller
     public function post($post_id, $offset=0)
     {
         $data = $this->user_model->initialize_user();
-        $data['title'] = "{$data['primary_user']}'s Post";
-        $this->load->view('common/header', $data);
-
         $data['post'] = $this->post_model->get_post($post_id);
+        $data['title'] = "{$data['post']['author']}'s Post";
+        $this->load->view('common/header', $data);
 
         $limit = 10;
         $data['has_next'] = FALSE;
@@ -245,14 +244,16 @@ class User extends CI_Controller
 		$data['has_next'] = FALSE;
 		if ($data['num_new_notifs'] > 0) {
 		    // First show only the new notifications.
-			$data['notifications'] = $this->user_model->get_notifications($offset, $limit, TRUE);
+			$data['notifications'] = $this->user_model->get_notifications($offset, $limit);
 			if (($data['num_new_notifs'] - $offset) > $limit) {
 				$data['has_next'] = TRUE;
 				$data['next_offset'] = ($offset + $limit);
 			}
 			else {
 			    $num_notifications = $this->user_model->get_num_notifs(FALSE);
-			    if ($num_notifications > $data['num_new_notifs']) {
+                // Here, offset is added to num_new_notifs because num_new_notifs alone only works
+                // Well when the new notifications are all shown on the same page.
+			    if ($num_notifications > ($data['num_new_notifs']+$offset)) {
 			        $data['has_next'] = TRUE;
 			        $data['next_offset'] = ($offset + $data['num_new_notifs']);
 			    }

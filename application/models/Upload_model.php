@@ -45,10 +45,9 @@ class Upload_model extends CI_Model
 
         // Dispatch a notification.
         $q = sprintf("INSERT INTO activities " .
-                     "(trigger_id, user_or_group_id, parent_id, source_id, source_type, activity, audience) " .
-                     "VALUES (%d, %d, %d, %d, '%s', '%s', '%s')",
-                     $_SESSION['user_id'], $_SESSION['user_id'], $_SESSION['user_id'], $image_id, 'photo', 'profile_pic_change', 'timeline'
-            );
+                     "(actor_id, subject_id, source_id, source_type, activity) " .
+                     "VALUES (%d, %d, %d, 'photo', 'profile_pic_change')",
+                     $_SESSION['user_id'], $_SESSION['user_id'], $image_id);
         $this->run_query($q);
     }
 }

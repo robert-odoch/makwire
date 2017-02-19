@@ -113,7 +113,8 @@ class Post_model extends CI_Model
     }
 
     // Checks whether a user has the proper permision to like a given post
-    private function user_can_like_post($post) {
+    private function user_can_like_post($post)
+    {
 
     }
 
@@ -175,12 +176,12 @@ class Post_model extends CI_Model
                      $post_id);
         $query = $this->run_query($q);
 
-        $parent_id = $query->row()->author_id;
+        $subject_id = $query->row()->author_id;
 
         // Dispatch an activity.
-        $q = sprintf("INSERT INTO activities (trigger_id, parent_id, source_id, source_type, activity, audience) " .
-                     "VALUES (%d, %d, %d, 'post', 'like', 'timeline')",
-                     $_SESSION['user_id'], $parent_id, $post_id);
+        $q = sprintf("INSERT INTO activities (actor_id, subject_id, source_id, source_type, activity) " .
+                     "VALUES (%d, %d, %d, 'post', 'like')",
+                     $_SESSION['user_id'], $subject_id, $post_id);
         $this->run_query($q);
     }
 
@@ -197,12 +198,12 @@ class Post_model extends CI_Model
                      $post_id);
         $query = $this->run_query($q);
 
-        $parent_id = $query->row()->author_id;
+        $subject_id = $query->row()->author_id;
 
         // Dispatch an activity.
-        $q = sprintf("INSERT INTO activities (trigger_id, parent_id, source_id, source_type, activity, audience) " .
-                     "VALUES (%d, %d, %d, 'post', 'comment', 'timeline')",
-                     $_SESSION['user_id'], $parent_id, $post_id);
+        $q = sprintf("INSERT INTO activities (actor_id, subject_id, source_id, source_type, activity) " .
+                     "VALUES (%d, %d, %d, 'post', 'comment')",
+                     $_SESSION['user_id'], $subject_id, $post_id);
         $this->run_query($q);
     }
 
@@ -223,8 +224,8 @@ class Post_model extends CI_Model
         $this->run_query($q);
 
         // Dispatch an activity.
-        $q = sprintf("INSERT INTO activities (trigger_id, parent_id, source_id, source_type, activity, audience) " .
-                     "VALUES (%d, %d, %d, 'post', 'share', 'timeline')",
+        $q = sprintf("INSERT INTO activities (actor_id, subject_id, source_id, source_type, activity) " .
+                     "VALUES (%d, %d, %d, 'post', 'share')",
                      $_SESSION['user_id'], $post_author, $post_id);
         $this->run_query($q);
     }
