@@ -26,7 +26,7 @@ require_once("common/user-page-start.php");
     <h4>Likes</h4>
     <?php if (count($likes) == 0): ?>
     <div class="alert alert-info">
-        <p>No likes to show.</p>
+        <p><span class="glyphicon glyphicon-info-sign"></span> No likes to show.</p>
     </div>
     <?php else:
         if (isset($has_prev)) { ?>

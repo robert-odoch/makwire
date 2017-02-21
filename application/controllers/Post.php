@@ -19,17 +19,39 @@ class Post extends CI_Controller
         $this->user_model->confirm_logged_in();
     }
 
+    private function permission_denied($error_message)
+    {
+        $data = $this->user_model->initialize_user();
+        $data['title'] = "Permission Denied!";
+        $this->load->view("common/header", $data);
+
+        $data['error'] = $error_message;
+        $this->load->view("permission-denied", $data);
+        $this->load->view("common/footer");
+    }
+
     public function like($post_id)
     {
-        $this->post_model->like($post_id);
+        $like = $this->post_model->like($post_id);
+        if (!$like) {
+            $this->permission_denied("You don't have the proper permissions to like this post.");
+            return;
+        }
+
         redirect(base_url("user/post/{$post_id}"));
     }
 
     public function comment($post_id)
     {
+        $post = $this->post_model->get_post($post_id);
+        if (!$post) {
+            $this->permission_denied("You don't have the proper permissions to comment on this post.");
+            return;
+        }
+
         $data = $this->user_model->initialize_user();
         $data['title'] = 'Comment on this post';
-        $this->load->view('common/header', $data);
+        $this->load->view("common/header", $data);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (empty(trim($this->input->post('comment')))) {
@@ -41,7 +63,6 @@ class Post extends CI_Controller
             }
         }
 
-        $post = $this->post_model->get_post($post_id);
         $short_post = $this->post_model->get_short_post($post['post'], 540);
         $post['post'] = $short_post['body'];
         $post['has_more'] = $short_post['has_more'];
@@ -57,26 +78,38 @@ class Post extends CI_Controller
 
         $data['num_prev'] = $offset;
         $data['comments'] = $this->post_model->get_comments($post_id, $offset, $limit);
+
         $this->load->view('comment', $data);
         $this->load->view('common/footer');
     }
 
-    public function share($post_id, $audience="timeline", $audience_id=null)
+    public function share($post_id, $audience, $audience_id=null)
     {
         if ($audience_id === null) {
             $audience_id = $_SESSION['user_id'];
         }
-        $this->post_model->share($post_id, $audience, $audience_id);
+
+        $share = $this->post_model->share($post_id, $audience, $audience_id);
+        if (!$share) {
+            $this->permission_denied("You don't have the proper permissions to share this post.");
+            return;
+        }
+
         redirect(base_url("user/index/{$_SESSION['user_id']}"));
     }
 
     public function likes($post_id, $offset=0)
     {
+        $post = $this->post_model->get_post($post_id);
+        if (!$post) {
+            $this->permission_denied("You don't have the proper permissions to view this post.");
+            return;
+        }
+
         $data = $this->user_model->initialize_user();
         $data['title'] = "People who liked this post";
         $this->load->view("common/header", $data);
 
-        $post = $this->post_model->get_post($post_id);
         $short_post = $this->post_model->get_short_post($post['post'], 540);
         $post['post'] = $short_post['body'];
         $post['has_more'] = $short_post['has_more'];
@@ -107,11 +140,16 @@ class Post extends CI_Controller
 
     public function comments($post_id, $offset=0)
     {
+        $post = $this->post_model->get_post($post_id);
+        if (!$post) {
+            $this->permission_denied("You don't have the proper permissions to view this post.");
+            return;
+        }
+
         $data = $this->user_model->initialize_user();
         $data['title'] = 'Comments on this post';
         $this->load->view("common/header", $data);
 
-        $post = $this->post_model->get_post($post_id);
         $short_post = $this->post_model->get_short_post($post['post'], 540);
         $post['post'] = $short_post['body'];
         $post['has_more'] = $short_post['has_more'];
@@ -143,11 +181,16 @@ class Post extends CI_Controller
 
     public function shares($post_id, $offset=0)
     {
+        $post = $this->post_model->get_post($post_id);
+        if (!$post) {
+            $this->permission_denied("You don't have the proper permissions to view this post.");
+            return;
+        }
+
         $data = $this->user_model->initialize_user();
         $data['title'] = "People who shared this post";
         $this->load->view("common/header", $data);
 
-        $post = $this->post_model->get_post($post_id);
         $short_post = $this->post_model->get_short_post($post['post'], 540);
         $post['post'] = $short_post['body'];
         $post['has_more'] = $short_post['has_more'];

@@ -25,13 +25,14 @@ class User_model extends CI_Model
                      "WHERE (user_id=%d) OR (friend_id=%d)",
                      $_SESSION['user_id'], $_SESSION['user_id']);
         $query = $this->run_query($q);
-        $friends = $query->result_array();
+        $results = $query->result_array();
 
-        for ($i = 0; $i != count($friends); ++$i) {
-            if ($friends[$i]['friend_id'] == $_SESSION['user_id']) {
-                $friends[$i]['friend_id'] = $friends[$i]['user_id'];
+        $friends = array();
+        foreach ($results as $r) {
+            if ($r['friend_id'] == $_SESSION['user_id']) {
+                $r['friend_id'] = $r['user_id'];
             }
-            unset($friends[$i]['user_id']);
+            array_push($friends, $r['friend_id']);
         }
 
         return $friends;
@@ -127,29 +128,55 @@ class User_model extends CI_Model
         return $profile_pic_path;
     }
 
+    public function are_friends($user_id)
+    {
+        if ($user_id == $_SESSION['user_id']) {
+            return TRUE;
+        }
+
+        $friends = $this->get_friend_ids($_SESSION['user_id']);
+        return in_array($user_id, $friends);
+    }
+
     public function get_num_posts($user_id)
     {
         $q = sprintf("SELECT post_id FROM posts " .
                      "WHERE (audience='timeline') AND (author_id=%d)",
                      $user_id);
-        $query = $this->run_query($q);
-
-        return $query->num_rows();
+        return $this->run_query($q)->num_rows();
     }
 
     public function get_posts($user_id, $offset, $limit)
     {
-        $q = sprintf("SELECT post_id FROM posts " .
-                     "WHERE (audience='timeline' AND author_id=%d) " .
-                     "ORDER BY date_posted DESC LIMIT %d, %d",
-                     $user_id, $offset, $limit);
-        $query = $this->run_query($q);
+        // Query to get ID of the shared posts.
+        $shared_posts_q = sprintf("SELECT subject_id, date_entered FROM shares WHERE (user_id = %d)",
+                                 $user_id);
+        $primary_posts_q = sprintf("SELECT post_id, date_entered FROM posts " .
+                                    "WHERE (author_id=%d)",
+                                    $user_id);
+        $posts_q = sprintf("(%s) UNION (%s) ORDER BY date_entered DESC LIMIT %d, %d",
+                            $primary_posts_q, $shared_posts_q, $offset, $limit);
+        $query = $this->run_query($posts_q);
         $results = $query->result_array();
 
         $posts = array();
-        foreach($results as $r) {
+        foreach ($results as $r) {
             // Get the detailed post.
             $post = $this->post_model->get_post($r['post_id']);
+
+            if (!$post) {
+                // This post was shared by the user's friend but the user is
+                // not a friend to the original author of the post.
+                continue;
+            }
+
+            // Check whether it's a shared post.
+            $post['shared'] = FALSE;
+            if ($post['author_id'] != $user_id) {
+                $post['shared'] = TRUE;
+                $post['sharer_id'] = $user_id;
+                $post['sharer'] = $this->user_model->get_name($user_id);
+            }
 
             // Get only 540 characters from post if possible.
             $short_post = $this->post_model->get_short_post($post['post'], 540);
@@ -173,9 +200,8 @@ class User_model extends CI_Model
             $q = sprintf("SELECT message_id FROM messages WHERE receiver_id=%d",
                          $_SESSION['user_id']);
         }
-        $query = $this->run_query($q);
 
-        return $query->num_rows();
+        return $this->run_query($q)->num_rows();
     }
 
     public function get_messages($offset, $limit, $filter=TRUE)
@@ -230,9 +256,7 @@ class User_model extends CI_Model
         $q = sprintf("SELECT user_id FROM friends " .
                      "WHERE (user_id=%d) OR (friend_id=%d)",
                      $user_id, $user_id);
-        $query = $this->run_query($q);
-
-        return $query->num_rows();
+        return $this->run_query($q)->num_rows();
     }
 
     public function get_friends($user_id, $offset, $limit)
@@ -325,62 +349,119 @@ class User_model extends CI_Model
 
     public function get_num_notifs($filter=TRUE)
     {
+        // Get the ID's of all this user's friends.
+        $friends = $this->get_friend_ids();
+
+        $friends_string = '';
+        if (count($friends) > 0 && count($friends) == 1) {
+            $friends_string .= "{$friends[0]}";
+        }
+        elseif (count($friends) > 0) {
+            for ($i = 0; $i < count($friends)-1; ++$i) {
+                $friends_string .= "{$friends[$i]}, ";
+            }
+            $friends_string .= "{$friends[$i]}";
+        }
+
+        // WHERE clause for notifications having this user as a direct targert.
+        $primary_notifs_clause = sprintf("subject_id=%d AND actor_id != %d",
+                                         $_SESSION['user_id'], $_SESSION['user_id']);
+
         if ($filter) {
             // Query to get the last time the user read a notification.
-            $last_read_date_query = sprintf("SELECT a.date_entered FROM activities as a " .
-                                            "LEFT JOIN notification_read as nr ON (a.activity_id=nr.activity_id) " .
-                                            "WHERE (nr.user_id=%d) ORDER BY nr.date_read DESC LIMIT 1",
+            $last_read_date_q = sprintf("SELECT a.date_entered FROM activities AS a " .
+                                        "LEFT JOIN notification_read AS nr ON (a.activity_id = nr.activity_id) " .
+                                        "WHERE (nr.user_id=%d) ORDER BY nr.date_read DESC LIMIT 1",
+                                        $_SESSION['user_id']);
+            $last_read_date_query = $this->run_query($last_read_date_q);
+            if ($last_read_date_query->num_rows() == 0) {
+                // User has'nt read any notifications before, use his account creation date.
+                $last_read_date_q = sprintf("SELECT date_created FROM users WHERE (user_id=%d)",
                                             $_SESSION['user_id']);
-
-            // Get notifications from activities having this user as a direct target.
-            $primary_notifs_q = sprintf("SELECT activity_id FROM activities " .
-                         "WHERE (subject_id=%d AND actor_id != %d AND date_entered > (%s))",
-                         $_SESSION['user_id'], $_SESSION['user_id'], $last_read_date_query);
-
-            // Get the ID's of all this user's friends.
-            $friends = $this->get_friend_ids();
-            $friends_string = '';
-            for ($i = 0; $i != count($friends)-1; ++$i) {
-                $friends_string .= "{$friends[$i]['friend_id']}, ";
             }
-            $friends_string .= "{$friends[$i]['friend_id']}";
 
-            // Get notifications from other sources like profile_pic_change, like, comment and reply.
-            $other_notifs_q = sprintf("SELECT activity_id FROM activities " .
-                         "WHERE (subject_id IN (%s) AND actor_id IN (%s) AND date_entered > (%s) " .
-                         "AND (activity='like' OR activity='comment' OR activity='reply' OR activity='profile_pic_change' )) ",
-    					 $friends_string, $friends_string, $last_read_date_query);
+            if (count($friends) > 0) {
+                // Query to get activities that were performed by this user..
+                $acted_on_q = sprintf("SELECT DISTINCT source_id FROM activities " .
+                                        "WHERE (actor_id = %d AND subject_id != %d AND activity IN('comment', 'reply') AND date_entered > (%s))",
+                                        $_SESSION['user_id'], $_SESSION['user_id'], $last_read_date_q);
 
-            // Get Birthday notifications.
-            $today = date("Y-m-d");
-            $birthdays_q = sprintf("SELECT user_id, dob, CONCAT(dob, ' 00:00:00') as date_entered FROM users " .
-                         "WHERE (user_id IN (%s) AND dob='%s')",
-                         $friends_string, $today);
+                // WHERE clause for notifications from other sources like profile_pic_change, comment and reply.
+                // Only applies to users with friends.
+                $other_notifs_clause = sprintf("subject_id IN(%s) AND actor_id IN(%s) AND " .
+                                                "(source_id IN(%s)  OR (activity = 'profile_pic_change'))",
+                                                $friends_string, $friends_string, $acted_on_q);
+
+                // Query for getting all notifications from activities.
+           		$notifs_q = sprintf("SELECT a.activity_id, subject_id, activity FROM activities AS a " .
+                                    "LEFT JOIN notification_read AS nr ON (a.activity_id = nr.activity_id) " .
+                                    "WHERE (((%s) OR (%s)) AND date_entered > (%s) AND nr.activity_id IS NULL)",
+                       				$primary_notifs_clause, $other_notifs_clause, $last_read_date_q);
+
+                // Get Birthday notifications.
+                $today = date("Y-m-d");
+                $birthdays_q = sprintf("SELECT user_id FROM users WHERE user_id IN(%s) AND dob='%s'",
+                                       $friends_string, $today);
+            }
+            else {
+                // Query for getting all notifications from activities.
+        		$notifs_q = sprintf("SELECT a.activity_id FROM activities AS a " .
+                                    "LEFT JOIN notification_read AS nr ON (a.activity_id = nr.activity_id) " .
+                                    "WHERE ((%s) AND date_entered > (%s) AND nr.activity_id IS NULL)",
+                    				$primary_notifs_clause, $last_read_date_q);
+            }
         }
         else {
-            // Get notifications from activities having this user as a direct target.
-            $primary_notifs_q = sprintf("SELECT activity_id FROM activities " .
-                         "WHERE (subject_id=%d AND actor_id != %d)",
-                         $_SESSION['user_id'], $_SESSION['user_id']);
+            if (count($friends) > 0) {
+                // Query to get activities that were performed by this user..
+                $acted_on_q = sprintf("SELECT DISTINCT source_id FROM activities " .
+                                        "WHERE (actor_id = %d AND subject_id != %d AND activity IN('comment', 'reply'))",
+                                        $_SESSION['user_id'], $_SESSION['user_id']);
 
-            // Get the ID's of all this user's friends.
-            $friends = $this->get_friend_ids();
-            $friends_string = '';
-            for ($i = 0; $i != count($friends)-1; ++$i) {
-                $friends_string .= "{$friends[$i]['friend_id']}, ";
+                // WHERE clause for notifications from other sources like profile_pic_change, comment and reply.
+                // Only applies to users with friends.
+                $other_notifs_clause = sprintf("subject_id IN(%s) AND actor_id IN(%s) AND " .
+                                                "(source_id IN(%s)  OR (activity = 'profile_pic_change'))",
+                                                $friends_string, $friends_string, $acted_on_q);
+
+                // Get notifications from activities.
+                $notifs_q = sprintf("SELECT activity_id, subject_id, activity FROM activities WHERE ((%s) OR (%s))",
+                                    $primary_notifs_clause, $other_notifs_clause);
             }
-            $friends_string .= "{$friends[$i]['friend_id']}";
-
-            // Get notifications from other sources like profile_pic_change, like, comment, reply and birthdays.
-            $other_notifs_q = sprintf("SELECT activity_id FROM activities " .
-                         "WHERE (subject_id IN (%s) AND actor_id IN (%s) " .
-                         "AND (activity='like' OR activity='comment' OR activity='reply' OR activity='profile_pic_change' OR activity='birthday')) ",
-    					 $friends_string, $friends_string);
+            else {
+                // Query to get all notifications from activities.
+                $notifs_q = sprintf("SELECT activity_id FROM activities WHERE (%s)",
+                                    $primary_notifs_clause);
+            }
         }
 
-        $num_notifications = ($this->run_query($primary_notifs_q)->num_rows() + $this->run_query($other_notifs_q)->num_rows());
+        $num_notifications = $this->run_query($notifs_q)->num_rows();
+
         if (isset($birthdays_q)) {
-            $num_notifications += $this->run_query($birthdays_q)->num_rows();
+            $birthdays = $this->run_query($birthdays_q)->result_array();
+
+            foreach ($birthdays as $bd) {
+                // Check if this birthday has been inserted in activities table.
+                $q = sprintf("SELECT activity_id FROM activities " .
+                             "WHERE (actor_id=%d AND activity='birthday' AND YEAR(date_entered)=%d)",
+                             $bd['user_id'], date('Y'));
+                $query = $this->run_query($q);
+
+                if ($query->num_rows() == 0) {
+                    // It is a brand new birthday.
+                    ++$num_notifications;
+                }
+                else {
+                    // Not so new, but check whether this user has seen it.
+                    $q = sprintf("SELECT user_id FROM notification_read " .
+                                 "WHERE (user_id = %d AND activity_id = %d)",
+                                 $_SESSION['user_id'], $query->row()->activity_id);
+                    if ($this->run_query($q)->num_rows() == 0) {
+                        // Hasn't seen.
+                        ++$num_notifications;
+                    }
+                }
+            }
         }
 
         return $num_notifications;
@@ -388,114 +469,167 @@ class User_model extends CI_Model
 
     public function get_notifications($offset, $limit, $filter=TRUE)
     {
+        // Get the ID's of all this user's friends.
+        $friends = $this->get_friend_ids();
+
+        $friends_string = '';
+        if (count($friends) > 0 && count($friends) == 1) {
+            $friends_string .= "{$friends[0]}";
+        }
+        elseif (count($friends) > 0) {
+            for ($i = 0; $i < count($friends)-1; ++$i) {
+                $friends_string .= "{$friends[$i]}, ";
+            }
+            $friends_string .= "{$friends[$i]}";
+        }
+
+        // WHERE clause for notifications having this user as a direct targert.
+        $primary_notifs_clause = sprintf("subject_id=%d AND actor_id != %d",
+                                         $_SESSION['user_id'], $_SESSION['user_id']);
+
         if ($filter) {
             // Query to get the last time the user read a notification.
-            $last_read_date_query = sprintf("SELECT a.date_entered FROM activities as a " .
-                                            "LEFT JOIN notification_read as nr ON (a.activity_id=nr.activity_id) " .
-                                            "WHERE (nr.user_id=%d) ORDER BY nr.date_read DESC LIMIT 1",
+            $last_read_date_q = sprintf("SELECT a.date_entered FROM activities as a " .
+                                        "LEFT JOIN notification_read as nr ON (a.activity_id=nr.activity_id) " .
+                                        "WHERE (nr.user_id=%d) ORDER BY nr.date_read DESC LIMIT 1",
+                                        $_SESSION['user_id']);
+            $last_read_date_query = $this->run_query($last_read_date_q);
+            if ($last_read_date_query->num_rows() == 0) {
+                // User has'nt read any notifications before, use his account creation date.
+                $last_read_date_q = sprintf("SELECT date_created FROM users WHERE (user_id=%d)",
                                             $_SESSION['user_id']);
-
-            // Get notifications from activities having this user as a direct target.
-    		$primary_notifs_q = sprintf("SELECT activity_id, actor_id, source_id, subject_id, source_type, activity, date_entered " .
-                		                "FROM activities WHERE (subject_id=%d AND actor_id != %d AND date_entered > (%s)) " .
-                		                "ORDER BY date_entered DESC LIMIT %d, %d",
-                					    $_SESSION['user_id'], $_SESSION['user_id'], $last_read_date_query, $offset, $limit);
-
-            // Get the ID's of all this user's friends.
-            $friends = $this->get_friend_ids();
-
-            $friends_string = '';
-            for ($i = 0; $i != count($friends)-1; ++$i) {
-                $friends_string .= "{$friends[$i]['friend_id']}, ";
             }
-            $friends_string .= "{$friends[$i]['friend_id']}";
 
-            // Get notifications from other sources like profile_pic_change, like, comment and reply.
-    		$other_notifs_q = sprintf("SELECT activity_id, actor_id, source_id, subject_id, source_type, activity, date_entered " .
-                		              "FROM activities WHERE (subject_id IN (%s) AND actor_id IN (%s) AND date_entered > (%s) " .
-                                      "AND (activity='like' OR activity='comment' OR activity='reply' OR activity='profile_pic_change' )) " .
-                		              "ORDER BY date_entered DESC LIMIT %d, %d",
-                					  $friends_string, $friends_string, $last_read_date_query, $offset, $limit);
+            if (count($friends) > 0) {
+                // Query to get activities that were performed by this user..
+                $acted_on_q = sprintf("SELECT DISTINCT source_id FROM activities " .
+                                        "WHERE (actor_id = %d AND subject_id != %d AND activity IN('comment', 'reply') AND date_entered > (%s))",
+                                        $_SESSION['user_id'], $_SESSION['user_id'], $last_read_date_q);
 
-            // Get Birthday notifications.
-            $today = date("Y-m-d");
-            $birthdays_q = sprintf("SELECT user_id, dob, CONCAT(dob, ' 00:00:00') as date_entered FROM users " .
-                                   "WHERE (user_id IN (%s) AND dob='%s')",
-                                   $friends_string, $today);
+                // WHERE clause for notifications from other sources like profile_pic_change, comment and reply.
+                // Only applies to users with friends.
+                $other_notifs_clause = sprintf("subject_id IN(%s) AND actor_id IN(%s) AND " .
+                                                "(source_id IN(%s)  OR (activity = 'profile_pic_change'))",
+                                                $friends_string, $friends_string, $acted_on_q);
+
+                // Query to get all notifications from activities.
+        		$notifs_q = sprintf("SELECT a.activity_id, actor_id, source_id, subject_id, source_type, activity, date_entered " .
+                                    "FROM activities AS a " .
+                                    "LEFT JOIN notification_read AS nr ON (a.activity_id = nr.activity_id) " .
+                    		        "WHERE (((%s) OR (%s)) AND date_entered > (%s) AND nr.activity_id IS NULL) " .
+                                    "ORDER BY date_entered DESC LIMIT %d, %d",
+                    				$primary_notifs_clause, $other_notifs_clause, $last_read_date_q, $offset, $limit);
+
+                // Get Birthday notifications.
+                $today = date("Y-m-d");
+                $birthdays_q = sprintf("SELECT user_id, dob, CONCAT(dob, ' 00:00:00') as date_entered FROM users " .
+                                       "WHERE (user_id IN (%s) AND dob='%s')",
+                                       $friends_string, $today);
+            }
+            else {
+                // Query to get all notifications from activities.
+        		$notifs_q = sprintf("SELECT a.activity_id, actor_id, source_id, subject_id, source_type, activity, date_entered " .
+                                    "FROM activities AS a " .
+                                    "LEFT JOIN notification_read AS nr ON (a.activity_id = nr.activity_id) " .
+                    		        "WHERE ((%s) AND date_entered > (%s) AND nr.activity_id IS NULL) " .
+                                    "ORDER BY date_entered DESC LIMIT %d, %d",
+                    				$primary_notifs_clause, $last_read_date_q, $offset, $limit);
+            }
         }
         else {
-            // Get notifications from activities having this user as a direct target.
-    		$primary_notifs_q = sprintf("SELECT activity_id, actor_id, source_id, subject_id, source_type, activity, date_entered " .
-                		                "FROM activities WHERE (subject_id=%d AND actor_id != %d) " .
-                		                "ORDER BY date_entered DESC LIMIT %d, %d",
-                					    $_SESSION['user_id'], $_SESSION['user_id'], $offset, $limit);
+            if (count($friends) > 0) {
+                // Query to get activities that were performed by this user..
+                $acted_on_q = sprintf("SELECT DISTINCT source_id FROM activities " .
+                                        "WHERE (actor_id = %d AND subject_id != %d AND activity IN('comment', 'reply'))",
+                                        $_SESSION['user_id'], $_SESSION['user_id']);
 
-            // Get the ID's of all this user's friends.
-            $friends = $this->get_friend_ids();
+                // WHERE clause for notifications from other sources like profile_pic_change, comment, reply and birthday.
+                // Only applies to users with friends.
+                $other_notifs_clause = sprintf("subject_id IN(%s) AND actor_id IN(%s) AND " .
+                                                "(source_id IN(%s) OR activity IN('profile_pic_change','birthday'))",
+                                                $friends_string, $friends_string, $acted_on_q);
 
-            $friends_string = '';
-            for ($i = 0; $i != count($friends)-1; ++$i) {
-                $friends_string .= "{$friends[$i]['friend_id']}, ";
+                // Query to get all notifications from activities.
+                $notifs_q = sprintf("SELECT activity_id, actor_id, source_id, subject_id, source_type, activity, date_entered " .
+                                    "FROM activities WHERE ((%s) OR (%s)) " .
+                                    "ORDER BY date_entered DESC LIMIT %d, %d",
+                                    $primary_notifs_clause, $other_notifs_clause, $offset, $limit);
             }
-            $friends_string .= "{$friends[$i]['friend_id']}";
-
-            // Get notifications from other sources like profile_pic_change, like, comment, reply and birthday.
-    		$other_notifs_q = sprintf("SELECT activity_id, actor_id, source_id, subject_id, source_type, activity, date_entered " .
-                		              "FROM activities WHERE (subject_id IN (%s) AND actor_id IN (%s)) " .
-                                      "AND (activity='like' OR activity='comment' OR activity='reply' OR activity='profile_pic_change' OR activity='birthday')) " .
-                		              "ORDER BY date_entered DESC LIMIT %d, %d",
-                					  $friends_string, $friends_string, $offset, $limit);
+            else {
+                // Query to get all notifications from activities.
+                $notifs_q = sprintf("SELECT activity_id, actor_id, source_id, subject_id, source_type, activity, date_entered " .
+                                    "FROM activities WHERE (%s) " .
+                                    "ORDER BY date_entered DESC LIMIT %d, %d",
+                                    $primary_notifs_clause, $offset, $limit);
+            }
         }
 
-        $results = $this->run_query($primary_notifs_q)->result_array();
-        $results = array_merge($results, $this->run_query($other_notifs_q)->result_array());
+        $notif_results = $this->run_query($notifs_q)->result_array();
 
         if (isset($birthdays_q)) {
-            $birthdays = $this->run_query($birthdays_q)->result_array();
-            for ($i = 0; $i != count($birthdays); ++$i) {
+            $birthdays = array();
+
+            $birthdays_data = $this->run_query($birthdays_q)->result_array();
+            for ($i = 0; $i != count($birthdays_data); ++$i) {
                 // Get the activity_id.
                 $q = sprintf("SELECT activity_id FROM activities " .
-                             "WHERE (actor_id=%d AND activity='birthday' AND YEAR(date_entered)='%s')",
-                             $birthdays[$i]['user_id'], date('Y'));
+                             "WHERE (actor_id=%d AND activity='birthday' AND YEAR(date_entered)=%d)",
+                             $birthdays_data[$i]['user_id'], date('Y'));
                 $query = $this->run_query($q);
 
                 if ($query->num_rows() == 0) {
                     // It hasn't been recorded in activities table, add it.
                     $q = sprintf("INSERT INTO activities (actor_id, subject_id, source_id, source_type, activity) " .
                                  "VALUES (%d, %d, %d, 'user', 'birthday')",
-                                 $birthdays[$i]['user_id'], $birthdays[$i]['user_id'], $birthdays[$i]['user_id']);
+                                 $birthdays_data[$i]['user_id'], $birthdays_data[$i]['user_id'], $birthdays_data[$i]['user_id']);
                     $this->run_query($q);
-                    $birthdays[$i]['activity_id'] = $this->db->insert_id();
+
+                    $birthdays_data[$i]['activity_id'] = $this->db->insert_id();
+                    $birthdays_data[$i]['activity'] = "birthday";
+                    $birthdays_data[$i]['actor_id'] = $birthdays_data[$i]['user_id'];
+
+                    array_push($birthdays, $birthdays_data[$i]);
                 }
                 else {
-                    $birthdays[$i]['activity_id'] = $query->row_array()['activity_id'];
-                }
+                    $activity_id = $query->row()->activity_id;
 
-                $birthdays[$i]['activity'] = "birthday";
-                $birthdays[$i]['actor_id'] = $birthdays[$i]['user_id'];
+                    // Check whether this user has seen it before.
+                    $q = sprintf("SELECT user_id FROM notification_read " .
+                                 "WHERE (user_id=%d AND activity_id=%d)",
+                                 $_SESSION['user_id'], $activity_id);
+                    if ($this->run_query($q)->num_rows() == 0) {
+                        // Hasn't seen.
+                        $birthdays_data[$i]['activity_id'] = $activity_id;
+                        $birthdays_data[$i]['activity'] = "birthday";
+                        $birthdays_data[$i]['actor_id'] = $birthdays_data[$i]['user_id'];
+
+                        array_push($birthdays, $birthdays_data[$i]);
+                    }
+                }
             }
 
-            $results = array_merge($results, $birthdays);
-            usort($results, $this->build_sorter('date_entered'));
-            $results = array_slice($results, 0, $limit);
+            $results = array_merge($notif_results, $birthdays);
+        }
 
+        // Sort the results by date entered and get the first $limit.
+        usort($notif_results, $this->build_sorter('date_entered'));
+        $notif_results = array_slice($notif_results, 0, $limit);
+
+        if ($filter) {
             // Update notification_read to reflect that it has been seen.
-            /*foreach ($results as $r) {
+            foreach ($notif_results as $r) {
                 $q = sprintf("INSERT INTO notification_read (user_id, activity_id) " .
                             "VALUES (%d, %d)",
-                            $_SESSION['user_id'], $d['activity_id']);
+                            $_SESSION['user_id'], $r['activity_id']);
                 $this->run_query($q);
-            }*/
-        }
-        else {
-            usort($results, $this->build_sorter('date_entered'));
-            $results = array_slice($results, 0, $limit);
+            }
         }
 
         $notifications = array();
-        foreach ($results as $notif) {
-            // Get the name of the actor.
-            $notif['user'] = $this->get_name($notif['actor_id']);
+        foreach ($notif_results as $notif) {
+            // Get the name of the actor and subject.
+            $notif['actor'] = $this->get_name($notif['actor_id']);
+            $notif['subject'] = $this->get_name($notif['subject_id']);
 
             // If it is a like, comment, or share on of a post,
             if ((($notif['activity'] === 'like') ||
@@ -513,9 +647,17 @@ class User_model extends CI_Model
                              $notif['source_id']);
                 $query = $this->run_query($q);
                 $post = $query->row()->post;
-
-                // get short post.
                 $short_post = $this->post_model->get_short_post($post, 75);
+
+                // Check if it's a comment on a post this user shared.
+                if ($notif['activity'] == 'comment') {
+                    $shared_post_q = sprintf("SELECT post_id FROM posts WHERE (parent_id=%d) LIMIT 1",
+                                 $notif['source_id']);
+                    if ($this->run_query($shared_post_q)->num_rows() == 1) {
+                        $notif['shared_post'] = TRUE;
+                    }
+                }
+
                 $notif['post'] = $short_post['body'];
             }
 
@@ -551,13 +693,12 @@ class User_model extends CI_Model
                      "WHERE (user_id=%d AND friend_id=%d) OR (user_id=%d AND friend_id=%d) LIMIT 1",
                      $_SESSION['user_id'], $user_id, $user_id, $_SESSION['user_id']);
         $query = $this->run_query($q);
-        $friends = FALSE;
+        $data['are_friends'] = FALSE;
         if ($query->num_rows() == 1) {
-            $friends = TRUE;
+            $data['are_friends'] = TRUE;
         }
 
-        if ($friends) {
-            $data['friends'] = TRUE;
+        if ($data['are_friends']) {
             $data['fr_sent'] = TRUE;
         }
         else {
@@ -567,10 +708,8 @@ class User_model extends CI_Model
                          $_SESSION['user_id'], $user_id, $user_id, $_SESSION['user_id']);
             $query = $this->run_query($q);
 
-            $data['friends'] = FALSE;
             $data['fr_sent'] = FALSE;
             if ($query->num_rows() == 1) {
-                $data['friends'] = FALSE;
                 $data['fr_sent'] = TRUE;
                 $data['user_id'] = $query->row()->user_id;
                 $data['target_id'] = $query->row()->target_id;
@@ -604,7 +743,7 @@ class User_model extends CI_Model
         foreach ($results as $user) {
             // Only add to list if they are not friends and friend request hasn't been sent.
             $fr_status = $this->get_friendship_status($user['user_id']);
-            if (!$fr_status['friends'] && !$fr_status['fr_sent']) {
+            if (!$fr_status['are_friends'] && !$fr_status['fr_sent']) {
                 $user['display_name'] = ucfirst($user['display_name']);
                 $user['profile_pic_path'] = $this->get_profile_picture($user['user_id']);
                 array_push($users, $user);
@@ -626,9 +765,8 @@ class User_model extends CI_Model
                          "WHERE (target_id=%d AND confirmed IS FALSE)",
                          $_SESSION['user_id']);
         }
-        $query = $this->run_query($q);
 
-        return $query->num_rows();
+        return $this->run_query($q)->num_rows();
     }
 
     public function get_friend_requests()
@@ -657,6 +795,11 @@ class User_model extends CI_Model
 
     public function send_friend_request($target_id)
     {
+        $friendship_status = $this->get_friendship_status($target_id);
+        if ($friendship_status['are_friends'] || $friendship_status['fr_sent']) {
+            return FALSE;
+        }
+
         $q = sprintf("INSERT INTO friend_requests (user_id, target_id) VALUES (%d, %d)",
                      $_SESSION['user_id'], $target_id);
         $this->run_query($q);
@@ -666,10 +809,21 @@ class User_model extends CI_Model
                      "VALUES (%d, %d, %d, 'user', 'friend_request')",
                      $_SESSION['user_id'], $target_id, $target_id);
         $this->run_query($q);
+
+        return TRUE;
     }
 
     public function confirm_friend_request($friend_id)
     {
+        // First check whether a friend request actually exist.
+        $q = sprintf("SELECT request_id FROM friend_requests " .
+                     "WHERE (target_id=%d AND user_id=%d)",
+                     $_SESSION['user_id'], $friend_id);
+        $query = $this->run_query($q);
+        if ($query->num_rows() == 0) {
+            return FALSE;
+        }
+
         // Add the user to the list of friends.
         $q = sprintf("INSERT INTO friends (user_id, friend_id) VALUES (%d, %d)",
                      $_SESSION['user_id'], $friend_id);
@@ -686,6 +840,8 @@ class User_model extends CI_Model
                      "VALUES (%d, %d, %d, 'user', 'confirmed_friend_request')",
                      $_SESSION['user_id'], $friend_id, $_SESSION['user_id']);
         $this->run_query($q);
+
+        return TRUE;
     }
 
     public function send_message($receiver_id, $message)
@@ -701,9 +857,7 @@ class User_model extends CI_Model
         $q = sprintf("SELECT message_id FROM messages " .
                      "WHERE (receiver_id=%d AND sender_id=%d) OR (receiver_id=%d AND sender_id=%d)",
                      $user_id, $_SESSION['user_id'], $_SESSION['user_id'], $user_id);
-        $query = $this->run_query($q);
-
-        return $query->num_rows();
+        return $this->run_query($q)->num_rows();
     }
 
     public function get_conversation($user_id, $offset, $limit)

@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 require_once('common/user-page-start.php');
 
-if ($visitor) {
+if ($is_visitor) {
     define('PAGE', "about");
     require_once("common/secondary-user-nav.php");
 }
@@ -12,14 +12,18 @@ if ($visitor) {
 <div class="box show-profile">
     <?php
     // If there is nothing to show.
-    if ($visitor && !$profile['programmes']
+    if ($is_visitor && !$profile['programmes']
         && !$profile['colleges'] && !$profile['schools'] && !$profile['halls']
         && !$profile['hostels'] && !$profile['country'] && !$profile['district']) {
-        print("<div class='alert alert-info'><p>Nothing to show...</p></div>");
+        if (!$are_friends) {
+            print("<h4>About {$secondary_user}</h4>");
+        }
+        print("<div class='alert alert-info'>" .
+              "<span class='glyphicon glyphicon-info-sign'></span> Nothing to show.</div>");
     }
     else {
     ?>
-        <?php if (!$visitor || $profile['colleges']) { ?>
+        <?php if (!$is_visitor || $profile['colleges']) { ?>
             <h4>Education</h4>
             <ul class="profile">
             <?php
@@ -27,7 +31,7 @@ if ($visitor) {
                 foreach ($profile['colleges'] as $college) {
                     print("<span><b>{$college['start_year']} - {$college['end_year']}</b></span>");
                     print("<li><b>College: </b>{$college['college_name']}");
-                    if (!$visitor) {
+                    if (!$is_visitor) {
                         print(' <a href="' . base_url("user/edit-college/{$college['id']}") . '"><span class="glyphicon glyphicon-pencil"></span> <em>Edit</em></a>');
                     }
                     print("</li>");
@@ -48,7 +52,7 @@ if ($visitor) {
                                 ($programme['date_to'] == $college['date_to'])) {
                                 $has_programme = TRUE;
                                 print("<li><b>Programme: </b>{$programme['programme_name']}");
-                                if (!$visitor) {
+                                if (!$is_visitor) {
                                     print(' <a href="' . base_url("user/edit-programme/{$programme['id']}") . '"><span class="glyphicon glyphicon-pencil"></span> <em>Edit</em></a>');
                                 }
                                 print("</li>");
@@ -56,23 +60,23 @@ if ($visitor) {
                         }
                     }
 
-                    if (!$visitor && !$has_programme) {
+                    if (!$is_visitor && !$has_programme) {
                         print('<li><b>Programme: </b><a href="'. base_url("user/add-programme/{$college['id']}") . '"><em>Add programme</em></a></li>');
                     }
                 }  // End foreach.
 
-                if (!$visitor) {
+                if (!$is_visitor) {
                     print('<a href="'. base_url("user/add-college") . '"><em>Add college</em></a>');
                 }
             }
-            elseif (!$visitor) {
+            elseif (!$is_visitor) {
                 print('<a href="'. base_url("user/add-college") . '"><em>Add college</em></a>');
             } // ($profile['colleges']).
 
             print("</ul>");
-        } // (!$visitor || $profile['colleges']) ?>
+        } // (!$is_visitor || $profile['colleges']) ?>
 
-        <?php if (!$visitor || ($profile['hostels'] || $profile['halls'])): ?>
+        <?php if (!$is_visitor || ($profile['hostels'] || $profile['halls'])): ?>
             <h4>Residence</h4>
             <ul class="profile">
                 <?php
@@ -80,21 +84,21 @@ if ($visitor) {
                     foreach ($profile['halls'] as $hall) {
                         if ($hall['resident']) {
                             print("<li><b>{$hall['start_year']} - {$hall['end_year']}: </b>Resident of {$hall['hall_name']}");
-                            if (!$visitor) {
+                            if (!$is_visitor) {
                                 print(' <a href="' . base_url("user/edit-hall/{$hall['id']}") . '"><span class="glyphicon glyphicon-pencil"></span> <em>Edit</em></a>');
                             }
                             print("</li>");
                         }
                         else {
                             print("<li><b>{$hall['start_year']} - {$hall['end_year']}: </b>Attached to {$hall['hall_name']}");
-                            if (!$visitor) {
+                            if (!$is_visitor) {
                                 print(' <a href="' . base_url("user/edit-hall/{$hall['id']}") . '"><span class="glyphicon glyphicon-pencil"></span> <em>Edit</em></a>');
                             }
                             print("</li>");
                         }
                     }
 
-                    if (!$visitor) {
+                    if (!$is_visitor) {
                         print('<a href="'. base_url("user/add-hall") . '"><em>Add hall</em></a>');
                     }
                 }
@@ -105,13 +109,13 @@ if ($visitor) {
                 if ($profile['hostels']) {
                     foreach ($profile['hostels'] as $hostel) {
                         print("<li><b>{$hostel['start_year']} - {$hostel['end_year']}: </b>{$hostel['hostel_name']}");
-                        if (!$visitor) {
+                        if (!$is_visitor) {
                             print(' <a href="' . base_url("user/edit-hostel/{$hostel['id']}") . '"><span class="glyphicon glyphicon-pencil"></span> <em>Edit</em></a>');
                         }
                         print("</li>");
                     }
                 }
-                if (!$visitor) {
+                if (!$is_visitor) {
                     if (!$profile['hostels']) {
                         print(' &middot; ');
                     }
@@ -121,11 +125,11 @@ if ($visitor) {
             </ul>
         <?php endif; // if ($profile['halls'] || $profile['hostels']) ?>
 
-        <?php if (!$visitor || ($profile['country'] || $profile['district'])): ?>
+        <?php if (!$is_visitor || ($profile['country'] || $profile['district'])): ?>
             <h4>Origin</h4>
             <ul class="profile">
                 <?php
-                if (!$visitor) {
+                if (!$is_visitor) {
                     if ($profile['district']) {
                         print("<li><b>District: </b>{$profile['district']}");
                         print(' <a href="' . base_url("user/edit-district") . '"><span class="glyphicon glyphicon-pencil"></span> <em>Edit</em></a>');
@@ -163,8 +167,8 @@ if ($visitor) {
                     print("</li>");
                     ?>
                     </li>
-                <?php } // (!$visitor) ?>
+                <?php } // (!$is_visitor) ?>
             </ul>
-        <?php endif; // End (!$visitor \\ ($profile['country'] || $profile['district'])) ?>
+        <?php endif; // End (!$is_visitor \\ ($profile['country'] || $profile['district'])) ?>
     <?php } // End nothing to show.?>
 </div><!-- box -->

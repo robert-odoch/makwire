@@ -9,7 +9,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <div>
         <a href="<?= base_url("user/index/{$suid}"); ?>"><?= $secondary_user; ?></a>
         <?php
-        if ($friendship_status['friends']) {
+        if ($friendship_status['are_friends']) {
             // Do nothing.
         }
         elseif ($friendship_status['fr_sent'] && $friendship_status['target_id']==$_SESSION['user_id']) {
@@ -23,6 +23,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         }
         ?>
     </div>
+<?php if ($are_friends) { ?>
     <ul>
         <?php
         switch (PAGE) {
@@ -67,5 +68,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         }
         ?>
     </ul>
+<?php }  // ($are_friends) ?>
     <span class="clearfix"></span>
 </div>

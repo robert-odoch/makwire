@@ -49,7 +49,7 @@ require_once("common/user-page-start.php");
                 </header>
                 <p class="comment"><?= htmlspecialchars($reply['comment']); ?></p>
                 <footer>
-                <small>&mdash; <span class="glyphicon glyphicon-time"></span> <?= $reply['timespan']; ?> ago</small>
+                <small><span class="glyphicon glyphicon-time"></span> <i><?= $reply['timespan']; ?> ago</i></small>
                 <?php
                 // Hide this link from the replier if she is the one currently
                 // viewing this page.
@@ -85,7 +85,7 @@ require_once("common/user-page-start.php");
 <?php } else { ?>
     <div class="box">
         <div class="alert alert-info">
-            <p>No replies to show.</p>
+            <p><span class="glyphicon glyphicon-info-sign"></span> No replies to show.</p>
         </div>
     </div>
 <?php } ?>

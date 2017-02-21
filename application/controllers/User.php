@@ -15,9 +15,32 @@ class User extends CI_Controller
         $this->load->model('user_model');
         $this->load->model('post_model');
         $this->load->model('profile_model');
+        $this->load->model('photo_model');
 
         // Check whether the user hasn't been logged out from some where else.
         $this->user_model->confirm_logged_in();
+    }
+
+    private function show_success($success_message)
+    {
+        $data = $this->user_model->initialize_user();
+        $data['title'] = "Success!";
+        $this->load->view("common/header", $data);
+
+        $data['success'] = $success_message;
+        $this->load->view("show-success", $data);
+        $this->load->view("common/footer");
+    }
+
+    private function show_permission_denied($error_message)
+    {
+        $data = $this->user_model->initialize_user();
+        $data['title'] = "Permission Denied!";
+        $this->load->view("common/header", $data);
+
+        $data['error'] = $error_message;
+        $this->load->view("show-permission-denied", $data);
+        $this->load->view("common/footer");
     }
 
     // TODO: Delete this funtion when everything is done.
@@ -70,9 +93,16 @@ class User extends CI_Controller
 
     public function index($user_id, $offset=0)
     {
+        $is_visitor = ($_SESSION['user_id'] === $user_id) ? FALSE : TRUE;
+        if ($is_visitor && !$this->user_model->are_friends($user_id)) {
+            $this->show_permission_denied("You don't have the proper permissions to view this user's timeline.");
+            return;
+        }
+
         $data = $this->user_model->initialize_user();
-        $data['visitor'] = ($_SESSION['user_id'] === $user_id) ? FALSE : TRUE;
-        if ($data['visitor']) {
+        $data['is_visitor'] = $is_visitor;
+        if ($data['is_visitor']) {
+            $data['are_friends'] = TRUE;
             $data['su_profile_pic_path'] = $this->user_model->get_profile_picture($user_id);
             $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
             $data['secondary_user'] = $this->user_model->get_name($user_id);
@@ -82,7 +112,6 @@ class User extends CI_Controller
         else {
             $data['title'] = "{$data['primary_user']}'s Posts";
         }
-
         $this->load->view('common/header', $data);
 
         $data['post_errors'] = array();
@@ -131,13 +160,19 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    // TODO: check if they are friends.
     public function send_message($user_id, $offset=0)
     {
+        if (!$this->user_model->are_friends($user_id)) {
+            $this->show_permission_denied("You don't have the proper permissions to send a message to this user.");
+            return;
+        }
+
         $data = $this->user_model->initialize_user();
         $data['suid'] = $user_id;
         $data['secondary-user'] = $this->user_model->get_name($user_id);
         $data['title'] = "Send a message to {$data['secondary-user']}";
+        $this->load->view('common/header', $data);
+
         $data['message_errors'] = array();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (empty(trim($this->input->post('message')))) {
@@ -148,8 +183,6 @@ class User extends CI_Controller
                 $this->user_model->send_message($user_id, $message);
             }
         }
-
-        $this->load->view('common/header', $data);
 
         // Maximum number of messages to display.
         $limit = 10;
@@ -206,8 +239,14 @@ class User extends CI_Controller
 
     public function post($post_id, $offset=0)
     {
+        $post = $this->post_model->get_post($post_id);
+        if (!$post) {
+            $this->show_permission_denied("You dont't have the proper permissions to view this post.");
+            return;
+        }
+
         $data = $this->user_model->initialize_user();
-        $data['post'] = $this->post_model->get_post($post_id);
+        $data['post'] = $post;
         $data['title'] = "{$data['post']['author']}'s Post";
         $this->load->view('common/header', $data);
 
@@ -272,6 +311,23 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
+    public function photo($photo_id)
+    {
+        $photo = $this->photo_model->get_photo($photo_id);
+        if (!$photo) {
+            $this->show_permission_denied("You don't have the proper permissions to view this photo.");
+            return;
+        }
+
+        $data = $this->user_model->initialize_user();
+        $data['title'] = "{$photo['author']}'s photo";
+        $this->load->view("common/header", $data);
+
+        $data['photo'] = $photo;
+        $this->load->view("show-photo", $data);
+        $this->load->view("common/footer");
+    }
+
     public function find_friends($offset=0)
     {
         $data = $this->user_model->initialize_user();
@@ -312,16 +368,26 @@ class User extends CI_Controller
 
     public function add_friend($user_id)
     {
-        $this->user_model->send_friend_request($user_id);
+        $friend_request_sent = $this->user_model->send_friend_request($user_id);
+        if (!$friend_request_sent) {
+            $this->show_permission_denied("Either the two of you are already friends, or there exists a pending freind request.");
+            return;
+        }
+
+        $this->show_success("Friend request sent.");
+    }
+
+    public function accept_friend($user_id)
+    {
+        $confirmed = $this->user_model->confirm_friend_request($user_id);
+        if (!$confirmed) {
+            $this->show_permission_denied("This user didn't send you a friend request.");
+            return;
+        }
+
         redirect(base_url("user/index/{$user_id}"));
     }
 
-    // TODO: check if a request exists.
-    public function accept_friend($user_id)
-    {
-        $this->user_model->confirm_friend_request($user_id);
-        redirect(base_url("user/index/{$user_id}"));
-    }
     public function messages($offset=0)
     {
         $data = $this->user_model->initialize_user();
@@ -368,15 +434,22 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function friends($user_id=null, $offset=0)
+    public function friends($user_id=NULL, $offset=0)
     {
-        if ($user_id === null) {
+        if ($user_id === NULL) {
             $user_id = $_SESSION['user_id'];
         }
 
+        $is_visitor = ($_SESSION['user_id'] === $user_id) ? FALSE : TRUE;
+        if ($is_visitor && !$this->user_model->are_friends($user_id)) {
+            $this->show_permission_denied("You don't have the proper permissions to view this user's friends.");
+            return;
+        }
+
         $data = $this->user_model->initialize_user();
-        $data['visitor'] = ($_SESSION['user_id'] === $user_id) ? FALSE : TRUE;
-        if ($data['visitor']) {
+        $data['is_visitor'] = $is_visitor;
+        if ($data['is_visitor']) {
+            $data['are_friends'] = TRUE;
             $data['su_profile_pic_path'] = $this->user_model->get_profile_picture($user_id);
             $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
             $data['secondary_user'] = $this->user_model->get_name($user_id);
@@ -386,7 +459,6 @@ class User extends CI_Controller
         else {
             $data['title'] = "{$data['primary_user']}'s Friends";
         }
-
         $this->load->view("common/header", $data);
 
         $limit = 10;
@@ -409,8 +481,9 @@ class User extends CI_Controller
         }
 
         $data = $this->user_model->initialize_user();
-        $data['visitor'] = ($_SESSION['user_id'] === $user_id) ? FALSE : TRUE;
-        if ($data['visitor']) {
+        $data['is_visitor'] = ($_SESSION['user_id'] === $user_id) ? FALSE : TRUE;
+        if ($data['is_visitor']) {
+            $data['are_friends'] = $this->user_model->are_friends($user_id);
             $data['su_profile_pic_path'] = $this->user_model->get_profile_picture($user_id);
             $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
             $data['secondary_user'] = $this->user_model->get_name($user_id);
@@ -418,7 +491,7 @@ class User extends CI_Controller
             $data['suid'] = $user_id;
         }
         else {
-            $data['title'] = "About {$data['primary_user']}";
+            $data['title'] = "Edit Profile";
         }
 
         $this->load->view("common/header", $data);

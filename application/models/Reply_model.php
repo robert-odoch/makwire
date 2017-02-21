@@ -24,6 +24,42 @@ class Reply_model extends CI_Model
 
         return $query;
     }
+
+    private function user_can_access_reply($reply_id)
+    {
+        // A user must be a friend to the persion who posted what was commented upon.
+        // Get the ID of the comment that was replied upon.
+        $parent_id_q = sprintf("SELECT parent_id FROM comments WHERE (comment_id=%d)",
+                            $reply_id);
+
+        // Get the type of object that was commented upon.
+        $comment_q = sprintf("SELECT source_id, source_type FROM comments WHERE (comment_id=(%s))",
+                             $parent_id_q);
+        $query = $this->run_query($comment_q);
+        if ($query->num_rows() == 0) {
+            // No user (even admin) has permission to access a file that doesn't exist.
+            return FALSE;
+        }
+
+        // Get the post who's comment was replied upon.
+        $reply_result = $query->row_array();
+        switch ($reply_result['source_type']) {
+        case 'photo':
+            $author_q = sprintf("SELECT user_id AS author_id FROM user_images WHERE (image_id=%d)",
+                                $reply_result['source_id']);
+            break;
+        case 'post':
+            $author_q = sprintf("SELECT author_id FROM posts WHERE (post_id=%d)",
+                                $reply_result['source_id']);
+            break;
+        default:
+            # Do nothing.
+            break;
+        }
+        $author_id = $this->run_query($author_q)->row_array()['author_id'];
+
+        return $this->user_model->are_friends($author_id);
+    }
     /*** End Utility ***/
 
     private function has_liked($reply_id)
@@ -32,17 +68,15 @@ class Reply_model extends CI_Model
                      "WHERE (source_id=%d AND source_type='reply' AND liker_id=%d) " .
                      "LIMIT 1",
                      $reply_id, $_SESSION['user_id']);
-        $query = $this->run_query($q);
-
-        if ($query->num_rows() === 1) {
-            return TRUE;
-        }
-
-        return FALSE;
+        return ($this->run_query($q)->num_rows() == 1);
     }
 
     public function get_reply($reply_id)
     {
+        if (!$this->user_can_access_reply($reply_id)) {
+            return FALSE;
+        }
+
         $q = sprintf("SELECT * FROM comments WHERE (comment_id=%s AND parent_id!=0)",
                      $reply_id);
         $query = $this->run_query($q);
@@ -55,7 +89,7 @@ class Reply_model extends CI_Model
         $reply['timespan'] = timespan(mysql_to_unix($reply['date_entered']), now(), 1);
 
         // Has the user liked this reply?
-        $reply['liked'] = $this->has_liked($reply['comment_id']);
+        $reply['liked'] = $this->has_liked($reply_id);
 
         // Add the number of likes.
         $reply['num_likes'] = $this->get_num_likes($reply_id);
@@ -65,8 +99,11 @@ class Reply_model extends CI_Model
 
     public function like($reply_id)
     {
+        if (!$this->user_can_access_reply($reply_id)) {
+            return FALSE;
+        }
         if ($this->has_liked($reply_id)) {
-            return;
+            return TRUE;
         }
 
         // Record the like.
@@ -92,9 +129,7 @@ class Reply_model extends CI_Model
     {
         $q = sprintf("SELECT like_id FROM likes WHERE (source_type='reply' AND source_id=%d)",
                      $reply_id);
-        $query = $this->run_query($q);
-
-        return $query->num_rows();
+        return $this->run_query($q)->num_rows();
     }
 
     public function get_likes($reply_id, $offset, $limit)

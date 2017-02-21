@@ -42,7 +42,7 @@ require_once('common/user-page-start.php');
                     </header>
                     <p><?= htmlspecialchars($m['message']); ?></p>
                     <footer>
-                        <small>&mdash; <span class="glyphicon glyphicon-time"></span> <?= $m['timespan']; ?> ago</small>
+                        <small><span class="glyphicon glyphicon-time"></span> <i><?= $m['timespan']; ?> ago</i></small>
                     </footer>
                 </article>
             </li>

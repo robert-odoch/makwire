@@ -8,7 +8,7 @@ require_once('common/user-page-start.php');
     <h4>Messages</h4>
     <?php if (count($messages) == 0): ?>
     <div class="alert alert-info">
-        <p>No messages to show.</p>
+        <p><span class="glyphicon glyphicon-info-sign"></span> No messages to show.</p>
     </div>
     <?php else:
         if (isset($has_prev)) { ?>
@@ -23,11 +23,12 @@ require_once('common/user-page-start.php');
         <li>
             <article class="message">
                 <header>
-                    <a href="<?= base_url("user/send_message/{$m['sender_id']}"); ?>" title="Reply"><?= $m['sender']; ?></a>
+                    <a href="<?= base_url("user/index/{$m['sender_id']}"); ?>" title="<?= $m['sender']; ?>"><?= $m['sender']; ?></a>
                 </header>
                 <p><?= htmlspecialchars($m['message']); ?></p>
                 <footer>
-                    <small>&mdash; <span class="glyphicon glyphicon-time"></span> <?= $m['timespan']; ?> ago</small>
+                    <small><span class="glyphicon glyphicon-time"></span> <i><?= $m['timespan']; ?> ago</i></small>
+                    <span> &middot; </span><a href="<?= base_url("user/send_message/{$m['sender_id']}"); ?>" title="Reply">Reply</a>
                 </footer>
             </article>
         </li>

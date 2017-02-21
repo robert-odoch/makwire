@@ -19,24 +19,44 @@ class Reply extends CI_Controller
         $this->user_model->confirm_logged_in();
     }
 
+    private function permission_denied($error_message)
+    {
+        $data = $this->user_model->initialize_user();
+        $data['title'] = "Permission Denied!";
+        $this->load->view("common/header", $data);
+
+        $data['error'] = $error_message;
+        $this->load->view("permission-denied", $data);
+        $this->load->view("common/footer");
+    }
+
     public function like($reply_id, $comment_id, $offset)
     {
-        $this->reply_model->like($reply_id);
+        $like = $this->reply_model->like($reply_id);
+        if (!$like) {
+            $this->show_permission_denied("You don't have the proper permissions to like this reply.");
+            return;
+        }
 
         if ($offset == 0) {
             redirect(base_url("comment/replies/{$comment_id}"));
         }
-
         redirect(base_url("comment/replies/{$comment_id}/{$offset}"));
     }
 
     public function likes($reply_id, $offset=0)
     {
+        $reply = $this->reply_model->get_reply($reply_id);
+        if (!$reply) {
+            $this->show_permission_denied("You don't have the proper permissions to view this reply.");
+            return;
+        }
+
         $data = $this->user_model->initialize_user();
         $data['title'] = "People who liked this reply";
         $this->load->view("common/header", $data);
 
-        $data['reply'] = $this->reply_model->get_reply($reply_id);
+        $data['reply'] = $reply;
 
         // Maximum number of likes to display.
         $limit = 10;

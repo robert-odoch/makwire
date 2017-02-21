@@ -3,19 +3,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 require_once('common/user-page-start.php');
 ?>
+
 <div class="box">
     <article class="post">
         <header>
             <h4>
-            <?php
-            if ($post['shared']) {
-                print("<a href='" . base_url("user/index/{$post['author_id']}") . "'>{$post['author']}</a> " .
-                      "shared <a href='" . base_url("user/index/{$post['source_id']}") . "'>{$post['source']}</a>'s post");
-            }
-            else {
-                print("<a href='" . base_url("user/index/{$post['author_id']}") . "'>{$post['author']}</a>");
-            }
-            ?>
+                <a href="<?= base_url("user/index/{$post['author_id']}"); ?>"><?= $post['author']; ?></a>
             </h4>
         </header>
         <p class="post">
@@ -51,7 +44,7 @@ require_once('common/user-page-start.php');
         </footer>
     </article>
 </div><!-- box -->
-<?php if (count($comments) > 0): ?>
+<?php if (count($comments) > 0) { ?>
 <div class="box">
     <h4>Comments</h4>
     <ul class="comments">
@@ -69,8 +62,7 @@ require_once('common/user-page-start.php');
                 <p class="comment"><?php print(htmlspecialchars($comment['comment'])); ?></p>
                 <footer>
                 <?php
-                print "<small>&mdash; " .
-                      "<span class='glyphicon glyphicon-time'></span> {$comment['timespan']} ago" .
+                print "<small><span class='glyphicon glyphicon-time'></span> <i>{$comment['timespan']} ago</i>" .
                       "</small>";
 
                 // Hide these two links from the commenter if she is the one currently
@@ -107,9 +99,9 @@ require_once('common/user-page-start.php');
         ?>
     </ul>
 </div><!-- box -->
-<?php if ($has_next): ?>
+<?php if ($has_next) { ?>
 <div class="box previous">
     <a href="<?= base_url("post/comments/{$post['post_id']}/{$next_offset}"); ?>">View more comments</a>
 </div>
-<?php endif; ?>
-<?php endif; ?>
+<?php }  // ($has_next) ?>
+<?php }  // (count($comments) > 0) ?>

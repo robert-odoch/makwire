@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 require_once('common/user-page-start.php');
 
-if ($visitor) {
+if ($is_visitor) {
     define('PAGE', 'friends');
     require_once("common/secondary-user-nav.php");
 }
@@ -11,14 +11,14 @@ if ($visitor) {
 
 <div class="box">
     <?php
-    if (!$visitor) {
+    if (!$is_visitor) {
         print("<h4>Friends</h4>");
     }
     ?>
 
     <?php if (count($friends) == 0): ?>
     <div class="alert alert-info">
-        <p>No friends to show.</p>
+        <p><span class="glyphicon glyphicon-info-sign"></span> No friends to show.</p>
     </div>
     <?php else: ?>
     <ul class="friends">
@@ -34,7 +34,7 @@ if ($visitor) {
 <?php if ($has_next): ?>
 <div class="box more">
     <?php
-    if ($visitor) {
+    if ($is_visitor) {
         print '<a href="' . base_url("user/friends/{$suid}") . '">View more friends</a>';
     }
     else {

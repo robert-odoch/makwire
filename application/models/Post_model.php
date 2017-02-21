@@ -53,6 +53,10 @@ class Post_model extends CI_Model
 
     public function get_post($post_id)
     {
+        if (!$this->user_can_access_post($post_id)) {
+            return FALSE;
+        }
+
         $q = sprintf("SELECT * FROM posts WHERE post_id=%d LIMIT 1",
                      $post_id);
         $query = $this->run_query($q);
@@ -63,35 +67,19 @@ class Post_model extends CI_Model
         $post['author'] = $this->user_model->get_name($post['author_id']);
 
         // Get the number of likes.
-        $post['num_likes'] = $this->get_num_likes($post['post_id']);
+        $post['num_likes'] = $this->get_num_likes($post_id);
 
         // Get the number of comments.
-        $post['num_comments'] = $this->get_num_comments($post['post_id']);
+        $post['num_comments'] = $this->get_num_comments($post_id);
 
         // Get the number of shares.
-        $post['num_shares'] = $this->get_num_shares($post['post_id']);
+        $post['num_shares'] = $this->get_num_shares($post_id);
 
         // Has the user liked this post?
         $post['liked'] = $this->has_liked($post_id);
 
-        // Is it a shared post.
-        $post['shared'] = FALSE;
-
-        if ($post['parent_id'] != 0) {
-            $post['shared'] = TRUE;
-
-            // Get the name and ID of the source.
-            $q = sprintf("SELECT author_id FROM posts WHERE post_id=%d LIMIT 1",
-                         $post['parent_id']);
-            $query = $this->run_query($q);
-            $source_id = $query->row()->author_id;
-
-            $post['source_id'] = $source_id;
-            $post['source'] = $this->user_model->get_name($source_id);
-        }
-
         // Get the timespan.
-        $unix_timestamp = mysql_to_unix($post['date_posted']);
+        $unix_timestamp = mysql_to_unix($post['date_entered']);
         $post['timespan'] = timespan($unix_timestamp, now(), 1);
 
         return $post;
@@ -103,19 +91,31 @@ class Post_model extends CI_Model
                      "WHERE (source_id=%d AND source_type='post' AND liker_id=%d) " .
                      "LIMIT 1",
                      $post_id, $_SESSION['user_id']);
-        $query = $this->run_query($q);
-
-        if ($query->num_rows() === 1) {
-            return TRUE;
-        }
-
-        return FALSE;
+        return ($this->run_query($q)->num_rows() == 1);
     }
 
-    // Checks whether a user has the proper permision to like a given post
-    private function user_can_like_post($post)
+    private function has_shared($post_id)
     {
+        $q = sprintf("SELECT share_id FROM shares " .
+                     "WHERE (subject_id = %d AND user_id = %d AND subject_type='post') LIMIT 1",
+                     $post_id, $_SESSION['user_id']);
+        return ($this->run_query($q)->num_rows() == 1);
+    }
 
+    // Checks whether a user has the proper permision to access a given post
+    private function user_can_access_post($post_id)
+    {
+        // Get the author of this post.
+        $q = sprintf("SELECT author_id FROM posts WHERE post_id=%d",
+                     $post_id);
+        $query = $this->run_query($q);
+        if ($query->num_rows() == 0) {
+            // No user (even admin) has permission to access a post that doesn't exist.
+            return FALSE;
+        }
+
+        $author_id = $query->row()->author_id;
+        return $this->user_model->are_friends($author_id);
     }
 
     public function get_num_likes($post_id)
@@ -123,9 +123,7 @@ class Post_model extends CI_Model
         $q = sprintf("SELECT like_id FROM likes " .
                      "WHERE (source_id=%d AND source_type='post')",
                      $post_id);
-        $query = $this->run_query($q);
-
-        return $query->num_rows();
+        return $this->run_query($q)->num_rows();
     }
 
     public function get_num_comments($post_id)
@@ -133,18 +131,14 @@ class Post_model extends CI_Model
         $q = sprintf("SELECT comment_id FROM comments " .
                      "WHERE (source_type='post' AND source_id=%d AND parent_id=0)",
                      $post_id);
-        $query = $this->run_query($q);
-
-        return $query->num_rows();
+        return $this->run_query($q)->num_rows();
     }
 
     public function get_num_shares($post_id)
     {
-        $q = sprintf("SELECT post_id FROM posts WHERE parent_id=%d",
+        $q = sprintf("SELECT share_id FROM shares WHERE (subject_id = %d AND subject_type = 'post')",
                      $post_id);
-        $query = $this->run_query($q);
-
-        return $query->num_rows();
+        return $this->run_query($q)->num_rows();
     }
 
     public function post($post, $audience_id)
@@ -162,8 +156,11 @@ class Post_model extends CI_Model
 
     public function like($post_id)
     {
+        if (!$this->user_can_access_post($post_id)) {
+            return FALSE;
+        }
         if ($this->has_liked($post_id)) {
-            return;
+            return TRUE;
         }
 
         $q = sprintf("INSERT INTO likes (liker_id, source_id, source_type) " .
@@ -187,6 +184,10 @@ class Post_model extends CI_Model
 
     public function comment($post_id, $comment)
     {
+        if (!$this->user_can_access_post($post_id)) {
+            return FALSE;
+        }
+
         // Record the comment.
         $q = sprintf("INSERT INTO comments (commenter_id, parent_id, source_id, source_type, comment) " .
                      "VALUES (%d, %d, %d, 'post', %s)",
@@ -207,20 +208,19 @@ class Post_model extends CI_Model
         $this->run_query($q);
     }
 
-    public function share($post_id, $audience, $audience_id)
+    public function share($post_id)
     {
-        // Get the post that is being shared.
-        $q = sprintf("SELECT author_id, post FROM posts WHERE post_id=%d LIMIT 1",
-                     $post_id);
-        $query = $this->run_query($q);
-        $post = $query->row()->post;
-        $post_author = $query->row()->author_id;
+        if (!$this->user_can_access_post($post_id)) {
+            return FALSE;
+        }
+        if ($this->has_shared($post_id)) {
+            return TRUE;
+        }
 
-        // Insert it into the posts table.
-        $q = sprintf("INSERT INTO posts (parent_id, author_id, audience_id, audience, post) " .
-                     "VALUES (%d, %d, %d, %s, %s)",
-                     $post_id, $_SESSION['user_id'], $audience_id,
-                     $this->db->escape($audience), $this->db->escape($post));
+        // Insert it into the shares table.
+        $q = sprintf("INSERT INTO shares (subject_id, user_id, subject_type) " .
+                     "VALUES (%d, %d, 'post')",
+                     $post_id, $_SESSION['user_id']);
         $this->run_query($q);
 
         // Dispatch an activity.
@@ -269,11 +269,13 @@ class Post_model extends CI_Model
 
         return $comments;
     }
-    public function get_shares($post_id)
+
+    public function get_shares($post_id, $offset, $limit)
     {
-        $q = sprintf("SELECT author_id AS sharer_id FROM posts " .
-                     "WHERE (parent_id=%d) LIMIT 1",
-                     $post_id);
+        $q = sprintf("SELECT user_id AS sharer_id FROM shares " .
+                     "WHERE (subject_id = %d AND source_type = 'post') " .
+                     "LIMIT %d, %d",
+                     $post_id, $offset, $limit);
         $query = $this->run_query($q);
         $results = $query->result_array();
 

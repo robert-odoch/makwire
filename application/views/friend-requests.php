@@ -8,7 +8,7 @@ require_once('common/user-page-start.php');
     <h4>Friends Requests</h4>
     <?php if (count($friend_requests) == 0): ?>
     <div class="alert alert-info">
-        <p>No friend requests to show.</p>
+        <p><span class="glyphicon glyphicon-info-sign"></span> No friend requests to show.</p>
     </div>
     <?php else: ?>
     <ul class="friends">

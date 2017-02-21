@@ -8,14 +8,7 @@ require_once("common/user-page-start.php");
     <article class="post">
         <header>
             <h4>
-            <?php
-            if ($post['shared']) {
-                print "<a href='" . base_url("user/index/{$post['author_id']}") . "'>{$post['author']}</a> shared <a href='" . base_url("user/index/{$post['source_id']}") . "'>{$post['source']}</a>'s post";
-            }
-            else {
-                print "<a href='" . base_url("user/index/{$post['author_id']}") . "'>{$post['author']}</a>";
-            }
-            ?>
+                <a href="<?= base_url("user/index/{$post['author_id']}"); ?>"><?= $post['author']; ?></a>
             </h4>
         </header>
         <p>
@@ -42,7 +35,7 @@ require_once("common/user-page-start.php");
     <h4>Shares</h4>
     <?php if (count($shares) == 0): ?>
     <div class="alert alert-info">
-        <p>No shares to show.</p>
+        <p><span class="glyphicon glyphicon-info-sign"></span> No shares to show.</p>
     </div>
     <?php else:
         if (isset($has_prev)) { ?>

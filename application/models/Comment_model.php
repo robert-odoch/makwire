@@ -6,6 +6,7 @@ class Comment_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
+        $this->load->model("user_model");
         $this->load->model("reply_model");
     }
 
@@ -25,6 +26,36 @@ class Comment_model extends CI_Model
 
         return $query;
     }
+
+    private function user_can_access_comment($comment_id)
+    {
+        // A user must be a friend to the persion who posted what was commented upon.
+        $comment_q = sprintf("SELECT source_id, source_type FROM comments WHERE (comment_id=%d)",
+                     $comment_id);
+        $query = $this->run_query($comment_q);
+        if ($query->num_rows() == 0) {
+            // No user (even admin) has permission to access a file that doesn't exist.
+            return FALSE;
+        }
+
+        $comment_result = $query->row_array();
+        switch ($comment_result['source_type']) {
+        case 'photo':
+            $author_q = sprintf("SELECT user_id AS author_id FROM user_images WHERE (image_id=%d)",
+                         $comment_result['source_id']);
+            break;
+        case 'post':
+            $author_q = sprintf("SELECT author_id FROM posts WHERE (post_id=%d)",
+                         $comment_result['source_id']);
+            break;
+        default:
+            # Do nothing.
+            break;
+        }
+        $author_id = $this->run_query($author_q)->row_array()['author_id'];
+
+        return $this->user_model->are_friends($author_id);
+    }
     /*** End Utility ***/
 
     private function has_liked($comment_id)
@@ -33,17 +64,15 @@ class Comment_model extends CI_Model
                      "WHERE (source_id=%d AND source_type='comment' AND liker_id=%d) " .
                      "LIMIT 1",
                      $comment_id, $_SESSION['user_id']);
-        $query = $this->run_query($q);
-
-        if ($query->num_rows() == 1) {
-            return TRUE;
-        }
-
-        return FALSE;
+        return ($this->run_query($q)->num_rows() == 1);
     }
 
     public function get_comment($comment_id)
     {
+        if (!$this->user_can_access_comment($comment_id)) {
+            return FALSE;
+        }
+
         $q = sprintf("SELECT commenter_id, comment, date_entered FROM comments " .
                      "WHERE (comment_id=%d AND parent_id=%d)",
                      $comment_id, 0);
@@ -74,9 +103,7 @@ class Comment_model extends CI_Model
         $q = sprintf("SELECT like_id FROM likes " .
                      "WHERE (source_type='comment' AND source_id=%d)",
                      $comment_id);
-        $query = $this->run_query($q);
-
-        return $query->num_rows();
+        return $this->run_query($q)->num_rows();
     }
 
     public function get_likes($comment_id, $offset, $limit)
@@ -104,9 +131,7 @@ class Comment_model extends CI_Model
         $q = sprintf("SELECT comment_id FROM comments " .
                      "WHERE (source_type='comment' AND source_id=%d)",
                      $comment_id);
-        $query = $this->run_query($q);
-
-        return $query->num_rows();
+        return $this->run_query($q)->num_rows();
     }
 
     public function get_replies($comment_id, $offset, $limit)
@@ -131,8 +156,11 @@ class Comment_model extends CI_Model
 
     public function like($comment_id)
     {
+        if (!$this->user_can_access_comment($comment_id)) {
+            return FALSE;
+        }
         if ($this->has_liked($comment_id)) {
-            return;
+            return TRUE;
         }
 
         // Record the like.

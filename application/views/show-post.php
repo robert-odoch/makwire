@@ -1,16 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-function can_share_post($user_id, $post)
-{
-    if (($post['author_id'] === $_SESSION['user_id']) ||
-        ($post['shared'] && $post['source_id']===$_SESSION['user_id'])) {
-        return FALSE;
-    }
-
-    return TRUE;
-}
-
 require_once('common/user-page-start.php');
 ?>
 
@@ -18,14 +8,7 @@ require_once('common/user-page-start.php');
     <article class="post">
         <header>
             <h4>
-            <?php
-            if ($post['shared']) {
-                print "<a href='" . base_url("user/index/{$post['author_id']}") . "'>{$post['author']}</a> shared <a href='" . base_url("user/index/{$post['source_id']}") . "'>{$post['source']}</a>'s post";
-            }
-            else {
-                print "<a href='" . base_url("user/index/{$post['author_id']}") . "'>{$post['author']}</a>";
-            }
-            ?>
+                <a href="<?= base_url("user/index/{$post['author_id']}"); ?>"><?= $post['author']; ?></a>
             </h4>
         </header>
         <p class="post">
@@ -55,30 +38,18 @@ require_once('common/user-page-start.php');
             ?>
             <ul>
                 <li>
-                <?php if($post['liked']) {
-                    // Show nothing for now.
-                }
-                else {
-                    print '<a href="' . base_url("post/like/{$post['post_id']}") . '" title="Like this post"><span class="glyphicon glyphicon-thumbs-up"></span> Like</a>';
-                    print("<span> &middot; </span>");
-                }
-                ?>
-                </li>
-
-                <li>
-                    <a href="<?php echo base_url('post/comment/' . "{$post['post_id']}"); ?>" title="Comment on this post"><span class="glyphicon glyphicon-comment"></span> Comment</a>
-                </li>
-
-                <?php if (can_share_post($_SESSION['user_id'], $post)){ ?>
-                <li>
+                    <a href="<?= base_url("post/like/{$post['post_id']}"); ?>" title="Like this post"><span class="glyphicon glyphicon-thumbs-up"></span> Like</a>
                     <span> &middot; </span>
-                    <a href="<?= base_url("post/share/{$post['post_id']}"); ?>" role="button" title="Share this post">
+                </li>
+                <li>
+                    <a href="<?= base_url("post/comment/{$post['post_id']}"); ?>" title="Comment on this post"><span class="glyphicon glyphicon-comment"></span> Comment</a>
+                    <span> &middot; </span>
+                </li>
+                <li>
+                    <a href="<?= base_url("post/share/{$post['post_id']}"); ?>" title="Share this post">
                         <span class="glyphicon glyphicon-share"></span> Share
                     </a>
                 </li>
-                <?php } else { ?>
-                <!-- Show nothing for now -->
-                <?php } ?>
             </ul>
             <form action="<?= base_url("post/comment/{$post['post_id']}"); ?>" method="post" accept-charset="utf-8" role="form">
                 <input type="text" name="comment" placeholder="Write a comment..." class="fluid">

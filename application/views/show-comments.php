@@ -8,14 +8,7 @@ require_once("common/user-page-start.php");
     <article class="post">
         <header>
             <h4>
-            <?php
-            if ($post['shared']) {
-                print "<a href='" . base_url("user/index/{$post['author_id']}") . "'>{$post['author']}</a> shared <a href='" . base_url("user/index/{$post['source_id']}") . "'>{$post['source']}</a>'s post";
-            }
-            else {
-                print "<a href='" . base_url("user/index/{$post['author_id']}") . "'>{$post['author']}</a>";
-            }
-            ?>
+                <a href="<?= base_url("user/index/{$post['author_id']}"); ?>"><?= $post['author']; ?></a>
             </h4>
         </header>
         <p>
@@ -42,7 +35,7 @@ require_once("common/user-page-start.php");
     <h4>Comments</h4>
     <?php if (count($comments) == 0): ?>
     <div class="alert alert-info">
-        <p>No comments to show.</p>
+        <p><span class="glyphicon glyphicon-info-sign"></span> No comments to show.</p>
     </div>
     <?php else:
         if (isset($has_prev)) { ?>
@@ -65,7 +58,7 @@ require_once("common/user-page-start.php");
                 <p class="comment"><?= htmlspecialchars($comment['comment']); ?></p>
                 <footer>
                     <?php
-                    print "<small>&mdash; <span class='glyphicon glyphicon-time'></span> {$comment['timespan']} ago</small>";
+                    print "<small><span class='glyphicon glyphicon-time'></span> <i>{$comment['timespan']} ago</i></small>";
 
                     // Hide these two links from the commenter if she is the one currently
                     // viewing this page.

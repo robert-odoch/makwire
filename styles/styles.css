@@ -430,6 +430,7 @@ div.show-profile ul:last-child {
 }
 
 article.post header,
+article.image header,
 article#reply header,
 article#comment header {
     border-bottom: 1px solid #8FBC8F;
@@ -441,6 +442,12 @@ article.reply p {
     display: inline;
     margin-right: 10px;
 }
+article.image img {
+    margin: 5px auto 0 auto;
+    width: 100%;
+    height: 400px;
+    max-width: 100%;
+}
 article.comment footer,
 article.message footer,
 article.reply footer {
@@ -448,6 +455,7 @@ article.reply footer {
 }
 article header h4 {
     margin-top: 3px;
+    padding: 2px;
     margin-bottom: 0;
 }
 article header a {

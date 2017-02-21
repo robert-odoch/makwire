@@ -21,7 +21,11 @@ class Comment extends CI_Controller
 
     public function like($comment_id, $post_id, $offset)
     {
-        $this->comment_model->like($comment_id);
+        $like = $this->comment_model->like($comment_id);
+        if (!$like) {
+            $this->show_permission_denied("You don't have the proper permissions to like this comment.");
+            return;
+        }
 
         if ($offset == 0) {
             redirect(base_url("post/comments/{$post_id}"));
@@ -30,8 +34,25 @@ class Comment extends CI_Controller
         redirect(base_url("post/comments/{$post_id}/{$offset}"));
     }
 
+    private function show_permission_denied($error_message)
+    {
+        $data = $this->user_model->initialize_user();
+        $data['title'] = "Permission Denied!";
+        $this->load->view("common/header", $data);
+
+        $data['error'] = $error_message;
+        $this->load->view("show-permission-denied", $data);
+        $this->load->view("common/footer");
+    }
+
     public function reply($comment_id)
     {
+        $comment = $this->comment_model->get_comment($comment_id);
+        if (!$comment) {
+            $this->show_permission_denied("You don't have the proper permissions to reply to this comment.");
+            return;
+        }
+
         $data = $this->user_model->initialize_user();
         $data['title'] = "Reply to Comment";
         $this->load->view("common/header", $data);
@@ -46,7 +67,7 @@ class Comment extends CI_Controller
             }
         }
 
-        $data['comment'] = $this->comment_model->get_comment($comment_id);
+        $data['comment'] = $comment;
 
         $offset = 0;
         $limit = 10;
@@ -64,11 +85,17 @@ class Comment extends CI_Controller
 
     public function likes($comment_id, $offset=0)
     {
+        $comment = $this->comment_model->get_comment($comment_id);
+        if (!$comment) {
+            $this->show_permission_denied("You don't have the proper permissions to view this comment.");
+            return;
+        }
+
         $data = $this->user_model->initialize_user();
         $data['title'] = "People who liked this comment";
         $this->load->view("common/header", $data);
 
-        $data['comment'] = $this->comment_model->get_comment($comment_id);
+        $data['comment'] = $comment;
 
         // Maximum number of likes to display.
         $limit = 10;
@@ -94,11 +121,17 @@ class Comment extends CI_Controller
 
     public function replies($comment_id, $offset=0)
     {
+        $comment = $this->comment_model->get_comment($comment_id);
+        if (!$comment) {
+            $this->show_permission_denied("You don't have the proper permissions to view this comment.");
+            return;
+        }
+
         $data = $this->user_model->initialize_user();
         $data['title'] = "People who replied to this comment";
         $this->load->view("common/header", $data);
 
-        $data['comment'] = $this->comment_model->get_comment($comment_id);
+        $data['comment'] = $comment;
 
         // Maximum number of replies to display.
         $limit = 10;
