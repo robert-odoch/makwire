@@ -26,7 +26,7 @@ class Post extends CI_Controller
         $this->load->view("common/header", $data);
 
         $data['error'] = $error_message;
-        $this->load->view("permission-denied", $data);
+        $this->load->view("show-permission-denied", $data);
         $this->load->view("common/footer");
     }
 
@@ -83,13 +83,9 @@ class Post extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function share($post_id, $audience, $audience_id=null)
+    public function share($post_id)
     {
-        if ($audience_id === null) {
-            $audience_id = $_SESSION['user_id'];
-        }
-
-        $share = $this->post_model->share($post_id, $audience, $audience_id);
+        $share = $this->post_model->share($post_id);
         if (!$share) {
             $this->permission_denied("You don't have the proper permissions to share this post.");
             return;
@@ -134,7 +130,7 @@ class Post extends CI_Controller
         }
 
         $data['likes'] = $this->post_model->get_likes($post_id, $offset, $limit);
-        $this->load->view("show-likes", $data);
+        $this->load->view("show-post-likes", $data);
         $this->load->view("common/footer");
     }
 
@@ -175,7 +171,7 @@ class Post extends CI_Controller
 
         $data['num_prev'] = $offset;
         $data['comments'] = $this->post_model->get_comments($post_id, $offset, $limit);
-        $this->load->view("show-comments", $data);
+        $this->load->view("show-post-comments", $data);
         $this->load->view("common/footer");
     }
 
@@ -215,7 +211,7 @@ class Post extends CI_Controller
         }
 
         $data['shares'] = $this->post_model->get_shares($post_id, $offset, $limit);
-        $this->load->view("show-shares", $data);
+        $this->load->view("show-post-shares", $data);
         $this->load->view("common/footer");
     }
 }

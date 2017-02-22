@@ -64,6 +64,15 @@ class Reply_model extends CI_Model
 
     private function has_liked($reply_id)
     {
+        // Check whether this reply belongs to the current user.
+        $q = sprintf("SELECT commenter_id FROM comments WHERE comment_id = %d LIMIT 1",
+                     $reply_id);
+        $query = $this->run_query($q);
+        if ($query->row_array()['commenter_id'] == $_SESSION['user_id']) {
+            return TRUE;
+        }
+
+        // Check whether the user has already liked the reply.
         $q = sprintf("SELECT like_id FROM likes " .
                      "WHERE (source_id=%d AND source_type='reply' AND liker_id=%d) " .
                      "LIMIT 1",
@@ -123,6 +132,8 @@ class Reply_model extends CI_Model
                      "VALUES (%d, %d, %d, 'reply', 'like')",
                      $_SESSION['user_id'], $parent_id, $reply_id);
         $this->run_query($q);
+
+        return TRUE;
     }
 
     public function get_num_likes($reply_id)
@@ -138,14 +149,13 @@ class Reply_model extends CI_Model
                      "LIMIT %d, %d",
                      $reply_id, $offset, $limit);
         $query = $this->run_query($q);
-        $results = $query->result_array();
-        $likes = array();
-        foreach ($results as $like) {
+
+        $likes = $query->result_array();
+        foreach ($results as &$like) {
             // Get the name of the liker.
             $like['liker'] = $this->user_model->get_name($like['liker_id']);
-
-            array_push($likes, $like);
         }
+        unset($like);
 
         return $likes;
     }

@@ -80,7 +80,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             </li>
                             <li><a href="<?php echo base_url('logout'); ?>"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
                             <?php else: ?>
-                            <li><a href="<?php echo base_url('login'); ?>"><span class="glyphicon glyphicon-log-out"></span> Log In</a></li>
+                            <li><a href="<?php echo base_url('login'); ?>"><span class="glyphicon glyphicon-log-in"></span> Log In</a></li>
                             <?php endif; ?>
                         </ul>
                     </div>

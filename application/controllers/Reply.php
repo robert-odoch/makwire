@@ -26,7 +26,7 @@ class Reply extends CI_Controller
         $this->load->view("common/header", $data);
 
         $data['error'] = $error_message;
-        $this->load->view("permission-denied", $data);
+        $this->load->view("show-permission-denied", $data);
         $this->load->view("common/footer");
     }
 

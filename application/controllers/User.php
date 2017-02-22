@@ -95,7 +95,7 @@ class User extends CI_Controller
     {
         $is_visitor = ($_SESSION['user_id'] === $user_id) ? FALSE : TRUE;
         if ($is_visitor && !$this->user_model->are_friends($user_id)) {
-            $this->show_permission_denied("You don't have the proper permissions to view this user's timeline.");
+            $this->profile($user_id);
             return;
         }
 

@@ -29,7 +29,7 @@ class Comment_model extends CI_Model
 
     private function user_can_access_comment($comment_id)
     {
-        // A user must be a friend to the persion who posted what was commented upon.
+        // A user must be a friend to the person who posted what was commented upon.
         $comment_q = sprintf("SELECT source_id, source_type FROM comments WHERE (comment_id=%d)",
                      $comment_id);
         $query = $this->run_query($comment_q);
@@ -60,6 +60,15 @@ class Comment_model extends CI_Model
 
     private function has_liked($comment_id)
     {
+        // Check whether this comment is from the user liking the comment.
+        $q = sprintf("SELECT commenter_id FROM comments WHERE comment_id = %d LIMIT 1",
+                     $comment_id);
+        $query = $this->run_query($q);
+        if ($query->row_array()['commenter_id'] == $_SESSION['user_id']) {
+            return TRUE;
+        }
+
+        // Check whether user has liked to comment already.
         $q = sprintf("SELECT like_id FROM likes " .
                      "WHERE (source_id=%d AND source_type='comment' AND liker_id=%d) " .
                      "LIMIT 1",
@@ -112,16 +121,14 @@ class Comment_model extends CI_Model
                      "LIMIT %d, %d",
                      $comment_id, $offset, $limit);
         $query = $this->run_query($q);
-        $results = $query->result_array();
 
-        $likes = array();
-        foreach ($results as $like) {
+        $likes = $query->result_array();
+        foreach ($likes as &$like) {
             // Get the name of the liker.
             $like['liker'] = $this->user_model->get_name($like['liker_id']);
             $like['profile_pic_path'] = $this->user_model->get_profile_picture($like['liker_id']);
-
-            array_push($likes, $like);
         }
+        unset($like);
 
         return $likes;
     }
@@ -147,7 +154,6 @@ class Comment_model extends CI_Model
         foreach ($results as $r) {
             // Get the detailed reply.
             $reply = $this->reply_model->get_reply($r['comment_id']);
-
             array_push($replies, $reply);
         }
 
@@ -180,6 +186,8 @@ class Comment_model extends CI_Model
                      "VALUES (%d, %d, %d, 'comment', 'like')",
                      $_SESSION['user_id'], $subject_id, $comment_id);
         $this->run_query($q);
+
+        return TRUE;
     }
 
     public function reply($comment_id, $reply)
