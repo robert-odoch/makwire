@@ -64,7 +64,7 @@ class Post_model extends CI_Model
         $post = $query->row_array();
 
         // Get the name of the author.
-        $post['author'] = $this->user_model->get_name($post['author_id']);
+        $post['author'] = $this->user_model->get_name($post['user_id']);
 
         // Get the number of likes.
         $post['num_likes'] = $this->get_num_likes($post_id);
@@ -85,10 +85,10 @@ class Post_model extends CI_Model
     private function has_liked($post_id)
     {
         // Check whether this post belongs to the current user.
-        $q = sprintf("SELECT author_id FROM posts WHERE post_id = %d",
+        $q = sprintf("SELECT user_id FROM posts WHERE post_id = %d",
                      $post_id);
         $query = $this->run_query($q);
-        if ($query->row_array()['author_id'] == $_SESSION['user_id']) {
+        if ($query->row_array()['user_id'] == $_SESSION['user_id']) {
             return TRUE;
         }
 
@@ -103,10 +103,10 @@ class Post_model extends CI_Model
     private function has_shared($post_id)
     {
         // Check whether this post belongs to the current user.
-        $q = sprintf("SELECT author_id FROM posts WHERE post_id = %d LIMIT 1",
+        $q = sprintf("SELECT user_id FROM posts WHERE post_id = %d LIMIT 1",
                      $post_id);
         $query = $this->run_query($q);
-        if ($query->row_array()['author_id'] == $_SESSION['user_id']) {
+        if ($query->row_array()['user_id'] == $_SESSION['user_id']) {
             return TRUE;
         }
 
@@ -121,7 +121,7 @@ class Post_model extends CI_Model
     private function user_can_access_post($post_id)
     {
         // Get the author of this post.
-        $q = sprintf("SELECT author_id FROM posts WHERE post_id=%d",
+        $q = sprintf("SELECT user_id FROM posts WHERE post_id=%d",
                      $post_id);
         $query = $this->run_query($q);
         if ($query->num_rows() == 0) {
@@ -129,8 +129,8 @@ class Post_model extends CI_Model
             return FALSE;
         }
 
-        $author_id = $query->row()->author_id;
-        return $this->user_model->are_friends($author_id);
+        $user_id = $query->row()->user_id;
+        return $this->user_model->are_friends($user_id);
     }
 
     public function get_num_likes($post_id)
@@ -158,7 +158,7 @@ class Post_model extends CI_Model
 
     public function post($post, $audience_id)
     {
-        $q = sprintf("INSERT INTO posts (audience_id, post, author_id) VALUES (%d, %s, %d)",
+        $q = sprintf("INSERT INTO posts (audience_id, post, user_id) VALUES (%d, %s, %d)",
                      $audience_id, $this->db->escape($post), $_SESSION['user_id']);
         $query = $this->run_query($q);
         if ($query) {
@@ -184,11 +184,11 @@ class Post_model extends CI_Model
         $this->run_query($q);
 
         // Get the id of the user who posted.
-        $q = sprintf("SELECT author_id FROM posts WHERE post_id=%d LIMIT 1",
+        $q = sprintf("SELECT user_id FROM posts WHERE post_id=%d LIMIT 1",
                      $post_id);
         $query = $this->run_query($q);
 
-        $subject_id = $query->row()->author_id;
+        $subject_id = $query->row()->user_id;
 
         // Dispatch an activity.
         $q = sprintf("INSERT INTO activities (actor_id, subject_id, source_id, source_type, activity) " .
@@ -212,11 +212,11 @@ class Post_model extends CI_Model
         $this->run_query($q);
 
         // Get the parent_id.
-        $q = sprintf("SELECT author_id FROM posts WHERE post_id=%d LIMIT 1",
+        $q = sprintf("SELECT user_id FROM posts WHERE post_id=%d LIMIT 1",
                      $post_id);
         $query = $this->run_query($q);
 
-        $subject_id = $query->row()->author_id;
+        $subject_id = $query->row()->user_id;
 
         // Dispatch an activity.
         $q = sprintf("INSERT INTO activities (actor_id, subject_id, source_id, source_type, activity) " .
@@ -234,7 +234,7 @@ class Post_model extends CI_Model
             return TRUE;
         }
 
-        $post_q = sprintf("SELECT author_id, audience FROM posts WHERE post_id=%d LIMIT 1",
+        $post_q = sprintf("SELECT user_id, audience FROM posts WHERE post_id=%d LIMIT 1",
                             $post_id);
         $post_result = $this->run_query($post_q)->row_array();
         if ($post_result['audience'] == 'group') {
@@ -251,7 +251,7 @@ class Post_model extends CI_Model
         // Dispatch an activity.
         $q = sprintf("INSERT INTO activities (actor_id, subject_id, source_id, source_type, activity) " .
                      "VALUES (%d, %d, %d, 'post', 'share')",
-                     $_SESSION['user_id'], $post_result['author_id'], $post_id);
+                     $_SESSION['user_id'], $post_result['user_id'], $post_id);
         $this->run_query($q);
 
         return TRUE;

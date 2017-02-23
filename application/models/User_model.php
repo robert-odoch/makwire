@@ -10,6 +10,28 @@ class User_model extends CI_Model
     }
 
     /*** Utility ***/
+    private function get_friends_ids_as_string()
+    {
+        // Get the ID's of all this user's friends.
+        $friends = $this->get_friend_ids();
+
+        if (count($friends) == 0) {
+            $friends_string = '';
+        }
+        elseif (count($friends) == 1) {
+            $friends_string = "{$friends[0]}";
+        }
+        else {
+            $friends_string = '';
+            for ($i = 0; $i < count($friends)-1; ++$i) {
+                $friends_string .= "{$friends[$i]}, ";
+            }
+            $friends_string .= "{$friends[$i]}";
+        }
+
+        return $friends_string;
+    }
+
     private function build_sorter($key)
     {
         return function ($a, $b) use ($key) {
@@ -139,55 +161,205 @@ class User_model extends CI_Model
         return in_array($user_id, $friends);
     }
 
-    public function get_num_posts($user_id)
+    public function get_num_posts_and_photos($user_id)
     {
-        $q = sprintf("SELECT post_id FROM posts " .
-                     "WHERE (audience='timeline') AND (author_id=%d)",
-                     $user_id);
-        return $this->run_query($q)->num_rows();
-    }
-
-    public function get_posts($user_id, $offset, $limit)
-    {
-        // Query to get ID of the shared posts.
-        $shared_posts_q = sprintf("SELECT subject_id, date_entered FROM shares WHERE (user_id = %d)",
-                                 $user_id);
-        $primary_posts_q = sprintf("SELECT post_id, date_entered FROM posts " .
-                                    "WHERE (author_id=%d)",
+        $num_user_posts_sql = sprintf("SELECT post_id FROM posts WHERE (user_id = %d)",
                                     $user_id);
-        $posts_q = sprintf("(%s) UNION (%s) ORDER BY date_entered DESC LIMIT %d, %d",
-                            $primary_posts_q, $shared_posts_q, $offset, $limit);
-        $query = $this->run_query($posts_q);
-        $results = $query->result_array();
+        $num_user_posts = $this->run_query($num_user_posts_sql)->num_rows();
 
-        $posts = array();
-        foreach ($results as $r) {
-            // Get the detailed post.
-            $post = $this->post_model->get_post($r['post_id']);
+        $num_user_photos_sql = sprintf("SELECT photo_id FROM user_photos WHERE (user_id = %d)",
+                                    $user_id);
+        $num_user_photos = $this->run_query($num_user_photos_sql)->num_rows();
 
-            if (!$post) {
-                // This post was shared by the user's friend but the user is
-                // not a friend to the original author of the post.
-                continue;
+        // Get posts and photos this user shared and are by friends to the user viewing
+        // the page..
+        $friends_string = $this->get_friends_ids_as_string();
+        if ($friends_string) {  // There are freinds.
+            $subject_ids_sql = sprintf("SELECT source_id FROM activities " .
+                                    "WHERE (actor_id = %d AND subject_id IN(%s) AND activity = 'share')",
+                                    $user_id, $friends_string);
+            $subject_ids_results = $this->run_query($subject_ids_sql)->result_array();
+
+            if (count($subject_ids_results) > 0) {
+                if (count($subject_ids_results) == 1) {
+                    $subject_ids = "{$subject_ids_results[0]['source_id']}";
+                }
+                else {
+                    $subject_ids = '';
+                    for ($i = 0; $i < count($subject_ids_results)-1; ++$i) {
+                        $subject_ids .= "{$subject_ids_results[$i]['source_id']}, ";
+                    }
+                    $subject_ids .= "{$subject_ids_results[$i]['source_id']}";
+                }
             }
-
-            // Check whether it's a shared post.
-            $post['shared'] = FALSE;
-            if ($post['author_id'] != $user_id) {
-                $post['shared'] = TRUE;
-                $post['sharer_id'] = $user_id;
-                $post['sharer'] = $this->user_model->get_name($user_id);
-            }
-
-            // Get only 540 characters from post if possible.
-            $short_post = $this->post_model->get_short_post($post['post'], 540);
-            $post['post'] = $short_post['body'];
-            $post['has_more'] = $short_post['has_more'];
-
-            array_push($posts, $post);
         }
 
-        return $posts;
+        $num_posts_and_photos = $num_user_posts + $num_user_photos;
+        if (isset($subject_ids)) {
+            $num_shared_posts_and_photos_sql = sprintf("SELECT sharer_id FROM shares " .
+                                                        "WHERE (user_id = %d AND subject_id IN(%s))",
+                                                        $user_id, $subject_ids);
+            $num_posts_and_photos += $this->run_query($num_shared_posts_and_photos_sql)->num_rows();
+        }
+
+        return $num_posts_and_photos;
+    }
+
+    public function get_posts_and_photos($user_id, $offset, $limit)
+    {
+        // Query to get date_entered for posts by this user.
+        $posts_dates_q = sprintf("SELECT post_id, date_entered FROM posts WHERE user_id = %d",
+                                 $user_id);
+
+        // Query to get date_entered for photos by this user.
+        $photos_date_q = sprintf("SELECT photo_id, date_entered FROM user_photos WHERE user_id = %d",
+                                 $user_id);
+
+        // Get posts and photos this user shared and are by friends to the user viewing
+        // the page..
+        $friends_string = $this->get_friends_ids_as_string();
+        if ($friends_string) {  // There are freinds.
+            $subject_ids_sql = sprintf("SELECT source_id FROM activities " .
+                                    "WHERE (actor_id = %d AND subject_id IN(%s) AND activity = 'share')",
+                                    $user_id, $friends_string);
+            $subject_ids_results = $this->run_query($subject_ids_sql)->result_array();
+
+            if (count($subject_ids_results) > 0) {
+                if (count($subject_ids_results) == 1) {
+                    $subject_ids = "{$subject_ids_results[0]['source_id']}";
+                }
+                else {
+                    $subject_ids = '';
+                    for ($i = 0; $i < count($subject_ids_results)-1; ++$i) {
+                        $subject_ids .= "{$subject_ids_results[$i]['source_id']}, ";
+                    }
+                    $subject_ids .= "{$subject_ids_results[$i]['source_id']}";
+                }
+
+                // Query to get date_entered for shares by this user.
+                $shares_date_q = sprintf("SELECT share_id, date_entered FROM shares " .
+                                         "WHERE (user_id = %d and subject_id IN(%s))",
+                                         $user_id, $subject_ids);
+
+            }
+        }
+
+        if (isset($shares_date_q)) {
+            $dates_q = sprintf("(%s) UNION (%s) UNION(%s) ORDER BY date_entered DESC LIMIT %d, %d",
+                                $posts_dates_q, $photos_date_q, $shares_date_q, $offset, $limit);
+        }
+        else {
+            $dates_q = sprintf("(%s) UNION (%s) ORDER BY date_entered DESC LIMIT %d, %d",
+                                $posts_dates_q, $photos_date_q, $offset, $limit);
+        }
+        $dates = $this->run_query($dates_q)->result_array();
+        if (count($dates) == 0) {
+            return array();
+        }
+
+        // Using this stop date, we can safely select from any table without using limits.
+        $stop_date = array_pop($dates)['date_entered'];
+
+        $user_posts_sql = sprintf("SELECT post_id, date_entered FROM posts " .
+                                    "WHERE (user_id = %d AND date_entered >= '%s') " .
+                                    "ORDER BY date_entered ASC LIMIT %d",
+                                    $user_id, $stop_date, $limit);
+        $user_posts_results = $this->run_query($user_posts_sql)->result_array();
+        foreach ($user_posts_results as &$r) {
+            $r['type'] = 'post';
+        }
+        unset($r);
+
+        $user_photos_sql = sprintf("SELECT photo_id, date_entered FROM user_photos " .
+                                    "WHERE (user_id = %d AND date_entered >= '%s') " .
+                                    "ORDER BY date_entered ASC LIMIT %d",
+                                    $user_id, $stop_date, $limit);
+        $user_photos_results = $this->run_query($user_photos_sql)->result_array();
+        foreach ($user_photos_results as &$r) {
+            $r['type'] = 'photo';
+        }
+        unset($r);
+
+        $shared_posts_and_photos_sql = sprintf("SELECT subject_id, subject_type, date_entered FROM shares " .
+                                    "WHERE (user_id = %d AND date_entered >= '%s') " .
+                                    "ORDER BY date_entered ASC LIMIT %d",
+                                    $user_id, $stop_date, $limit);
+        $shared_posts_and_photos_results = $this->run_query($shared_posts_and_photos_sql)->result_array();
+        foreach ($shared_posts_and_photos_results as &$r) {
+            if ($r['subject_type'] == 'post') {
+                $r['post_id'] = $r['subject_id'];
+                $r['type'] = 'post';
+            }
+            elseif ($r['subject_type'] == 'photo') {
+                $r['photo_id'] = $r['subject_id'];
+                $r['type'] = 'photo';
+            }
+        }
+        unset($r);
+
+        $posts_and_photos = array_merge($user_posts_results,
+                                        $user_photos_results,
+                                        $shared_posts_and_photos_results);
+        usort($posts_and_photos, $this->build_sorter('date_entered'));
+
+        // For posts and photos entered at the same time, they may be retrieved twice.
+        // This if helps in those scenarios.
+        if (count($posts_and_photos) > $limit) {
+            $posts_and_photos = array_slice($posts_and_photos, $offset, $limit);
+        }
+
+        foreach ($posts_and_photos as &$r) {
+            switch ($r['type']) {
+                case 'post':
+                    $r['post'] = $this->post_model->get_post($r['post_id']);
+
+                    // Get only 540 characters from post if possible.
+                    $short_post = $this->post_model->get_short_post($r['post']['post'], 540);
+                    $r['post']['post'] = $short_post['body'];
+                    $r['post']['has_more'] = $short_post['has_more'];
+                    break;
+                case 'photo':
+                    $r['photo'] = $this->photo_model->get_photo($r['photo_id']);
+
+                    // Check if it was used as a profile picture.
+                    $r['photo']['profile_pic'] = FALSE;
+                    $profile_pic_sql = sprintf("SELECT activity_id FROM activities " .
+                                                "WHERE (actor_id = %d AND activity = 'profile_pic_change' AND " .
+                                                "source_id=%d)", $user_id, $r['photo']['photo_id']);
+                    if ($this->run_query($profile_pic_sql)->num_rows() == 1) {
+                        $r['photo']['profile_pic'] = TRUE;
+
+                        // Get the gender of this user.
+                        $gender_sql = sprintf("SELECT gender FROM users WHERE (user_id = %d)",
+                                              $user_id);
+                        $r['photo']['user_gender'] = ($this->run_query($gender_sql)->row_array()['gender'] == 'M')? 'his': 'her';
+                    }
+                    break;
+                default:
+                    # do nothing.
+                    break;
+            }
+
+            // Remove unnecessary data fetched by preliminary queries.
+            unset($r[$r['type'] . '_id']);
+
+            // Check whether it's a shared post or photo and do some cleaning
+            // in the process.
+            $r[$r['type']]['shared'] = FALSE;
+            if ($r[$r['type']]['user_id'] != $user_id) {
+                // Remove unnecessary data fetched by preliminary queries.
+                unset($r['subject_id']);
+                unset($r['subject_type']);
+
+                $r[$r['type']]['shared'] = TRUE;
+                $r[$r['type']]['share_timespan'] = timespan(mysql_to_unix($r[$r['type']]['date_entered']), now(), 1);
+                $r[$r['type']]['sharer_id'] = $user_id;
+                $r[$r['type']]['sharer'] = $this->user_model->get_name($user_id);
+            }
+        }
+        unset($r);
+
+        return $posts_and_photos;
     }
 
     public function get_num_messages($filter=TRUE)

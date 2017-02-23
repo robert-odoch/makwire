@@ -34,43 +34,25 @@ if (!$is_visitor) {
     </div>
 <?php } // (!$is_visitor) ?>
 
-<?php if (empty($posts) && $is_visitor): ?>
+<?php if (empty($posts_and_photos) && $is_visitor): ?>
     <div class="box">
         <div class="alert alert-info">
             <p><span class="glyphicon glyphicon-info-sign"></span> No previous posts.</p>
         </div>
     </div>
     <?php else:
-        foreach($posts as $post): ?>
-            <div class="box">
-                <article class="post">
-                    <header>
-                        <h4>
-                        <?php
-                        if ($post['shared']) {
-                            print "<a href='" . base_url("user/index/{$post['sharer_id']}") . "'>{$post['sharer']}</a> shared <a href='" . base_url("user/index/{$post['author_id']}") . "'>{$post['author']}</a>'s post";
-                        }
-                        else {
-                            print "<a href='" . base_url("user/index/{$post['author_id']}") . "'>{$post['author']}</a>";
-                        }
-                        ?>
-                        <small class="time"><span class="glyphicon glyphicon-time"></span> <?= $post['timespan']; ?> ago</small>
-                        </h4>
-                    </header>
-                    <p class="post">
-                        <?php
-                        print(htmlspecialchars($post['post']));
-                        if ($post['has_more']) {
-                            print "<a href='" . base_url("user/post/{$post['post_id']}") . "' class='more'>view more</a>";
-                        }
-                        ?>
-                    </p>
-                    <?php
-                    $object = 'post';
-                    require("common/post-or-photo-footer.php");
-                    ?>
-                </article>
-            </div><!-- box -->
+        foreach($posts_and_photos as $pp): ?>
+        <div class="box">
+            <?php
+            if ($pp['type'] == 'post') {
+                $post = $pp['post'];
+                require("common/timeline-post.php");
+            } elseif ($pp['type'] == 'photo') {
+                $photo = $pp['photo'];
+                require("common/timeline-photo.php");
+            }
+            ?>
+        </div><!-- box -->
         <?php endforeach; ?>
     <?php if ($has_next): ?>
     <div class="box more">

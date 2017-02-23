@@ -454,7 +454,7 @@ ul.notifications li a {
 article.photo img {
     margin: 5px auto 0 auto;
     width: 100%;
-    height: 400px;
+    height: 250px;
     max-width: 100%;
 }
 article.comment footer,

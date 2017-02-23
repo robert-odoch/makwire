@@ -41,20 +41,20 @@ class Comment_model extends CI_Model
         $comment_result = $query->row_array();
         switch ($comment_result['source_type']) {
         case 'photo':
-            $author_q = sprintf("SELECT user_id AS author_id FROM user_photos WHERE (photo_id=%d)",
+            $author_q = sprintf("SELECT user_id AS user_id FROM user_photos WHERE (photo_id=%d)",
                          $comment_result['source_id']);
             break;
         case 'post':
-            $author_q = sprintf("SELECT author_id FROM posts WHERE (post_id=%d)",
+            $author_q = sprintf("SELECT user_id FROM posts WHERE (post_id=%d)",
                          $comment_result['source_id']);
             break;
         default:
             # Do nothing.
             break;
         }
-        $author_id = $this->run_query($author_q)->row_array()['author_id'];
+        $user_id = $this->run_query($author_q)->row_array()['user_id'];
 
-        return $this->user_model->are_friends($author_id);
+        return $this->user_model->are_friends($user_id);
     }
     /*** End Utility ***/
 

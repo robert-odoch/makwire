@@ -8,7 +8,7 @@ class User extends CI_Controller
         parent::__construct();
 
         session_start();
-        if ( ! isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
+        if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
             redirect(base_url('login'));
         }
 
@@ -122,13 +122,14 @@ class User extends CI_Controller
 
         $limit = 10;
         $data['has_next'] = FALSE;
-        $num_posts = $this->user_model->get_num_posts($user_id);
-        if (($num_posts - $offset) > $limit) {
+        $num_posts_and_photos = $this->user_model->get_num_posts_and_photos($user_id);
+        if (($num_posts_and_photos - $offset) > $limit) {
             $data['has_next'] = TRUE;
             $data['next_offset'] = ($offset + $limit);
         }
 
-        $data['posts'] = $this->user_model->get_posts($user_id, $offset, $limit);
+        $data['posts_and_photos'] = $this->user_model->get_posts_and_photos($user_id, $offset, $limit);
+        $data['user_id'] = $user_id;
         $this->load->view('show-user', $data);
         $this->load->view('common/footer');
     }

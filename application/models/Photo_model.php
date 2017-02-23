@@ -212,12 +212,9 @@ class Photo_model extends CI_Model
             return TRUE;
         }
 
-        $photo_q = sprintf("SELECT user_id, audience FROM user_photos WHERE photo_id=%d",
+        $photo_q = sprintf("SELECT user_id FROM user_photos WHERE photo_id=%d",
                             $photo_id);
         $photo_result = $this->run_query($photo_q)->row_array();
-        if ($photo_result['audience'] == 'group') {
-            return FALSE;  // Group photos can't be shared outside the group.
-        }
 
         // Insert it into the shares table.
         $q = sprintf("INSERT INTO shares (subject_id, user_id, subject_type) " .

@@ -6,7 +6,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <article class="<?= $object; ?>">
         <header>
             <h4>
-                <a href="<?= base_url("user/index/{$$object['author_id']}"); ?>"><?= $$object['author']; ?></a>
+                <a href="<?= base_url("user/index/{$$object['user_id']}"); ?>"><?= $$object['author']; ?></a>
                 <small class="time"><span class="glyphicon glyphicon-time"></span> <?= $$object['timespan']; ?> ago</small>
             </h4>
         </header>
@@ -15,7 +15,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <?php
             print htmlspecialchars($post['post']);
             if ($post['has_more']) {
-                print "<a href='" . base_url("user/post/{$post['author_id']}/{$post['post_id']}") . "' class='more'>view more</a>";
+                print "<a href='" . base_url("user/post/{$post['user_id']}/{$post['post_id']}") . "' class='more'>view more</a>";
             }
             ?>
         </p>
