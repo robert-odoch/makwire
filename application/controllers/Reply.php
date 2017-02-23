@@ -56,8 +56,6 @@ class Reply extends CI_Controller
         $data['title'] = "People who liked this reply";
         $this->load->view("common/header", $data);
 
-        $data['reply'] = $reply;
-
         // Maximum number of likes to display.
         $limit = 10;
 
@@ -70,13 +68,17 @@ class Reply extends CI_Controller
         }
 
         $data['has_next'] = FALSE;
-        if (($data['reply']['num_likes'] - $offset) > $limit) {
+        if (($reply['num_likes'] - $offset) > $limit) {
             $data['has_next'] = TRUE;
             $data['next_offset'] = ($offset + $limit);
         }
 
+        $data['num_prev'] = $offset;
         $data['likes'] = $this->reply_model->get_likes($reply_id, $offset, $limit);
-        $this->load->view("show-reply-likes", $data);
+
+        $data['object'] = 'reply';
+        $data['reply'] = $reply;
+        $this->load->view("show-likes", $data);
         $this->load->view("common/footer");
     }
 }

@@ -1,0 +1,70 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+?>
+
+<div class="box">
+    <h4>Comments</h4>
+    <?php if (count($comments) == 0) { ?>
+    <div class="alert alert-info">
+        <p><span class="glyphicon glyphicon-info-sign"></span> No comments to show.</p>
+    </div>
+    <?php } else {
+        if (isset($has_prev)) {
+            if ($object == 'comment') {
+                print("<a href='" . base_url("{$object}/replies/{$$object[$object . '_id']}/{$prev_offset}") . "'>" .
+                      "View previous comments.</a>");
+            }
+            else { // post or photo.
+                print("<a href='" . base_url("{$object}/comments/{$$object[$object . '_id']}/{$prev_offset}") . "'>" .
+                      "View previous comments.</a>");
+            }
+        }
+    ?>
+    <ul class="comments">
+        <?php
+        $i = $num_prev;
+        foreach($comments as $comment):
+        ?>
+        <li>
+            <article class="comment">
+                <header>
+                    <a href="<?= base_url("user/index/{$comment['commenter_id']}"); ?>"><strong><?= $comment['commenter']; ?></strong></a>
+                </header>
+                <p class="comment"><?= htmlspecialchars($comment['comment']); ?></p>
+                <footer>
+                    <small class="time"><span class="glyphicon glyphicon-time"></span> <?= $comment['timespan']; ?> ago</small>
+                    <span> &middot; </span>
+                    <a href="<?= base_url("comment/like/{$comment['comment_id']}/{$$object[$object . '_id']}/{$i}"); ?>">Like</a>
+                    <?php
+                    if ($object != 'comment') {
+                        print('<span> &middot; </span>' .
+                                '<a href="' . base_url("comment/reply/{$comment['comment_id']}") . '">Reply</a>');
+                    }
+                    if ($comment['num_likes'] > 0) {
+                        print "<span> &middot; </span>" .
+                              "<a href='" . base_url("comment/likes/{$comment['comment_id']}") . "'>{$comment['num_likes']}";
+                        print ($comment['num_likes'] == 1) ? " like" : " likes";
+                        print "</a>";
+                    }
+                    if ($object != 'comment' && $comment['num_replies'] > 0) {
+                        print "<span> &middot; </span>" .
+                              "<a href='" . base_url("comment/replies/{$comment['comment_id']}") . "'>{$comment['num_replies']}";
+                        print ($comment['num_replies'] == 1) ? " reply" : " replies";
+                        print "</a>";
+                    }
+                    ?>
+                </footer>
+            </article>
+        </li>
+        <?php
+        ++$i;
+        endforeach;
+        ?>
+    </ul>
+    <?php } // (count($comments) == 0) ?>
+</div><!-- box -->
+<?php if ($has_next) { ?>
+<div class="box more">
+    <a href="<?= base_url("{$object}/comments/{$$object[$object . '_id']}/{$next_offset}"); ?>">View more comments</a>
+</div>
+<?php } ?>

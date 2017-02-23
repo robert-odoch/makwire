@@ -12,11 +12,9 @@ require_once('common/user-page-start.php');
     </div>
     <?php else:
         if (isset($has_prev)) { ?>
-            <li>
-                <a href="<?= base_url("user/messages/{$prev_offset}"); ?>">
-                    View previous messages.
-                </a>
-            </li>
+            <a href="<?= base_url("user/messages/{$prev_offset}"); ?>">
+                View previous messages.
+            </a>
         <?php } ?>
     <ul class="messages">
         <?php foreach ($messages as $m): ?>
@@ -27,7 +25,7 @@ require_once('common/user-page-start.php');
                 </header>
                 <p><?= htmlspecialchars($m['message']); ?></p>
                 <footer>
-                    <small><span class="glyphicon glyphicon-time"></span> <i><?= $m['timespan']; ?> ago</i></small>
+                    <small class="time"><span class="glyphicon glyphicon-time"></span> <?= $m['timespan']; ?> ago</small>
                     <span> &middot; </span><a href="<?= base_url("user/send_message/{$m['sender_id']}"); ?>" title="Reply">Reply</a>
                 </footer>
             </article>

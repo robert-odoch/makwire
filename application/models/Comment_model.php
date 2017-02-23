@@ -41,7 +41,7 @@ class Comment_model extends CI_Model
         $comment_result = $query->row_array();
         switch ($comment_result['source_type']) {
         case 'photo':
-            $author_q = sprintf("SELECT user_id AS author_id FROM user_images WHERE (image_id=%d)",
+            $author_q = sprintf("SELECT user_id AS author_id FROM user_photos WHERE (photo_id=%d)",
                          $comment_result['source_id']);
             break;
         case 'post':

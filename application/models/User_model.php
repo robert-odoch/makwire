@@ -116,11 +116,11 @@ class User_model extends CI_Model
             $profile_pic_path = base_url("images/missing_user.png");
         }
         else {
-            $image_id = $query->row_array()['profile_pic_id'];
+            $photo_id = $query->row_array()['profile_pic_id'];
             // Get the full path of the profile picture.
-            $q = sprintf("SELECT full_path FROM user_images " .
-                         "WHERE (user_id=%d AND image_id=%d)",
-                         $user_id, $image_id);
+            $q = sprintf("SELECT full_path FROM user_photos " .
+                         "WHERE (user_id=%d AND photo_id=%d)",
+                         $user_id, $photo_id);
             $query = $this->run_query($q);
             $profile_pic_path = $query->row_array()['full_path'];
             $profile_pic_path = str_replace($_SERVER['DOCUMENT_ROOT'], '', $profile_pic_path);
@@ -740,7 +740,7 @@ class User_model extends CI_Model
                 $notif['subject_gender'] = ($gender_query->row_array()['gender'] == 'M')? 'his': 'her';
             }
 
-            // If it is a like, or reply to a comment,
+            // If it is a like, or reply to a comment/reply,
             if (in_array($notif['activity'], array('like','reply')) &&
                 in_array($notif['source_type'], array('comment','reply'))) {
                 $q = sprintf("SELECT comment FROM comments WHERE (comment_id=%d) LIMIT 1",

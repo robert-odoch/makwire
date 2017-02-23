@@ -64,22 +64,14 @@ class Comment extends CI_Controller
             else {
                 $reply = $this->input->post("reply");
                 $this->comment_model->reply($comment_id, $reply);
+                $this->replies($comment_id);
+                return;
             }
         }
 
         $data['comment'] = $comment;
-
-        $offset = 0;
-        $limit = 10;
-        $data['has_next'] = FALSE;
-        if (($data['comment']['num_replies'] - $offset) > $limit) {
-            $data['has_next'] = TRUE;
-            $data['next_offset'] = ($offset + $limit);
-        }
-
-        $data['num_prev'] = $offset;
-        $data['replies'] = $this->comment_model->get_replies($comment_id, $offset, $limit);
-        $this->load->view("reply-comment", $data);
+        $data['object'] = 'comment';
+        $this->load->view("comment", $data);
         $this->load->view("common/footer");
     }
 
@@ -95,8 +87,6 @@ class Comment extends CI_Controller
         $data['title'] = "People who liked this comment";
         $this->load->view("common/header", $data);
 
-        $data['comment'] = $comment;
-
         // Maximum number of likes to display.
         $limit = 10;
 
@@ -109,13 +99,17 @@ class Comment extends CI_Controller
         }
 
         $data['has_next'] = FALSE;
-        if (($data['comment']['num_likes'] - $offset) > $limit) {
+        if (($comment['num_likes'] - $offset) > $limit) {
             $data['has_next'] = TRUE;
             $data['next_offset'] = ($offset + $limit);
         }
 
+        $data['num_prev'] = $offset;
         $data['likes'] = $this->comment_model->get_likes($comment_id, $offset, $limit);
-        $this->load->view("show-comment-likes", $data);
+
+        $data['object'] = 'comment';
+        $data['comment'] = $comment;
+        $this->load->view("show-likes", $data);
         $this->load->view("common/footer");
     }
 
@@ -131,8 +125,6 @@ class Comment extends CI_Controller
         $data['title'] = "People who replied to this comment";
         $this->load->view("common/header", $data);
 
-        $data['comment'] = $comment;
-
         // Maximum number of replies to display.
         $limit = 10;
 
@@ -145,14 +137,17 @@ class Comment extends CI_Controller
         }
 
         $data['has_next'] = FALSE;
-        if (($data['comment']['num_replies'] - $offset) > $limit) {
+        if (($comment['num_replies'] - $offset) > $limit) {
             $data['has_next'] = TRUE;
             $data['next_offset'] = ($offset + $limit);
         }
 
         $data['num_prev'] = $offset;
-        $data['replies'] = $this->comment_model->get_replies($comment_id, $offset, $limit);
-        $this->load->view("show-comment-replies", $data);
+        $data['comments'] = $this->comment_model->get_replies($comment_id, $offset, $limit);
+
+        $data['object'] = 'comment';
+        $data['comment'] = $comment;
+        $this->load->view("show-comments", $data);
         $this->load->view("common/footer");
     }
 }

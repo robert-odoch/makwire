@@ -12,7 +12,9 @@ switch ($object) {
         require_once("common/comment-or-reply.php");
         break;
     default:
-        # do nothing.
+        # Do nothing.
         break;
 }
+
+require_once("common/comments.php");
 ?>

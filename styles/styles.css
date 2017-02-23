@@ -291,13 +291,7 @@ div.suggestions ul.suggested-users li span a:first-child {
     display: block;
     margin-bottom: 5px;
 }
-ul.notifications strong.object {
-    color: #2E8B57;
-}
-ul.notifications li a {
-    display: block;
-    color: #000;
-}
+
 ul.about li:last-child,
 ul.likes li:last-child,
 ul.groups li:last-child,
@@ -316,9 +310,16 @@ div.show-profile ul:last-child li:last-child {
     border-bottom: none;
     margin-bottom: 0;
 }
-small {
+small.time {
     display: inline-block;
+    font-style: oblique;
 }
+article header h4 small.time {
+    padding: 3px 0;
+    display: block;
+    font-style: normal;
+}
+
 div.suggestions h4,
 div.col-small h4 {
     padding-bottom: 13px;
@@ -365,7 +366,7 @@ nav#user-nav-mobile {
     background-color: #fff;
     margin-bottom: 5px;
     border-radius: 3px;
-    padding: 5px;
+    padding: 5px 0;
 }
 nav#user-nav-mobile ul li {
     display: inline;
@@ -430,19 +431,27 @@ div.show-profile ul:last-child {
 }
 
 article.post header,
-article.image header,
-article#reply header,
-article#comment header {
+article.photo header {
     border-bottom: 1px solid #8FBC8F;
 }
 
 article.comment p,
 article.message p,
-article.reply p {
+article.reply p,
+ul.notifications li a {
     display: inline;
     margin-right: 10px;
 }
-article.image img {
+
+ul.notifications strong.object {
+    color: #2E8B57;
+}
+ul.notifications li a {
+    color: #000;
+    text-decoration: none;
+}
+
+article.photo img {
     margin: 5px auto 0 auto;
     width: 100%;
     height: 400px;
@@ -455,7 +464,7 @@ article.reply footer {
 }
 article header h4 {
     margin-top: 3px;
-    padding: 2px;
+    padding: 2px 0;
     margin-bottom: 0;
 }
 article header a {

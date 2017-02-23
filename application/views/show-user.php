@@ -54,6 +54,7 @@ if (!$is_visitor) {
                             print "<a href='" . base_url("user/index/{$post['author_id']}") . "'>{$post['author']}</a>";
                         }
                         ?>
+                        <small class="time"><span class="glyphicon glyphicon-time"></span> <?= $post['timespan']; ?> ago</small>
                         </h4>
                     </header>
                     <p class="post">
@@ -64,44 +65,10 @@ if (!$is_visitor) {
                         }
                         ?>
                     </p>
-                    <footer>
-                        <small class="time"><span class="glyphicon glyphicon-time"></span> <?php print $post['timespan']; ?> ago</small>
-                        <?php
-                        if ($post['num_likes'] > 0) {
-                            print "<span> &middot; </span><a href='" . base_url("post/likes/{$post['post_id']}") . "'>{$post['num_likes']}";
-                            print ($post['num_likes'] == 1) ? ' like' : ' likes';
-                            print '</a>';
-                        }
-                        if ($post['num_comments'] > 0) {
-                            print '<span> &middot; </span><a href="' . base_url('post/comments/' . $post['post_id']) . '">' . $post['num_comments'];
-                            print ($post['num_comments'] == 1) ? ' comment' : ' comments';
-                            print '</a>';
-                        }
-                        if ($post['num_shares'] > 0) {
-                            print '<span> &middot; </span><a href="' . base_url('post/shares/' . $post['post_id']) . '">' . $post['num_shares'];
-                            print ($post['num_shares'] == 1) ? ' share' : ' shares';
-                            print '</a>';
-                        }
-                        ?>
-                        <ul>
-                            <li>
-                                <a href="<?= base_url("post/like/{$post['post_id']}"); ?>" title="Like this post"><span class="glyphicon glyphicon-thumbs-up"></span> Like</a>
-                                <span> &middot; </span>
-                            </li>
-                            <li>
-                                <a href="<?= base_url("post/comment/{$post['post_id']}"); ?>" title="Comment on this post"><span class="glyphicon glyphicon-comment"></span> Comment</a>
-                                <span> &middot; </span>
-                            </li>
-                            <li>
-                                <a href="<?= base_url("post/share/{$post['post_id']}"); ?>" title="Share this post">
-                                    <span class="glyphicon glyphicon-share"></span> Share
-                                </a>
-                            </li>
-                        </ul>
-                        <form action="<?= base_url("post/comment/{$post['post_id']}"); ?>" method="post" accept-charset="utf-8" role="form">
-                            <input type="text" name="comment" placeholder="Write a comment..." class="fluid">
-                        </form>
-                    </footer>
+                    <?php
+                    $object = 'post';
+                    require("common/post-or-photo-footer.php");
+                    ?>
                 </article>
             </div><!-- box -->
         <?php endforeach; ?>

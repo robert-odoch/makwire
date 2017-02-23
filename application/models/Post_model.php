@@ -75,9 +75,6 @@ class Post_model extends CI_Model
         // Get the number of shares.
         $post['num_shares'] = $this->get_num_shares($post_id);
 
-        // Has the user liked this post?
-        $post['liked'] = $this->has_liked($post_id);
-
         // Get the timespan.
         $unix_timestamp = mysql_to_unix($post['date_entered']);
         $post['timespan'] = timespan($unix_timestamp, now(), 1);
@@ -88,7 +85,7 @@ class Post_model extends CI_Model
     private function has_liked($post_id)
     {
         // Check whether this post belongs to the current user.
-        $q = sprintf("SELECT author_id FROM posts WHERE post_id = %d LIMIT 1",
+        $q = sprintf("SELECT author_id FROM posts WHERE post_id = %d",
                      $post_id);
         $query = $this->run_query($q);
         if ($query->row_array()['author_id'] == $_SESSION['user_id']) {
@@ -241,7 +238,7 @@ class Post_model extends CI_Model
                             $post_id);
         $post_result = $this->run_query($post_q)->row_array();
         if ($post_result['audience'] == 'group') {
-            return FALSE;  // Group posts can't be shared.
+            return FALSE;  // Group posts can't be shared outside the group.
         }
 
         // Insert it into the shares table.
@@ -307,7 +304,7 @@ class Post_model extends CI_Model
         $query = $this->run_query($q);
 
         $shares = $query->result_array();
-        foreach ($results as &$share) {
+        foreach ($shares as &$share) {
             // Get the name of the user who shared.
             $share['sharer'] = $this->user_model->get_name($share['sharer_id']);
             $share['profile_pic_path'] = $this->user_model->get_profile_picture($share['sharer_id']);

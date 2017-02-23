@@ -92,13 +92,10 @@ class Reply_model extends CI_Model
         $reply = $query->row_array();
 
         // Get the name of the replier.
-        $reply['replier'] = $this->user_model->get_name($reply['commenter_id']);
+        $reply['commenter'] = $this->user_model->get_name($reply['commenter_id']);
 
         // Add the timespan.
         $reply['timespan'] = timespan(mysql_to_unix($reply['date_entered']), now(), 1);
-
-        // Has the user liked this reply?
-        $reply['liked'] = $this->has_liked($reply_id);
 
         // Add the number of likes.
         $reply['num_likes'] = $this->get_num_likes($reply_id);
@@ -151,7 +148,9 @@ class Reply_model extends CI_Model
         $query = $this->run_query($q);
 
         $likes = $query->result_array();
-        foreach ($results as &$like) {
+        foreach ($likes as &$like) {
+            $like['profile_pic_path'] = $this->user_model->get_profile_picture($like['liker_id']);
+            
             // Get the name of the liker.
             $like['liker'] = $this->user_model->get_name($like['liker_id']);
         }

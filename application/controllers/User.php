@@ -246,9 +246,10 @@ class User extends CI_Controller
         }
 
         $data = $this->user_model->initialize_user();
-        $data['post'] = $post;
         $data['title'] = "{$data['post']['author']}'s Post";
         $this->load->view('common/header', $data);
+
+        $data['post'] = $post;
 
         $limit = 10;
         $data['has_next'] = FALSE;
@@ -259,7 +260,9 @@ class User extends CI_Controller
 
         $data['num_prev'] = $offset;
         $data['comments'] = $this->post_model->get_comments($post_id, $offset, $limit);
-        $this->load->view('show-post', $data);
+
+        $data['object'] = 'post';
+        $this->load->view('show-post-or-photo', $data);
         $this->load->view('common/footer');
     }
 
@@ -311,7 +314,7 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function photo($photo_id)
+    public function photo($photo_id, $offset=0)
     {
         $photo = $this->photo_model->get_photo($photo_id);
         if (!$photo) {
@@ -324,7 +327,19 @@ class User extends CI_Controller
         $this->load->view("common/header", $data);
 
         $data['photo'] = $photo;
-        $this->load->view("show-photo", $data);
+
+        $limit = 10;
+        $data['has_next'] = FALSE;
+        if (($data['photo']['num_comments'] - $offset) > $limit) {
+            $data['has_next'] = TRUE;
+            $data['next_offset'] = ($offset + $limit);
+        }
+
+        $data['num_prev'] = $offset;
+        $data['comments'] = $this->photo_model->get_comments($photo_id, $offset, $limit);
+
+        $data['object'] = 'photo';
+        $this->load->view("show-post-or-photo", $data);
         $this->load->view("common/footer");
     }
 

@@ -1,18 +1,18 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Post extends CI_Controller
+class Photo extends CI_Controller
 {
     public function __construct()
     {
         parent::__construct();
 
         session_start();
-        if ( ! isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
+        if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
             redirect(base_url('login'));
         }
 
-        $this->load->model('post_model');
+        $this->load->model('photo_model');
         $this->load->model('user_model');
 
         // Check whether the user hasn't been logged out from some where else.
@@ -30,27 +30,27 @@ class Post extends CI_Controller
         $this->load->view("common/footer");
     }
 
-    public function like($post_id)
+    public function like($photo_id)
     {
-        $like = $this->post_model->like($post_id);
+        $like = $this->photo_model->like($photo_id);
         if (!$like) {
-            $this->permission_denied("You don't have the proper permissions to like this post.");
+            $this->permission_denied("You don't have the proper permissions to like this photo.");
             return;
         }
 
-        redirect(base_url("user/post/{$post_id}"));
+        redirect(base_url("user/photo/{$photo_id}"));
     }
 
-    public function comment($post_id)
+    public function comment($photo_id)
     {
-        $post = $this->post_model->get_post($post_id);
-        if (!$post) {
-            $this->permission_denied("You don't have the proper permissions to comment on this post.");
+        $photo = $this->photo_model->get_photo($photo_id);
+        if (!$photo) {
+            $this->permission_denied("You don't have the proper permissions to comment on this photo.");
             return;
         }
 
         $data = $this->user_model->initialize_user();
-        $data['title'] = 'Comment on this post';
+        $data['title'] = 'Comment on this photo';
         $this->load->view("common/header", $data);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -59,43 +59,39 @@ class Post extends CI_Controller
             }
             else {
                 $comment = $this->input->post('comment');
-                $this->post_model->comment($post_id, $comment);
-                $this->comments($post_id);
+                $this->photo_model->comment($photo_id, $comment);
+                $this->comments($photo_id);
                 return;
             }
         }
 
-        $short_post = $this->post_model->get_short_post($post['post'], 540);
-        $post['post'] = $short_post['body'];
-        $post['has_more'] = $short_post['has_more'];
-        $data['post'] = $post;
-
-        $data['object'] = 'post';
+        $data['photo'] = $photo;
+        $data['object'] = 'photo';
         $this->load->view('comment', $data);
         $this->load->view('common/footer');
     }
 
-    public function share($post_id)
+    public function share($photo_id)
     {
-        $share = $this->post_model->share($post_id);
+        $share = $this->photo_model->share($photo_id);
         if (!$share) {
-            $this->permission_denied("You don't have the proper permissions to share this post.");
+            $this->permission_denied("You don't have the proper permissions to share this photo.");
             return;
         }
 
         redirect(base_url("user/index/{$_SESSION['user_id']}"));
     }
 
-    public function likes($post_id, $offset=0)
+    public function likes($photo_id, $offset=0)
     {
-        $post = $this->post_model->get_post($post_id);
-        if (!$post) {
-            $this->permission_denied("You don't have the proper permissions to view this post.");
+        $photo = $this->photo_model->get_photo($photo_id);
+        if (!$photo) {
+            $this->permission_denied("You don't have the proper permissions to view this photo.");
             return;
         }
 
         $data = $this->user_model->initialize_user();
-        $data['title'] = "People who liked this post";
+        $data['title'] = "People who liked this photo";
         $this->load->view("common/header", $data);
 
         // Maximum number of likes to display.
@@ -110,34 +106,30 @@ class Post extends CI_Controller
         }
 
         $data['has_next'] = FALSE;
-        if (($post['num_likes'] - $offset) > $limit) {
+        if (($photo['num_likes'] - $offset) > $limit) {
             $data['has_next'] = TRUE;
             $data['next_offset'] = ($offset + $limit);
         }
 
         $data['num_prev'] = $offset;
-        $data['likes'] = $this->post_model->get_likes($post_id, $offset, $limit);
+        $data['likes'] = $this->photo_model->get_likes($photo_id, $offset, $limit);
 
-        $short_post = $this->post_model->get_short_post($post['post'], 540);
-        $post['post'] = $short_post['body'];
-        $post['has_more'] = $short_post['has_more'];
-        $data['post'] = $post;
-
-        $data['object'] = 'post';
+        $data['object'] = 'photo';
+        $data['photo'] = $photo;
         $this->load->view("show-likes", $data);
         $this->load->view("common/footer");
     }
 
-    public function comments($post_id, $offset=0)
+    public function comments($photo_id, $offset=0)
     {
-        $post = $this->post_model->get_post($post_id);
-        if (!$post) {
-            $this->permission_denied("You don't have the proper permissions to view this post.");
+        $photo = $this->photo_model->get_photo($photo_id);
+        if (!$photo) {
+            $this->permission_denied("You don't have the proper permissions to view this photo.");
             return;
         }
 
         $data = $this->user_model->initialize_user();
-        $data['title'] = 'Comments on this post';
+        $data['title'] = 'Comments on this photo';
         $this->load->view("common/header", $data);
 
         // Maximum number of comments to display.
@@ -152,35 +144,30 @@ class Post extends CI_Controller
         }
 
         $data['has_next'] = FALSE;
-        $num_comments = $this->post_model->get_num_comments($post_id);
-        if (($num_comments - $offset) > $limit) {
+        if (($photo['num_comments'] - $offset) > $limit) {
             $data['has_next'] = TRUE;
             $data['next_offset'] = ($offset + $limit);
         }
 
         $data['num_prev'] = $offset;
-        $data['comments'] = $this->post_model->get_comments($post_id, $offset, $limit);
+        $data['comments'] = $this->photo_model->get_comments($photo_id, $offset, $limit);
 
-        $short_post = $this->post_model->get_short_post($post['post'], 540);
-        $post['post'] = $short_post['body'];
-        $post['has_more'] = $short_post['has_more'];
-        $data['post'] = $post;
-
-        $data['object'] = 'post';
+        $data['object'] = 'photo';
+        $data['photo'] = $photo;
         $this->load->view("show-comments", $data);
         $this->load->view("common/footer");
     }
 
-    public function shares($post_id, $offset=0)
+    public function shares($photo_id, $offset=0)
     {
-        $post = $this->post_model->get_post($post_id);
-        if (!$post) {
-            $this->permission_denied("You don't have the proper permissions to view this post.");
+        $photo = $this->photo_model->get_photo($photo_id);
+        if (!$photo) {
+            $this->permission_denied("You don't have the proper permissions to view this photo.");
             return;
         }
 
         $data = $this->user_model->initialize_user();
-        $data['title'] = "People who shared this post";
+        $data['title'] = "People who shared this photo";
         $this->load->view("common/header", $data);
 
         // Maximum number of shares to display.
@@ -195,21 +182,16 @@ class Post extends CI_Controller
         }
 
         $data['has_next'] = FALSE;
-        $num_shares = $this->post_model->get_num_shares($post_id);
-        if (($num_shares - $offset) > $limit) {
+        if (($photo['num_shares'] - $offset) > $limit) {
             $data['has_next'] = TRUE;
             $data['next_offset'] = ($offset + $limit);
         }
 
         $data['num_prev'] = $offset;
-        $data['shares'] = $this->post_model->get_shares($post_id, $offset, $limit);
+        $data['shares'] = $this->photo_model->get_shares($photo_id, $offset, $limit);
 
-        $short_post = $this->post_model->get_short_post($post['post'], 540);
-        $post['post'] = $short_post['body'];
-        $post['has_more'] = $short_post['has_more'];
-        $data['post'] = $post;
-
-        $data['object'] = 'post';
+        $data['object'] = 'photo';
+        $data['photo'] = $photo;
         $this->load->view("show-shares", $data);
         $this->load->view("common/footer");
     }

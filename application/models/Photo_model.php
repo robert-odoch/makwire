@@ -36,14 +36,14 @@ class Photo_model extends CI_Model
         }
 
         // Get the photo.
-        $q = sprintf("SELECT * FROM user_images WHERE (image_id=%d)",
+        $q = sprintf("SELECT user_id AS author_id, user_photos.* FROM user_photos WHERE (photo_id=%d)",
                      $photo_id);
         $query = $this->run_query($q);
         $image = $query->row_array();
 
         // Get the full path of the profile picture.
-        $q = sprintf("SELECT full_path FROM user_images WHERE image_id=%d",
-                     $image['image_id']);
+        $q = sprintf("SELECT full_path FROM user_photos WHERE photo_id=%d",
+                     $image['photo_id']);
         $query = $this->run_query($q);
         $web_path = $query->row_array()['full_path'];
         $image['web_path'] = str_replace($_SERVER['DOCUMENT_ROOT'], '', $web_path);
@@ -60,24 +60,6 @@ class Photo_model extends CI_Model
         // Get the number of shares.
         $image['num_shares'] = $this->get_num_shares($photo_id);
 
-        // Has the user liked this post?
-        $image['liked'] = $this->has_liked($photo_id);
-
-        // Is it a shared post.
-        $image['shared'] = FALSE;
-        if ($image['parent_id'] != 0) {
-            $image['shared'] = TRUE;
-
-            // Get the name and ID of the source.
-            $q = sprintf("SELECT user_id FROM user_images WHERE image_id=%d LIMIT 1",
-                         $image['parent_id']);
-            $query = $this->run_query($q);
-            $source_id = $query->row()->user_id;
-
-            $image['source_id'] = $source_id;
-            $image['source'] = $this->user_model->get_name($source_id);
-        }
-
         // Get the timespan.
         $unix_timestamp = mysql_to_unix($image['date_entered']);
         $image['timespan'] = timespan($unix_timestamp, now(), 1);
@@ -87,6 +69,15 @@ class Photo_model extends CI_Model
 
     private function has_liked($photo_id)
     {
+        // Check whether this photo belongs to the current user.
+        $q = sprintf("SELECT user_id FROM user_photos WHERE photo_id = %d",
+                     $photo_id);
+        $query = $this->run_query($q);
+        if ($query->row_array()['user_id'] == $_SESSION['user_id']) {
+            return TRUE;
+        }
+
+        // Check whether this user has already liked the photo.
         $q = sprintf("SELECT like_id FROM likes " .
                      "WHERE (source_id=%d AND source_type='photo' AND liker_id=%d) " .
                      "LIMIT 1",
@@ -96,14 +87,26 @@ class Photo_model extends CI_Model
 
     private function has_shared($photo_id)
     {
+        // Check whether this photo belongs to the current user.
+        $q = sprintf("SELECT user_id FROM user_photos WHERE photo_id = %d LIMIT 1",
+                     $photo_id);
+        $query = $this->run_query($q);
+        if ($query->row_array()['user_id'] == $_SESSION['user_id']) {
+            return TRUE;
+        }
 
+        // Check whether this user has already shared the photo.
+        $q = sprintf("SELECT share_id FROM shares " .
+                     "WHERE (subject_id = %d AND user_id = %d AND subject_type='photo') LIMIT 1",
+                     $photo_id, $_SESSION['user_id']);
+        return ($this->run_query($q)->num_rows() == 1);
     }
 
     // Checks whether a user has the proper permision to access a given photo
     private function user_can_access_photo($photo_id)
     {
         // Get the id of the user who posted this photo.
-        $q = sprintf("SELECT user_id FROM user_images WHERE image_id=%d",
+        $q = sprintf("SELECT user_id FROM user_photos WHERE photo_id=%d",
                      $photo_id);
         $query = $this->run_query($q);
         if ($query->num_rows() == 0) {
@@ -133,7 +136,7 @@ class Photo_model extends CI_Model
 
     public function get_num_shares($photo_id)
     {
-        $q = sprintf("SELECT image_id FROM user_images WHERE parent_id=%d",
+        $q = sprintf("SELECT share_id FROM shares WHERE (subject_id = %d AND subject_type = 'photo')",
                      $photo_id);
         return $this->run_query($q)->num_rows();
     }
@@ -157,7 +160,7 @@ class Photo_model extends CI_Model
         $this->run_query($q);
 
         // Get the id of the user who posted.
-        $q = sprintf("SELECT user_id FROM user_images WHERE image_id=%d LIMIT 1",
+        $q = sprintf("SELECT user_id FROM user_photos WHERE photo_id=%d LIMIT 1",
                      $photo_id);
         $query = $this->run_query($q);
 
@@ -185,7 +188,7 @@ class Photo_model extends CI_Model
         $this->run_query($q);
 
         // Get the parent_id.
-        $q = sprintf("SELECT user_id FROM user_images WHERE image_id=%d LIMIT 1",
+        $q = sprintf("SELECT user_id FROM user_photos WHERE photo_id=%d LIMIT 1",
                      $photo_id);
         $query = $this->run_query($q);
 
@@ -205,23 +208,27 @@ class Photo_model extends CI_Model
         if (!$this->user_can_access_photo($photo_id)) {
             return FALSE;
         }
+        if ($this->has_shared($photo_id)) {
+            return TRUE;
+        }
 
-        // Get the image being shared.
-        $q = sprintf("SELECT * FROM user_images WHERE image_id=%d",
-                     $photo_id);
-        $image = $this->run_query($q)->row_array();
+        $photo_q = sprintf("SELECT user_id, audience FROM user_photos WHERE photo_id=%d",
+                            $photo_id);
+        $photo_result = $this->run_query($photo_q)->row_array();
+        if ($photo_result['audience'] == 'group') {
+            return FALSE;  // Group photos can't be shared outside the group.
+        }
 
-        // Insert it into the user_images table.
-        $q = sprintf("INSERT INTO user_images (user_id, original_name, image_size, image_type, image_width, image_height, full_path) " .
-                     "VALUES (%d, '%s', %d, '%s', %d, %d, '%s')",
-                     $_SESSION['user_id'], $image['original_name'], $image['image_size'], image['image_type'],
-                     $image['image_width'], $image['image_height'], $image['full_path']);
+        // Insert it into the shares table.
+        $q = sprintf("INSERT INTO shares (subject_id, user_id, subject_type) " .
+                     "VALUES (%d, %d, 'photo')",
+                     $photo_id, $_SESSION['user_id']);
         $this->run_query($q);
 
         // Dispatch an activity.
         $q = sprintf("INSERT INTO activities (actor_id, subject_id, source_id, source_type, activity) " .
                      "VALUES (%d, %d, %d, 'photo', 'share')",
-                     $_SESSION['user_id'], $image['user_id'], $photo_id);
+                     $_SESSION['user_id'], $photo_result['user_id'], $photo_id);
         $this->run_query($q);
 
         return TRUE;
@@ -234,16 +241,14 @@ class Photo_model extends CI_Model
                      "LIMIT %d, %d",
                      $photo_id, $offset, $limit);
         $query = $this->run_query($q);
-        $results = $query->result_array();
 
-        $likes = array();
-        foreach ($results as $like) {
+        $likes = $query->result_array();
+        foreach ($likes as &$like) {
             // Get the name of the user who liked.
             $like['liker'] = $this->user_model->get_name($like['liker_id']);
             $like['profile_pic_path'] = $this->user_model->get_profile_picture($like['liker_id']);
-
-            array_push($likes, $like);
         }
+        unset($like);
 
         return $likes;
     }
@@ -269,20 +274,19 @@ class Photo_model extends CI_Model
 
     public function get_shares($photo_id, $offset, $limit)
     {
-        $q = sprintf("SELECT user_id AS sharer_id FROM user_images " .
-                     "WHERE (parent_id=%d) LIMIT %d, %d",
+        $q = sprintf("SELECT user_id AS sharer_id FROM shares " .
+                     "WHERE (subject_id = %d AND subject_type = 'photo') " .
+                     "LIMIT %d, %d",
                      $photo_id, $offset, $limit);
         $query = $this->run_query($q);
-        $results = $query->result_array();
 
-        $shares = array();
-        foreach ($results as $share) {
+        $shares = $query->result_array();
+        foreach ($shares as &$share) {
             // Get the name of the user who shared.
             $share['sharer'] = $this->user_model->get_name($share['sharer_id']);
             $share['profile_pic_path'] = $this->user_model->get_profile_picture($share['sharer_id']);
-
-            array_push($shares, $share);
         }
+        unset($share);
 
         return $shares;
     }
