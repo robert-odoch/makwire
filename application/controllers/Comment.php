@@ -48,7 +48,7 @@ class Comment extends CI_Controller
     public function reply($comment_id)
     {
         $comment = $this->comment_model->get_comment($comment_id);
-        if (!$comment) {
+        if (!$comment || !$this->user_model->are_friends($comment['commenter_id'])) {
             $this->show_permission_denied("You don't have the proper permissions to reply to this comment.");
             return;
         }
@@ -143,11 +143,11 @@ class Comment extends CI_Controller
         }
 
         $data['num_prev'] = $offset;
-        $data['comments'] = $this->comment_model->get_replies($comment_id, $offset, $limit);
+        $data['replies'] = $this->comment_model->get_replies($comment_id, $offset, $limit);
 
         $data['object'] = 'comment';
         $data['comment'] = $comment;
-        $this->load->view("show-comments", $data);
+        $this->load->view("show-comment-replies", $data);
         $this->load->view("common/footer");
     }
 }

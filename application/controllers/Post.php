@@ -44,7 +44,7 @@ class Post extends CI_Controller
     public function comment($post_id)
     {
         $post = $this->post_model->get_post($post_id);
-        if (!$post) {
+        if (!$post || !$this->user_model->are_friends($post['user_id'])) {
             $this->permission_denied("You don't have the proper permissions to comment on this post.");
             return;
         }

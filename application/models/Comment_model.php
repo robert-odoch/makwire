@@ -27,35 +27,6 @@ class Comment_model extends CI_Model
         return $query;
     }
 
-    private function user_can_access_comment($comment_id)
-    {
-        // A user must be a friend to the person who posted what was commented upon.
-        $comment_q = sprintf("SELECT source_id, source_type FROM comments WHERE (comment_id=%d)",
-                     $comment_id);
-        $query = $this->run_query($comment_q);
-        if ($query->num_rows() == 0) {
-            // No user (even admin) has permission to access a file that doesn't exist.
-            return FALSE;
-        }
-
-        $comment_result = $query->row_array();
-        switch ($comment_result['source_type']) {
-        case 'photo':
-            $author_q = sprintf("SELECT user_id AS user_id FROM user_photos WHERE (photo_id=%d)",
-                         $comment_result['source_id']);
-            break;
-        case 'post':
-            $author_q = sprintf("SELECT user_id FROM posts WHERE (post_id=%d)",
-                         $comment_result['source_id']);
-            break;
-        default:
-            # Do nothing.
-            break;
-        }
-        $user_id = $this->run_query($author_q)->row_array()['user_id'];
-
-        return $this->user_model->are_friends($user_id);
-    }
     /*** End Utility ***/
 
     private function has_liked($comment_id)
@@ -78,18 +49,18 @@ class Comment_model extends CI_Model
 
     public function get_comment($comment_id)
     {
-        if (!$this->user_can_access_comment($comment_id)) {
+        $comment_sql = sprintf("SELECT commenter_id, comment, date_entered FROM comments " .
+                                "WHERE (comment_id = %d AND parent_id = 0)",
+                                $comment_id);
+        $comment_query = $this->run_query($comment_sql);
+        if ($comment_query->num_rows() == 0) {
             return FALSE;
         }
 
-        $q = sprintf("SELECT commenter_id, comment, date_entered FROM comments " .
-                     "WHERE (comment_id=%d AND parent_id=%d)",
-                     $comment_id, 0);
-        $query = $this->run_query($q);
-        $comment = $query->row_array();
+        $comment = $comment_query->row_array();
 
         // Get the name of the commenter.
-        $comment['commenter'] = $this->user_model->get_name($comment['commenter_id']);
+        $comment['commenter'] = $this->user_model->get_profile_name($comment['commenter_id']);
 
         // Add the number of likes and replies.
         $comment['num_likes'] = $this->get_num_likes($comment_id);
@@ -100,6 +71,9 @@ class Comment_model extends CI_Model
 
         // Add the timespan.
         $comment['timespan'] = timespan(mysql_to_unix($comment['date_entered']), now(), 1);
+
+        // Add data used by views.
+        $comment['viewer_is_friend_to_owner'] = $this->user_model->are_friends($comment['commenter_id']);
 
         // Has the user liked this comment?
         $comment['liked'] = $this->has_liked($comment_id);
@@ -125,8 +99,8 @@ class Comment_model extends CI_Model
         $likes = $query->result_array();
         foreach ($likes as &$like) {
             // Get the name of the liker.
-            $like['liker'] = $this->user_model->get_name($like['liker_id']);
-            $like['profile_pic_path'] = $this->user_model->get_profile_picture($like['liker_id']);
+            $like['liker'] = $this->user_model->get_profile_name($like['liker_id']);
+            $like['profile_pic_path'] = $this->user_model->get_profile_pic_path($like['liker_id']);
         }
         unset($like);
 
@@ -162,11 +136,21 @@ class Comment_model extends CI_Model
 
     public function like($comment_id)
     {
-        if (!$this->user_can_access_comment($comment_id)) {
+        // Get the id of the user who commented.
+        $comment_sql = sprintf("SELECT commenter_id FROM comments WHERE comment_id = %d",
+                                $comment_id);
+        $comment_query = $this->run_query($comment_sql);
+        if ($comment_query->num_rows() == 0) {
             return FALSE;
         }
+
         if ($this->has_liked($comment_id)) {
             return TRUE;
+        }
+
+        $comment_result = $comment_query->row_array();
+        if (!$this->user_model->are_friends($comment_result['commenter_id'])) {
+            return FALSE;
         }
 
         // Record the like.
@@ -175,16 +159,10 @@ class Comment_model extends CI_Model
                      $_SESSION['user_id'], $comment_id);
         $this->run_query($q);
 
-        // Get the id of the user who commented.
-        $q = sprintf("SELECT commenter_id FROM comments WHERE (comment_id=%d) LIMIT 1",
-                     $comment_id);
-        $query = $this->run_query($q);
-        $subject_id = $query->row()->commenter_id;
-
         // Dispatch an activity.
         $q = sprintf("INSERT INTO activities (actor_id, subject_id, source_id, source_type, activity) " .
                      "VALUES (%d, %d, %d, 'comment', 'like')",
-                     $_SESSION['user_id'], $subject_id, $comment_id);
+                     $_SESSION['user_id'], $comment_result['commenter_id'], $comment_id);
         $this->run_query($q);
 
         return TRUE;
@@ -199,15 +177,14 @@ class Comment_model extends CI_Model
         $this->run_query($q);
 
         // Get the id of the user who commented.
-        $q = sprintf("SELECT commenter_id FROM comments WHERE (comment_id=%d) LIMIT 1",
-                     $comment_id);
-        $query = $this->run_query($q);
-        $subject_id = $query->row()->commenter_id;
+        $comment_sql = sprintf("SELECT commenter_id FROM comments WHERE comment_id = %d",
+                                $comment_id);
+        $comment_result= $this->run_query($comment_sql)->row_array();
 
         // Dispatch an activity.
         $q = sprintf("INSERT INTO activities (actor_id, subject_id, source_id, source_type, activity) " .
                      "VALUES (%d, %d, %d, 'comment', 'reply')",
-                     $_SESSION['user_id'], $subject_id, $comment_id);
+                     $_SESSION['user_id'], $comment_result['commenter_id'], $comment_id);
         $this->run_query($q);
     }
 }

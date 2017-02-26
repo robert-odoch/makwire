@@ -2,7 +2,18 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 require_once("common/user-page-start.php");
-require_once("common/post-or-photo.php");
+
+switch ($object) {
+    case 'post':
+        require_once("common/post.php");
+        break;
+    case 'photo':
+        require_once("common/photo.php");
+        break;
+    default:
+        # Do nothing.
+        break;
+}
 ?>
 
 <div class="box">

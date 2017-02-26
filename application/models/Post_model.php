@@ -53,18 +53,17 @@ class Post_model extends CI_Model
 
     public function get_post($post_id)
     {
-        if (!$this->user_can_access_post($post_id)) {
+        $post_sql = sprintf("SELECT * FROM posts WHERE post_id = %d",
+                     $post_id);
+        $post_query = $this->run_query($post_sql);
+        if ($post_query->num_rows() == 0){
             return FALSE;
         }
 
-        $q = sprintf("SELECT * FROM posts WHERE post_id=%d LIMIT 1",
-                     $post_id);
-        $query = $this->run_query($q);
-
-        $post = $query->row_array();
+        $post = $post_query->row_array();
 
         // Get the name of the author.
-        $post['author'] = $this->user_model->get_name($post['user_id']);
+        $post['author'] = $this->user_model->get_profile_name($post['user_id']);
 
         // Get the number of likes.
         $post['num_likes'] = $this->get_num_likes($post_id);
@@ -78,6 +77,16 @@ class Post_model extends CI_Model
         // Get the timespan.
         $unix_timestamp = mysql_to_unix($post['date_entered']);
         $post['timespan'] = timespan($unix_timestamp, now(), 1);
+
+        // Add data used by views.
+        $post['shared'] = FALSE;
+
+        $post['author_name_ends_with_s'] = $this->user_model->name_ends_with('s', $post['author']);
+
+        // Check whether the user currently viewing the page is a friend to the
+        // original author of the post. This will allow us to only show the
+        // like, comment and share buttons to friends of the original author.
+        $post['viewer_is_friend_to_owner'] = $this->user_model->are_friends($post['user_id']);
 
         return $post;
     }
@@ -117,22 +126,6 @@ class Post_model extends CI_Model
         return ($this->run_query($q)->num_rows() == 1);
     }
 
-    // Checks whether a user has the proper permision to access a given post
-    private function user_can_access_post($post_id)
-    {
-        // Get the author of this post.
-        $q = sprintf("SELECT user_id FROM posts WHERE post_id=%d",
-                     $post_id);
-        $query = $this->run_query($q);
-        if ($query->num_rows() == 0) {
-            // No user (even admin) has permission to access a post that doesn't exist.
-            return FALSE;
-        }
-
-        $user_id = $query->row()->user_id;
-        return $this->user_model->are_friends($user_id);
-    }
-
     public function get_num_likes($post_id)
     {
         $q = sprintf("SELECT like_id FROM likes " .
@@ -156,26 +149,39 @@ class Post_model extends CI_Model
         return $this->run_query($q)->num_rows();
     }
 
-    public function post($post, $audience_id)
+    public function post($post, $audience, $audience_id)
     {
-        $q = sprintf("INSERT INTO posts (audience_id, post, user_id) VALUES (%d, %s, %d)",
-                     $audience_id, $this->db->escape($post), $_SESSION['user_id']);
-        $query = $this->run_query($q);
-        if ($query) {
-            return TRUE;
-        }
-        else {
-            return FALSE;
-        }
+        // Save the post.
+        $post_sql = sprintf("INSERT INTO posts (audience_id, audience, post, user_id) " .
+                        "VALUES (%d, %s, %s, %d)",
+                        $audience_id, $audience,
+                        $this->db->escape($post), $_SESSION['user_id']);
+        $this->run_query($post_sql);
+
+        // Dispatch an activity.
+        $activity_sql = sprintf("INSERT INTO activities " .
+                                "(actor_id, subject_id, source_id, source_type, activity) " .
+                                "VALUES (%d, %d, %d, 'post', 'post')",
+                                $_SESSION['user_id'], $audience_id, $this->db->insert_id());
+        $this->run_query($activity_sql);
     }
 
     public function like($post_id)
     {
-        if (!$this->user_can_access_post($post_id)) {
+        $post_sql = sprintf("SELECT user_id FROM posts WHERE post_id = %d",
+                            $post_id);
+        $post_query = $this->run_query($post_sql);
+        if ($post_query->num_rows() == 0) {
             return FALSE;
         }
+
         if ($this->has_liked($post_id)) {
             return TRUE;
+        }
+
+        $post_result = $post_query->row_array();
+        if (!$this->user_model->are_friends($post_result['user_id'])) {
+            return FALSE;
         }
 
         $q = sprintf("INSERT INTO likes (liker_id, source_id, source_type) " .
@@ -183,17 +189,10 @@ class Post_model extends CI_Model
                      $_SESSION['user_id'], $post_id);
         $this->run_query($q);
 
-        // Get the id of the user who posted.
-        $q = sprintf("SELECT user_id FROM posts WHERE post_id=%d LIMIT 1",
-                     $post_id);
-        $query = $this->run_query($q);
-
-        $subject_id = $query->row()->user_id;
-
         // Dispatch an activity.
         $q = sprintf("INSERT INTO activities (actor_id, subject_id, source_id, source_type, activity) " .
                      "VALUES (%d, %d, %d, 'post', 'like')",
-                     $_SESSION['user_id'], $subject_id, $post_id);
+                     $_SESSION['user_id'], $post_result['user_id'], $post_id);
         $this->run_query($q);
 
         return TRUE;
@@ -201,44 +200,39 @@ class Post_model extends CI_Model
 
     public function comment($post_id, $comment)
     {
-        if (!$this->user_can_access_post($post_id)) {
-            return FALSE;
-        }
-
         // Record the comment.
         $q = sprintf("INSERT INTO comments (commenter_id, parent_id, source_id, source_type, comment) " .
                      "VALUES (%d, %d, %d, 'post', %s)",
                      $_SESSION['user_id'], 0, $post_id, $this->db->escape($comment));
         $this->run_query($q);
 
-        // Get the parent_id.
-        $q = sprintf("SELECT user_id FROM posts WHERE post_id=%d LIMIT 1",
-                     $post_id);
-        $query = $this->run_query($q);
-
-        $subject_id = $query->row()->user_id;
+        $post_sql = sprintf("SELECT user_id FROM posts WHERE post_id = %d",
+                            $post_id);
+        $post_result = $this->run_query($post_sql)->row_array();
 
         // Dispatch an activity.
         $q = sprintf("INSERT INTO activities (actor_id, subject_id, source_id, source_type, activity) " .
                      "VALUES (%d, %d, %d, 'post', 'comment')",
-                     $_SESSION['user_id'], $subject_id, $post_id);
+                     $_SESSION['user_id'], $post_result['user_id'], $post_id);
         $this->run_query($q);
     }
 
     public function share($post_id)
     {
-        if (!$this->user_can_access_post($post_id)) {
+        $post_sql = sprintf("SELECT user_id FROM posts WHERE post_id = %d",
+                            $post_id);
+        $post_query = $this->run_query($post_sql);
+        if ($post_query->num_rows() == 0) {
             return FALSE;
         }
+
         if ($this->has_shared($post_id)) {
             return TRUE;
         }
 
-        $post_q = sprintf("SELECT user_id, audience FROM posts WHERE post_id=%d LIMIT 1",
-                            $post_id);
-        $post_result = $this->run_query($post_q)->row_array();
-        if ($post_result['audience'] == 'group') {
-            return FALSE;  // Group posts can't be shared outside the group.
+        $post_result = $post_query->row_array();
+        if (!$this->user_model->are_friends($post_result['user_id'])) {
+            return FALSE;
         }
 
         // Insert it into the shares table.
@@ -268,8 +262,8 @@ class Post_model extends CI_Model
         $likes = $query->result_array();
         foreach ($likes as &$like) {
             // Get the name of the user who liked.
-            $like['liker'] = $this->user_model->get_name($like['liker_id']);
-            $like['profile_pic_path'] = $this->user_model->get_profile_picture($like['liker_id']);
+            $like['liker'] = $this->user_model->get_profile_name($like['liker_id']);
+            $like['profile_pic_path'] = $this->user_model->get_profile_pic_path($like['liker_id']);
         }
         unset($like);
 
@@ -306,8 +300,8 @@ class Post_model extends CI_Model
         $shares = $query->result_array();
         foreach ($shares as &$share) {
             // Get the name of the user who shared.
-            $share['sharer'] = $this->user_model->get_name($share['sharer_id']);
-            $share['profile_pic_path'] = $this->user_model->get_profile_picture($share['sharer_id']);
+            $share['sharer'] = $this->user_model->get_profile_name($share['sharer_id']);
+            $share['profile_pic_path'] = $this->user_model->get_profile_pic_path($share['sharer_id']);
         }
         unset($share);
 

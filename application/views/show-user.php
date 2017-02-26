@@ -11,52 +11,59 @@ if ($is_visitor) {
 if (!$is_visitor) {
 ?>
     <div class="box">
-        <form action="<?php echo base_url('user/new-post'); ?>" method="post" accept-charset="utf-8" role="form">
+        <form action="<?= base_url('user/new-post'); ?>" method="post"
+            accept-charset="utf-8" role="form">
             <div class="form-group">
                 <label for="post" class="hidden">New Post</label>
                 <textarea name="post" placeholder="What's new?" class="fluid
                 <?php
-                if (array_key_exists('post', $post_errors)) {
-                    print(' has-error');
+                if (isset($post_error)) {
+                    print ' has-error';
                 }
                 ?>
                 "></textarea>
                 <?php
-                if (array_key_exists('post', $post_errors)) {
-                    echo "<span class='error'>{$post_errors['post']}</span>\n";
+                if (isset($post_errors)) {
+                    print "<span class='error'>{$post_error}</span>";
                 }
                 ?>
             </div>
 
             <input type="submit" value="Post" class="btn">
-            <a href="attach-post-photo.html"><span class="glyphicon glyphicon-picture"></span> Add photo</a>
+            <a href="attach-post-photo.html">
+                <span class="glyphicon glyphicon-picture"></span> Add photo
+            </a>
         </form>
     </div>
 <?php } // (!$is_visitor) ?>
 
-<?php if (empty($posts_and_photos) && $is_visitor): ?>
-    <div class="box">
-        <div class="alert alert-info">
-            <p><span class="glyphicon glyphicon-info-sign"></span> No previous posts.</p>
-        </div>
-    </div>
-    <?php else:
-        foreach($posts_and_photos as $pp): ?>
+    <?php
+    if (empty($posts_and_photos) && $is_visitor) { ?>
         <div class="box">
-            <?php
-            if ($pp['type'] == 'post') {
-                $post = $pp['post'];
-                require("common/timeline-post.php");
-            } elseif ($pp['type'] == 'photo') {
-                $photo = $pp['photo'];
-                require("common/timeline-photo.php");
+            <div class="alert alert-info">
+                <p><span class="glyphicon glyphicon-info-sign"></span> No previous posts.</p>
+            </div>
+        </div>
+    <?php
+    } else {
+        foreach($posts_and_photos as $p) {
+            if ($p['source_type'] == 'post') {
+                $post = $p['post'];
+                require("common/post.php");
+            } elseif ($p['source_type'] == 'photo') {
+                $photo = $p['photo'];
+                require("common/photo.php");
             }
-            ?>
-        </div><!-- box -->
-        <?php endforeach; ?>
-    <?php if ($has_next): ?>
-    <div class="box more">
-        <a href="<?= base_url("user/index/{$user_id}/{$next_offset}"); ?>">View more posts</a>
-    </div>
-    <?php endif; ?>
-<?php endif; ?>
+        }
+        if ($has_next) {
+            print '<div class="box more">';
+            if ($page == 'news-feed') {
+                print '<a href="' . base_url("user/news-feed/{$next_offset}") . '">View more stories</a>';
+            }
+            else if ($page == 'index') {
+                print '<a href="' . base_url("user/index/{$user_id}/{$next_offset}") . '">View more posts</a>';
+            }
+            print '</div>';
+        }
+    }
+    ?>

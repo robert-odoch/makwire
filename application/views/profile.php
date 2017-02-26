@@ -15,9 +15,6 @@ if ($is_visitor) {
     if ($is_visitor && !$profile['programmes']
         && !$profile['colleges'] && !$profile['schools'] && !$profile['halls']
         && !$profile['hostels'] && !$profile['country'] && !$profile['district']) {
-        if (!$are_friends) {
-            print("<h4>About {$secondary_user}</h4>");
-        }
         print("<div class='alert alert-info'>" .
               "<span class='glyphicon glyphicon-info-sign'></span> Nothing to show.</div>");
     }

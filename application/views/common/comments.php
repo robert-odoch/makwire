@@ -10,14 +10,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     </div>
     <?php } else {
         if (isset($has_prev)) {
-            if ($object == 'comment') {
-                print("<a href='" . base_url("{$object}/replies/{$$object[$object . '_id']}/{$prev_offset}") . "'>" .
-                      "View previous comments.</a>");
-            }
-            else { // post or photo.
-                print("<a href='" . base_url("{$object}/comments/{$$object[$object . '_id']}/{$prev_offset}") . "'>" .
-                      "View previous comments.</a>");
-            }
+            print("<a href='" . base_url("{$object}/comments/{$$object[$object . '_id']}/{$prev_offset}") . "'>" .
+                    "View previous comments.</a>");
         }
     ?>
     <ul class="comments">
@@ -33,13 +27,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <p class="comment"><?= htmlspecialchars($comment['comment']); ?></p>
                 <footer>
                     <small class="time"><span class="glyphicon glyphicon-time"></span> <?= $comment['timespan']; ?> ago</small>
-                    <span> &middot; </span>
-                    <a href="<?= base_url("comment/like/{$comment['comment_id']}/{$$object[$object . '_id']}/{$i}"); ?>">Like</a>
                     <?php
-                    if ($object != 'comment') {
-                        print('<span> &middot; </span>' .
-                                '<a href="' . base_url("comment/reply/{$comment['comment_id']}") . '">Reply</a>');
+                    if ($comment['viewer_is_friend_to_owner']) {
+                        if (!$comment['liked']) {
+                            print '<span> &middot; </span>' .
+                                    '<a href="' . base_url("comment/like/{$comment['comment_id']}/{$$object[$object . '_id']}/{$i}") . '">Like</a>';
+                        }
+
+                        print '<span> &middot; </span>' .
+                                '<a href="' . base_url("comment/reply/{$comment['comment_id']}") . '">Reply</a>';
                     }
+
                     if ($comment['num_likes'] > 0) {
                         print "<span> &middot; </span>" .
                               "<a href='" . base_url("comment/likes/{$comment['comment_id']}") . "'>{$comment['num_likes']}";

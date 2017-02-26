@@ -44,7 +44,7 @@ class Photo extends CI_Controller
     public function comment($photo_id)
     {
         $photo = $this->photo_model->get_photo($photo_id);
-        if (!$photo) {
+        if (!$photo || !$this->user_model->are_friends($photo['user_id'])) {
             $this->permission_denied("You don't have the proper permissions to comment on this photo.");
             return;
         }

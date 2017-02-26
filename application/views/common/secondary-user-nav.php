@@ -23,7 +23,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         }
         ?>
     </div>
-<?php if ($are_friends) { ?>
     <ul>
         <?php
         switch (PAGE) {
@@ -68,6 +67,5 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         }
         ?>
     </ul>
-<?php }  // ($are_friends) ?>
     <span class="clearfix"></span>
 </div>

@@ -30,41 +30,62 @@ class Photo_model extends CI_Model
 
     public function get_photo($photo_id)
     {
-        // Does this user have the proper permissions to view this file?
-        if (!$this->user_can_access_photo($photo_id)) {
+        // Get the photo.
+        $photo_sql = sprintf("SELECT * FROM user_photos WHERE photo_id = %d",
+                     $photo_id);
+        $photo_query = $this->run_query($photo_sql);
+        if ($photo_query->num_rows() == 0) {
             return FALSE;
         }
 
-        // Get the photo.
-        $q = sprintf("SELECT user_id AS author_id, user_photos.* FROM user_photos WHERE (photo_id=%d)",
-                     $photo_id);
-        $query = $this->run_query($q);
-        $image = $query->row_array();
-
-        // Get the full path of the profile picture.
-        $q = sprintf("SELECT full_path FROM user_photos WHERE photo_id=%d",
-                     $image['photo_id']);
-        $query = $this->run_query($q);
-        $web_path = $query->row_array()['full_path'];
-        $image['web_path'] = str_replace($_SERVER['DOCUMENT_ROOT'], '', $web_path);
+        $photo = $photo_query->row_array();
+        $photo['web_path'] = str_replace($_SERVER['DOCUMENT_ROOT'], '', $photo['full_path']);
 
         // Get the name of the author.
-        $image['author'] = $this->user_model->get_name($image['user_id']);
+        $photo['author'] = $this->user_model->get_profile_name($photo['user_id']);
 
         // Get the number of likes.
-        $image['num_likes'] = $this->get_num_likes($photo_id);
+        $photo['num_likes'] = $this->get_num_likes($photo_id);
 
         // Get the number of comments.
-        $image['num_comments'] = $this->get_num_comments($photo_id);
+        $photo['num_comments'] = $this->get_num_comments($photo_id);
 
         // Get the number of shares.
-        $image['num_shares'] = $this->get_num_shares($photo_id);
+        $photo['num_shares'] = $this->get_num_shares($photo_id);
 
         // Get the timespan.
-        $unix_timestamp = mysql_to_unix($image['date_entered']);
-        $image['timespan'] = timespan($unix_timestamp, now(), 1);
+        $photo['timespan'] = timespan(mysql_to_unix($photo['date_entered']), now(), 1);
 
-        return $image;
+        // Add data used by views.
+        $photo['shared'] = FALSE;
+
+        if ($this->user_model->name_ends_with('s', $photo['author'])) {
+            $photo['author_name_ends_with_s'] = TRUE;
+            $photo['alt'] = "{$photo['author']}' photo";
+        }
+        else {
+            $photo['author_name_ends_with_s'] = FALSE;
+            $photo['alt'] = "{$photo['author']}'s photo";
+        }
+
+        // Check whether the user currently viewing the page is a friend to the
+        // owner of the photo. This will allow us to only show the
+        // like, comment and share buttons to friends of the owner.
+        $photo['viewer_is_friend_to_owner'] = $this->user_model->are_friends($photo['user_id']);
+
+        // Check if photo was used as a profile picture.
+        $is_profile_pic_sql = sprintf("SELECT activity_id FROM activities " .
+                                        "WHERE (source_id = %d AND source_type = 'photo' AND activity = 'profile_pic_change')",
+                                        $photo['photo_id']);
+        $photo['is_profile_pic'] = ($this->run_query($is_profile_pic_sql)->num_rows() == 1);
+        if ($photo['is_profile_pic']) {
+            // Get the gender of this user.
+            $gender_sql = sprintf("SELECT gender FROM users WHERE (user_id = %d)",
+                                   $photo['user_id']);
+            $photo['user_gender'] = ($this->run_query($gender_sql)->row_array()['gender'] == 'M')? 'his': 'her';
+        }
+
+        return $photo;
     }
 
     private function has_liked($photo_id)
@@ -102,22 +123,6 @@ class Photo_model extends CI_Model
         return ($this->run_query($q)->num_rows() == 1);
     }
 
-    // Checks whether a user has the proper permision to access a given photo
-    private function user_can_access_photo($photo_id)
-    {
-        // Get the id of the user who posted this photo.
-        $q = sprintf("SELECT user_id FROM user_photos WHERE photo_id=%d",
-                     $photo_id);
-        $query = $this->run_query($q);
-        if ($query->num_rows() == 0) {
-            // No user (even admin) has permission to access a file that doesn't exist.
-            return FALSE;
-        }
-
-        $author_id = $query->row()->user_id;
-        return $this->user_model->are_friends($author_id);
-    }
-
     public function get_num_likes($photo_id)
     {
         $q = sprintf("SELECT like_id FROM likes " .
@@ -147,11 +152,21 @@ class Photo_model extends CI_Model
 
     public function like($photo_id)
     {
-        if (!$this->user_can_access_photo($photo_id)) {
+        // Get the id of the owner of this photo.
+        $photo_sql = sprintf("SELECT user_id FROM user_photos WHERE photo_id = %d",
+                            $photo_id);
+        $photo_query = $this->run_query($photo_sql);
+        if ($photo_query->num_rows() == 0) {
             return FALSE;
         }
+
         if ($this->has_liked($photo_id)) {
             return TRUE;
+        }
+
+        $photo_result = $photo_query->row_array();
+        if (!$this->user_model->are_friends($photo_result['user_id'])) {
+            return FALSE;
         }
 
         $q = sprintf("INSERT INTO likes (liker_id, source_id, source_type) " .
@@ -159,17 +174,10 @@ class Photo_model extends CI_Model
                      $_SESSION['user_id'], $photo_id);
         $this->run_query($q);
 
-        // Get the id of the user who posted.
-        $q = sprintf("SELECT user_id FROM user_photos WHERE photo_id=%d LIMIT 1",
-                     $photo_id);
-        $query = $this->run_query($q);
-
-        $subject_id = $query->row()->user_id;
-
         // Dispatch an activity.
         $q = sprintf("INSERT INTO activities (actor_id, subject_id, source_id, source_type, activity) " .
                      "VALUES (%d, %d, %d, 'photo', 'like')",
-                     $_SESSION['user_id'], $subject_id, $photo_id);
+                     $_SESSION['user_id'], $photo_result['user_id'], $photo_id);
         $this->run_query($q);
 
         return TRUE;
@@ -177,44 +185,41 @@ class Photo_model extends CI_Model
 
     public function comment($photo_id, $comment)
     {
-        if (!$this->user_can_access_photo($photo_id)) {
-            return FALSE;
-        }
-
         // Record the comment.
         $q = sprintf("INSERT INTO comments (commenter_id, parent_id, source_id, source_type, comment) " .
                      "VALUES (%d, %d, %d, 'photo', %s)",
                      $_SESSION['user_id'], 0, $photo_id, $this->db->escape($comment));
         $this->run_query($q);
 
-        // Get the parent_id.
-        $q = sprintf("SELECT user_id FROM user_photos WHERE photo_id=%d LIMIT 1",
-                     $photo_id);
-        $query = $this->run_query($q);
-
-        $subject_id = $query->row()->user_id;
+        // Get the ID of the owner of this photo.
+        $photo_sql = sprintf("SELECT user_id FROM user_photos WHERE photo_id = %d",
+                            $photo_id);
+        $photo_result = $this->run_query($photo_sql)->row_array();
 
         // Dispatch an activity.
         $q = sprintf("INSERT INTO activities (actor_id, subject_id, source_id, source_type, activity) " .
                      "VALUES (%d, %d, %d, 'photo', 'comment')",
-                     $_SESSION['user_id'], $subject_id, $photo_id);
+                     $_SESSION['user_id'], $photo_result['user_id'], $photo_id);
         $this->run_query($q);
-
-        return TRUE;
     }
 
     public function share($photo_id)
     {
-        if (!$this->user_can_access_photo($photo_id)) {
+        $photo_sql = sprintf("SELECT user_id FROM user_photos WHERE photo_id = %d",
+                            $photo_id);
+        $photo_query = $this->run_query($photo_sql);
+        if ($photo_query->num_rows() == 0) {
             return FALSE;
         }
+
         if ($this->has_shared($photo_id)) {
             return TRUE;
         }
 
-        $photo_q = sprintf("SELECT user_id FROM user_photos WHERE photo_id=%d",
-                            $photo_id);
-        $photo_result = $this->run_query($photo_q)->row_array();
+        $photo_result = $photo_query->row_array();
+        if (!$this->user_model->are_friends($photo_result['user_id'])) {
+            return FALSE;
+        }
 
         // Insert it into the shares table.
         $q = sprintf("INSERT INTO shares (subject_id, user_id, subject_type) " .
@@ -242,8 +247,8 @@ class Photo_model extends CI_Model
         $likes = $query->result_array();
         foreach ($likes as &$like) {
             // Get the name of the user who liked.
-            $like['liker'] = $this->user_model->get_name($like['liker_id']);
-            $like['profile_pic_path'] = $this->user_model->get_profile_picture($like['liker_id']);
+            $like['liker'] = $this->user_model->get_profile_name($like['liker_id']);
+            $like['profile_pic_path'] = $this->user_model->get_profile_pic_path($like['liker_id']);
         }
         unset($like);
 
@@ -253,7 +258,7 @@ class Photo_model extends CI_Model
     public function get_comments($photo_id, $offset, $limit)
     {
         $q = sprintf("SELECT comment_id FROM comments " .
-                     "WHERE (source_type='photo' AND source_id=%d AND parent_id=0) " .
+                     "WHERE (source_type = 'photo' AND source_id = %d AND parent_id = 0) " .
                      "LIMIT %d, %d",
                      $photo_id, $offset, $limit);
         $query = $this->run_query($q);
@@ -280,8 +285,8 @@ class Photo_model extends CI_Model
         $shares = $query->result_array();
         foreach ($shares as &$share) {
             // Get the name of the user who shared.
-            $share['sharer'] = $this->user_model->get_name($share['sharer_id']);
-            $share['profile_pic_path'] = $this->user_model->get_profile_picture($share['sharer_id']);
+            $share['sharer'] = $this->user_model->get_profile_name($share['sharer_id']);
+            $share['profile_pic_path'] = $this->user_model->get_profile_pic_path($share['sharer_id']);
         }
         unset($share);
 

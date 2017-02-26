@@ -237,8 +237,12 @@ ul.following figure,
 ul.active-users figure,
 ul.chat-friends figure,
 ul.suggested-users figure {
-    width: 50px;
+    width: 35px;
     float: left;
+    height: 35px;
+}
+ul.suggested-users figure {
+    width: 50px;
     height: 50px;
 }
 ul.likes figure img,
@@ -249,11 +253,19 @@ ul.following figure img,
 ul.chat-friends figure img,
 ul.suggested-users figure img {
     max-width: 100%;
+    width: 35px;
+    height: 35px;
+    max-height: 35px;
+    border-radius: 2px;
+}
+ul.suggested-users figure img {
+    width: 50px;
+    height: 50px;
     max-height: 50px;
 }
 ul.active-users figure img.user {
-    width: 50px;
-    height: 50px;
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
 }
 ul.likes li > span,
@@ -265,6 +277,10 @@ ul.active-users li > span,
 ul.chat-friends li > span,
 ul.suggested-users li > span {
     display: block;
+    min-height: 35px;
+    margin-left: 42px;
+}
+ul.suggested-users li > span {
     min-height: 50px;
     margin-left: 57px;
 }
@@ -575,14 +591,15 @@ form select:focus {
 div.form-group {
     margin-bottom: 10px;
 }
-fieldset p {
+fieldset > p,
+div.input-group p {
     font-weight: bold;
 }
 span.help-block {
     margin-top: 0;
     margin-bottom: 5px;
 }
-form#reply-message {
+form#send-message {
     padding-bottom: 5px;
     border-bottom: 1px dotted #8FBC8F;
 }

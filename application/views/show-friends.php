@@ -24,8 +24,8 @@ if ($is_visitor) {
     <ul class="friends">
         <?php foreach($friends as $fr): ?>
         <li>
-            <figure><img src="<?= $fr['profile_pic_path']; ?>" alt="<?= $fr['display_name']; ?>"></figure>
-            <span><a href="<?= base_url("user/index/{$fr['friend_id']}"); ?>"><?= $fr['display_name']; ?></a></span>
+            <figure><img src="<?= $fr['profile_pic_path']; ?>" alt="<?= $fr['profile_name']; ?>"></figure>
+            <span><a href="<?= base_url("user/index/{$fr['friend_id']}"); ?>"><?= $fr['profile_name']; ?></a></span>
         </li>
         <?php endforeach; ?>
     </ul>

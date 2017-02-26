@@ -5,8 +5,10 @@ require_once("common/user-page-start.php");
 
 switch ($object) {
     case 'post':
+        require_once("common/post.php");
+        break;
     case 'photo':
-        require_once("common/post-or-photo.php");
+        require_once("common/photo.php");
         break;
     case 'comment':
         require_once("common/comment-or-reply.php");
