@@ -94,7 +94,7 @@ class User extends CI_Controller
         $data['title'] = "News Feed";
         $this->load->view('common/header', $data);
 
-        if (isset($_SESSION['post_error']) && ! empty($_SESSION['post_error'])) {
+        if (isset($_SESSION['post_error']) && !empty($_SESSION['post_error'])) {
             $data['post_error'] = $_SESSION['post_error'];
             unset($_SESSION['post_error']);
         }
@@ -118,7 +118,8 @@ class User extends CI_Controller
     {
         $data = $this->user_model->initialize_user();
         $data['title'] = "{$data['primary_user']}'s Posts";
-        $data['is_visitor'] = ($_SESSION['user_id'] === $user_id) ? FALSE : TRUE;;
+
+        $data['is_visitor'] = ($user_id == $_SESSION['user_id']) ? FALSE : TRUE;;
         if ($data['is_visitor']) {
             $data['su_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
             $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
@@ -129,9 +130,10 @@ class User extends CI_Controller
                 $data['title'] = "{$data['secondary_user']}' Posts";
             }
         }
+
         $this->load->view('common/header', $data);
 
-        if (isset($_SESSION['post_error']) && ! empty($_SESSION['post_error'])) {
+        if (isset($_SESSION['post_error']) && !empty($_SESSION['post_error'])) {
             $data['post_error'] = $_SESSION['post_error'];
             unset($_SESSION['post_error']);
         }
@@ -179,19 +181,20 @@ class User extends CI_Controller
     public function send_message($user_id, $offset=0)
     {
         if (!$this->user_model->are_friends($user_id)) {
-            $this->show_permission_denied("You don't have the proper permissions to send a message to this user.");
+            $this->show_permission_denied("You don't have the proper permissions " .
+                                            "to send a message to this user.");
             return;
         }
 
         $data = $this->user_model->initialize_user();
-        $data['secondary-user'] = $this->user_model->get_profile_name($user_id);
+        $data['secondary_user'] = $this->user_model->get_profile_name($user_id);
         $data['suid'] = $user_id;
-        $data['title'] = "Send a message to {$data['secondary-user']}";
+        $data['title'] = "Send a message to {$data['secondary_user']}";
         $this->load->view('common/header', $data);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (empty(trim($this->input->post('message')))) {
-                $data['message_error'] = "Message can't be empty!";
+                $data['error_message'] = "Message can't be empty!";
             }
             else {
                 $message = strip_tags($this->input->post('message'));
@@ -236,15 +239,17 @@ class User extends CI_Controller
     {
         $post = $this->post_model->get_post($post_id);
         if (!$post) {
-            $this->show_permission_denied("You dont't have the proper permissions to view this post.");
+            $this->show_permission_denied("You dont't have the proper permissions " .
+                                            "to view this post.");
             return;
         }
 
         $data = $this->user_model->initialize_user();
         $data['title'] = "{$post['author']}'s Post";
         if ($this->user_model->name_ends_with('s', $post['author'])) {
-            $data['title'] = "{$post['author']}' post";
+            $data['title'] = "{$post['author']}' Post";
         }
+
         $this->load->view('common/header', $data);
 
         $data['post'] = $post;
@@ -280,6 +285,7 @@ class User extends CI_Controller
 
 		$data['has_next'] = FALSE;
 		if ($data['num_new_notifs'] > 0) {
+
 		    // First show only the new notifications.
 			$data['notifications'] = $this->user_model->get_notifications($offset, $limit, TRUE);
 			if (($data['num_new_notifs'] - $offset) > $limit) {
@@ -314,15 +320,17 @@ class User extends CI_Controller
     {
         $photo = $this->photo_model->get_photo($photo_id);
         if (!$photo) {
-            $this->show_permission_denied("You don't have the proper permissions to view this photo.");
+            $this->show_permission_denied("You don't have the proper permissions " .
+                                            "to view this photo.");
             return;
         }
 
         $data = $this->user_model->initialize_user();
-        $data['title'] = "{$photo['author']}'s photo";
+        $data['title'] = "{$photo['author']}'s Photo";
         if ($this->user_model->name_ends_with('s', $photo['author'])) {
-            $data['title'] = "{$photo['author']}' photo";
+            $data['title'] = "{$photo['author']}' Photo";
         }
+
         $this->load->view("common/header", $data);
 
         $data['photo'] = $photo;
@@ -355,7 +363,7 @@ class User extends CI_Controller
             $data['next_offset'] = ($offset + $limit);
         }
 
-        $data['suggested_users'] = $this->user_model->get_suggested_users(0, 4, TRUE);
+        $data['suggested_users'] = $this->user_model->get_suggested_users($offset, $limit, TRUE);
         $this->load->view('find-friends', $data);
         $this->load->view('common/footer');
     }
@@ -724,7 +732,7 @@ class User extends CI_Controller
     public function add_hall()
     {
         $data = $this->user_model->initialize_user();
-        $data['title'] = "Add hall of attachment";
+        $data['title'] = "Add hall of attachment/residence";
         $this->load->view('common/header', $data);
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
@@ -773,7 +781,7 @@ class User extends CI_Controller
     public function edit_hall($user_hall_id=NULL)
     {
         $data = $this->user_model->initialize_user();
-        $data['title'] = "Edit hall of attachment";
+        $data['title'] = "Edit hall of attachment/residence";
         $this->load->view('common/header', $data);
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
@@ -945,9 +953,7 @@ class User extends CI_Controller
         }
 
         $data['user_hostel'] = $user_hostel;
-        if (!isset($data['error_message'])) {  // So that we may retain the data entered in the form.
-            $data['hostel_id'] = $user_hostel['hostel_id'];
-
+        if (!isset($data['error_message'])) {  // So that we may retain the dates entered in the form.
             $data['start_day'] = $user_hostel['start_day'];
             $data['start_month'] = $user_hostel['start_month'];
             $data['start_year'] = $user_hostel['start_year'];

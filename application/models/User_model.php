@@ -90,7 +90,7 @@ class User_model extends CI_Model
     public function initialize_user()
     {
         $data['primary_user'] = $this->get_profile_name($_SESSION['user_id']);
-        $data['suggested_users'] = $this->get_suggested_users(0, 4);
+        $data['people_you_may_know'] = $this->get_suggested_users(0, 4);
         $data['num_friend_requests'] = $this->get_num_friend_requests(TRUE);
         $data['num_active_friends'] = $this->get_num_chat_users(TRUE);
         $data['num_new_messages'] = $this->get_num_messages(TRUE);
@@ -869,10 +869,11 @@ class User_model extends CI_Model
 
     public function send_message($message, $receiver_id)
     {
-        $q = sprintf("INSERT INTO messages (sender_id, receiver_id, message) " .
-                     "VALUES (%d, %d, %s)",
-                     $_SESSION['user_id'], $receiver_id, $this->db->escape($message));
-        $this->run_query($q);
+        $message_sql = sprintf("INSERT INTO messages (sender_id, receiver_id, message) " .
+                                "VALUES (%d, %d, %s)",
+                                $_SESSION['user_id'], $receiver_id,
+                                $this->db->escape($message));
+        $this->run_query($message_sql);
     }
 
     public function get_num_conversation($user_id)
