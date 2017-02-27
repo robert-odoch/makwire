@@ -295,10 +295,13 @@ class User extends CI_Controller
 			else {
 			    $num_notifications = $this->user_model->get_num_notifs(FALSE);
 
-                // Here, offset is added to num_new_notifs because num_new_notifs alone only works
-                // Well when the new notifications are all shown on the same page.
-			    if ($num_notifications > ($data['num_new_notifs'] + $offset)) {
+                // Here, we are determining if there are older notifications.
+                // And if they are there, get the correct offset to use
+                // in the view older notifications link.
+			    if (($num_notifications - ($offset + $data['num_new_notifs'])) > 0) {
 			        $data['has_next'] = TRUE;
+                    // To indicate the the notifications that follow are older.
+                    $data['older'] = TRUE;
 			        $data['next_offset'] = ($offset + $data['num_new_notifs']);
 			    }
 			}
@@ -435,8 +438,15 @@ class User extends CI_Controller
             }
             else {
                 $num_messages = $this->user_model->get_num_messages(FALSE);
-                if ($num_messages > 0) {
+
+                // Here, we are determining if there are older messages.
+                // And if they are there, get the correct offset to use
+                // in the view older messages link.
+                if (($num_messages - ($offset + $data['num_new_messages'])) > 0) {
                     $data['has_next'] = TRUE;
+
+                    // To indicate that we are showing older messages.
+                    $data['older'] = TRUE;
                     $data['next_offset'] = ($offset + $data['num_new_messages']);
                 }
             }
@@ -764,8 +774,9 @@ class User extends CI_Controller
                     return;
                 }
                 else {
-                    $data['error_message'] = "The years you entered conflict with one of your records.<br><strong>Remember</strong> that " .
-                                             "you cannot be attached to/a resident of two halls at the same time.";
+                    $data['error_message'] = "The years you entered either conflict with one of your records.<br>" .
+                                             "Either you indicated that you were in a hostel during that period, or<br>" .
+                                             "The dates overlap with one of your other halls.";
                 }
             }
         }

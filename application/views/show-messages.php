@@ -34,8 +34,17 @@ require_once('common/user-page-start.php');
     </ul>
     <?php endif; ?>
 </div><!-- box -->
-<?php if ($has_next): ?>
-<div class="box more previous">
-    <a href="<?= base_url("user/messages/{$next_offset}"); ?>">View more messages</a>
-</div>
-<?php endif; ?>
+<?php
+if ($has_next) {
+    print '<div class="box more previous">' .
+            '<a href="' . base_url("user/messages/{$next_offset}") . '">View ';
+    if (isset($older)) {
+        print 'older ';
+    }
+    else {
+        print 'more ';
+    }
+    print 'messages</a> ' .
+            '</div>';
+}
+?>

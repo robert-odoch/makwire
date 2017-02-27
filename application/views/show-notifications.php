@@ -148,8 +148,18 @@ require_once('common/user-page-start.php');
         </ul>
     <?php endif; ?>
 </div><!-- box -->
-<?php if ($has_next): ?>
-<div class="box more">
-    <a href="<?= base_url("user/notifications/{$next_offset}/"); ?>">View more notifications</a>
-</div>
-<?php endif; ?>
+<?php
+if ($has_next) {
+    print '<div class="box more">' .
+            '<a href="' . base_url("user/notifications/{$next_offset}/") . '">View ';
+    if (isset($older)) {
+        // Showing new notifications, but we also have to give a link to older notifications.
+        print 'older ';
+    }
+    else {
+        print 'more ';
+    }
+    print 'notifications</a>' .
+            '</div>';
+}
+?>

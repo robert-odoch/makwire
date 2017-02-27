@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-if (count($suggested_users) > 0) {
+if (count($people_you_may_know) > 0) {
 ?>
     <h4>People you may know</h4>
     <ul class="suggested-users">

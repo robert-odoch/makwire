@@ -199,8 +199,7 @@ class Profile_model extends CI_Model
 
     /**
      * Gets the programmes under a school so that a user can add it as his programme.
-     * @return FALSE if college with that ID does not exist or the user already
-     *          added a programme in the range of years.
+     * @return programmes offered under a particular school.
      */
     public function get_programmes($school_id)
     {
@@ -478,17 +477,32 @@ class Profile_model extends CI_Model
         $data_date_from = date_create($data['start_date']);
         $data_date_to = date_create($data['end_date']);
 
-        $dates_sql = sprintf("SELECT date_from, date_to FROM user_halls " .
+        $hall_dates_sql = sprintf("SELECT date_from, date_to FROM user_halls " .
                                 "WHERE (user_id = %d)",
                                 $_SESSION['user_id']);
-        $dates_query = $this->run_query($dates_sql);
 
-        $dates_results = $dates_query->result_array();
-        foreach ($dates_results as $d) {
+        $hall_dates_results = $this->run_query($dates_sql)->result_array();
+        foreach ($hall_dates_results as $d) {
             $date_from = date_create($d['date_from']);
             $date_to = date_create($d['date_to']);
             if ($this->are_conflicting_dates($data_date_from, $data_date_to, $date_from, $date_to)) {
                 return FALSE;
+            }
+        }
+
+        // Next, check whether a hostel already exists in the range of years
+        // provided but the user is claiming that he's resident.
+        if ($data['resident'] == 1) {
+            $hostel_dates_sql = sprintf("SELECT date_from, date_to FROM user_hostels " .
+                                        "WHERE (user_id = %d)",
+                                        $_SESSION['user_id']);
+            $hostel_dates_results = $this->run_query($hostel_dates_sql)->result_array();
+            foreach ($hostel_dates_results as $d) {
+                $date_from = date_create($d['date_from']);
+                $date_to = date_create($d['date_to']);
+                if ($this->are_conflicting_dates($data_date_from, $data_date_to, $date_from, $date_to)) {
+                    return FALSE;
+                }
             }
         }
 
