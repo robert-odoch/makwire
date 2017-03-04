@@ -38,7 +38,7 @@ require_once('common/user-page-start.php');
                     <input type="text" name="district" id="district" size="30">
                 </div>
             </fieldset>
-            <input type="submit" value="Submit" class="btn">
+            <input type="submit" value="Submit" class="btn btn-sm">
         </form>
     <?php } // isset($success_message). ?>
 </div><!-- box -->

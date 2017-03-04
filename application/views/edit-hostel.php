@@ -44,6 +44,6 @@ require_once('common/user-page-start.php');
             <input type="hidden" name="user-hostel-id" value="<?= $user_hostel['id']; ?>">
         </fieldset>
         <?php } ?>
-        <input type="submit" value="Save" class="btn">
+        <input type="submit" value="Save" class="btn btn-sm">
     </form>
 </div><!-- box -->

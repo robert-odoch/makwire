@@ -77,6 +77,6 @@ require_once('common/user-page-start.php');
             <input type="hidden" name = "school-id" value = "<?= $user_college['school']['school_id']; ?>">
         </fieldset>
         <?php } ?>
-        <input type="submit" value="Save" class="btn">
+        <input type="submit" value="Save" class="btn btn-sm">
     </form>
 </div><!-- box -->

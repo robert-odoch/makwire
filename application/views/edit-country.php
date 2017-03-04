@@ -25,7 +25,7 @@ require_once('common/user-page-start.php');
             </div>
         </fieldset>
     </optgroup>
-        <input type="submit" value="Submit" class="btn">
+        <input type="submit" value="Submit" class="btn btn-sm">
     </form>
     <?php } ?>
 </div><!-- box -->
