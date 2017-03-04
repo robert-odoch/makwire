@@ -368,21 +368,6 @@ footer.footer a {
     color: #fff;
     text-decoration: underline;
 }
-/*div#content-header {
-    padding: 1px 10px 1px 5px;
-    margin-bottom: 5px;
-    border-radius: 3px;
-    background-color: #fff;
-    box-shadow: 0 0 4px #2E8B57;
-}
-div#content-header h3 a {
-    display: block;
-    text-decoration: none;
-}
-div#content-header a.btn {
-    margin-top: -5px;
-    margin-bottom: 2px;
-}*/
 nav#user-nav-mobile {
     display: none;
 }
