@@ -241,7 +241,17 @@ ul.suggested-users figure {
     float: left;
     height: 35px;
 }
-ul.suggested-users figure {
+a.btn {
+    color: #fff;
+    background-color: #2E8B57;
+}
+a.btn:hover {
+    color: #fff;
+}
+div.media-body h4 {
+    font-size: 14px;
+}
+img.media-object {
     width: 50px;
     height: 50px;
 }
@@ -336,8 +346,8 @@ article header h4 small.time {
     font-style: normal;
 }
 
-div.suggestions h4,
-div.col-small h4 {
+div.suggestions > h4,
+div.col-small > h4 {
     padding-bottom: 13px;
     border-bottom: 1px solid #8FBC8F;
 }
@@ -400,11 +410,6 @@ div.side-content {
     float: left;
     background-color: #fff;
     box-shadow: 0 0 4px #2E8B57;
-}
-div.side-content .btn {
-    width: 100%;
-    padding: 5px;
-    margin-top: 5px;
 }
 div.box {
     padding: 10px;
@@ -568,14 +573,6 @@ span.logged-in {
     width: 10px;
     height: 10px;
     border: 1px solid #000;
-}
-.btn,
-.btn:hover,
-.btn:active,
-.btn:focus {
-    background-color: #2E8B57;
-    padding: 2px;
-    color: #fff;
 }
 .alert {
     border-radius: 3px;
