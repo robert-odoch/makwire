@@ -333,6 +333,7 @@ article header h4 small.time {
 }
 
 div.suggestions > h4 {
+    margin-top: 8px;
     padding-bottom: 3px;
     border-bottom: 1px solid #8FBC8F;
 }
