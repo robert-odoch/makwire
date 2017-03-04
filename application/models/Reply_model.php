@@ -58,6 +58,9 @@ class Reply_model extends CI_Model
         // Get the name of the replier.
         $reply['commenter'] = $this->user_model->get_profile_name($reply['commenter_id']);
 
+        // Add profile picture.
+        $reply['profile_pic_path'] = $this->user_model->get_profile_pic_path($reply['commenter_id']);
+
         // Add the timespan.
         $reply['timespan'] = timespan(mysql_to_unix($reply['date_entered']), now(), 1);
 
