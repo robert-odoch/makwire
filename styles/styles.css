@@ -235,12 +235,13 @@ u.suggested-users img.media-object {
 ul.active-users img.media-object {
     border-radius: 50%;
 }
-.btn {
+.btn,
+.btn:hover,
+.btn:active,
+.btn:focus {
     color: #fff;
+    border-color: #2E8B57;
     background-color: #2E8B57;
-}
-.btn:hover {
-    color: #fff;
 }
 div.media-body h4 {
     font-size: 14px;
