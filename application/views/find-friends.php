@@ -31,7 +31,7 @@ require_once('common/user-page-start.php');
                     <a href="<?= base_url("user/index/{$user['user_id']}"); ?>"><?= $user['profile_name']; ?></a>
                 </h4>
                 <a href="<?= base_url("user/add-friend/{$user['user_id']}"); ?>"
-                    class="btn btn-sm">Add friend</a>
+                    class="btn btn-xs">Add friend</a>
             </div>
         </div>
         <?php endforeach; ?>
