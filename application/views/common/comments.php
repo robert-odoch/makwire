@@ -20,12 +20,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         foreach($comments as $comment):
         ?>
         <li>
-            <article class="comment">
-                <header>
-                    <a href="<?= base_url("user/index/{$comment['commenter_id']}"); ?>"><strong><?= $comment['commenter']; ?></strong></a>
-                </header>
-                <p class="comment"><?= htmlspecialchars($comment['comment']); ?></p>
-                <footer>
+            <div class="media">
+                <div class="media-left">
+                    <img class="media-object" src="<?= $comment['profile_pic_path']; ?>"
+                    alt="<?= $comment['commenter']; ?>">
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading">
+                        <a href="<?= base_url("user/index/{$comment['commenter_id']}"); ?>"><strong><?= $comment['commenter']; ?></strong></a>
+                    </h4>
+                    <p class="comment"><?= htmlspecialchars($comment['comment']); ?></p>
                     <small class="time"><span class="glyphicon glyphicon-time"></span> <?= $comment['timespan']; ?> ago</small>
                     <?php
                     if ($comment['viewer_is_friend_to_owner']) {
@@ -51,8 +55,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         print "</a>";
                     }
                     ?>
-                </footer>
-            </article>
+                </div>
+            </div>
         </li>
         <?php
         ++$i;

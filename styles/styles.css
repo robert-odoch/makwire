@@ -190,12 +190,13 @@ ul.chat-friends li,
 ul.notifications li,
 ul.suggested-users li,
 ul.suggested-groups li {
-    margin-bottom: 5px;
-    padding-bottom: 5px;
+    margin-bottom: 3px;
+    padding-bottom: 2px;
     border-bottom: 1px dotted #8FBC8F;
 }
-ul.comments li,
-ul.messages li {
+
+ul.messages li,
+ul.comments li {
     padding-bottom: 0;
 }
 
@@ -233,6 +234,7 @@ ul.active-users li:last-child {
 ul.likes img.media-object,
 ul.members img.media-object,
 ul.friends img.media-object,
+ul.comments img.media-object,
 ul.followers img.media-object,
 ul.following img.media-object,
 ul.active-users img.media-object,
@@ -260,6 +262,9 @@ div.media-body h4 {
 div#primary-user h4.media-heading,
 ul.active-users h4.media-heading {
     margin-top: 5px;
+}
+ul.comments h4.media-heading {
+    margin-bottom: -2px;
 }
 div#primary-user img.media-object {
     border-radius: 3px;
@@ -328,6 +333,7 @@ div.show-profile ul:last-child li:last-child {
     margin-bottom: 0;
 }
 small.time {
+    margin-top: 0;
     display: inline-block;
     font-style: oblique;
 }
@@ -447,7 +453,7 @@ article.photo header {
     border-bottom: 1px solid #8FBC8F;
 }
 
-article.comment p,
+p.comment,
 article.message p,
 article.reply p,
 ul.notifications li a {
@@ -596,11 +602,11 @@ form#comment-bottom {
     border-top: 1px dotted #8FBC8F;
 }
 
-p.post,
-p.comment {
+p.post {
     text-align: justify;
     margin: 0;
 }
+
 p.post a.more {
     display: inline-block;
 }
