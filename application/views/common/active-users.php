@@ -12,13 +12,11 @@ if (count($chat_users) > 0):
                     alt="<?= $chat_user['profile_name']?>" class="user">
                 </div>
                 <div class="media-body">
-                    <div class="media-heading">
-                        <h4>                            
-                            <a href="<?= base_url("user/send-message/{$chat_user['friend_id']}"); ?>">
-                                <?= $chat_user['profile_name']; ?>
-                            </a>
-                        </h4>
-                    </div>
+                    <h4 class="media-heading">
+                        <a href="<?= base_url("user/send-message/{$chat_user['friend_id']}"); ?>">
+                            <?= $chat_user['profile_name']; ?>
+                        </a>
+                    </h4>
                 </div>
             </div>
         </li>
