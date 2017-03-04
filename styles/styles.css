@@ -332,9 +332,8 @@ article header h4 small.time {
     font-style: normal;
 }
 
-div.suggestions > h4,
-div.col-small > h4 {
-    padding-bottom: 13px;
+div.suggestions > h4 {
+    padding-bottom: 3px;
     border-bottom: 1px solid #8FBC8F;
 }
 .badge {
