@@ -13,7 +13,7 @@ require_once('common/user-page-start.php');
                 <input type="search" name="query" id="query" class="fluid" placeholder="Search for a friend">
             </div>
         </fieldset>
-        <input type="submit" value="Search" class="btn">
+        <input type="submit" value="Search" class="btn btn-sm">
     </form>
 </div><!-- .box -->
 <?php if (count($suggested_users) > 0): ?>
