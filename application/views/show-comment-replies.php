@@ -23,12 +23,16 @@ require_once("common/comment-or-reply.php");
         foreach($replies as $reply):
         ?>
         <li>
-            <article class="reply">
-                <header>
-                    <a href="<?= base_url("user/index/{$reply['commenter_id']}"); ?>"><strong><?= $reply['commenter']; ?></strong></a>
-                </header>
-                <p class="reply"><?= htmlspecialchars($reply['comment']); ?></p>
-                <footer>
+            <div class="media">
+                <div class="media-left">
+                    <img class="media-object" src="<?= $reply['profile_pic_path']; ?>"
+                        alt="<?= $reply['commenter']; ?>'s photo">
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading">
+                        <a href="<?= base_url("user/index/{$reply['commenter_id']}"); ?>"><strong><?= $reply['commenter']; ?></strong></a>
+                    </h4>
+                    <p class="reply"><?= htmlspecialchars($reply['comment']); ?></p>
                     <small class="time"><span class="glyphicon glyphicon-time"></span> <?= $reply['timespan']; ?> ago</small>
                     <?php
                     if ($reply['viewer_is_friend_to_owner'] && !$reply['liked']) {
@@ -42,8 +46,8 @@ require_once("common/comment-or-reply.php");
                         print "</a>";
                     }
                     ?>
-                </footer>
-            </article>
+                </div>
+            </div>
         </li>
         <?php
         ++$i;
