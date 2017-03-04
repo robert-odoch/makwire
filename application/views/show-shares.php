@@ -28,23 +28,21 @@ switch ($object) {
                   "View previous shares.</a>");
         }
     ?>
-    <ul class="likes">
+    <div class="shares">
         <?php foreach($shares as $share): ?>
-        <li>
-            <div class="media">
-                <div class="media-left">
-                    <img class="media-object" src="<?= $share['profile_pic_path']; ?>"
-                    alt="<?= $share['sharer']; ?>">
-                </div>
-                <div class="media-body">
-                    <h4 class="media-heading">
-                        <a href="<?= base_url("user/index/{$share['sharer_id']}"); ?>"><?= $share['sharer']; ?></a>
-                    </h4>
-                </div>
+        <div class="media">
+            <div class="media-left">
+                <img class="media-object" src="<?= $share['profile_pic_path']; ?>"
+                alt="<?= $share['sharer']; ?>">
             </div>
-        </li>
+            <div class="media-body">
+                <h4 class="media-heading">
+                    <a href="<?= base_url("user/index/{$share['sharer_id']}"); ?>"><?= $share['sharer']; ?></a>
+                </h4>
+            </div>
+        </div>
         <?php endforeach; ?>
-    </ul>
+    </div>
     <?php } // (count($shares) == 0) ?>
 </div><!-- box -->
 <?php if ($has_next) { ?>
