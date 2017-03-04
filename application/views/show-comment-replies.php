@@ -17,43 +17,41 @@ require_once("common/comment-or-reply.php");
                   "View previous replies.</a>");
         }
     ?>
-    <ul class="replies">
+    <div class="replies">
         <?php
         $i = $num_prev;
         foreach($replies as $reply):
         ?>
-        <li>
-            <div class="media">
-                <div class="media-left">
-                    <img class="media-object" src="<?= $reply['profile_pic_path']; ?>"
-                        alt="<?= $reply['commenter']; ?>'s photo">
-                </div>
-                <div class="media-body">
-                    <h4 class="media-heading">
-                        <a href="<?= base_url("user/index/{$reply['commenter_id']}"); ?>"><strong><?= $reply['commenter']; ?></strong></a>
-                    </h4>
-                    <p class="reply"><?= htmlspecialchars($reply['comment']); ?></p>
-                    <small class="time"><span class="glyphicon glyphicon-time"></span> <?= $reply['timespan']; ?> ago</small>
-                    <?php
-                    if ($reply['viewer_is_friend_to_owner'] && !$reply['liked']) {
-                        print '<span> &middot; </span>' .
-                                '<a href="' . base_url("reply/like/{$reply['comment_id']}/{$comment['comment_id']}/{$i}") . '">Like</a>';
-                    }
-                    if ($reply['num_likes'] > 0) {
-                        print "<span> &middot; </span>" .
-                              "<a href='" . base_url("reply/likes/{$reply['comment_id']}") . "'>{$reply['num_likes']}";
-                        print ($reply['num_likes'] == 1) ? " like" : " likes";
-                        print "</a>";
-                    }
-                    ?>
-                </div>
+        <div class="media">
+            <div class="media-left">
+                <img class="media-object" src="<?= $reply['profile_pic_path']; ?>"
+                    alt="<?= $reply['commenter']; ?>'s photo">
             </div>
-        </li>
+            <div class="media-body">
+                <h4 class="media-heading">
+                    <a href="<?= base_url("user/index/{$reply['commenter_id']}"); ?>"><strong><?= $reply['commenter']; ?></strong></a>
+                </h4>
+                <p class="reply"><?= htmlspecialchars($reply['comment']); ?></p>
+                <small class="time"><span class="glyphicon glyphicon-time"></span> <?= $reply['timespan']; ?> ago</small>
+                <?php
+                if ($reply['viewer_is_friend_to_owner'] && !$reply['liked']) {
+                    print '<span> &middot; </span>' .
+                            '<a href="' . base_url("reply/like/{$reply['comment_id']}/{$comment['comment_id']}/{$i}") . '">Like</a>';
+                }
+                if ($reply['num_likes'] > 0) {
+                    print "<span> &middot; </span>" .
+                          "<a href='" . base_url("reply/likes/{$reply['comment_id']}") . "'>{$reply['num_likes']}";
+                    print ($reply['num_likes'] == 1) ? " like" : " likes";
+                    print "</a>";
+                }
+                ?>
+            </div>
+        </div>
         <?php
         ++$i;
         endforeach;
         ?>
-    </ul>
+    </div>
     <?php } // (count($replies) == 0) ?>
 </div><!-- box -->
 <?php if ($has_next) { ?>
