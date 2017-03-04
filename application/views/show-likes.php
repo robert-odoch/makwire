@@ -35,8 +35,17 @@ switch ($object) {
     <ul class="likes">
         <?php foreach($likes as $like): ?>
         <li>
-            <figure><img src="<?= $like['profile_pic_path']; ?>" alt="<?= $like['liker']; ?>"></figure>
-            <span><a href="<?= base_url("user/index/{$like['liker_id']}"); ?>"><?= $like['liker']; ?></a></span>
+            <div class="media">
+                <div class="media-left">
+                    <img class="media-object" src="<?= $like['profile_pic_path']; ?>"
+                    alt="<?= $like['liker']; ?>">
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading">
+                        <a href="<?= base_url("user/index/{$like['liker_id']}"); ?>"><?= $like['liker']; ?></a>
+                    </h4>
+                </div>
+            </div>
         </li>
         <?php endforeach; ?>
     </ul>
