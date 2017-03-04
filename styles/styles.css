@@ -229,17 +229,22 @@ div.show-profile ul:last-child li:last-child {
 ul.active-users li:last-child {
     margin-bottom: 0;
 }
-ul.likes figure,
-ul.members figure,
-ul.friends figure,
-ul.followers figure,
-ul.following figure,
-ul.active-users figure,
-ul.chat-friends figure,
-ul.suggested-users figure {
+ul.likes img.media-object,
+ul.members img.media-object,
+ul.friends img.media-object,
+ul.followers img.media-object,
+ul.following img.media-object,
+ul.active-users img.media-object,
+ul.chat-friends img.media-object {
     width: 35px;
-    float: left;
     height: 35px;
+}
+u.suggested-users img.media-object {
+    width: 50px;
+    height: 50px;
+}
+ul.active-users img.media-object {
+    border-radius: 50%;
 }
 a.btn {
     color: #fff;
@@ -254,29 +259,6 @@ div.media-body h4 {
 img.media-object {
     width: 50px;
     height: 50px;
-}
-ul.likes figure img,
-ul.members figure img,
-ul.friends figure img,
-ul.followers figure img,
-ul.following figure img,
-ul.chat-friends figure img,
-ul.suggested-users figure img {
-    max-width: 100%;
-    width: 35px;
-    height: 35px;
-    max-height: 35px;
-    border-radius: 2px;
-}
-ul.suggested-users figure img {
-    width: 50px;
-    height: 50px;
-    max-height: 50px;
-}
-ul.active-users figure img.user {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
 }
 ul.likes li > span,
 ul.members li > span,
