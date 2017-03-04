@@ -31,8 +31,17 @@ switch ($object) {
     <ul class="likes">
         <?php foreach($shares as $share): ?>
         <li>
-            <figure><img src="<?= $share['profile_pic_path']; ?>" alt="<?= $share['sharer']; ?>"></figure>
-            <span><a href="<?= base_url("user/index/{$share['sharer_id']}"); ?>"><?= $share['sharer']; ?></a></span>
+            <div class="media">
+                <div class="media-left">
+                    <img class="media-object" src="<?= $share['profile_pic_path']; ?>"
+                    alt="<?= $share['sharer']; ?>">
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading">
+                        <a href="<?= base_url("user/index/{$share['sharer_id']}"); ?>"><?= $share['sharer']; ?></a>
+                    </h4>
+                </div>
+            </div>
         </li>
         <?php endforeach; ?>
     </ul>
