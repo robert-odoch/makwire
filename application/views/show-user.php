@@ -29,7 +29,7 @@ if (!$is_visitor) {
                 ?>
             </div>
 
-            <input type="submit" value="Post" class="btn">
+            <input type="submit" value="Post" class="btn btn-sm">
             <a href="attach-post-photo.html">
                 <span class="glyphicon glyphicon-picture"></span> Add photo
             </a>
