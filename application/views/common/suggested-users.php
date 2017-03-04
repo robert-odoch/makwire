@@ -7,13 +7,19 @@ if (count($people_you_may_know) > 0) {
     <ul class="suggested-users">
         <?php foreach ($people_you_may_know as $p) { ?>
         <li>
-            <figure>
-                <img src="<?= $p['profile_pic_path']; ?>" alt="<?= $p['profile_name']; ?>">
-            </figure>
-            <span>
-                <a href="<?= base_url("user/profile/{$p['user_id']}"); ?>"><?= $p['profile_name']; ?></a>&nbsp;
-                <a href="<?= base_url("user/add-friend/{$p['user_id']}"); ?>" class="btn">Add friend</a>
-            </span>
+            <div class="media">
+                <div class="media-left">
+                    <img class="media-object" src="<?= $p['profile_pic_path']; ?>"
+                    alt="<?= $p['profile_name']; ?>">
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading">
+                        <a href="<?= base_url("user/profile/{$p['user_id']}"); ?>"><?= $p['profile_name']; ?></a>
+                    </h4>
+                    <a href="<?= base_url("user/add-friend/{$p['user_id']}"); ?>"
+                        class="btn btn-sm">Add friend</a>
+                </div>
+            </div>
         </li>
         <?php } ?>
     </ul>
