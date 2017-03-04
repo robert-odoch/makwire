@@ -207,7 +207,8 @@ ul.active-users li {
 ul.active-users li:hover {
     background-color: #8FBC8F;
 }
-ul.active-users li:hover span a {
+
+ul.active-users li:hover a {
     color: #fff;
 }
 
