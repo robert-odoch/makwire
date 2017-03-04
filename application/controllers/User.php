@@ -977,10 +977,10 @@ class User extends CI_Controller
         $this->load->view("common/footer");
     }
 
-    public function edit_country()
+    public function add_country()
     {
         $data = $this->user_model->initialize_user();
-        $data['title'] = "Edit your country of origin";
+        $data['title'] = "Add your country of origin";
         $this->load->view('common/header', $data);
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
