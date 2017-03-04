@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 <div class="wrap-single">
 <div role="main" class="main">
-<div id="content-header">
+<div class="box">
     <?php if (isset($message)): ?>
     <h3>Log in to continue</h3>
     <?php else: ?>
