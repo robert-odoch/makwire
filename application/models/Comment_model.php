@@ -49,7 +49,8 @@ class Comment_model extends CI_Model
 
     public function get_comment($comment_id)
     {
-        $comment_sql = sprintf("SELECT commenter_id, comment, date_entered FROM comments " .
+        $comment_sql = sprintf("SELECT commenter_id, comment, source_id, source_type, date_entered " .
+                                "FROM comments " .
                                 "WHERE (comment_id = %d AND parent_id = 0)",
                                 $comment_id);
         $comment_query = $this->run_query($comment_sql);
