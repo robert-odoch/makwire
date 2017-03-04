@@ -78,6 +78,7 @@ a:focus {
     border-radius: 3px;
 }
 div.likes div.media,
+div.shares div.media,
 div.replies div.media,
 div.comments div.media {
     margin: 0 0 2px 0;
@@ -174,27 +175,14 @@ ul.dropdown-menu li a:hover {
 
 ul.about li,
 ul.profile li,
-ul.likes li,
-ul.replies li,
-ul.groups li,
-ul.members li,
-ul.friends li,
 ul.messages li,
-ul.comments li,
-ul.followers li,
-ul.following li,
-ul.chat-friends li,
-ul.notifications li,
-ul.suggested-users li,
-ul.suggested-groups li {
+ul.notifications li {
     margin-bottom: 3px;
     padding-bottom: 2px;
     border-bottom: 1px dotted #8FBC8F;
 }
 
-ul.messages li,
-ul.comments li,
-ul.replies li {
+ul.messages li {
     padding-bottom: 0;
 }
 
@@ -211,19 +199,8 @@ ul.active-users li:hover a {
 }
 
 ul.about li:last-child,
-ul.likes li:last-child,
-ul.replies li:last-child,
-ul.groups li:last-child,
-ul.members li:last-child,
-ul.friends li:last-child,
 ul.messages li:last-child,
-ul.comments li:last-child,
-ul.followers li:last-child,
-ul.following li:last-child,
-ul.chat-friends li:last-child,
 ul.notifications li:last-child,
-ul.suggested-users li:last-child,
-ul.suggested-groups li:last-child,
 div.show-profile ul:last-child li:last-child {
     padding-bottom: 0;
     margin-bottom: 0;
@@ -232,18 +209,19 @@ ul.active-users li:last-child {
     margin-bottom: 0;
 }
 div.likes img.media-object,
+div.shares img.media-object,
 div.replies img.media-object,
-ul.members img.media-object,
-ul.friends img.media-object,
+div.members img.media-object,
+div.friends img.media-object,
 div.comments img.media-object,
-ul.followers img.media-object,
-ul.following img.media-object,
-ul.active-users img.media-object,
-ul.chat-friends img.media-object {
+div.followers img.media-object,
+div.following img.media-object,
+div.active-users img.media-object,
+div.chat-friends img.media-object {
     width: 35px;
     height: 35px;
 }
-u.suggested-users img.media-object {
+ul.suggested-users img.media-object {
     width: 50px;
     height: 50px;
 }
@@ -285,20 +263,8 @@ div#secondary-user img.media-object {
 }
 
 ul.about li:last-child,
-ul.likes li:last-child,
-ul.groups li:last-child,
-ul.replies li:last-child,
-ul.members li:last-child,
-ul.friends li:last-child,
 ul.messages li:last-child,
-ul.comments li:last-child,
-ul.followers li:last-child,
-ul.following li:last-child,
-ul.active-users li:last-child,
-ul.chat-friends li:last-child,
 ul.notifications li:last-child,
-ul.suggested-users li:last-child,
-ul.suggested-groups li:last-child,
 div.show-profile ul:last-child li:last-child {
     border-bottom: none;
     margin-bottom: 0;
