@@ -11,6 +11,23 @@ if ($is_visitor) {
 if (!$is_visitor) {
 ?>
     <div class="box">
+        <ul class="nav nav-tabs">
+            <li role="presentation" class="active">
+                <a href="#">
+                    <span class="glyphicon glyphicon-edit"></span> Status
+                </a>
+            </li>
+            <li role="presentation">
+                <a href="#">
+                    <span class="glyphicon glyphicon-picture"></span> Photo
+                </a>
+            </li>
+            <li role="presentation">
+                <a href="#">
+                    <span class="glyphicon glyphicon-film"></span> Video
+                </a>
+            </li>
+        </ul>
         <form action="<?= base_url('user/new-post'); ?>" method="post"
             accept-charset="utf-8" role="form">
             <div class="form-group">
@@ -30,9 +47,6 @@ if (!$is_visitor) {
             </div>
 
             <input type="submit" value="Post" class="btn btn-sm">
-            <a href="attach-post-photo.html">
-                <span class="glyphicon glyphicon-picture"></span> Add photo
-            </a>
         </form>
     </div>
 <?php } // (!$is_visitor) ?>
