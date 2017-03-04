@@ -250,11 +250,11 @@ u.suggested-users img.media-object {
 ul.active-users img.media-object {
     border-radius: 50%;
 }
-a.btn {
+.btn {
     color: #fff;
     background-color: #2E8B57;
 }
-a.btn:hover {
+.btn:hover {
     color: #fff;
 }
 div.media-body h4 {
@@ -368,7 +368,7 @@ footer.footer a {
     color: #fff;
     text-decoration: underline;
 }
-div#content-header {
+/*div#content-header {
     padding: 1px 10px 1px 5px;
     margin-bottom: 5px;
     border-radius: 3px;
@@ -382,7 +382,7 @@ div#content-header h3 a {
 div#content-header a.btn {
     margin-top: -5px;
     margin-bottom: 2px;
-}
+}*/
 nav#user-nav-mobile {
     display: none;
 }
