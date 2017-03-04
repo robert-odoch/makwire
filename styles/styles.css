@@ -19,6 +19,10 @@ h3 {
     background-color: #2E8B57 !important;
     color: #000 !important;
 }
+
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:focus, .nav-tabs > li.active > a:hover {
+	border: 1px solid #8FBC8F;  /* Override bootstrap's border style.*/
+}
 .table {
     margin-bottom: 5px;
 }
