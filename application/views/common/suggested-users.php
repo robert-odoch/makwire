@@ -4,9 +4,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 if (count($people_you_may_know) > 0) {
 ?>
     <h4>People you may know</h4>
-    <ul class="suggested-users">
+    <div class="suggested-users">
         <?php foreach ($people_you_may_know as $p) { ?>
-        <li>
             <div class="media">
                 <div class="media-left">
                     <img class="media-object" src="<?= $p['profile_pic_path']; ?>"
@@ -20,9 +19,8 @@ if (count($people_you_may_know) > 0) {
                         class="btn btn-sm">Add friend</a>
                 </div>
             </div>
-        </li>
         <?php } ?>
-    </ul>
+    </div>
 <?php
 }
 ?>
