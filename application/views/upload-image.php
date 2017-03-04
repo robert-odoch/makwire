@@ -13,6 +13,6 @@ require_once('common/user-page-start.php');
         <?php } ?>
         <form action="<?= base_url("upload/profile-picture"); ?>" method="post" enctype="multipart/form-data" role="form">
             <input type="file" name="userfile" size="20">
-            <input type="submit" name="submit" value="Upload" class="btn">
+            <input type="submit" name="submit" value="Upload" class="btn btn-sm">
         </form>
 </div>
