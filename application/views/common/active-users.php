@@ -3,7 +3,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 if (count($chat_users) > 0):
 ?>
-    <h4>Active</h4>
     <ul class="active-users">
         <?php foreach($chat_users as $chat_user): ?>
         <li>
