@@ -810,6 +810,7 @@ class User_model extends CI_Model
             }
 
             $fr['profile_name'] = $this->get_profile_name($fr['user_id']);
+            $fr['profile_pic_path'] = $this->get_profile_pic_path($fr['user_id']);
         }
         unset($fr);
 
