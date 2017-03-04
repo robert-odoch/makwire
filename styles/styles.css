@@ -282,46 +282,6 @@ div#secondary-user img.media-object {
     height: 75px;
 }
 
-ul.likes li > span,
-ul.members li > span,
-ul.friends li > span,
-ul.followers li > span,
-ul.following li > span,
-ul.active-users li > span,
-ul.chat-friends li > span,
-ul.suggested-users li > span {
-    display: block;
-    min-height: 35px;
-    margin-left: 42px;
-}
-ul.suggested-users li > span {
-    min-height: 50px;
-    margin-left: 57px;
-}
-ul.groups li span a:first-child,
-ul.members li span a:first-child,
-ul.friends li span a:first-child,
-ul.followers li span a:first-child,
-ul.following li span a:first-child,
-ul.active-users li span a:first-child,
-ul.suggested-users li span a:first-child,
-ul.suggested-groups li span a:first-child {
-    display: block;
-}
-ul.active-users li span a {
-    padding-top: 5px;
-}
-ul.groups li span,
-ul.suggested-groups li span {
-    display: block;
-    width: 100%;
-}
-div.suggestions ul.suggested-groups li span a:first-child,
-div.suggestions ul.suggested-users li span a:first-child {
-    display: block;
-    margin-bottom: 5px;
-}
-
 ul.about li:last-child,
 ul.likes li:last-child,
 ul.groups li:last-child,
