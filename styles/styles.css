@@ -116,10 +116,11 @@ div#secondary-user ul li a:hover {
     background-color: #2E8B57;
 }
 div#primary-user {
-    padding-bottom: 2px;
+    margin-bottom: 5px;
+}
+div#primary-user a {
     color: #2E8B57;
     font-weight: bold;
-    margin-bottom: 5px;
 }
 div#primary-user a:hover {
     text-decoration: none;
@@ -256,10 +257,18 @@ a.btn:hover {
 div.media-body h4 {
     font-size: 14px;
 }
+div#primary-user h4.media-heading,
+ul.active-users h4.media-heading {
+    margin-top: 5px;
+}
+div#primary-user img.media-object {
+    border-radius: 3px;
+}
 img.media-object {
     width: 50px;
     height: 50px;
 }
+
 ul.likes li > span,
 ul.members li > span,
 ul.friends li > span,
