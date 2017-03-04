@@ -11,23 +11,21 @@ require_once('common/user-page-start.php');
         <p><span class="glyphicon glyphicon-info-sign"></span> None of your friends are on chat at this moment.</p>
     </div>
     <?php else: ?>
-    <ul class="chat-friends">
+    <div class="chat-friends">
         <?php foreach ($chat_users as $cu): ?>
-        <li>
-            <div class="media">
-                <div class="media-left">
-                    <img class="media-object" src="<?= $cu['profile_pic_path']; ?>"
-                    alt="<?= "{$cu['profile_name']}'s photo"; ?>">
-                </div>
-                <div class="media-body">
-                    <a href="<?= base_url("user/send-message/{$cu['friend_id']}"); ?>">
-                        <?= $cu['profile_name']; ?>
-                    </a> <span class="logged-in"></span>
-                </div>
+        <div class="media">
+            <div class="media-left">
+                <img class="media-object" src="<?= $cu['profile_pic_path']; ?>"
+                alt="<?= "{$cu['profile_name']}'s photo"; ?>">
             </div>
-        </li>
+            <div class="media-body">
+                <a href="<?= base_url("user/send-message/{$cu['friend_id']}"); ?>">
+                    <?= $cu['profile_name']; ?>
+                </a> <span class="logged-in"></span>
+            </div>
+        </div>
         <?php endforeach; ?>
-    </ul>
+    </div>
     <?php endif; ?>
 </div><!-- .box -->
 <?php if ($has_next): ?>
