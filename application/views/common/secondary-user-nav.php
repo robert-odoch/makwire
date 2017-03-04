@@ -3,25 +3,31 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 ?>
 
 <div id="secondary-user" class="box">
-    <figure>
-        <img src="<?= $su_profile_pic_path; ?>" alt="<?= $secondary_user; ?>'s photo" class="profile-pic">
-    </figure>
-    <div>
-        <a href="<?= base_url("user/index/{$suid}"); ?>"><?= $secondary_user; ?></a>
-        <?php
-        if ($friendship_status['are_friends']) {
-            // Do nothing.
-        }
-        elseif ($friendship_status['fr_sent'] && $friendship_status['target_id']==$_SESSION['user_id']) {
-            print("<a href='" . base_url("user/accept_friend/{$suid}") . "' class='btn'>Confirm Friend</a>");
-        }
-        elseif ($friendship_status['fr_sent'] && $friendship_status['user_id']==$_SESSION['user_id']) {
-            print("<a href='' class='btn'>Friend Request Sent</a>");
-        }
-        else {
-            print("<a href='" . base_url("user/add_friend/{$suid}") . "' class='btn'>Add Friend</a>");
-        }
-        ?>
+    <div class="media">
+        <div class="media-left">
+            <img class="media-object" src="<?= $su_profile_pic_path; ?>"
+            alt="<?= $secondary_user; ?>'s photo">
+        </div>
+        <div class="media-body">
+            <h4 class="media-heading">
+                <a href="<?= base_url("user/index/{$suid}"); ?>"><?= $secondary_user; ?></a>
+            </h4>
+            <?php
+            if ($friendship_status['are_friends']) {
+                print "<button class='btn btn-sm'><span class='glyphicon glyphicon-ok'></span> " .
+                        "Friends</button>";
+            }
+            elseif ($friendship_status['fr_sent'] && $friendship_status['target_id'] == $_SESSION['user_id']) {
+                print("<a href='" . base_url("user/accept_friend/{$suid}") . "' class='btn btn-sm'>Confirm Friend</a>");
+            }
+            elseif ($friendship_status['fr_sent'] && $friendship_status['user_id'] == $_SESSION['user_id']) {
+                print("<button class='btn btn-sm'>Friend Request Sent</button>");
+            }
+            else {
+                print("<a href='" . base_url("user/add_friend/{$suid}") . "' class='btn btn-sm'>Add Friend</a>");
+            }
+            ?>
+        </div>
     </div>
     <ul>
         <?php
