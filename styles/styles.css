@@ -77,15 +77,17 @@ a:focus {
     height: 50px;
     border-radius: 3px;
 }
+div.likes div.media,
 div.replies div.media,
 div.comments div.media {
     margin: 0 0 2px 0;
+    padding-bottom: 2px;
     border-bottom: 1px dotted #8FBC8F;
 }
-div.replies div.media:last-child,
-div.comments div.media:last-child {
-    border: none;
+div.media:last-child {
+    border: none !important;
 }
+
 div#secondary-user div.media {
     margin-bottom: 3px;
 }
@@ -229,7 +231,7 @@ div.show-profile ul:last-child li:last-child {
 ul.active-users li:last-child {
     margin-bottom: 0;
 }
-ul.likes img.media-object,
+div.likes img.media-object,
 div.replies img.media-object,
 ul.members img.media-object,
 ul.friends img.media-object,

@@ -32,23 +32,21 @@ switch ($object) {
                   "View previous likes.</a>");
         }
     ?>
-    <ul class="likes">
+    <div class="likes">
         <?php foreach($likes as $like): ?>
-        <li>
-            <div class="media">
-                <div class="media-left">
-                    <img class="media-object" src="<?= $like['profile_pic_path']; ?>"
-                    alt="<?= $like['liker']; ?>">
-                </div>
-                <div class="media-body">
-                    <h4 class="media-heading">
-                        <a href="<?= base_url("user/index/{$like['liker_id']}"); ?>"><?= $like['liker']; ?></a>
-                    </h4>
-                </div>
+        <div class="media">
+            <div class="media-left">
+                <img class="media-object" src="<?= $like['profile_pic_path']; ?>"
+                alt="<?= $like['liker']; ?>">
             </div>
-        </li>
+            <div class="media-body">
+                <h4 class="media-heading">
+                    <a href="<?= base_url("user/index/{$like['liker_id']}"); ?>"><?= $like['liker']; ?></a>
+                </h4>
+            </div>
+        </div>
         <?php endforeach; ?>
-    </ul>
+    </div>
     <?php } ?>
 </div><!-- box -->
 <?php if ($has_next) { ?>
