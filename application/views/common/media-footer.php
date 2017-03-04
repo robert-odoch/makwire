@@ -42,7 +42,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         </li>
         <li>
             <a href="<?= base_url("$object/share/{$$object[$object . '_id']}"); ?>" title="Share this <?= $object; ?>">
-                <span class="glyphicon glyphicon-share"></span> Share
+                <span class="glyphicon glyphicon-share-alt"></span> Share
             </a>
         </li>
     </ul>
