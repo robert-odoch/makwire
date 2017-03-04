@@ -62,6 +62,9 @@ class Comment_model extends CI_Model
         // Get the name of the commenter.
         $comment['commenter'] = $this->user_model->get_profile_name($comment['commenter_id']);
 
+        // Get the profile picture of the commenter.
+        $comment['profile_pic_path'] = $this->user_model->get_profile_pic_path($comment['commenter_id']);
+
         // Add the number of likes and replies.
         $comment['num_likes'] = $this->get_num_likes($comment_id);
         $comment['num_replies'] = $this->get_num_replies($comment_id);
