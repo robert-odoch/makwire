@@ -77,6 +77,15 @@ a:focus {
     height: 50px;
     border-radius: 3px;
 }
+div.replies div.media,
+div.comments div.media {
+    margin: 0 0 2px 0;
+    border-bottom: 1px dotted #8FBC8F;
+}
+div.replies div.media:last-child,
+div.comments div.media:last-child {
+    border: none;
+}
 div#secondary-user div.media {
     margin-bottom: 3px;
 }
@@ -221,10 +230,10 @@ ul.active-users li:last-child {
     margin-bottom: 0;
 }
 ul.likes img.media-object,
-ul.replies img.media-object,
+div.replies img.media-object,
 ul.members img.media-object,
 ul.friends img.media-object,
-ul.comments img.media-object,
+div.comments img.media-object,
 ul.followers img.media-object,
 ul.following img.media-object,
 ul.active-users img.media-object,
@@ -255,8 +264,8 @@ div#secondary-user h4.media-heading,
 ul.active-users h4.media-heading {
     margin-top: 5px;
 }
-ul.replies h4.media-heading,
-ul.comments h4.media-heading {
+div.replies h4.media-heading,
+div.comments h4.media-heading {
     margin-bottom: -2px;
 }
 img.media-object {
@@ -333,7 +342,6 @@ div.show-profile ul:last-child li:last-child {
     margin-bottom: 0;
 }
 small.time {
-    margin-top: 0;
     display: inline-block;
     font-style: oblique;
 }
@@ -443,7 +451,7 @@ p.reply,
 article.message p,
 ul.notifications li a {
     display: inline;
-    margin-right: 10px;
+    margin: 0 10px 0 0;
 }
 
 ul.notifications strong.object {

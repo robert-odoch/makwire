@@ -14,55 +14,53 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     "View previous comments.</a>");
         }
     ?>
-    <ul class="comments">
+    <div class="comments">
         <?php
         $i = $num_prev;
         foreach($comments as $comment):
         ?>
-        <li>
-            <div class="media">
-                <div class="media-left">
-                    <img class="media-object" src="<?= $comment['profile_pic_path']; ?>"
-                    alt="<?= $comment['commenter']; ?>">
-                </div>
-                <div class="media-body">
-                    <h4 class="media-heading">
-                        <a href="<?= base_url("user/index/{$comment['commenter_id']}"); ?>"><strong><?= $comment['commenter']; ?></strong></a>
-                    </h4>
-                    <p class="comment"><?= htmlspecialchars($comment['comment']); ?></p>
-                    <small class="time"><span class="glyphicon glyphicon-time"></span> <?= $comment['timespan']; ?> ago</small>
-                    <?php
-                    if ($comment['viewer_is_friend_to_owner']) {
-                        if (!$comment['liked']) {
-                            print '<span> &middot; </span>' .
-                                    '<a href="' . base_url("comment/like/{$comment['comment_id']}/{$$object[$object . '_id']}/{$i}") . '">Like</a>';
-                        }
-
-                        print '<span> &middot; </span>' .
-                                '<a href="' . base_url("comment/reply/{$comment['comment_id']}") . '">Reply</a>';
-                    }
-
-                    if ($comment['num_likes'] > 0) {
-                        print "<span> &middot; </span>" .
-                              "<a href='" . base_url("comment/likes/{$comment['comment_id']}") . "'>{$comment['num_likes']}";
-                        print ($comment['num_likes'] == 1) ? " like" : " likes";
-                        print "</a>";
-                    }
-                    if ($object != 'comment' && $comment['num_replies'] > 0) {
-                        print "<span> &middot; </span>" .
-                              "<a href='" . base_url("comment/replies/{$comment['comment_id']}") . "'>{$comment['num_replies']}";
-                        print ($comment['num_replies'] == 1) ? " reply" : " replies";
-                        print "</a>";
-                    }
-                    ?>
-                </div>
+        <div class="media">
+            <div class="media-left">
+                <img class="media-object" src="<?= $comment['profile_pic_path']; ?>"
+                alt="<?= $comment['commenter']; ?>">
             </div>
-        </li>
+            <div class="media-body">
+                <h4 class="media-heading">
+                    <a href="<?= base_url("user/index/{$comment['commenter_id']}"); ?>"><strong><?= $comment['commenter']; ?></strong></a>
+                </h4>
+                <p class="comment"><?= htmlspecialchars($comment['comment']); ?></p>
+                <small class="time"><span class="glyphicon glyphicon-time"></span> <?= $comment['timespan']; ?> ago</small>
+                <?php
+                if ($comment['viewer_is_friend_to_owner']) {
+                    if (!$comment['liked']) {
+                        print '<span> &middot; </span>' .
+                                '<a href="' . base_url("comment/like/{$comment['comment_id']}/{$$object[$object . '_id']}/{$i}") . '">Like</a>';
+                    }
+
+                    print '<span> &middot; </span>' .
+                            '<a href="' . base_url("comment/reply/{$comment['comment_id']}") . '">Reply</a>';
+                }
+
+                if ($comment['num_likes'] > 0) {
+                    print "<span> &middot; </span>" .
+                          "<a href='" . base_url("comment/likes/{$comment['comment_id']}") . "'>{$comment['num_likes']}";
+                    print ($comment['num_likes'] == 1) ? " like" : " likes";
+                    print "</a>";
+                }
+                if ($object != 'comment' && $comment['num_replies'] > 0) {
+                    print "<span> &middot; </span>" .
+                          "<a href='" . base_url("comment/replies/{$comment['comment_id']}") . "'>{$comment['num_replies']}";
+                    print ($comment['num_replies'] == 1) ? " reply" : " replies";
+                    print "</a>";
+                }
+                ?>
+            </div>
+        </div>
         <?php
         ++$i;
         endforeach;
         ?>
-    </ul>
+    </div>
     <?php } // (count($comments) == 0) ?>
 </div><!-- box -->
 <?php if ($has_next) { ?>
