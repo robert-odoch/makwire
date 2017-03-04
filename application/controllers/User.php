@@ -471,18 +471,11 @@ class User extends CI_Controller
             $user_id = $_SESSION['user_id'];
         }
 
-        $is_visitor = ($user_id == $_SESSION['user_id']) ? FALSE : TRUE;
-        if ($is_visitor && !$this->user_model->are_friends($user_id)) {
-            $this->show_permission_denied("You don't have the proper permissions " .
-                                            "to view this user's friends.");
-            return;
-        }
-
         $data = $this->user_model->initialize_user();
         $data['title'] = "{$data['primary_user']}'s Friends";
 
-        $data['is_visitor'] = $is_visitor;
-        if ($is_visitor) {
+        $data['is_visitor'] = ($user_id == $_SESSION['user_id']) ? FALSE : TRUE;
+        if ($data['is_visitor']) {
             $data['are_friends'] = TRUE;
             $data['su_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
             $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
