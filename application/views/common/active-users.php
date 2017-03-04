@@ -9,7 +9,7 @@ if (count($chat_users) > 0):
             <div class="media">
                 <div class="media-left media-middle">
                     <img class="media-object" src="<?= $chat_user['profile_pic_path']; ?>"
-                    alt="<?= $chat_user['profile_name']?>" class="user">
+                    alt="<?= $chat_user['profile_name']?>">
                 </div>
                 <div class="media-body">
                     <h4 class="media-heading">
