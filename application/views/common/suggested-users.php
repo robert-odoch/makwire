@@ -16,7 +16,7 @@ if (count($people_you_may_know) > 0) {
                         <a href="<?= base_url("user/index/{$p['user_id']}"); ?>"><?= $p['profile_name']; ?></a>
                     </h4>
                     <a href="<?= base_url("user/add-friend/{$p['user_id']}"); ?>"
-                        class="btn btn-sm">Add friend</a>
+                        class="btn btn-xs">Add friend</a>
                 </div>
             </div>
         <?php } ?>
