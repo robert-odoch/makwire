@@ -77,10 +77,14 @@ a:focus {
     height: 50px;
     border-radius: 3px;
 }
+
 div.likes div.media,
 div.shares div.media,
 div.replies div.media,
-div.comments div.media {
+div.comments div.media,
+div.friends div.media,
+div.chat-friends div.media,
+div.suggested-users div.media {
     margin: 0 0 2px 0;
     padding-bottom: 2px;
     border-bottom: 1px dotted #8FBC8F;
@@ -186,15 +190,15 @@ ul.messages li {
     padding-bottom: 0;
 }
 
-ul.active-users li {
+div.active-users div.media {
     padding: 5px;
+    margin-top: 0;
     border-radius: 3px;
 }
-ul.active-users li:hover {
+div.active-users div:hover {
     background-color: #8FBC8F;
 }
-
-ul.active-users li:hover a {
+div.active-users div:hover a {
     color: #fff;
 }
 
@@ -205,9 +209,7 @@ div.show-profile ul:last-child li:last-child {
     padding-bottom: 0;
     margin-bottom: 0;
 }
-ul.active-users li:last-child {
-    margin-bottom: 0;
-}
+
 div.likes img.media-object,
 div.shares img.media-object,
 div.replies img.media-object,
@@ -221,13 +223,10 @@ div.chat-friends img.media-object {
     width: 35px;
     height: 35px;
 }
-ul.suggested-users img.media-object {
-    width: 50px;
-    height: 50px;
-}
-ul.active-users img.media-object {
+div.active-users img.media-object {
     border-radius: 50%;
 }
+
 .btn,
 .btn:hover,
 .btn:active,
@@ -239,18 +238,20 @@ ul.active-users img.media-object {
 div.media-body h4 {
     font-size: 14px;
 }
+
 div#primary-user h4.media-heading,
 div#secondary-user h4.media-heading,
-ul.active-users h4.media-heading {
+div.active-users h4.media-heading {
     margin-top: 5px;
 }
 div.replies h4.media-heading,
 div.comments h4.media-heading {
     margin-bottom: -2px;
 }
+
 img.media-object {
-    width: 50px;
-    height: 50px;
+    width: 45px;
+    height: 45px;
 }
 
 div#primary-user img.media-object {
@@ -269,6 +270,7 @@ div.show-profile ul:last-child li:last-child {
     border-bottom: none;
     margin-bottom: 0;
 }
+
 small.time {
     display: inline-block;
     font-style: oblique;
