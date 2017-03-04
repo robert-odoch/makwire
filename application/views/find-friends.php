@@ -22,11 +22,19 @@ require_once('common/user-page-start.php');
     <ul class="suggested-users">
         <?php foreach ($suggested_users as $user): ?>
         <li>
-            <figure><img src="<?= base_url('images/kasumba.jpg'); ?>" alt="<?= $user['display_name']; ?>"></figure>
-            <span>
-                <a href="<?= base_url("user/index/{$user['user_id']}"); ?>"><?= $user['display_name']; ?></a>
-                <a href="<?= base_url("user/add_friend/{$user['user_id']}"); ?>" class="btn">Add friend</a>
-            </span>
+            <div class="media">
+                <div class="media-left">
+                    <img class="media-object" src="<?= $user['profile_pic_path']; ?>"
+                    alt="<?= $user['profile_name']; ?>">
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading">
+                        <a href="<?= base_url("user/index/{$user['user_id']}"); ?>"><?= $user['profile_name']; ?></a>
+                    </h4>
+                    <a href="<?= base_url("user/add-friend/{$user['user_id']}"); ?>"
+                        class="btn btn-sm">Add friend</a>
+                </div>
+            </div>
         </li>
         <?php endforeach; ?>
     </ul>
