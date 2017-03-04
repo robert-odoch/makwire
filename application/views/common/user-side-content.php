@@ -7,7 +7,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <div class="media-left media-middle">
                 <a href="<?= base_url("upload/profile-picture"); ?>" title="Change profile picture">
                 <img src="<?= $profile_pic_path; ?>" alt="<?= $primary_user; ?>'s photo"
-                    class="media-object">
+                    class="profile-pic">
                 </a>
             </div>
             <div class="media-body">
