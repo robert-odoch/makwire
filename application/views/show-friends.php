@@ -21,21 +21,19 @@ if ($is_visitor) {
         <p><span class="glyphicon glyphicon-info-sign"></span> No friends to show.</p>
     </div>
     <?php else: ?>
-    <ul class="friends">
+    <div class="friends">
         <?php foreach($friends as $fr): ?>
-        <li>
-            <div class="media">
-                <div class="media-left">
-                    <img class="media-object" src="<?= $fr['profile_pic_path']; ?>"
-                    alt="<?= $fr['profile_name']; ?>">
-                </div>
-                <div class="media-body">
-                    <a href="<?= base_url("user/index/{$fr['friend_id']}"); ?>"><?= $fr['profile_name']; ?></a>
-                </div>
+        <div class="media">
+            <div class="media-left">
+                <img class="media-object" src="<?= $fr['profile_pic_path']; ?>"
+                alt="<?= $fr['profile_name']; ?>">
             </div>
-        </li>
+            <div class="media-body">
+                <a href="<?= base_url("user/index/{$fr['friend_id']}"); ?>"><?= $fr['profile_name']; ?></a>
+            </div>
+        </div>
         <?php endforeach; ?>
-    </ul>
+    </div>
     <?php endif; ?>
 </div><!-- .box -->
 <?php if ($has_next): ?>
