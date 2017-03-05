@@ -53,7 +53,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </span>
             </div>
         </fieldset>
-        <input type="submit" name="submit" value="Log In" class="btn">
+        <input type="submit" name="submit" value="Log In" class="btn btn-sm">
     </form>
     <p style="margin: 5px 0;">Don't have an account? <a href="register-step-one.html" title="Create an account">create one</a></p>
 </div><!-- box -->
