@@ -90,6 +90,7 @@ div.suggested-users div.media {
     border-bottom: 1px dotted #8FBC8F;
 }
 div.media:last-child {
+    margin-bottom: 0;
     border: none !important;
 }
 
