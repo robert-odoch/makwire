@@ -39,7 +39,8 @@ class Photo_model extends CI_Model
         }
 
         $photo = $photo_query->row_array();
-        $photo['web_path'] = str_replace($_SERVER['DOCUMENT_ROOT'], '', $photo['full_path']);
+        $web_path = str_replace($_SERVER['DOCUMENT_ROOT'], '', $photo['full_path']);
+        $photo['web_path'] = base_url("/{$web_path}");
 
         // Get the name of the author.
         $photo['author'] = $this->user_model->get_profile_name($photo['user_id']);

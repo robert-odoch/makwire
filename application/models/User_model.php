@@ -129,6 +129,7 @@ class User_model extends CI_Model
             $query = $this->run_query($q);
             $profile_pic_path = $query->row_array()['full_path'];
             $profile_pic_path = str_replace($_SERVER['DOCUMENT_ROOT'], '', $profile_pic_path);
+            $profile_pic_path = base_url("/{$profile_pic_path}");
         }
 
         return $profile_pic_path;
