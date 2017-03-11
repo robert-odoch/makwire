@@ -130,12 +130,14 @@ require_once('common/user-page-start.php');
                     break;
                 case 'birthday':
                     if (date('Y-m-d') == $notif['dob']) {
-                        print("<li><a href=''>Today is <strong class='object'>{$notif['actor']}</strong>'s birthday.</a></li>");
+                        print("<li><a href='" . base_url("/user/birthday/{$notif['actor_id']}") .
+                                "'>Today is <strong class='object'>{$notif['actor']}</strong>'s birthday.</a></li>");
                     }
                     else {
                         $dob = new DateTime($notif['dob']);
                         $dob = $dob->format('F j, Y');
-                        print("<li><a href=''><strong class='object'>{$notif['actor']}</strong>'s birthday was on {$dob}.</a></li>");
+                        print("<li><a href='" . base_url("/user/birthday/{$notif['actor_id']}") .
+                                "'><strong class='object'>{$notif['actor']}</strong>'s birthday was on {$dob}.</a></li>");
                     }
                     break;
                 case 'profile_pic_change':

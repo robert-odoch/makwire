@@ -118,6 +118,9 @@ class User extends CI_Controller
     {
         $data = $this->user_model->initialize_user();
         $data['title'] = "{$data['primary_user']}'s Posts";
+        if ($this->user_model->name_ends_with('s', $data['primary_user'])) {
+            $data['title'] = "{$data['primary_user']}' Posts";
+        }
 
         $data['is_visitor'] = ($user_id == $_SESSION['user_id']) ? FALSE : TRUE;;
         if ($data['is_visitor']) {
@@ -151,6 +154,24 @@ class User extends CI_Controller
         $data['user_id'] = $user_id;
         $this->load->view('show-user', $data);
         $this->load->view('common/footer');
+    }
+
+    public function birthday($user_id) {
+        $data = $this->user_model->initialize_user();
+        $data['title'] = "{$data['primary_user']}'s Birthday";
+        if ($this->user_model->name_ends_with('s', $data['primary_user'])) {
+            $data['title'] = "{$data['primary_user']}' Birthday";
+        }
+
+        $data['is_visitor'] = ($user_id == $_SESSION['user_id']) ? FALSE : TRUE;;
+        if ($data['is_visitor']) {
+            $data['title'] = "{$data['secondary_user']}'s Birthday";
+            if ($this->user_model->name_ends_with('s', $data['secondary_user'])) {
+                $data['title'] = "{$data['secondary_user']}' Birthday";
+            }
+        }
+
+        $this->load->view("common/header", $data);
     }
 
     public function chat($offset=0)
