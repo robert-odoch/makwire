@@ -221,8 +221,8 @@ div.followers img.media-object,
 div.following img.media-object,
 div.active-users img.media-object,
 div.chat-friends img.media-object {
-    width: 35px;
-    height: 35px;
+    width: 40px;
+    height: 42.9px;  /* Always match height for div.media-body */
 }
 div.active-users img.media-object {
     border-radius: 50%;
