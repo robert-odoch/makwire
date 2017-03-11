@@ -19,7 +19,7 @@ class Comment extends CI_Controller
         $this->user_model->confirm_logged_in();
     }
 
-    public function like($comment_id, $post_id, $offset)
+    public function like($comment_id)
     {
         $like = $this->comment_model->like($comment_id);
         if (!$like) {
@@ -27,11 +27,7 @@ class Comment extends CI_Controller
             return;
         }
 
-        if ($offset == 0) {
-            redirect(base_url("post/comments/{$post_id}"));
-        }
-
-        redirect(base_url("post/comments/{$post_id}/{$offset}"));
+        redirect($_SERVER['HTTP_REFERER']);
     }
 
     private function show_permission_denied($error_message)

@@ -38,7 +38,7 @@ class Photo extends CI_Controller
             return;
         }
 
-        redirect(base_url("user/photo/{$photo_id}"));
+        redirect($_SERVER['HTTP_REFERER']);
     }
 
     public function comment($photo_id)

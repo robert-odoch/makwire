@@ -38,7 +38,7 @@ class Post extends CI_Controller
             return;
         }
 
-        redirect(base_url("user/post/{$post_id}"));
+        redirect($_SERVER['HTTP_REFERER']);
     }
 
     public function comment($post_id)

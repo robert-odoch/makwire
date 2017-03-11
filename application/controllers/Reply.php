@@ -38,10 +38,7 @@ class Reply extends CI_Controller
             return;
         }
 
-        if ($offset == 0) {
-            redirect(base_url("comment/replies/{$comment_id}"));
-        }
-        redirect(base_url("comment/replies/{$comment_id}/{$offset}"));
+        redirect($_SERVER['HTTP_REFERER']);
     }
 
     public function likes($reply_id, $offset=0)
