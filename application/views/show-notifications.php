@@ -129,14 +129,17 @@ require_once('common/user-page-start.php');
                     }
                     break;
                 case 'birthday':
-                    if (date('Y-m-d') == $notif['dob']) {
-                        print("<li><a href='" . base_url("/user/birthday/{$notif['actor_id']}") .
+                    $dob_array = explode('-', $notif['dob']);
+                    $age = date('Y') - $dob_array[0];
+                    if (date_create(date('Y-m-d')) ==
+                        date_create(($dob_array[0]+$age) . "-{$dob_array[1]}-{$dob_array[2]}")) {
+                        print("<li><a href='" . base_url("/user/birthday/{$notif['actor_id']}/{$notif['age']}") .
                                 "'>Today is <strong class='object'>{$notif['actor']}</strong>'s birthday.</a></li>");
                     }
                     else {
                         $dob = new DateTime($notif['dob']);
                         $dob = $dob->format('F j, Y');
-                        print("<li><a href='" . base_url("/user/birthday/{$notif['actor_id']}") .
+                        print("<li><a href='" . base_url("/user/birthday/{$notif['actor_id']}/{$notif['age']}") .
                                 "'><strong class='object'>{$notif['actor']}</strong>'s birthday was on {$dob}.</a></li>");
                     }
                     break;
