@@ -8,24 +8,23 @@ class Reply extends CI_Controller
         parent::__construct();
 
         session_start();
-        if ( ! isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
+        if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
             redirect(base_url('login'));
         }
 
-        $this->load->model("user_model");
-        $this->load->model("reply_model");
+        $this->load->model(['user_model', 'reply_model']);
 
         // Check whether the user hasn't been logged out from some where else.
         $this->user_model->confirm_logged_in();
     }
 
-    private function permission_denied($error_message)
+    private function show_permission_denied($message)
     {
         $data = $this->user_model->initialize_user();
         $data['title'] = "Permission Denied!";
         $this->load->view("common/header", $data);
 
-        $data['error'] = $error_message;
+        $data['message'] = $message;
         $this->load->view("show-permission-denied", $data);
         $this->load->view("common/footer");
     }
@@ -34,7 +33,8 @@ class Reply extends CI_Controller
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST' ||
             !$this->reply_model->like($reply_id)) {
-            $this->show_permission_denied("You don't have the proper permissions to like this reply.");
+            $this->show_permission_denied("You don't have the proper permissions " .
+                                            "to like this reply.");
             return;
         }
 
@@ -45,7 +45,8 @@ class Reply extends CI_Controller
     {
         $reply = $this->reply_model->get_reply($reply_id);
         if (!$reply) {
-            $this->show_permission_denied("You don't have the proper permissions to view this reply.");
+            $this->show_permission_denied("You don't have the proper permissions " .
+                                            "to view this reply.");
             return;
         }
 

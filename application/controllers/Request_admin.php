@@ -9,7 +9,7 @@ class Request_admin extends CI_Controller
         parent::__construct();
 
         session_start();
-        if ( ! isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
+        if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
             redirect(base_url('login'));
         }
 
@@ -28,7 +28,8 @@ class Request_admin extends CI_Controller
         if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $district = $this->input->post("district");
             if (empty(trim($district))) {
-                $data['error_message'] = "Please enter the name of your district or state and try again.";
+                $data['error_message'] = "Please enter the name of your district " .
+                                            "or state and try again.";
             }
             else {
                 // Submit the request to the administrator.

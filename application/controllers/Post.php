@@ -8,24 +8,23 @@ class Post extends CI_Controller
         parent::__construct();
 
         session_start();
-        if ( ! isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
+        if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
             redirect(base_url('login'));
         }
 
-        $this->load->model('post_model');
-        $this->load->model('user_model');
+        $this->load->model(['post_model', 'user_model']);
 
         // Check whether the user hasn't been logged out from some where else.
         $this->user_model->confirm_logged_in();
     }
 
-    private function permission_denied($error_message)
+    private function show_permission_denied($message)
     {
         $data = $this->user_model->initialize_user();
         $data['title'] = "Permission Denied!";
         $this->load->view("common/header", $data);
 
-        $data['error'] = $error_message;
+        $data['message'] = $message;
         $this->load->view("show-permission-denied", $data);
         $this->load->view("common/footer");
     }
@@ -34,7 +33,8 @@ class Post extends CI_Controller
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST' ||
             !$this->post_model->like($post_id)) {
-            $this->permission_denied("You don't have the proper permissions to like this post.");
+            $this->show_permission_denied("You don't have the proper permissions " .
+                                            "to like this post.");
             return;
         }
 
@@ -44,8 +44,10 @@ class Post extends CI_Controller
     public function comment($post_id)
     {
         $post = $this->post_model->get_post($post_id);
-        if (!$post || !$this->user_model->are_friends($post['user_id'])) {
-            $this->permission_denied("You don't have the proper permissions to comment on this post.");
+        if (!$post ||
+            !$this->user_model->are_friends($post['user_id'])) {
+            $this->show_permission_denied("You don't have the proper permissions " .
+                                            "to comment on this post.");
             return;
         }
 
@@ -54,11 +56,11 @@ class Post extends CI_Controller
         $this->load->view("common/header", $data);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (empty(trim($this->input->post('comment')))) {
+            $comment = trim(strip_tags($this->input->post('comment')));
+            if (!$comment) {
                 $data['comment_error'] = "Comment can't be empty";
             }
             else {
-                $comment = $this->input->post('comment');
                 $this->post_model->comment($post_id, $comment);
                 $this->comments($post_id);
                 return;
@@ -79,18 +81,20 @@ class Post extends CI_Controller
     {
         $share = $this->post_model->share($post_id);
         if (!$share) {
-            $this->permission_denied("You don't have the proper permissions to share this post.");
+            $this->show_permission_denied("You don't have the proper permissions " .
+                                            "to share this post.");
             return;
         }
 
-        redirect(base_url("user/index/{$_SESSION['user_id']}"));
+        redirect(base_url("user/{$_SESSION['user_id']}"));
     }
 
     public function likes($post_id, $offset=0)
     {
         $post = $this->post_model->get_post($post_id);
         if (!$post) {
-            $this->permission_denied("You don't have the proper permissions to view this post.");
+            $this->show_permission_denied("You don't have the proper permissions " .
+                                            "to view this post.");
             return;
         }
 
@@ -132,7 +136,8 @@ class Post extends CI_Controller
     {
         $post = $this->post_model->get_post($post_id);
         if (!$post) {
-            $this->permission_denied("You don't have the proper permissions to view this post.");
+            $this->show_permission_denied("You don't have the proper permissions " .
+                                            "to view this post.");
             return;
         }
 
@@ -175,7 +180,8 @@ class Post extends CI_Controller
     {
         $post = $this->post_model->get_post($post_id);
         if (!$post) {
-            $this->permission_denied("You don't have the proper permissions to view this post.");
+            $this->show_permission_denied("You don't have the proper permissions " .
+                                            "to view this post.");
             return;
         }
 

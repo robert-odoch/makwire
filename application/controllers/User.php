@@ -12,7 +12,7 @@ class User extends CI_Controller
             redirect(base_url('login'));
         }
 
-        $this->load->model(array('user_model', 'post_model', 'profile_model', 'photo_model'));
+        $this->load->model(['user_model', 'post_model', 'profile_model', 'photo_model']);
 
         // Check whether the user hasn't been logged out from some where else.
         $this->user_model->confirm_logged_in();
@@ -29,13 +29,13 @@ class User extends CI_Controller
         $this->load->view("common/footer");
     }
 
-    private function show_permission_denied($error_message)
+    private function show_permission_denied($message)
     {
         $data = $this->user_model->initialize_user();
         $data['title'] = "Permission Denied!";
         $this->load->view("common/header", $data);
 
-        $data['error'] = $error_message;
+        $data['message'] = $message;
         $this->load->view("show-permission-denied", $data);
         $this->load->view("common/footer");
     }
@@ -289,12 +289,12 @@ class User extends CI_Controller
     {
         if (empty(trim($this->input->post('post')))) {
             $_SESSION['post_error'] = "Post can't be empty!";
-            redirect(base_url("user/index/{$_SESSION['user_id']}"));
+            redirect(base_url("user/{$_SESSION['user_id']}"));
         }
 
         $post = strip_tags($this->input->post('post'));
         $this->post_model->post($post, 'timeline', $_SESSION['user_id']);
-        redirect(base_url("user/index/{$_SESSION['user_id']}"));
+        redirect(base_url("user/{$_SESSION['user_id']}"));
     }
 
     public function post($post_id, $offset=0)
@@ -473,7 +473,7 @@ class User extends CI_Controller
             return;
         }
 
-        redirect(base_url("user/index/{$user_id}"));
+        redirect(base_url("user/{$user_id}"));
     }
 
     public function messages($offset=0)

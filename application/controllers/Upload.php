@@ -12,10 +12,9 @@ class Upload extends CI_Controller
             redirect(base_url('login'));
         }
 
-        $this->load->helper(array('form', 'url'));
+        $this->load->helper(['form', 'url']);
 
-        $this->load->model('user_model');
-        $this->load->model('upload_model');
+        $this->load->model(['user_model', 'upload_model']);
 
         // Check whether the user hasn't been logged out from some where else.
         $this->user_model->confirm_logged_in();
@@ -48,7 +47,7 @@ class Upload extends CI_Controller
                 // Record it in the database.
                 $upload_data = $this->upload->data();
                 $this->upload_model->set_profile_picture($upload_data);
-                redirect(base_url("user/index/{$_SESSION['user_id']}"));
+                redirect(base_url("/user/{$_SESSION['user_id']}"));
             }
         }
         else {
