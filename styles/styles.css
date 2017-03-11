@@ -245,6 +245,8 @@ div#secondary-user h4.media-heading,
 div.active-users h4.media-heading {
     margin-top: 5px;
 }
+div.likes h4.media-heading,
+div.shares h4.media-heading,
 div.replies h4.media-heading,
 div.comments h4.media-heading {
     margin-bottom: -2px;
