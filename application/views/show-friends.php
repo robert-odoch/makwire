@@ -29,7 +29,9 @@ if ($is_visitor) {
                 alt="<?= $fr['profile_name']; ?>">
             </div>
             <div class="media-body">
-                <a href="<?= base_url("user/index/{$fr['friend_id']}"); ?>"><?= $fr['profile_name']; ?></a>
+                <h4 class="media-heading">
+                    <a href="<?= base_url("user/index/{$fr['friend_id']}"); ?>"><?= $fr['profile_name']; ?></a>
+                </h4>
             </div>
         </div>
         <?php endforeach; ?>
