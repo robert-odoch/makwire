@@ -81,10 +81,11 @@ a:focus {
 div.likes div.media,
 div.shares div.media,
 div.replies div.media,
-div.comments div.media,
 div.friends div.media,
+div.comments div.media,
 div.chat-friends div.media,
-div.suggested-users div.media {
+div.suggested-users div.media,
+div.birthday-messages div.media {
     margin: 0 0 2px 0;
     padding-bottom: 2px;
     border-bottom: 1px dotted #8FBC8F;
@@ -220,7 +221,8 @@ div.comments img.media-object,
 div.followers img.media-object,
 div.following img.media-object,
 div.active-users img.media-object,
-div.chat-friends img.media-object {
+div.chat-friends img.media-object,
+div.birthday-messages img.media-object {
     width: 40px;
     height: 42.9px;  /* Always match height for div.media-body */
 }
@@ -248,7 +250,8 @@ div.active-users h4.media-heading {
 div.likes h4.media-heading,
 div.shares h4.media-heading,
 div.replies h4.media-heading,
-div.comments h4.media-heading {
+div.comments h4.media-heading,
+div.birthday-messages h4.media-heading {
     margin-bottom: -2px;
 }
 
@@ -379,8 +382,9 @@ article.photo header {
     border-bottom: 1px solid #8FBC8F;
 }
 
-p.comment,
 p.reply,
+p.comment,
+p.message,
 article.message p,
 ul.notifications li a {
     display: inline;
