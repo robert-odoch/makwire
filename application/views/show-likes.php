@@ -43,6 +43,9 @@ switch ($object) {
                 <h4 class="media-heading">
                     <a href="<?= base_url("user/index/{$like['liker_id']}"); ?>"><?= $like['liker']; ?></a>
                 </h4>
+                <small class="time">
+                    <span class="glyphicon glyphicon-time"></span> <?= $like['timespan']; ?> ago
+                </small>
             </div>
         </div>
         <?php endforeach; ?>

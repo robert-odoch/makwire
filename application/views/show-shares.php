@@ -39,6 +39,9 @@ switch ($object) {
                 <h4 class="media-heading">
                     <a href="<?= base_url("user/index/{$share['sharer_id']}"); ?>"><?= $share['sharer']; ?></a>
                 </h4>
+                <small class="time">
+                    <span class="glyphicon glyphicon-time"></span> <?= $share['timespan']; ?> ago
+                </small>
             </div>
         </div>
         <?php endforeach; ?>

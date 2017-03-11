@@ -247,9 +247,9 @@ class Photo_model extends CI_Model
 
         $likes = $query->result_array();
         foreach ($likes as &$like) {
-            // Get the name of the user who liked.
-            $like['liker'] = $this->user_model->get_profile_name($like['liker_id']);
             $like['profile_pic_path'] = $this->user_model->get_profile_pic_path($like['liker_id']);
+            $like['liker'] = $this->user_model->get_profile_name($like['liker_id']);
+            $like['timespan'] = timespan(mysql_to_unix($like['date_liked']), now(), 1);
         }
         unset($like);
 
@@ -277,7 +277,7 @@ class Photo_model extends CI_Model
 
     public function get_shares($photo_id, $offset, $limit)
     {
-        $q = sprintf("SELECT user_id AS sharer_id FROM shares " .
+        $q = sprintf("SELECT user_id AS sharer_id, date_shared FROM shares " .
                      "WHERE (subject_id = %d AND subject_type = 'photo') " .
                      "LIMIT %d, %d",
                      $photo_id, $offset, $limit);
@@ -285,9 +285,9 @@ class Photo_model extends CI_Model
 
         $shares = $query->result_array();
         foreach ($shares as &$share) {
-            // Get the name of the user who shared.
-            $share['sharer'] = $this->user_model->get_profile_name($share['sharer_id']);
             $share['profile_pic_path'] = $this->user_model->get_profile_pic_path($share['sharer_id']);
+            $share['sharer'] = $this->user_model->get_profile_name($share['sharer_id']);
+            $share['timespan'] = timespan(mysql_to_unix($share['date_shared']), now(), 1);
         }
         unset($share);
 
