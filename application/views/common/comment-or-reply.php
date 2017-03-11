@@ -12,7 +12,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <div class="media-body">
             <h4 class="media-heading">
                 <strong>
-                    <a href="<?= base_url("user/index/{$$object['commenter_id']}"); ?>">
+                    <a href="<?= base_url("user/{$$object['commenter_id']}"); ?>">
                         <?= $$object['commenter']; ?>
                     </a>
                 </strong>

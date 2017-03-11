@@ -25,7 +25,7 @@ require_once('common/user-page-start.php');
                         " <small class='time'><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";
                     break;
                 case 'confirmed_friend_request':
-                    print "<li><a href='" . base_url("user/index/{$notif['actor_id']}") . "'><strong class='object'>{$notif['actor']}</strong> accepted your friend request.</a> " .
+                    print "<li><a href='" . base_url("user/{$notif['actor_id']}") . "'><strong class='object'>{$notif['actor']}</strong> accepted your friend request.</a> " .
                         " <small class='time'><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";
                     break;
                 case 'like':

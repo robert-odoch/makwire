@@ -8,11 +8,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <h4>
             <?php
             if ($post['shared']) {
-                print "<a href='" . base_url("user/index/{$post['sharer_id']}") . "'>{$post['sharer']}</a> shared <a href='" . base_url("user/index/{$post['user_id']}") . "'>{$post['author']}</a>'s post";
+                print "<a href='" . base_url("user/{$post['sharer_id']}") . "'>{$post['sharer']}</a> shared <a href='" . base_url("user/index/{$post['user_id']}") . "'>{$post['author']}</a>'s post";
                 print('<small class="time"><span class="glyphicon glyphicon-time"></span> ' . $post['timespan'] .  ' ago</small>');
             }
             else {
-                print "<a href='" . base_url("user/index/{$post['user_id']}") . "'>{$post['author']}</a>";
+                print "<a href='" . base_url("user/{$post['user_id']}") . "'>{$post['author']}</a>";
                 print('<small class="time"><span class="glyphicon glyphicon-time"></span> ' . $post['timespan'] .  ' ago</small>');
             }
             ?>

@@ -21,7 +21,7 @@ require_once('common/user-page-start.php');
         <li>
             <article class="message">
                 <header>
-                    <a href="<?= base_url("user/index/{$m['sender_id']}"); ?>" title="<?= $m['sender']; ?>"><?= $m['sender']; ?></a>
+                    <a href="<?= base_url("user/{$m['sender_id']}"); ?>" title="<?= $m['sender']; ?>"><?= $m['sender']; ?></a>
                 </header>
                 <p><?= htmlspecialchars($m['message']); ?></p>
                 <footer>

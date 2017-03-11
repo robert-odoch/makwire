@@ -75,7 +75,7 @@ if (!$is_visitor) {
                 print '<a href="' . base_url("user/news-feed/{$next_offset}") . '">View more stories</a>';
             }
             else if ($page == 'index') {
-                print '<a href="' . base_url("user/index/{$user_id}/{$next_offset}") . '">View more posts</a>';
+                print '<a href="' . base_url("user/{$user_id}/{$next_offset}") . '">View more posts</a>';
             }
             print '</div>';
         }

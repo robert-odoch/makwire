@@ -38,7 +38,7 @@ require_once('common/user-page-start.php');
             <li>
                 <article class="message">
                     <header>
-                        <a href="<?= base_url("user/index/{$m['sender_id']}"); ?>">
+                        <a href="<?= base_url("user/{$m['sender_id']}"); ?>">
                             <strong><?= $m['sender']; ?></strong>
                         </a>
                     </header>

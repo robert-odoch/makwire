@@ -28,7 +28,7 @@ require_once('common/user-page-start.php');
             </div>
             <div class="media-body">
                 <h4 class="media-heading">
-                    <a href="<?= base_url("user/index/{$user['user_id']}"); ?>"><?= $user['profile_name']; ?></a>
+                    <a href="<?= base_url("user/{$user['user_id']}"); ?>"><?= $user['profile_name']; ?></a>
                 </h4>
                 <a href="<?= base_url("user/add-friend/{$user['user_id']}"); ?>"
                     class="btn btn-xs">Add friend</a>

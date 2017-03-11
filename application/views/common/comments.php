@@ -25,7 +25,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
             <div class="media-body">
                 <h4 class="media-heading">
-                    <a href="<?= base_url("user/index/{$comment['commenter_id']}"); ?>"><strong><?= $comment['commenter']; ?></strong></a>
+                    <a href="<?= base_url("user/{$comment['commenter_id']}"); ?>"><strong><?= $comment['commenter']; ?></strong></a>
                 </h4>
                 <p class="comment"><?= htmlspecialchars($comment['comment']); ?></p>
                 <small class="time"><span class="glyphicon glyphicon-time"></span> <?= $comment['timespan']; ?> ago</small>

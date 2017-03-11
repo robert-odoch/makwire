@@ -20,7 +20,7 @@ require_once('common/user-page-start.php');
             </div>
             <div class="media-body">
                 <h4 class="media-heading">
-                    <a href="<?= base_url("user/index/{$fr['user_id']}"); ?>"><?= $fr['name']; ?></a>
+                    <a href="<?= base_url("user/{$fr['user_id']}"); ?>"><?= $fr['name']; ?></a>
                 </h4>
                 <a href="<?= base_url("user/accept-friend/{$fr['user_id']}"); ?>"
                     class="btn btn-xs">Confirm</a>

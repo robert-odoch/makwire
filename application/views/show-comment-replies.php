@@ -28,7 +28,7 @@ require_once("common/comment-or-reply.php");
             </div>
             <div class="media-body">
                 <h4 class="media-heading">
-                    <a href="<?= base_url("user/index/{$reply['commenter_id']}"); ?>"><strong><?= $reply['commenter']; ?></strong></a>
+                    <a href="<?= base_url("user/{$reply['commenter_id']}"); ?>"><strong><?= $reply['commenter']; ?></strong></a>
                 </h4>
                 <p class="reply"><?= htmlspecialchars($reply['comment']); ?></p>
                 <small class="time"><span class="glyphicon glyphicon-time"></span> <?= $reply['timespan']; ?> ago</small>

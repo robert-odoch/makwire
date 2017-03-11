@@ -21,7 +21,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         unset($message);
     }
     ?>
-    <form action="<?php echo base_url('login'); ?>" method="post" accept-charset="utf-8" role="form">
+    <form action="<?= base_url('login'); ?>" method="post" accept-charset="utf-8" role="form">
         <fieldset>
             <div class="form-group">
                 <label for="username">Username</label>

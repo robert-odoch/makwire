@@ -17,18 +17,18 @@ require_once('common/user-page-start.php');
                         $dob_array = explode('-', $dob);
                         if (date_create(date('Y-m-d')) ==
                                 date_create(($dob_array[0]+$age) . "-{$dob_array[1]}-{$dob_array[2]}")) {
-                            print "Today is <a href='" . base_url("/user/{$user_id}") .
+                            print "Today is <a href='" . base_url("user/{$user_id}") .
                                     "'><strong class='object'>{$user}</strong></a>'s birthday";
                         }
                         else {
                             $birthday = date_create(($dob_array[0] + $age) . "-{$dob_array[1]}-{$dob_array[2]}");
                             $birthday = $birthday->format('F j, Y');
-                            print "<a href='" . base_url("/user/{$user_id}") .
+                            print "<a href='" . base_url("user/{$user_id}") .
                                     "'><strong class='object'>{$user}</strong></a>'s birthday was on {$birthday}";
                         }
                     }
                     else {
-                        print "<a href='" . base_url("/user/{$user_id}") .
+                        print "<a href='" . base_url("user/{$user_id}") .
                                 "'><strong class='object'>{$user}</strong></a>";
                     }
                     ?>
@@ -38,7 +38,7 @@ require_once('common/user-page-start.php');
             </div>
         </div>
     </h4>
-    <form action="<?= base_url("/user/send-birthday-message/{$user_id}/{$age}") ?>" method="post" accept-charset="utf-8" role="form">
+    <form action="<?= base_url("user/send-birthday-message/{$user_id}/{$age}") ?>" method="post" accept-charset="utf-8" role="form">
         <fieldset>
             <div class="form-group">
                 <label for="birthday-message">
@@ -72,7 +72,7 @@ require_once('common/user-page-start.php');
             </div>
             <div class="media-body">
                 <h4 class="media-heading">
-                    <a href="<?= base_url("/user/{$msg['sender_id']}"); ?>">
+                    <a href="<?= base_url("user/{$msg['sender_id']}"); ?>">
                         <strong><?= $msg['sender']; ?></strong>
                     </a>
                 </h4>
@@ -90,7 +90,7 @@ require_once('common/user-page-start.php');
 
 <?php if ($has_next) { ?>
 <div class="box more">
-    <a href="<?= base_url("/user/birthday/{}/{$next_offset}"); ?>">
+    <a href="<?= base_url("user/birthday/{$user_id}/{$age}/{$next_offset}"); ?>">
         View more messages.
     </a>
 </div>

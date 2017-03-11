@@ -12,7 +12,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
             <div class="media-body">
                 <h4 class="media-heading">
-                    <a href="<?= base_url("user/index/{$_SESSION['user_id']}"); ?>">
+                    <a href="<?= base_url("user/{$_SESSION['user_id']}"); ?>">
                         <?= $primary_user; ?>
                     </a>
                 </h4>

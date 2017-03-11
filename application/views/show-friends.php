@@ -30,7 +30,7 @@ if ($is_visitor) {
             </div>
             <div class="media-body">
                 <h4 class="media-heading">
-                    <a href="<?= base_url("user/index/{$fr['friend_id']}"); ?>"><?= $fr['profile_name']; ?></a>
+                    <a href="<?= base_url("user/{$fr['friend_id']}"); ?>"><?= $fr['profile_name']; ?></a>
                 </h4>
             </div>
         </div>
