@@ -59,6 +59,31 @@ class User_model extends CI_Model
 
         return $query;
     }
+
+    /**
+     * Checks whether a user reached the specified age when he/she was
+     * already registered and the user has reached that age
+     * i.e., age <= user's age.
+     */
+    public function can_view_birthday($user_id, $age)
+    {
+        $sql = sprintf("SELECT YEAR(dob) AS year, MONTH(dob) AS month, " .
+                        "DAY(dob) AS day, date_created " .
+                        "FROM users WHERE (user_id = %d)", $user_id);
+        $query = $this->run_query($sql);
+        $result = $query->row_array();
+
+        return (
+            (date_create(($result['year']+$age) . "-{$result['month']}-{$result['day']}") >
+             date_create($result['date_created'])) &&
+            ($age <= (date('Y') - $result['year']))
+        );
+    }
+
+    public function get_dob($user_id) {
+        $sql = sprintf("SELECT dob FROM users WHERE user_id = %d", $user_id);
+        return $this->run_query($sql)->row()->dob;
+    }
     /*** End Utility ***/
 
     public function confirm_logged_in()
@@ -211,6 +236,41 @@ class User_model extends CI_Model
         unset($r);
 
         return $posts_and_photos;
+    }
+
+    public function get_num_birthday_messages($user_id) {
+        $sql = sprintf("SELECT COUNT(id) FROM birthday_messages " .
+                        "WHERE (user_id = %d)",
+                        $user_id);
+        return $this->run_query($sql)->row_array()['COUNT(id)'];
+    }
+
+    public function get_birthday_messages($user_id, $age, $offset, $limit)
+    {
+        $sql = sprintf("SELECT id, sender_id, message, date_sent " .
+                        "FROM birthday_messages WHERE (user_id = %d AND age = %d) " .
+                        "LIMIT %d, %d",
+                        $user_id, $age, $offset, $limit);
+        $query = $this->run_query($sql);
+        $messages = $query->result_array();
+
+        foreach ($messages as &$m) {
+            $m['profile_pic_path'] = $this->get_profile_pic_path($m['sender_id']);
+            $m['sender'] = $this->get_profile_name($m['sender_id']);
+            $m['timespan'] = timespan(mysql_to_unix($m['date_sent']));
+            unset($m['date_sent']);  // No longer necessary.
+        }
+        unset($m);
+
+        return $messages;
+    }
+
+    public function send_birthday_message($message, $user_id, $age)
+    {
+        $sql = sprintf("INSERT INTO birthday_messages (user_id, sender_id, message, age) " .
+                        "VALUES (%d, %d, %s, %d)",
+                        $user_id, $_SESSION['user_id'], $this->db->escape($message), $age);
+        $this->run_query($sql);
     }
 
     public function get_num_messages($filter=TRUE)
@@ -608,6 +668,7 @@ class User_model extends CI_Model
                     $bd['activity'] = "birthday";
                     $bd['subject_id'] = $bd['user_id'];
                     $bd['actor_id'] = $bd['user_id'];
+                    $bd['date_entered'] = date_format(now(), 'Y-m-d H:i:s');
                 }
                 else {
                     $activity_id = $query->row()->activity_id;
@@ -622,6 +683,7 @@ class User_model extends CI_Model
                         $bd['activity'] = "birthday";
                         $bd['subject_id'] = $bd['user_id'];
                         $bd['actor_id'] = $bd['user_id'];
+                        $bd['date_entered'] = $query->row()->date_entered;
                     }
                 }
             }
@@ -695,12 +757,16 @@ class User_model extends CI_Model
                 }
             }
 
-            // Get date of birth for birthday notifications.
             if ($notif['activity'] == 'birthday') {
+                // Get date of birth for birthday notifications.
                 $dob_q = sprintf("SELECT dob FROM users WHERE (user_id = %d) LIMIT 1",
                                  $notif['subject_id']);
                 $dob_query = $this->run_query($dob_q);
                 $notif['dob'] = $dob_query->row_array()['dob'];
+
+                // Add age.
+                $notif['age'] = date_format(date_create($notif['date_entered']), 'Y') -
+                                date_format(date_create($notif['dob']), 'Y');
             }
 
             // Add the timespan.

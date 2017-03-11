@@ -156,22 +156,63 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function birthday($user_id) {
-        $data = $this->user_model->initialize_user();
-        $data['title'] = "{$data['primary_user']}'s Birthday";
-        if ($this->user_model->name_ends_with('s', $data['primary_user'])) {
-            $data['title'] = "{$data['primary_user']}' Birthday";
+    public function birthday($user_id, $age, $offset=0)
+    {
+        if (!$this->user_model->are_friends($user_id) ||
+            !$this->user_model->can_view_birthday($user_id, $age)) {
+            $this->show_permission_denied("You don't have the proper permissions.");
+            return;
         }
 
-        $data['is_visitor'] = ($user_id == $_SESSION['user_id']) ? FALSE : TRUE;;
-        if ($data['is_visitor']) {
-            $data['title'] = "{$data['secondary_user']}'s Birthday";
-            if ($this->user_model->name_ends_with('s', $data['secondary_user'])) {
-                $data['title'] = "{$data['secondary_user']}' Birthday";
-            }
+        $data = $this->user_model->initialize_user();
+        $data['user'] = $this->user_model->get_profile_name($user_id);
+        $data['title'] = "{$data['user']}'s Birthday";
+        if ($this->user_model->name_ends_with('s', $data['user'])) {
+            $data['title'] = "{$data['user']}' Birthday";
         }
+
+        $data['is_visitor'] = ($user_id == $_SESSION['user_id']) ? FALSE : TRUE;
 
         $this->load->view("common/header", $data);
+
+        $limit = 10;
+        $num_birthday_messages = $this->user_model->get_num_birthday_messages($user_id);
+        $data['has_next'] = FALSE;
+        if (($num_birthday_messages - $offset) > $limit) {
+            $data['has_next'] = TRUE;
+            $data['next_offset'] = ($offset + $limit);
+        }
+
+        if (isset($_SESSION['error_message'])) {
+            $data['error_message'] = $_SESSION['error_message'];
+            unset($_SESSION['error_message']);
+        }
+
+        $data['birthday_messages'] = $this->user_model->get_birthday_messages($user_id, $age, $offset, $limit);
+        $data['user_id'] = $user_id;
+        $data['user_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
+        $data['dob'] = $this->user_model->get_dob($user_id);
+        $data['age'] = $age;
+        $this->load->view("show-birthday", $data);
+        $this->load->view("common/footer");
+    }
+
+    public function send_birthday_message($user_id, $age)
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->show_permission_denied("You don't have the proper permissions.");
+            return;
+        }
+
+        $message = trim(strip_tags($this->input->post('birthday-message')));
+        if (!$message) {
+            $_SESSION['error_message'] = "Message can't be empty!";
+        }
+        else {
+            $this->user_model->send_birthday_message($message, $user_id, $age);
+        }
+
+        redirect($_SERVER['HTTP_REFERER']);
     }
 
     public function chat($offset=0)
