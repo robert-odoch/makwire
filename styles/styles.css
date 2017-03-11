@@ -540,9 +540,12 @@ div.previous a {
     display: block;
 }
 
-div#comment,
-div#reply {
+div#comment {
     margin-bottom: 2.5px;
+}
+div#reply img.media-object,
+div#comment img.media-object {
+    height: 49.4px;  /* Always the same as the height of media-body */
 }
 
 @media (max-width: 480px) {
