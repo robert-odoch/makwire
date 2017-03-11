@@ -16,7 +16,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     ?>
     <div class="comments">
         <?php
-        $i = $num_prev;
         foreach($comments as $comment):
         ?>
         <div class="media">
@@ -34,7 +33,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 if ($comment['viewer_is_friend_to_owner']) {
                     if (!$comment['liked']) {
                         print '<span> &middot; </span>' .
-                                '<a href="' . base_url("comment/like/{$comment['comment_id']}/{$$object[$object . '_id']}/{$i}") . '">Like</a>';
+                                '<a href="' . base_url("comment/like/{$comment['comment_id']}") . '">Like</a>';
                     }
 
                     print '<span> &middot; </span>' .
@@ -56,10 +55,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 ?>
             </div>
         </div>
-        <?php
-        ++$i;
-        endforeach;
-        ?>
+        <?php endforeach; ?>
     </div>
     <?php } // (count($comments) == 0) ?>
 </div><!-- box -->
