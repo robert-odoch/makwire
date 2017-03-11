@@ -19,7 +19,6 @@ require_once("common/comment-or-reply.php");
     ?>
     <div class="replies">
         <?php
-        $i = $num_prev;
         foreach($replies as $reply):
         ?>
         <div class="media">
@@ -36,7 +35,7 @@ require_once("common/comment-or-reply.php");
                 <?php
                 if ($reply['viewer_is_friend_to_owner'] && !$reply['liked']) {
                     print '<span> &middot; </span>' .
-                            '<a href="' . base_url("reply/like/{$reply['comment_id']}/{$comment['comment_id']}/{$i}") . '">Like</a>';
+                            '<a href="' . base_url("reply/like/{$reply['comment_id']}") . '">Like</a>';
                 }
                 if ($reply['num_likes'] > 0) {
                     print "<span> &middot; </span>" .
@@ -47,10 +46,7 @@ require_once("common/comment-or-reply.php");
                 ?>
             </div>
         </div>
-        <?php
-        ++$i;
-        endforeach;
-        ?>
+        <?php endforeach; ?>
     </div>
     <?php } // (count($replies) == 0) ?>
 </div><!-- box -->
