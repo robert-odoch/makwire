@@ -125,9 +125,8 @@ class Reply_model extends CI_Model
         $likes = $query->result_array();
         foreach ($likes as &$like) {
             $like['profile_pic_path'] = $this->user_model->get_profile_pic_path($like['liker_id']);
-
-            // Get the name of the liker.
             $like['liker'] = $this->user_model->get_profile_name($like['liker_id']);
+            $like['timespan'] = timespan(mysql_to_unix($like['date_liked']), now(), 1);
         }
         unset($like);
 
