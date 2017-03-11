@@ -6,8 +6,7 @@ class Photo_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
-        $this->load->model("user_model");
-        $this->load->model("comment_model");
+        $this->load->model(['user_model', 'comment_model']);
     }
 
     /*** Utility ***/
@@ -17,10 +16,10 @@ class Photo_model extends CI_Model
         exit(1);
     }
 
-    private function run_query($q)
+    private function run_query($sql)
     {
-        $query = $this->db->query($q);
-        if ( ! $query) {
+        $query = $this->db->query($sql);
+        if (!$query) {
             $this->handle_error($this->db->error());
         }
 
@@ -92,59 +91,61 @@ class Photo_model extends CI_Model
     private function has_liked($photo_id)
     {
         // Check whether this photo belongs to the current user.
-        $q = sprintf("SELECT user_id FROM user_photos WHERE photo_id = %d",
-                     $photo_id);
-        $query = $this->run_query($q);
-        if ($query->row_array()['user_id'] == $_SESSION['user_id']) {
+        $user_sql = sprintf("SELECT user_id FROM user_photos WHERE photo_id = %d",
+                            $photo_id);
+        $user_query = $this->run_query($user_sql);
+        if ($user_query->row_array()['user_id'] == $_SESSION['user_id']) {
             return TRUE;
         }
 
         // Check whether this user has already liked the photo.
-        $q = sprintf("SELECT like_id FROM likes " .
-                     "WHERE (source_id=%d AND source_type='photo' AND liker_id=%d) " .
-                     "LIMIT 1",
-                     $photo_id, $_SESSION['user_id']);
-        return ($this->run_query($q)->num_rows() == 1);
+        $like_sql = sprintf("SELECT like_id FROM likes " .
+                            "WHERE (source_id = %d AND source_type = 'photo' AND liker_id = %d) " .
+                            "LIMIT 1",
+                            $photo_id, $_SESSION['user_id']);
+        return ($this->run_query($like_sql)->num_rows() == 1);
     }
 
     private function has_shared($photo_id)
     {
         // Check whether this photo belongs to the current user.
-        $q = sprintf("SELECT user_id FROM user_photos WHERE photo_id = %d LIMIT 1",
-                     $photo_id);
-        $query = $this->run_query($q);
-        if ($query->row_array()['user_id'] == $_SESSION['user_id']) {
+        $user_sql = sprintf("SELECT user_id FROM user_photos WHERE photo_id = %d LIMIT 1",
+                            $photo_id);
+        $user_query = $this->run_query($user_sql);
+        if ($user_query->row_array()['user_id'] == $_SESSION['user_id']) {
             return TRUE;
         }
 
         // Check whether this user has already shared the photo.
-        $q = sprintf("SELECT share_id FROM shares " .
-                     "WHERE (subject_id = %d AND user_id = %d AND subject_type='photo') LIMIT 1",
-                     $photo_id, $_SESSION['user_id']);
-        return ($this->run_query($q)->num_rows() == 1);
+        $share_sql = sprintf("SELECT share_id FROM shares " .
+                                "WHERE (subject_id = %d AND user_id = %d AND subject_type = 'photo') " .
+                                "LIMIT 1",
+                                $photo_id, $_SESSION['user_id']);
+        return ($this->run_query($share_sql)->num_rows() == 1);
     }
 
     public function get_num_likes($photo_id)
     {
-        $q = sprintf("SELECT like_id FROM likes " .
-                     "WHERE (source_id=%d AND source_type='photo')",
-                     $photo_id);
-        return $this->run_query($q)->num_rows();
+        $likes_sql = sprintf("SELECT COUNT(like_id) FROM likes " .
+                                "WHERE (source_id = %d AND source_type = 'photo')",
+                                $photo_id);
+        return $this->run_query($likes_sql)->row_array()['COUNT(like_id)'];
     }
 
     public function get_num_comments($photo_id)
     {
-        $q = sprintf("SELECT comment_id FROM comments " .
-                     "WHERE (source_type='photo' AND source_id=%d AND parent_id=0)",
-                     $photo_id);
-        return $this->run_query($q)->num_rows();
+        $comments_sql = sprintf("SELECT COUNT(comment_id) FROM comments " .
+                                "WHERE (source_type = 'photo' AND source_id = %d AND parent_id = 0)",
+                                $photo_id);
+        return $this->run_query($comments_sql)->row_array()['COUNT(comment_id)'];
     }
 
     public function get_num_shares($photo_id)
     {
-        $q = sprintf("SELECT share_id FROM shares WHERE (subject_id = %d AND subject_type = 'photo')",
-                     $photo_id);
-        return $this->run_query($q)->num_rows();
+        $shares_sql = sprintf("SELECT COUNT(share_id) FROM shares " .
+                                "WHERE (subject_id = %d AND subject_type = 'photo')",
+                                $photo_id);
+        return $this->run_query($shares_sql)->row_array()['COUNT(share_id)'];
     }
 
     public function post($data)
@@ -154,10 +155,10 @@ class Photo_model extends CI_Model
     public function like($photo_id)
     {
         // Get the id of the owner of this photo.
-        $photo_sql = sprintf("SELECT user_id FROM user_photos WHERE photo_id = %d",
+        $user_sql = sprintf("SELECT user_id FROM user_photos WHERE photo_id = %d",
                             $photo_id);
-        $photo_query = $this->run_query($photo_sql);
-        if ($photo_query->num_rows() == 0) {
+        $user_query = $this->run_query($user_sql);
+        if ($user_query->num_rows() == 0) {
             return FALSE;
         }
 
@@ -165,21 +166,22 @@ class Photo_model extends CI_Model
             return TRUE;
         }
 
-        $photo_result = $photo_query->row_array();
-        if (!$this->user_model->are_friends($photo_result['user_id'])) {
+        $user_result = $user_query->row_array();
+        if (!$this->user_model->are_friends($user_result['user_id'])) {
             return FALSE;
         }
 
-        $q = sprintf("INSERT INTO likes (liker_id, source_id, source_type) " .
-                     "VALUES (%d, %d, 'photo')",
-                     $_SESSION['user_id'], $photo_id);
-        $this->run_query($q);
+        $like_sql = sprintf("INSERT INTO likes (liker_id, source_id, source_type) " .
+                            "VALUES (%d, %d, 'photo')",
+                            $_SESSION['user_id'], $photo_id);
+        $this->run_query($like_sql);
 
         // Dispatch an activity.
-        $q = sprintf("INSERT INTO activities (actor_id, subject_id, source_id, source_type, activity) " .
-                     "VALUES (%d, %d, %d, 'photo', 'like')",
-                     $_SESSION['user_id'], $photo_result['user_id'], $photo_id);
-        $this->run_query($q);
+        $activity_sql = sprintf("INSERT INTO activities " .
+                                "(actor_id, subject_id, source_id, source_type, activity) " .
+                                "VALUES (%d, %d, %d, 'photo', 'like')",
+                                $_SESSION['user_id'], $photo_result['user_id'], $photo_id);
+        $this->run_query($activity_sql);
 
         return TRUE;
     }
@@ -187,29 +189,31 @@ class Photo_model extends CI_Model
     public function comment($photo_id, $comment)
     {
         // Record the comment.
-        $q = sprintf("INSERT INTO comments (commenter_id, parent_id, source_id, source_type, comment) " .
-                     "VALUES (%d, %d, %d, 'photo', %s)",
-                     $_SESSION['user_id'], 0, $photo_id, $this->db->escape($comment));
-        $this->run_query($q);
+        $comment_sql = sprintf("INSERT INTO comments " .
+                                "(commenter_id, parent_id, source_id, source_type, comment) " .
+                                "VALUES (%d, %d, %d, 'photo', %s)",
+                                $_SESSION['user_id'], 0, $photo_id, $this->db->escape($comment));
+        $this->run_query($comment_sql);
 
         // Get the ID of the owner of this photo.
-        $photo_sql = sprintf("SELECT user_id FROM user_photos WHERE photo_id = %d",
+        $user_sql = sprintf("SELECT user_id FROM user_photos WHERE photo_id = %d",
                             $photo_id);
-        $photo_result = $this->run_query($photo_sql)->row_array();
+        $user_result = $this->run_query($user_sql)->row_array();
 
         // Dispatch an activity.
-        $q = sprintf("INSERT INTO activities (actor_id, subject_id, source_id, source_type, activity) " .
-                     "VALUES (%d, %d, %d, 'photo', 'comment')",
-                     $_SESSION['user_id'], $photo_result['user_id'], $photo_id);
-        $this->run_query($q);
+        $activity_sql = sprintf("INSERT INTO activities " .
+                                "(actor_id, subject_id, source_id, source_type, activity) " .
+                                "VALUES (%d, %d, %d, 'photo', 'comment')",
+                                $_SESSION['user_id'], $user_result['user_id'], $photo_id);
+        $this->run_query($activity_sql);
     }
 
     public function share($photo_id)
     {
-        $photo_sql = sprintf("SELECT user_id FROM user_photos WHERE photo_id = %d",
+        $user_sql = sprintf("SELECT user_id FROM user_photos WHERE photo_id = %d",
                             $photo_id);
-        $photo_query = $this->run_query($photo_sql);
-        if ($photo_query->num_rows() == 0) {
+        $user_query = $this->run_query($user_sql);
+        if ($user_query->num_rows() == 0) {
             return FALSE;
         }
 
@@ -217,35 +221,36 @@ class Photo_model extends CI_Model
             return TRUE;
         }
 
-        $photo_result = $photo_query->row_array();
-        if (!$this->user_model->are_friends($photo_result['user_id'])) {
+        $user_result = $user_query->row_array();
+        if (!$this->user_model->are_friends($user_result['user_id'])) {
             return FALSE;
         }
 
         // Insert it into the shares table.
-        $q = sprintf("INSERT INTO shares (subject_id, user_id, subject_type) " .
-                     "VALUES (%d, %d, 'photo')",
-                     $photo_id, $_SESSION['user_id']);
-        $this->run_query($q);
+        $share_sql = sprintf("INSERT INTO shares (subject_id, user_id, subject_type) " .
+                                "VALUES (%d, %d, 'photo')",
+                                $photo_id, $_SESSION['user_id']);
+        $this->run_query($share_sql);
 
         // Dispatch an activity.
-        $q = sprintf("INSERT INTO activities (actor_id, subject_id, source_id, source_type, activity) " .
-                     "VALUES (%d, %d, %d, 'photo', 'share')",
-                     $_SESSION['user_id'], $photo_result['user_id'], $photo_id);
-        $this->run_query($q);
+        $activity_sql = sprintf("INSERT INTO activities " .
+                                "(actor_id, subject_id, source_id, source_type, activity) " .
+                                "VALUES (%d, %d, %d, 'photo', 'share')",
+                                $_SESSION['user_id'], $photo_result['user_id'], $photo_id);
+        $this->run_query($activity_sql);
 
         return TRUE;
     }
 
     public function get_likes($photo_id, $offset, $limit)
     {
-        $q = sprintf("SELECT * FROM likes " .
-                     "WHERE (source_type='photo' AND source_id=%d) " .
-                     "LIMIT %d, %d",
-                     $photo_id, $offset, $limit);
-        $query = $this->run_query($q);
+        $likes_sql = sprintf("SELECT * FROM likes " .
+                                "WHERE (source_type = 'photo' AND source_id = %d) " .
+                                "LIMIT %d, %d",
+                                $photo_id, $offset, $limit);
+        $likes_query = $this->run_query($likes_sql);
 
-        $likes = $query->result_array();
+        $likes = $likes_query->result_array();
         foreach ($likes as &$like) {
             $like['profile_pic_path'] = $this->user_model->get_profile_pic_path($like['liker_id']);
             $like['liker'] = $this->user_model->get_profile_name($like['liker_id']);
@@ -258,12 +263,12 @@ class Photo_model extends CI_Model
 
     public function get_comments($photo_id, $offset, $limit)
     {
-        $q = sprintf("SELECT comment_id FROM comments " .
-                     "WHERE (source_type = 'photo' AND source_id = %d AND parent_id = 0) " .
-                     "LIMIT %d, %d",
-                     $photo_id, $offset, $limit);
-        $query = $this->run_query($q);
-        $results = $query->result_array();
+        $comments_sql = sprintf("SELECT comment_id FROM comments " .
+                                "WHERE (source_type = 'photo' AND source_id = %d AND parent_id = 0) " .
+                                "LIMIT %d, %d",
+                                $photo_id, $offset, $limit);
+        $comments_query = $this->run_query($comments_sql);
+        $results = $comments_query->result_array();
 
         $comments = array();
         foreach ($results as $r) {
@@ -277,13 +282,13 @@ class Photo_model extends CI_Model
 
     public function get_shares($photo_id, $offset, $limit)
     {
-        $q = sprintf("SELECT user_id AS sharer_id, date_shared FROM shares " .
-                     "WHERE (subject_id = %d AND subject_type = 'photo') " .
-                     "LIMIT %d, %d",
-                     $photo_id, $offset, $limit);
-        $query = $this->run_query($q);
+        $shares_sql = sprintf("SELECT user_id AS sharer_id, date_shared FROM shares " .
+                                "WHERE (subject_id = %d AND subject_type = 'photo') " .
+                                "LIMIT %d, %d",
+                                $photo_id, $offset, $limit);
+        $shares_query = $this->run_query($shares_sql);
 
-        $shares = $query->result_array();
+        $shares = $shares_query->result_array();
         foreach ($shares as &$share) {
             $share['profile_pic_path'] = $this->user_model->get_profile_pic_path($share['sharer_id']);
             $share['sharer'] = $this->user_model->get_profile_name($share['sharer_id']);

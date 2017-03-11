@@ -16,10 +16,10 @@ class Logout_model extends CI_Model
         exit(1);
     }
 
-    private function run_query($q)
+    private function run_query($sql)
     {
-        $query = $this->db->query($q);
-        if ( ! $query) {
+        $query = $this->db->query($sql);
+        if (!$query) {
             $this->handle_error($this->db->error());
         }
 
@@ -29,10 +29,10 @@ class Logout_model extends CI_Model
 
     public function logout()
     {
-        $q = sprintf("UPDATE users SET logged_in=0 WHERE user_id=%d",
-                     $_SESSION['user_id']);
+        $login_sql = sprintf("UPDATE users SET logged_in = 0 WHERE user_id = %d",
+                                $_SESSION['user_id']);
 
-        $this->run_query($q);
+        $this->run_query($login_sql);
 
         $_SESSION = array();
         session_destroy();

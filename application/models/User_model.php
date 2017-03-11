@@ -1079,12 +1079,12 @@ class User_model extends CI_Model
 
         // If the last user to share a post or photo is the current viewer of the page,
         // then we pick the second last user who shared the same posts or photo.
-        $latest_share_date_sql = sprintf("SELECT MAX(date_entered) FROM shares s2 " .
+        $latest_share_date_sql = sprintf("SELECT MAX(date_shared) FROM shares s2 " .
                                         "WHERE (s1.subject_id = s2.subject_id AND s1.subject_type = s2.subject_type AND s2.user_id != %d)",
                                         $_SESSION['user_id']);
 
         $latest_shared_posts_user_ids_sql = sprintf("SELECT user_id FROM shares s1 " .
-                                                "WHERE (user_id IN(%s) AND subject_type = 'post' AND date_entered = (%s))",
+                                                "WHERE (user_id IN(%s) AND subject_type = 'post' AND date_shared = (%s))",
                                                 $friends_ids, $latest_share_date_sql);
         $latest_shared_posts_user_ids_results = $this->run_query($latest_shared_posts_user_ids_sql)->result_array();
         // Add an extra element for safety.
@@ -1095,7 +1095,7 @@ class User_model extends CI_Model
         $latest_shared_posts_user_ids = implode(',', $latest_shared_posts_user_ids);
 
         $latest_shared_photos_user_ids_sql = sprintf("SELECT user_id FROM shares s1 " .
-                                            "WHERE (user_id IN(%s) AND subject_type = 'photo' AND date_entered = (%s))",
+                                            "WHERE (user_id IN(%s) AND subject_type = 'photo' AND date_shared = (%s))",
                                             $friends_ids, $latest_share_date_sql);
         $latest_shared_photos_user_ids_results = $this->run_query($latest_shared_photos_user_ids_sql)->result_array();
         // Add an extra element for safety.
