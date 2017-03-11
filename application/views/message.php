@@ -13,7 +13,7 @@ require_once('common/user-page-start.php');
                 <input type="text" name="message" id="message" placeholder="Your message..."
                     class="fluid
                 <?php
-                if (isset($message_error))) {
+                if (isset($message_error)) {
                     print ' has-error';
                 }
                 ?>">
@@ -24,7 +24,7 @@ require_once('common/user-page-start.php');
                 ?>
             </div>
         </fieldset>
-        <input type="submit" value="Send" class="btn">
+        <input type="submit" value="Send" class="btn btn-sm">
     </form>
     <?php
     if (count($messages) > 0) {
