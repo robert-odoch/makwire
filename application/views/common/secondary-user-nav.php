@@ -18,13 +18,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         "Friends</button>";
             }
             elseif ($friendship_status['fr_sent'] && $friendship_status['target_id'] == $_SESSION['user_id']) {
-                print("<a href='" . base_url("user/accept_friend/{$suid}") . "' class='btn btn-sm'>Confirm Friend</a>");
+                print("<a href='" . base_url("user/accept-friend/{$suid}") . "' class='btn btn-sm'>Confirm Friend</a>");
             }
             elseif ($friendship_status['fr_sent'] && $friendship_status['user_id'] == $_SESSION['user_id']) {
                 print("<button class='btn btn-sm'>Friend Request Sent</button>");
             }
             else {
-                print("<a href='" . base_url("user/add_friend/{$suid}") . "' class='btn btn-sm'>Add Friend</a>");
+                print("<a href='" . base_url("user/add-friend/{$suid}") . "' class='btn btn-sm'>Add Friend</a>");
             }
             ?>
         </div>
