@@ -32,8 +32,8 @@ class Post extends CI_Controller
 
     public function like($post_id)
     {
-        $like = $this->post_model->like($post_id);
-        if (!$like) {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST' ||
+            !$this->post_model->like($post_id)) {
             $this->permission_denied("You don't have the proper permissions to like this post.");
             return;
         }

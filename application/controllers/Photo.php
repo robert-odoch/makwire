@@ -32,8 +32,8 @@ class Photo extends CI_Controller
 
     public function like($photo_id)
     {
-        $like = $this->photo_model->like($photo_id);
-        if (!$like) {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST' ||
+            !$this->photo_model->like($photo_id)) {
             $this->permission_denied("You don't have the proper permissions to like this photo.");
             return;
         }
