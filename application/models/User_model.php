@@ -138,28 +138,20 @@ class User_model extends CI_Model
 
     public function get_profile_pic_path($user_id)
     {
-        $id_sql = sprintf("SELECT profile_pic_id " .
-                                    "FROM users " .
-                                    "WHERE (user_id = %d AND profile_pic_id IS NOT NULL)",
-                                    $user_id);
-        $id_query = $this->run_query($id_sql);
-        if ($id_query->num_rows() == 0) {
+        $path_sql = sprintf("SELECT profile_pic_path " .
+                            "FROM users " .
+                            "WHERE (user_id = %d AND profile_pic_path IS NOT NULL)",
+                            $user_id);
+        $path_query = $this->run_query($path_sql);
 
+        if ($path_query->num_rows() == 0) {
             // No profile pic set, use a dummy picture.
             $profile_pic_path = base_url("images/missing_user.png");
         }
         else {
-            $photo_id = $id_query->row_array()['profile_pic_id'];
-
-            // Get the full path of the profile picture.
-            $path_sql = sprintf("SELECT full_path " .
-                                "FROM user_photos " .
-                                "WHERE (user_id = %d AND photo_id = %d)",
-                                $user_id, $photo_id);
-            $path_query = $this->run_query($path_sql);
-            $profile_pic_path = $path_query->row_array()['full_path'];
-            $profile_pic_path = str_replace($_SERVER['DOCUMENT_ROOT'], '', $profile_pic_path);
-            $profile_pic_path = base_url("/{$profile_pic_path}");
+            $profile_pic_path = $path_query->row_array()['profile_pic_path'];
+            $profile_pic_path =  str_replace("{$_SERVER['DOCUMENT_ROOT']}makwire/", '', $profile_pic_path);
+            $profile_pic_path = base_url($profile_pic_path);
         }
 
         return $profile_pic_path;
