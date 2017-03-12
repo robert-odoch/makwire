@@ -6,7 +6,7 @@ class User_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('post_model');
+        $this->load->model(['post_model', 'birthday_message_model']);
     }
 
     /*** Utility ***/
@@ -261,7 +261,7 @@ class User_model extends CI_Model
 
     public function get_birthday_messages($user_id, $age, $offset, $limit)
     {
-        $sql = sprintf("SELECT id, sender_id, message, date_sent " .
+        $sql = sprintf("SELECT id " .
                         "FROM birthday_messages WHERE (user_id = %d AND age = %d) " .
                         "LIMIT %d, %d",
                         $user_id, $age, $offset, $limit);
@@ -269,10 +269,7 @@ class User_model extends CI_Model
         $messages = $query->result_array();
 
         foreach ($messages as &$m) {
-            $m['profile_pic_path'] = $this->get_profile_pic_path($m['sender_id']);
-            $m['sender'] = $this->get_profile_name($m['sender_id']);
-            $m['timespan'] = timespan(mysql_to_unix($m['date_sent']));
-            unset($m['date_sent']);  // No longer necessary.
+            $m = $this->birthday_message_model->get_message($m['id']);
         }
         unset($m);
 
@@ -281,12 +278,20 @@ class User_model extends CI_Model
 
     public function send_birthday_message($message, $user_id, $age)
     {
+        // Record the message.
         $sql = sprintf("INSERT INTO birthday_messages " .
                         "(user_id, sender_id, message, age) " .
                         "VALUES (%d, %d, %s, %d)",
                         $user_id, $_SESSION['user_id'],
                         $this->db->escape($message), $age);
         $this->run_query($sql);
+
+        // Dispatch an activity.
+        $activity_sql = sprintf("INSERT INTO activities " .
+                                "(actor_id, subject_id, source_id, source_type, activity) " .
+                                "VALUES (%d, %d, %d, 'user', 'message')",
+                                $_SESSION['user_id'], $user_id, $user_id);
+        $this->run_query($activity_sql);
     }
 
     public function get_num_messages($filter=TRUE)
@@ -437,8 +442,8 @@ class User_model extends CI_Model
     {
         // Notifications that can/can't be combined together if the are performed on
         // the same object.
-        $combined_notifs_array = ['like', 'comment', 'reply', 'share', 'friend_request', 'join_group_request'];
-        $combined_notifs = "'like', 'comment', 'reply', 'share', 'friend_request', 'join_group_request'";
+        $combined_notifs_array = ['message', 'like', 'comment', 'reply', 'share', 'friend_request', 'join_group_request'];
+        $combined_notifs = "'message', 'like', 'comment', 'reply', 'share', 'friend_request', 'join_group_request'";
         $atomic_notifs = "'birthday', 'profile_pic_change', 'confirmed_friend_request', 'confirmed_join_group_request', 'added_photo'";
 
         // Get the ID's of all this user's friends.
@@ -448,7 +453,7 @@ class User_model extends CI_Model
         $friends_ids = implode(',', $friends_ids);
 
         // WHERE clause for notifications having this user as a direct targert.
-        $primary_notifs_clause = sprintf("subject_id=%d AND actor_id != %d",
+        $primary_notifs_clause = sprintf("subject_id = %d AND actor_id != %d",
                                          $_SESSION['user_id'], $_SESSION['user_id']);
 
         if ($filter) {
@@ -573,8 +578,8 @@ class User_model extends CI_Model
     {
         // Notifications that can/can't be combined together if the are performed on
         // the same object.
-        $combined_notifs_array = ['like', 'comment', 'reply', 'share', 'friend_request', 'join_group_request'];
-        $combined_notifs = "'like', 'comment', 'reply', 'share', 'friend_request', 'join_group_request'";
+        $combined_notifs_array = ['message', 'like', 'comment', 'reply', 'share', 'friend_request', 'join_group_request'];
+        $combined_notifs = "'message', 'like', 'comment', 'reply', 'share', 'friend_request', 'join_group_request'";
         $atomic_notifs = "'birthday', 'profile_pic_change', 'confirmed_friend_request', 'confirmed_join_group_request', 'added_photo'";
 
         // Get the ID's of all this user's friends.
@@ -584,7 +589,7 @@ class User_model extends CI_Model
         $friends_ids = implode(',', $friends_ids);
 
         // WHERE clause for notifications having this user as a direct targert.
-        $primary_notifs_clause = sprintf("subject_id=%d AND actor_id != %d",
+        $primary_notifs_clause = sprintf("subject_id = %d AND actor_id != %d",
                                          $_SESSION['user_id'], $_SESSION['user_id']);
 
         if ($filter) {
@@ -788,7 +793,8 @@ class User_model extends CI_Model
                 $notif['post'] = $short_post['body'];
             }
 
-            if (in_array($notif['activity'], array('comment','reply')) && $notif['subject_id'] != $_SESSION['user_id']) {
+            if (in_array($notif['activity'], array('comment','reply')) &&
+                $notif['subject_id'] != $_SESSION['user_id']) {
                 // Get the gender of the subject.
                 $gender_sql = sprintf("SELECT gender FROM users WHERE user_id = %d LIMIT 1",
                                         $notif['subject_id']);
@@ -821,7 +827,10 @@ class User_model extends CI_Model
                 }
             }
 
-            if ($notif['activity'] == 'birthday') {
+            // If it's a birthday, birthday message, or like of a birthday message.
+            if ($notif['activity'] == 'birthday' ||
+                $notif['activity'] == 'message' ||
+                ($notif['activity'] == 'like' && $notif['source_type'] == 'birthday_message')) {
 
                 // Get date of birth for birthday notifications.
                 $notif['dob'] = $this->get_dob($notif['subject_id']);

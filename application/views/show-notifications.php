@@ -39,11 +39,16 @@ require_once('common/user-page-start.php');
                     }
                     elseif ($notif['source_type'] == "comment") {
                         print "<li><a href='" . base_url("comment/likes/{$notif['source_id']}") . "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} liked your comment \"{$notif['comment']}\"</a>" .
-                        " <small class='time'><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";;
+                        " <small class='time'><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";
                     }
                     elseif ($notif['source_type'] == "reply") {
                         print "<li><a href='" . base_url("reply/likes/{$notif['source_id']}") . "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} liked your reply \"{$notif['comment']}\"</a>" .
                               " <small class='time'><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";
+                    }
+                    elseif ($notif['source_type'] == 'birthday_message') {
+                        print "<li><a href='" . base_url("user/birthday/{$notif['actor_id']}/{$notif['age']}") .
+                                "'><strong class='object'>{$notif['actor']}</strong> liked your birthday message.</a> " .
+                                "<small class='time'><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";
                     }
                     break;
                 case 'comment':
@@ -146,6 +151,11 @@ require_once('common/user-page-start.php');
                 case 'profile_pic_change':
                     print("<li><a href='" . base_url("user/photo/{$notif['source_id']}") . "'><strong class='object'>{$notif['actor']}</strong> updated his profile picture.</a>" .
                           " <small class='time'><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>");
+                    break;
+                case 'message':
+                    print "<li><a href='" . base_url("user/birthday/{$notif['subject_id']}/{$notif['age']}") .
+                            "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} sent you a birthday message.</a>" .
+                            " <small class='time'><span class='glyphicon glyphicon-time'></span> {$notif['timespan']} ago</small></li>";
                     break;
                 }
             }

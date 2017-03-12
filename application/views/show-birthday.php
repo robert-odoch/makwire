@@ -38,7 +38,8 @@ require_once('common/user-page-start.php');
             </div>
         </div>
     </h4>
-    <form action="<?= base_url("user/send-birthday-message/{$user_id}/{$age}") ?>" method="post" accept-charset="utf-8" role="form">
+    <form action="<?= base_url("user/send-birthday-message/{$user_id}/{$age}") ?>"
+        method="post" accept-charset="utf-8" role="form">
         <fieldset>
             <div class="form-group">
                 <label for="birthday-message">
@@ -80,9 +81,13 @@ require_once('common/user-page-start.php');
                 <small class="time">
                     <span class="glyphicon glyphicon-time"></span> <?= $msg['timespan']; ?>
                 </small>
-                <a href="">Like</a>
-                <span> &middot; </span>
-                <a href="">Reply</a>
+                <?php
+                if ($msg['user_id'] == $_SESSION['user_id'] &&
+                    !$msg['liked']) {
+                    print "<a href='" . base_url("birthday-message/like/{$msg['id']}") .
+                            "'>Like</a>";
+                }
+                ?>
             </div>
         </div>
     <?php } ?>
