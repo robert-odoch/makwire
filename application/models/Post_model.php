@@ -65,6 +65,9 @@ class Post_model extends CI_Model
         // Get the name of the author.
         $post['author'] = $this->user_model->get_profile_name($post['user_id']);
 
+        // Get profile picture of the author.
+        $post['profile_pic_path'] = $this->user_model->get_profile_pic_path($post['user_id']);
+
         // Get the number of likes.
         $post['num_likes'] = $this->get_num_likes($post_id);
 

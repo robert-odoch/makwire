@@ -44,6 +44,9 @@ class Photo_model extends CI_Model
         // Get the name of the author.
         $photo['author'] = $this->user_model->get_profile_name($photo['user_id']);
 
+        // Get the profile picture of the user.
+        $photo['profile_pic_path'] = $this->user_model->get_profile_pic_path($photo['user_id']);
+
         // Get the number of likes.
         $photo['num_likes'] = $this->get_num_likes($photo_id);
 
