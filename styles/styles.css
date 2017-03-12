@@ -83,6 +83,7 @@ div.shares div.media,
 div.replies div.media,
 div.friends div.media,
 div.comments div.media,
+div.messages article.media,
 div.chat-friends div.media,
 div.suggested-users div.media,
 div.birthday-messages div.media {
@@ -90,7 +91,8 @@ div.birthday-messages div.media {
     padding-bottom: 2px;
     border-bottom: 1px dotted #8FBC8F;
 }
-div.media:last-child {
+div.media:last-child,
+article.media:last-child {
     margin-bottom: 0 !important;
     border: none !important;
 }
@@ -181,15 +183,10 @@ ul.dropdown-menu li a:hover {
 
 ul.about li,
 ul.profile li,
-ul.messages li,
 ul.notifications li {
     margin-bottom: 3px;
     padding-bottom: 2px;
     border-bottom: 1px dotted #8FBC8F;
-}
-
-ul.messages li {
-    padding-bottom: 0;
 }
 
 div.active-users div.media {
@@ -205,7 +202,6 @@ div.active-users div:hover a {
 }
 
 ul.about li:last-child,
-ul.messages li:last-child,
 ul.notifications li:last-child,
 div.show-profile ul:last-child li:last-child {
     padding-bottom: 0;
@@ -270,7 +266,6 @@ div#secondary-user img.media-object {
 }
 
 ul.about li:last-child,
-ul.messages li:last-child,
 ul.notifications li:last-child,
 div.show-profile ul:last-child li:last-child {
     border-bottom: none;
