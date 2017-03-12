@@ -14,7 +14,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <?php
                     if ($photo['shared']) {
                         if ($photo['is_profile_pic']) {
-                            print "<a href='" . base_url("user/{$photo['sharer_id']}") . "'>{$photo['sharer']}</a> " .
+                            print "<a href='" . base_url("user/{$photo['sharer_id']}") .
+                                    "'>{$photo['sharer']}</a> " .
                                     "shared <a href='" . base_url("user/{$photo['user_id']}") . "'>";
                             if ($photo['author_name_ends_with_s']) {
                                 print "{$photo['author']}</a>' ";
@@ -25,7 +26,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             print "profile picutre.";
                         }
                         else {
-                            print "<a href='" . base_url("user/{$photo['sharer_id']}") . "'>{$photo['sharer']}</a> " .
+                            print "<a href='" . base_url("user/{$photo['sharer_id']}") .
+                                    "'>{$photo['sharer']}</a> " .
                                     "shared <a href='" . base_url("user/{$photo['user_id']}") . "'>";
                             if ($photo['author_name_ends_with_s']) {
                                 print "{$photo['author']}' ";
@@ -35,19 +37,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             }
                             print "photo";
                         }
-                        print "<small class='time'><span class='glyphicon glyphicon-time'></span> {$photo['timespan']} ago</small>";
                     }
                     else {
                         if ($photo['is_profile_pic']) {
-                            print "<a href='" . base_url("user/{$photo['user_id']}") . "'>{$photo['author']}</a> " .
+                            print "<a href='" . base_url("user/{$photo['user_id']}") .
+                                    "'>{$photo['author']}</a> " .
                                     "updated {$photo['user_gender']} profile picture.";
                         } else {
-                            print "<a href='" . base_url("user/{$photo['user_id']}") . "'>{$photo['author']}</a>";
+                            print "<a href='" . base_url("user/{$photo['user_id']}") .
+                                    "'>{$photo['author']}</a>";
                         }
-                        print "<small class='time'><span class='glyphicon glyphicon-time'></span> {$photo['timespan']} ago</small>";
                     }
                     ?>
                     </h4>
+                    <small class="time">
+                        <span class='glyphicon glyphicon-time'></span> <?= $photo['timespan']; ?> ago
+                    </small>
                 </div>
             </div>
         </header>

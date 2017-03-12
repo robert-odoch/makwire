@@ -13,15 +13,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <h4 class="media-heading">
                     <?php
                     if ($post['shared']) {
-                        print "<a href='" . base_url("user/{$post['sharer_id']}") . "'>{$post['sharer']}</a> shared <a href='" . base_url("user/index/{$post['user_id']}") . "'>{$post['author']}</a>'s post";
-                        print('<small class="time"><span class="glyphicon glyphicon-time"></span> ' . $post['timespan'] .  ' ago</small>');
+                        print "<a href='" . base_url("user/{$post['sharer_id']}") . "'>" .
+                                "{$post['sharer']}</a> shared <a href='" .
+                                base_url("user/index/{$post['user_id']}") .
+                                "'>{$post['author']}</a>'s post";
                     }
                     else {
-                        print "<a href='" . base_url("user/{$post['user_id']}") . "'>{$post['author']}</a>";
-                        print('<small class="time"><span class="glyphicon glyphicon-time"></span> ' . $post['timespan'] .  ' ago</small>');
+                        print "<a href='" . base_url("user/{$post['user_id']}") .
+                                "'>{$post['author']}</a>";
                     }
                     ?>
                     </h4>
+                    <small class="time">
+                        <span class="glyphicon glyphicon-time"></span> <?= $post['timespan']; ?> ago
+                    </small>
                 </div>
             </div>
         </header>
@@ -29,7 +34,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <?php
             print(htmlspecialchars($post['post']));
             if ($post['has_more']) {
-                print "<a href='" . base_url("user/post/{$post['post_id']}") . "' class='more'>view more</a>";
+                print "<a href='" . base_url("user/post/{$post['post_id']}") .
+                        "' class='more'>view more</a>";
             }
             ?>
         </p>
