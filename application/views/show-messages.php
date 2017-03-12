@@ -16,22 +16,27 @@ require_once('common/user-page-start.php');
                 View previous messages.
             </a>
         <?php } ?>
-    <ul class="messages">
+    <div class="messages">
         <?php foreach ($messages as $m): ?>
-        <li>
-            <article class="message">
+        <article class="media message">
+            <div class="media-body">
                 <header>
-                    <a href="<?= base_url("user/{$m['sender_id']}"); ?>" title="<?= $m['sender']; ?>"><?= $m['sender']; ?></a>
+                    <h4 class="media-heading">
+                        <a href="<?= base_url("user/{$m['sender_id']}"); ?>"
+                            title="<?= $m['sender']; ?>">
+                            <?= $m['sender']; ?>
+                        </a>
+                    </h4>
                 </header>
                 <p><?= htmlspecialchars($m['message']); ?></p>
                 <footer>
                     <small class="time"><span class="glyphicon glyphicon-time"></span> <?= $m['timespan']; ?> ago</small>
                     <span> &middot; </span><a href="<?= base_url("user/send_message/{$m['sender_id']}"); ?>" title="Reply">Reply</a>
                 </footer>
-            </article>
-        </li>
+            </div>
+        </article>
         <?php endforeach; ?>
-    </ul>
+    </div>
     <?php endif; ?>
 </div><!-- box -->
 <?php
