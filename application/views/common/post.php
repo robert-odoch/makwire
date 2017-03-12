@@ -5,18 +5,25 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <div class="box">
     <article class="post">
         <header>
-            <h4>
-            <?php
-            if ($post['shared']) {
-                print "<a href='" . base_url("user/{$post['sharer_id']}") . "'>{$post['sharer']}</a> shared <a href='" . base_url("user/index/{$post['user_id']}") . "'>{$post['author']}</a>'s post";
-                print('<small class="time"><span class="glyphicon glyphicon-time"></span> ' . $post['timespan'] .  ' ago</small>');
-            }
-            else {
-                print "<a href='" . base_url("user/{$post['user_id']}") . "'>{$post['author']}</a>";
-                print('<small class="time"><span class="glyphicon glyphicon-time"></span> ' . $post['timespan'] .  ' ago</small>');
-            }
-            ?>
-            </h4>
+            <div class="media">
+                <div class="media-left">
+                    <img src="<?= $post['profile_pic_path']; ?>" alt="" class="media-object">
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading">
+                    <?php
+                    if ($post['shared']) {
+                        print "<a href='" . base_url("user/{$post['sharer_id']}") . "'>{$post['sharer']}</a> shared <a href='" . base_url("user/index/{$post['user_id']}") . "'>{$post['author']}</a>'s post";
+                        print('<small class="time"><span class="glyphicon glyphicon-time"></span> ' . $post['timespan'] .  ' ago</small>');
+                    }
+                    else {
+                        print "<a href='" . base_url("user/{$post['user_id']}") . "'>{$post['author']}</a>";
+                        print('<small class="time"><span class="glyphicon glyphicon-time"></span> ' . $post['timespan'] .  ' ago</small>');
+                    }
+                    ?>
+                    </h4>
+                </div>
+            </div>
         </header>
         <p class="post">
             <?php
