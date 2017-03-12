@@ -31,8 +31,7 @@ class Reply extends CI_Controller
 
     public function like($reply_id, $comment_id, $offset)
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST' ||
-            !$this->reply_model->like($reply_id)) {
+        if (!$this->reply_model->like($reply_id)) {
             $this->show_permission_denied("You don't have the proper permissions " .
                                             "to like this reply.");
             return;

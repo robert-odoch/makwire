@@ -31,8 +31,7 @@ class Comment extends CI_Controller
 
     public function like($comment_id)
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST' ||
-            !$this->comment_model->like($comment_id)) {
+        if (!$this->comment_model->like($comment_id)) {
             $this->show_permission_denied("You don't have the proper permissions " .
                                             "to like this comment.");
             return;

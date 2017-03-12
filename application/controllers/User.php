@@ -287,12 +287,17 @@ class User extends CI_Controller
 
     public function new_post()
     {
-        if (empty(trim($this->input->post('post')))) {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->show_permission_denied("You don't have the proper permissions.");
+            return;
+        }
+
+        $post = trim(strip_tags($this->input->post('post')));
+        if (!$post) {
             $_SESSION['post_error'] = "Post can't be empty!";
             redirect(base_url("user/{$_SESSION['user_id']}"));
         }
 
-        $post = strip_tags($this->input->post('post'));
         $this->post_model->post($post, 'timeline', $_SESSION['user_id']);
         redirect(base_url("user/{$_SESSION['user_id']}"));
     }
@@ -301,7 +306,7 @@ class User extends CI_Controller
     {
         $post = $this->post_model->get_post($post_id);
         if (!$post) {
-            $this->show_permission_denied("You dont't have the proper permissions " .
+            $this->show_permission_denied("You don't have the proper permissions " .
                                             "to view this post.");
             return;
         }
