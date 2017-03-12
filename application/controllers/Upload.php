@@ -13,20 +13,17 @@ class Upload extends CI_Controller
         }
 
         $this->load->helper(['form', 'url']);
-
+        $this->load->library('image_lib');
         $this->load->model(['user_model', 'upload_model']);
 
         // Check whether the user hasn't been logged out from some where else.
         $this->user_model->confirm_logged_in();
 
         // Set up and load the upload library.
-        $config['upload_path'] = '../uploads';
+        $config['upload_path'] = 'uploads';
         $config['allowed_types'] = 'gif|png|jpg|jpeg';
-        $config['encrypt_name'] = TRUE;
         $config['file_ext_tolower'] = TRUE;
-        $config['max_size'] = 2048;
-        $config['max_width'] = 1366;
-        $config['max_height'] = 768;
+        $config['max_size'] = 1024;
 
         $this->load->library('upload', $config);
     }
@@ -44,8 +41,30 @@ class Upload extends CI_Controller
                 $this->load->view('upload-image', $data);
             }
             else {
-                // Record it in the database.
+
+                // Upload the file.
                 $upload_data = $this->upload->data();
+
+                // Create a thumbnail.
+                $config['image_library'] = 'gd2';
+                $config['source_image'] = $upload_data['full_path'];
+                $config['new_image'] = "{$upload_data['file_path']}thumbnails";
+                $config['create_thumb'] = TRUE;
+                $config['thumb_marker'] = "";
+                $config['maintain_ratio'] = TRUE;
+                $config['width'] = 60;
+                $config['height'] = 60;
+
+                $this->image_lib->initialize($config);
+
+                if (!$this->image_lib->resize()) {
+                    print $this->image_lib->display_errors();
+                }
+                else {
+                    print "thumbnail created.";
+                }
+
+                // Record it in the database.
                 $this->upload_model->set_profile_picture($upload_data);
                 redirect(base_url("/user/{$_SESSION['user_id']}"));
             }
