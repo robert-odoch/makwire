@@ -59,6 +59,6 @@ require_once('common/user-page-start.php');
             }
             ?>
         </fieldset>
-        <input type="submit" value="Save" class="btn">
+        <input type="submit" value="Save" class="btn btn-sm">
     </form>
 </div><!-- box -->
