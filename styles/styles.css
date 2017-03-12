@@ -378,6 +378,7 @@ div.show-profile ul:last-child {
 
 article.post header,
 article.photo header {
+    padding-bottom: 2px;
     border-bottom: 1px solid #8FBC8F;
 }
 
@@ -398,7 +399,7 @@ ul.notifications li a {
     text-decoration: none;
 }
 
-article.photo img {
+article.photo > img {
     margin: 5px auto 0 auto;
     width: 100%;
     height: 250px;
@@ -408,10 +409,8 @@ article.photo img {
 article.message footer {
     display: inline-block;
 }
-article header h4 {
-    margin-top: 3px;
-    padding: 2px 0;
-    margin-bottom: 0;
+article header div.media-{
+    margin-bottom: 2px;
 }
 article header a {
     font-weight: bold;
