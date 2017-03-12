@@ -220,6 +220,9 @@ class User_model extends CI_Model
 
                         // Change timespan to match the date it was shared on.
                         $r['post']['timespan'] = timespan(mysql_to_unix($r['date_entered']), now(), 1);
+
+                        // Replace author's profile_pic with the one for sharer.
+                        $r['post']['profile_pic_path'] = $this->get_profile_pic_path($user_id);
                     }
                     break;
                 case 'photo':
@@ -234,6 +237,9 @@ class User_model extends CI_Model
 
                         // Change timespan to match the date it was shared on.
                         $r['photo']['timespan'] = timespan(mysql_to_unix($r['date_entered']), now(), 1);
+
+                        // Replace author's profile_pic with the one for sharer.
+                        $r['photo']['profile_pic_path'] = $this->get_profile_pic_path($user_id);
                     }
                     break;
                 default:
@@ -1223,6 +1229,9 @@ class User_model extends CI_Model
 
                         // Change timespan to match the date it was shared on.
                         $r['post']['timespan'] = timespan(mysql_to_unix($r['date_entered']), now(), 1);
+
+                        // Replace author's profile_pic with the one for sharer.
+                        $r['post']['profile_pic_path'] = $this->get_profile_pic_path($r['actor_id']);
                     }
                     break;
                 case 'photo':
@@ -1237,6 +1246,9 @@ class User_model extends CI_Model
 
                         // Change the timespan to match the date it was shared.
                         $r['photo']['timespan'] = timespan(mysql_to_unix($r['date_entered']), now(), 1);
+
+                        // Replace author's profile_pic with the one for sharer.
+                        $r['photo']['profile_pic_path'] = $this->get_profile_pic_path($r['actor_id']);
                     }
                     break;
                 default:
