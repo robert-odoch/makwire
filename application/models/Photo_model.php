@@ -38,8 +38,8 @@ class Photo_model extends CI_Model
         }
 
         $photo = $photo_query->row_array();
-        $web_path = str_replace($_SERVER['DOCUMENT_ROOT'], '', $photo['full_path']);
-        $photo['web_path'] = base_url("/{$web_path}");
+        $web_path = str_replace("{$_SERVER['DOCUMENT_ROOT']}makwire", '', $photo['full_path']);
+        $photo['web_path'] = base_url("{$web_path}");
 
         // Get the name of the author.
         $photo['author'] = $this->user_model->get_profile_name($photo['user_id']);
@@ -183,7 +183,7 @@ class Photo_model extends CI_Model
         $activity_sql = sprintf("INSERT INTO activities " .
                                 "(actor_id, subject_id, source_id, source_type, activity) " .
                                 "VALUES (%d, %d, %d, 'photo', 'like')",
-                                $_SESSION['user_id'], $photo_result['user_id'], $photo_id);
+                                $_SESSION['user_id'], $user_result['user_id'], $photo_id);
         $this->run_query($activity_sql);
 
         return TRUE;
@@ -239,7 +239,7 @@ class Photo_model extends CI_Model
         $activity_sql = sprintf("INSERT INTO activities " .
                                 "(actor_id, subject_id, source_id, source_type, activity) " .
                                 "VALUES (%d, %d, %d, 'photo', 'share')",
-                                $_SESSION['user_id'], $photo_result['user_id'], $photo_id);
+                                $_SESSION['user_id'], $user_result['user_id'], $photo_id);
         $this->run_query($activity_sql);
 
         return TRUE;

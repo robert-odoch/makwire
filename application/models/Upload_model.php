@@ -38,20 +38,22 @@ class Upload_model extends CI_Model
                                 $data['image_width'], $data['image_height'],
                                 $this->db->escape($data['full_path']));
         $this->run_query($photo_sql);
-        $image_id = $this->db->insert_id();
+        $photo_id = $this->db->insert_id();
 
-        // Update profile_pic_id in the users table.
+        // Update profile_pic_path in the users table.
+        $profile_pic_path = "{$data['file_path']}thumbnails/{$data['file_name']}";
         $update_sql = sprintf("UPDATE users " .
-                            "SET profile_pic_id = %d " .
-                            "WHERE (user_id = %d) LIMIT 1",
-                            $image_id, $_SESSION['user_id']);
+                                "SET profile_pic_path = %s " .
+                                "WHERE (user_id = %d) LIMIT 1",
+                                $this->db->escape($profile_pic_path),
+                                $_SESSION['user_id']);
         $this->run_query($update_sql);
 
         // Dispatch an activity.
         $activity_sql = sprintf("INSERT INTO activities " .
                                 "(actor_id, subject_id, source_id, source_type, activity) " .
                                 "VALUES (%d, %d, %d, 'photo', 'profile_pic_change')",
-                                $_SESSION['user_id'], $_SESSION['user_id'], $image_id);
+                                $_SESSION['user_id'], $_SESSION['user_id'], $photo_id);
         $this->run_query($activity_sql);
     }
 }

@@ -142,10 +142,10 @@ class Comment_model extends CI_Model
     public function like($comment_id)
     {
         // Get the id of the user who commented.
-        $comment_sql = sprintf("SELECT commenter_id FROM comments WHERE comment_id = %d",
-                                $comment_id);
-        $comment_query = $this->run_query($comment_sql);
-        if ($comment_query->num_rows() == 0) {
+        $user_sql = sprintf("SELECT commenter_id FROM comments WHERE comment_id = %d",
+                            $comment_id);
+        $user_query = $this->run_query($user_sql);
+        if ($user_query->num_rows() == 0) {
             return FALSE;
         }
 
@@ -153,8 +153,8 @@ class Comment_model extends CI_Model
             return TRUE;
         }
 
-        $comment_result = $comment_query->row_array();
-        if (!$this->user_model->are_friends($comment_result['commenter_id'])) {
+        $user_result = $user_query->row_array();
+        if (!$this->user_model->are_friends($user_result['commenter_id'])) {
             return FALSE;
         }
 
@@ -168,7 +168,7 @@ class Comment_model extends CI_Model
         $activity_sql = sprintf("INSERT INTO activities " .
                                 "(actor_id, subject_id, source_id, source_type, activity) " .
                                 "VALUES (%d, %d, %d, 'comment', 'like')",
-                                $_SESSION['user_id'], $comment_result['commenter_id'], $comment_id);
+                                $_SESSION['user_id'], $user_result['commenter_id'], $comment_id);
         $this->run_query($activity_sql);
 
         return TRUE;
@@ -185,15 +185,15 @@ class Comment_model extends CI_Model
         $this->run_query($reply_sql);
 
         // Get the id of the user who commented.
-        $comment_sql = sprintf("SELECT commenter_id FROM comments WHERE comment_id = %d",
+        $user_sql = sprintf("SELECT commenter_id FROM comments WHERE comment_id = %d",
                                 $comment_id);
-        $comment_result= $this->run_query($comment_sql)->row_array();
+        $user_result= $this->run_query($user_sql)->row_array();
 
         // Dispatch an activity.
         $activity_sql = sprintf("INSERT INTO activities " .
                                 "(actor_id, subject_id, source_id, source_type, activity) " .
                                 "VALUES (%d, %d, %d, 'comment', 'reply')",
-                                $_SESSION['user_id'], $comment_result['commenter_id'],
+                                $_SESSION['user_id'], $user_result['commenter_id'],
                                 $comment_id);
         $this->run_query($activity_sql);
     }

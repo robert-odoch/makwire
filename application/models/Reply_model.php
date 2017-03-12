@@ -111,7 +111,7 @@ class Reply_model extends CI_Model
         $activity_sql = sprintf("INSERT INTO activities " .
                                 "(actor_id, subject_id, source_id, source_type, activity) " .
                                 "VALUES (%d, %d, %d, 'reply', 'like')",
-                                $_SESSION['user_id'], $reply_result['commenter_id'], $reply_id);
+                                $_SESSION['user_id'], $user_result['commenter_id'], $reply_id);
         $this->run_query($activity_sql);
 
         return TRUE;

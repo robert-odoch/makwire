@@ -197,7 +197,7 @@ class Post_model extends CI_Model
         $activity_sql = sprintf("INSERT INTO activities " .
                                 "(actor_id, subject_id, source_id, source_type, activity) " .
                                 "VALUES (%d, %d, %d, 'post', 'like')",
-                                $_SESSION['user_id'], $post_result['user_id'], $post_id);
+                                $_SESSION['user_id'], $user_result['user_id'], $post_id);
         $this->run_query($activity_sql);
 
         return TRUE;
