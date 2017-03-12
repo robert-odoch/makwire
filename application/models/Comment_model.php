@@ -31,10 +31,10 @@ class Comment_model extends CI_Model
     private function has_liked($comment_id)
     {
         // Check whether this comment is from the user liking the comment.
-        $comment_sql = sprintf("SELECT commenter_id FROM comments " .
-                                "WHERE comment_id = %d LIMIT 1",
-                                $comment_id);
-        $query = $this->run_query($comment_sql);
+        $user_sql = sprintf("SELECT commenter_id FROM comments " .
+                            "WHERE comment_id = %d LIMIT 1",
+                            $comment_id);
+        $query = $this->run_query($user_sql);
         if ($query->row_array()['commenter_id'] == $_SESSION['user_id']) {
             return TRUE;
         }
