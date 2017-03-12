@@ -163,9 +163,7 @@ class Post extends CI_Controller
             $data['next_offset'] = ($offset + $limit);
         }
 
-        $data['num_prev'] = $offset;
         $data['comments'] = $this->post_model->get_comments($post_id, $offset, $limit);
-
         $short_post = $this->post_model->get_short_post($post['post'], 540);
         $post['post'] = $short_post['body'];
         $post['has_more'] = $short_post['has_more'];

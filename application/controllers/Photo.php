@@ -154,9 +154,7 @@ class Photo extends CI_Controller
             $data['next_offset'] = ($offset + $limit);
         }
 
-        $data['num_prev'] = $offset;
         $data['comments'] = $this->photo_model->get_comments($photo_id, $offset, $limit);
-
         $data['object'] = 'photo';
         $data['photo'] = $photo;
         $this->load->view("show-comments", $data);
