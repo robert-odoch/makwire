@@ -142,6 +142,7 @@ class Comment extends CI_Controller
         }
 
         $data['replies'] = $this->comment_model->get_replies($comment_id, $offset, $limit);
+        $data['object'] = 'comment';
         $data['comment'] = $comment;
         $this->load->view("show-comment-replies", $data);
         $this->load->view("common/footer");

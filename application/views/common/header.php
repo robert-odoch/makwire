@@ -69,7 +69,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 </a>
                             </li>
                             <li>
-                                <a href="<?= base_url('user/friend_requests'); ?>"><span class="glyphicon glyphicon-user"></span> Friends
+                                <a href="<?= base_url('user/friend-requests'); ?>"><span class="glyphicon glyphicon-user"></span> Friends
                                 <?php
                                 if ($num_friend_requests > 0) {
                                     print " <span class='badge'>{$num_friend_requests}</span>";
