@@ -250,6 +250,7 @@ div.likes h4.media-heading,
 div.shares h4.media-heading,
 div.replies h4.media-heading,
 div.comments h4.media-heading,
+article h4.media-heading,
 div.birthday-messages h4.media-heading {
     margin-bottom: -2px;
 }
@@ -278,12 +279,6 @@ div.show-profile ul:last-child li:last-child {
 
 small.time {
     display: inline-block;
-    font-style: oblique;
-}
-article header h4 small.time {
-    padding: 3px 0;
-    display: block;
-    font-style: normal;
 }
 
 div.suggestions > h4 {
