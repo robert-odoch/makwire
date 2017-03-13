@@ -14,10 +14,6 @@ class User_model extends CI_Model
 
     /*** Utility ***/
 
-    public function name_ends_with($character, $name) {
-        return (strtolower($name)[strlen($name)-1] == $character);
-    }
-
     private function build_sorter($key)
     {
         return function ($a, $b) use ($key) {
