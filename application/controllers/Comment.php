@@ -12,28 +12,17 @@ class Comment extends CI_Controller
             redirect(base_url('login'));
         }
 
-        $this->load->model(['user_model', 'comment_model']);
+        $this->load->model(['user_model', 'comment_model', 'utility_model']);
 
         // Check whether the user hasn't been logged out from some where else.
         $this->user_model->confirm_logged_in();
     }
 
-    private function show_permission_denied($message)
-    {
-        $data = $this->user_model->initialize_user();
-        $data['title'] = "Permission Denied!";
-        $this->load->view("common/header", $data);
-
-        $data['message'] = $message;
-        $this->load->view("show-permission-denied", $data);
-        $this->load->view("common/footer");
-    }
-
     public function like($comment_id)
     {
         if (!$this->comment_model->like($comment_id)) {
-            $this->show_permission_denied("You don't have the proper permissions " .
-                                            "to like this comment.");
+            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
+                                                            "to like this comment.");
             return;
         }
 
@@ -45,8 +34,8 @@ class Comment extends CI_Controller
         $comment = $this->comment_model->get_comment($comment_id);
         if (!$comment ||
             !$this->user_model->are_friends($comment['commenter_id'])) {
-            $this->show_permission_denied("You don't have the proper permissions " .
-                                            "to reply to this comment.");
+            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
+                                                            "to reply to this comment.");
             return;
         }
 
@@ -76,8 +65,8 @@ class Comment extends CI_Controller
     {
         $comment = $this->comment_model->get_comment($comment_id);
         if (!$comment) {
-            $this->show_permission_denied("You don't have the proper permissions " .
-                                            "to view this comment.");
+            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
+                                                            "to view this comment.");
             return;
         }
 
@@ -114,8 +103,8 @@ class Comment extends CI_Controller
     {
         $comment = $this->comment_model->get_comment($comment_id);
         if (!$comment) {
-            $this->show_permission_denied("You don't have the proper permissions " .
-                                            "to view this comment.");
+            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
+                                                            "to view this comment.");
             return;
         }
 

@@ -12,28 +12,17 @@ class Reply extends CI_Controller
             redirect(base_url('login'));
         }
 
-        $this->load->model(['user_model', 'reply_model']);
+        $this->load->model(['user_model', 'reply_model', 'utility_model']);
 
         // Check whether the user hasn't been logged out from some where else.
         $this->user_model->confirm_logged_in();
     }
 
-    private function show_permission_denied($message)
-    {
-        $data = $this->user_model->initialize_user();
-        $data['title'] = "Permission Denied!";
-        $this->load->view("common/header", $data);
-
-        $data['message'] = $message;
-        $this->load->view("show-permission-denied", $data);
-        $this->load->view("common/footer");
-    }
-
     public function like($reply_id, $comment_id, $offset)
     {
         if (!$this->reply_model->like($reply_id)) {
-            $this->show_permission_denied("You don't have the proper permissions " .
-                                            "to like this reply.");
+            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
+                                                            "to like this reply.");
             return;
         }
 
@@ -44,8 +33,8 @@ class Reply extends CI_Controller
     {
         $reply = $this->reply_model->get_reply($reply_id);
         if (!$reply) {
-            $this->show_permission_denied("You don't have the proper permissions " .
-                                            "to view this reply.");
+            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
+                                                            "to view this reply.");
             return;
         }
 

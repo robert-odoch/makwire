@@ -12,32 +12,14 @@ class User extends CI_Controller
             redirect(base_url('login'));
         }
 
-        $this->load->model(['user_model', 'post_model', 'profile_model', 'photo_model']);
+        $this->load->model([
+            'user_model', 'post_model',
+            'profile_model', 'photo_model',
+            'utility_model'
+        ]);
 
         // Check whether the user hasn't been logged out from some where else.
         $this->user_model->confirm_logged_in();
-    }
-
-    private function show_success($success_message)
-    {
-        $data = $this->user_model->initialize_user();
-        $data['title'] = "Success!";
-        $this->load->view("common/header", $data);
-
-        $data['success'] = $success_message;
-        $this->load->view("show-success", $data);
-        $this->load->view("common/footer");
-    }
-
-    private function show_permission_denied($message)
-    {
-        $data = $this->user_model->initialize_user();
-        $data['title'] = "Permission Denied!";
-        $this->load->view("common/header", $data);
-
-        $data['message'] = $message;
-        $this->load->view("show-permission-denied", $data);
-        $this->load->view("common/footer");
     }
 
     // TODO: Delete this funtion when everything is done.
@@ -160,7 +142,7 @@ class User extends CI_Controller
     {
         if (!$this->user_model->are_friends($user_id) ||
             !$this->user_model->can_view_birthday($user_id, $age)) {
-            $this->show_permission_denied("You don't have the proper permissions.");
+            $this->utility_model->show_permission_denied("You don't have the proper permissions.");
             return;
         }
 
@@ -200,7 +182,7 @@ class User extends CI_Controller
     public function send_birthday_message($user_id, $age)
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->show_permission_denied("You don't have the proper permissions.");
+            $this->utility_model->show_permission_denied("You don't have the proper permissions.");
             return;
         }
 
@@ -243,8 +225,8 @@ class User extends CI_Controller
     public function send_message($user_id, $offset=0)
     {
         if (!$this->user_model->are_friends($user_id)) {
-            $this->show_permission_denied("You don't have the proper permissions " .
-                                            "to send a message to this user.");
+            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
+                                                            "to send a message to this user.");
             return;
         }
 
@@ -288,7 +270,7 @@ class User extends CI_Controller
     public function new_post()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->show_permission_denied("You don't have the proper permissions.");
+            $this->utility_model->show_permission_denied("You don't have the proper permissions.");
             return;
         }
 
@@ -306,8 +288,8 @@ class User extends CI_Controller
     {
         $post = $this->post_model->get_post($post_id);
         if (!$post) {
-            $this->show_permission_denied("You don't have the proper permissions " .
-                                            "to view this post.");
+            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
+                                                            "to view this post.");
             return;
         }
 
@@ -391,8 +373,8 @@ class User extends CI_Controller
     {
         $photo = $this->photo_model->get_photo($photo_id);
         if (!$photo) {
-            $this->show_permission_denied("You don't have the proper permissions " .
-                                            "to view this photo.");
+            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
+                                                            "to view this photo.");
             return;
         }
 
@@ -462,19 +444,19 @@ class User extends CI_Controller
     {
         $friend_request_sent = $this->user_model->send_friend_request($user_id);
         if (!$friend_request_sent) {
-            $this->show_permission_denied("Either the two of you are already friends, " .
-                                            "or there exists a pending freind request.");
+            $this->utility_model->show_permission_denied("Either the two of you are already friends, " .
+                                                            "or there exists a pending freind request.");
             return;
         }
 
-        $this->show_success("Friend request sent.");
+        $this->utility_model->show_success("Friend request sent.");
     }
 
     public function accept_friend($user_id)
     {
         $confirmed = $this->user_model->confirm_friend_request($user_id);
         if (!$confirmed) {
-            $this->show_permission_denied("This user didn't send you a friend request.");
+            $this->utility_model->show_permission_denied("This user didn't send you a friend request.");
             return;
         }
 
@@ -636,7 +618,7 @@ class User extends CI_Controller
             if (!isset($data['error_message'])) {
                 // Try saving the college and school.
                 if ($this->profile_model->add_college($data)) {
-                    $this->show_success("Your college and school have been succesfully saved.");
+                    $this->utility_model->show_success("Your college and school have been succesfully saved.");
                     return;
                 }
                 else {
@@ -705,7 +687,7 @@ class User extends CI_Controller
 
             if (!isset($data['error_message'])) {
                 if ($this->profile_model->update_college($data)) {
-                    $this->show_success("Your edits have been succesfully saved.");
+                    $this->utility_model->show_success("Your edits have been succesfully saved.");
                     return;
                 }
                 else {
@@ -717,7 +699,7 @@ class User extends CI_Controller
 
         $user_college = $this->profile_model->get_user_college($user_college_id);
         if (!$user_college) {
-            $this->show_permission_denied("You don't have the proper permissions to edit this college.");
+            $this->utility_model->show_permission_denied("You don't have the proper permissions to edit this college.");
             return;
         }
 
@@ -747,7 +729,8 @@ class User extends CI_Controller
             $data['year_of_study'] = $this->input->post("year-of-study");
 
             $this->profile_model->add_programme($data);
-            $this->show_success("Your programme details have been successfully saved.");
+            $this->utility_model->show_success("Your programme details have been " .
+                                                "successfully saved.");
             return;
         }
 
@@ -757,7 +740,7 @@ class User extends CI_Controller
 
         $user_college = $this->profile_model->get_user_college($user_college_id);
         if (!$user_college) {
-            $this->show_permission_denied("You don't have the proper permissions.");
+            $this->utility_model->show_permission_denied("You don't have the proper permissions.");
             return;
         }
 
@@ -781,13 +764,13 @@ class User extends CI_Controller
             $data['year_of_study'] = $this->input->post("year-of-study");
 
             $this->profile_model->update_programme($data);
-            $this->show_success("Your edits have been successfully saved.");
+            $this->utility_model->show_success("Your edits have been successfully saved.");
             return;
         }
 
         $user_programme = $this->profile_model->get_user_programme($user_programme_id);
         if (!$user_programme) {
-            $this->show_permission_denied("You don't have the proper permissions.");
+            $this->utility_model->show_permission_denied("You don't have the proper permissions.");
             return;
         }
 
@@ -831,7 +814,7 @@ class User extends CI_Controller
 
             if (!isset($data['error_message'])) {
                 if ($this->profile_model->add_hall($data)) {
-                    $this->show_success("Your hall details have been successfully saved.");
+                    $this->utility_model->show_success("Your hall details have been successfully saved.");
                     return;
                 }
                 else {
@@ -886,7 +869,7 @@ class User extends CI_Controller
 
             if (!isset($data['error_message'])) {
                 if ($this->profile_model->update_hall($data)) {
-                    $this->show_success("Your edits have been successfully saved.");
+                    $this->utility_model->show_success("Your edits have been successfully saved.");
                     return;
                 }
                 else {
@@ -898,7 +881,7 @@ class User extends CI_Controller
 
         $user_hall = $this->profile_model->get_user_hall($user_hall_id);
         if (!$user_hall) {
-            $this->show_permission_denied("You don't have the proper permissions.");
+            $this->utility_model->show_permission_denied("You don't have the proper permissions.");
             return;
         }
 
@@ -954,7 +937,7 @@ class User extends CI_Controller
 
             if (!isset($data['error_message'])) {
                 if ($this->profile_model->add_hostel($data)) {
-                    $this->show_success("Your hostel details have been successfully saved.");
+                    $this->utility_model->show_success("Your hostel details have been successfully saved.");
                     return;
                 }
                 else {
@@ -1007,7 +990,7 @@ class User extends CI_Controller
 
             if (!isset($data['error_message'])) {
                 if ($this->profile_model->update_hostel($data)) {
-                    $this->show_success("Your edits have been successfully saved.");
+                    $this->utility_model->show_success("Your edits have been successfully saved.");
                     return;
                 }
                 else {
@@ -1020,7 +1003,7 @@ class User extends CI_Controller
 
         $user_hostel = $this->profile_model->get_user_hostel($user_hostel_id);
         if (!$user_hostel) {
-            $this->show_permission_denied("You don't have the proper permissions.");
+            $this->utility_model->show_permission_denied("You don't have the proper permissions.");
             return;
         }
 

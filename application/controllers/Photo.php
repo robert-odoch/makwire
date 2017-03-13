@@ -12,28 +12,17 @@ class Photo extends CI_Controller
             redirect(base_url('login'));
         }
 
-        $this->load->model(['photo_model', 'user_model']);
+        $this->load->model(['photo_model', 'user_model', 'utility_model']);
 
         // Check whether the user hasn't been logged out from some where else.
         $this->user_model->confirm_logged_in();
     }
 
-    private function show_permission_denied($message)
-    {
-        $data = $this->user_model->initialize_user();
-        $data['title'] = "Permission Denied!";
-        $this->load->view("common/header", $data);
-
-        $data['message'] = $message;
-        $this->load->view("show-permission-denied", $data);
-        $this->load->view("common/footer");
-    }
-
     public function like($photo_id)
     {
         if (!$this->photo_model->like($photo_id)) {
-            $this->show_permission_denied("You don't have the proper permissions " .
-                                            "to like this photo.");
+            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
+                                                            "to like this photo.");
             return;
         }
 
@@ -45,8 +34,8 @@ class Photo extends CI_Controller
         $photo = $this->photo_model->get_photo($photo_id);
         if (!$photo ||
             !$this->user_model->are_friends($photo['user_id'])) {
-            $this->show_permission_denied("You don't have the proper permissions " .
-                                            "to comment on this photo.");
+            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
+                                                            "to comment on this photo.");
             return;
         }
 
@@ -76,8 +65,8 @@ class Photo extends CI_Controller
     {
         $share = $this->photo_model->share($photo_id);
         if (!$share) {
-            $this->show_permission_denied("You don't have the proper permissions " .
-                                            "to share this photo.");
+            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
+                                                            "to share this photo.");
             return;
         }
 
@@ -88,8 +77,8 @@ class Photo extends CI_Controller
     {
         $photo = $this->photo_model->get_photo($photo_id);
         if (!$photo) {
-            $this->show_permission_denied("You don't have the proper permissions " .
-                                            "to view this photo.");
+            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
+                                                            "to view this photo.");
             return;
         }
 
@@ -127,8 +116,8 @@ class Photo extends CI_Controller
     {
         $photo = $this->photo_model->get_photo($photo_id);
         if (!$photo) {
-            $this->show_permission_denied("You don't have the proper permissions " .
-                                            "to view this photo.");
+            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
+                                                            "to view this photo.");
             return;
         }
 
@@ -164,8 +153,8 @@ class Photo extends CI_Controller
     {
         $photo = $this->photo_model->get_photo($photo_id);
         if (!$photo) {
-            $this->show_permission_denied("You don't have the proper permissions " .
-                                            "to view this photo.");
+            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
+                                                            "to view this photo.");
             return;
         }
 
