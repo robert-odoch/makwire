@@ -99,10 +99,7 @@ class User extends CI_Controller
     public function index($user_id, $offset=0)
     {
         $data = $this->user_model->initialize_user();
-        $data['title'] = "{$data['primary_user']}'s Posts";
-        if ($this->user_model->name_ends_with('s', $data['primary_user'])) {
-            $data['title'] = "{$data['primary_user']}' Posts";
-        }
+        $data['title'] = format_name($data['primary_user']) . ' posts';
 
         $data['is_visitor'] = ($user_id == $_SESSION['user_id']) ? FALSE : TRUE;;
         if ($data['is_visitor']) {
@@ -110,10 +107,7 @@ class User extends CI_Controller
             $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
             $data['secondary_user'] = $this->user_model->get_profile_name($user_id);
             $data['suid'] = $user_id;
-            $data['title'] = "{$data['secondary_user']}'s Posts";
-            if ($this->user_model->name_ends_with('s', $data['secondary_user'])) {
-                $data['title'] = "{$data['secondary_user']}' Posts";
-            }
+            $data['title'] = format_name($data['secondary_user']) . ' posts';
         }
 
         $this->load->view('common/header', $data);
@@ -148,10 +142,7 @@ class User extends CI_Controller
 
         $data = $this->user_model->initialize_user();
         $data['user'] = $this->user_model->get_profile_name($user_id);
-        $data['title'] = "{$data['user']}'s Birthday";
-        if ($this->user_model->name_ends_with('s', $data['user'])) {
-            $data['title'] = "{$data['user']}' Birthday";
-        }
+        $data['title'] = format_name($data['user']) . ' birthday';
 
         $data['is_visitor'] = ($user_id == $_SESSION['user_id']) ? FALSE : TRUE;
 
@@ -294,10 +285,7 @@ class User extends CI_Controller
         }
 
         $data = $this->user_model->initialize_user();
-        $data['title'] = "{$post['author']}'s Post";
-        if ($this->user_model->name_ends_with('s', $post['author'])) {
-            $data['title'] = "{$post['author']}' Post";
-        }
+        $data['title'] = format_name($post['author']) . ' post';
 
         $this->load->view('common/header', $data);
 
@@ -379,10 +367,7 @@ class User extends CI_Controller
         }
 
         $data = $this->user_model->initialize_user();
-        $data['title'] = "{$photo['author']}'s Photo";
-        if ($this->user_model->name_ends_with('s', $photo['author'])) {
-            $data['title'] = "{$photo['author']}' Photo";
-        }
+        $data['title'] = format_name($photo['author']) . ' photo';
 
         $this->load->view("common/header", $data);
 
@@ -521,7 +506,7 @@ class User extends CI_Controller
         }
 
         $data = $this->user_model->initialize_user();
-        $data['title'] = "{$data['primary_user']}'s Friends";
+        $data['title'] = format_name($data['primary_user']) . ' friends';
 
         $data['is_visitor'] = ($user_id == $_SESSION['user_id']) ? FALSE : TRUE;
         if ($data['is_visitor']) {
@@ -530,10 +515,7 @@ class User extends CI_Controller
             $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
             $data['secondary_user'] = $this->user_model->get_profile_name($user_id);
             $data['suid'] = $user_id;
-            $data['title'] = "{$data['secondary_user']}'s Friends";
-            if ($this->user_model->name_ends_with('s', $data['secondary_user'])) {
-                $data['title'] = "{$data['secondary_user']}' Friends";
-            }
+            $data['title'] = format_name($data['secondary_user']) . ' friends';
         }
 
         $this->load->view("common/header", $data);
