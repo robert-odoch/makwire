@@ -43,15 +43,7 @@ class Photo_model extends CI_Model
 
         // Add data used by views.
         $photo['shared'] = FALSE;
-
-        if ($this->user_model->name_ends_with('s', $photo['author'])) {
-            $photo['author_name_ends_with_s'] = TRUE;
-            $photo['alt'] = "{$photo['author']}' photo";
-        }
-        else {
-            $photo['author_name_ends_with_s'] = FALSE;
-            $photo['alt'] = "{$photo['author']}'s photo";
-        }
+        $photo['alt'] = format_name($photo['author']) . ' photo';
 
         // Check whether the user currently viewing the page is a friend to the
         // owner of the photo. This will allow us to only show the

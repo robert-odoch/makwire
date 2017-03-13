@@ -65,8 +65,6 @@ class Post_model extends CI_Model
         // Add data used by views.
         $post['shared'] = FALSE;
 
-        $post['author_name_ends_with_s'] = $this->user_model->name_ends_with('s', $post['author']);
-
         // Check whether the user currently viewing the page is a friend to the
         // original author of the post. This will allow us to only show the
         // like, comment and share buttons to friends of the original author.
