@@ -6,7 +6,7 @@ class Photo_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
-        $this->load->model(['user_model', 'comment_model', 'utility_model']);
+        $this->load->model(['utility_model', 'user_model', 'comment_model']);
     }
 
     public function get_photo($photo_id)

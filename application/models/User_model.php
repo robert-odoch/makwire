@@ -7,8 +7,8 @@ class User_model extends CI_Model
     {
         parent::__construct();
         $this->load->model([
-            'post_model', 'birthday_message_model',
-            'utility_model'
+            'utility_model', 'post_model',
+            'birthday_message_model'
         ]);
     }
 

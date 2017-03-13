@@ -6,7 +6,7 @@ class Comment_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
-        $this->load->model(['user_model', 'reply_model', 'utility_model']);
+        $this->load->model(['utility_model', 'user_model', 'reply_model']);
     }
 
     private function has_liked($comment_id)

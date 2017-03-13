@@ -6,7 +6,7 @@ class Post_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('comment_model', 'utility_model');
+        $this->load->model(['utility_model', 'comment_model']);
     }
 
     public function get_short_post($post, $num_chars)
