@@ -16,7 +16,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         print "<a href='" . base_url("user/{$post['sharer_id']}") . "'>" .
                                 "{$post['sharer']}</a> shared <a href='" .
                                 base_url("user/index/{$post['user_id']}") .
-                                "'>{$post['author']}</a>'s post";
+                                "'>" . format_name($post['author'], '</a>') . " post";
                     }
                     else {
                         print "<a href='" . base_url("user/{$post['user_id']}") .

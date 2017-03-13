@@ -7,7 +7,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <div id="<?= $object; ?>" class="media">
         <div class="media-left">
             <img class="media-object" src="<?= $$object['profile_pic_path']; ?>"
-                alt="<?= $$object['commenter']; ?>'s photo">
+                alt="<?= $$object['commenter']; ?>">
         </div>
         <div class="media-body">
             <h4 class="media-heading">

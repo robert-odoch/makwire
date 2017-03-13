@@ -16,7 +16,7 @@ require_once('common/user-page-start.php');
         <div class="media">
             <div class="media-left">
                 <img class="media-object" src="<?= $cu['profile_pic_path']; ?>"
-                alt="<?= "{$cu['profile_name']}'s photo"; ?>">
+                alt="<?= "{$cu['profile_name']}"; ?>">
             </div>
             <div class="media-body">
                 <a href="<?= base_url("user/send-message/{$cu['friend_id']}"); ?>">

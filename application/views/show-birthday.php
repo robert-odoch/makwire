@@ -8,7 +8,7 @@ require_once('common/user-page-start.php');
     <h4>
         <div class="media">
             <div class="media-left">
-                <img src="<?= $user_profile_pic_path; ?>" class="media-object" alt="">
+                <img src="<?= $user_profile_pic_path; ?>" class="media-object" alt="<?= $user; ?>">
             </div>
             <div class="media-body">
                 <h4 class="media-heading">
@@ -18,13 +18,15 @@ require_once('common/user-page-start.php');
                         if (date_create(date('Y-m-d')) ==
                                 date_create(($dob_array[0]+$age) . "-{$dob_array[1]}-{$dob_array[2]}")) {
                             print "Today is <a href='" . base_url("user/{$user_id}") .
-                                    "'><strong class='object'>{$user}</strong></a>'s birthday";
+                                    "'><strong class='object'>" .
+                                    format_name($user, '</strong></a>') . " birthday";
                         }
                         else {
                             $birthday = date_create(($dob_array[0] + $age) . "-{$dob_array[1]}-{$dob_array[2]}");
                             $birthday = $birthday->format('F j, Y');
                             print "<a href='" . base_url("user/{$user_id}") .
-                                    "'><strong class='object'>{$user}</strong></a>'s birthday was on {$birthday}";
+                                    "'><strong class='object'>" .
+                                    format_name($user, '</strong></a>') . " birthday was on {$birthday}";
                         }
                     }
                     else {
@@ -69,7 +71,8 @@ require_once('common/user-page-start.php');
     <?php foreach ($birthday_messages as $msg) { ?>
         <div class="media">
             <div class="media-left">
-                <img src="<?= $msg['profile_pic_path']; ?>" alt="" class="media-object">
+                <img src="<?= $msg['profile_pic_path']; ?>" alt="<?= $msg['sender']; ?>"
+                    class="media-object">
             </div>
             <div class="media-body">
                 <h4 class="media-heading">

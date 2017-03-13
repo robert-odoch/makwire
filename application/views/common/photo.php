@@ -16,26 +16,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         if ($photo['is_profile_pic']) {
                             print "<a href='" . base_url("user/{$photo['sharer_id']}") .
                                     "'>{$photo['sharer']}</a> " .
-                                    "shared <a href='" . base_url("user/{$photo['user_id']}") . "'>";
-                            if ($photo['author_name_ends_with_s']) {
-                                print "{$photo['author']}</a>' ";
-                            }
-                            else {
-                                print "{$photo['author']}</a>'s ";
-                            }
-                            print "profile picutre.";
+                                    "shared <a href='" . base_url("user/{$photo['user_id']}") . "'>" .
+                                    format_name($photo['author'], '</a>') . " profile picutre.";
                         }
                         else {
                             print "<a href='" . base_url("user/{$photo['sharer_id']}") .
                                     "'>{$photo['sharer']}</a> " .
-                                    "shared <a href='" . base_url("user/{$photo['user_id']}") . "'>";
-                            if ($photo['author_name_ends_with_s']) {
-                                print "{$photo['author']}' ";
-                            }
-                            else {
-                                print "{$photo['author']}'s ";
-                            }
-                            print "photo";
+                                    "shared <a href='" . base_url("user/{$photo['user_id']}") . "'>" .
+                                    format_name($photo['author'], '</a>') . " photo";
                         }
                     }
                     else {

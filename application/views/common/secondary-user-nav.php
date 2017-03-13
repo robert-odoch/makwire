@@ -6,7 +6,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <div class="media">
         <div class="media-left">
             <img class="media-object" src="<?= $su_profile_pic_path; ?>"
-            alt="<?= $secondary_user; ?>'s photo">
+            alt="<?= $secondary_user; ?>">
         </div>
         <div class="media-body">
             <h4 class="media-heading">

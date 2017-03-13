@@ -24,7 +24,7 @@ require_once("common/comment-or-reply.php");
         <div class="media">
             <div class="media-left">
                 <img class="media-object" src="<?= $reply['profile_pic_path']; ?>"
-                    alt="<?= $reply['commenter']; ?>'s photo">
+                    alt="<?= format_name($reply['commenter']); ?> photo">
             </div>
             <div class="media-body">
                 <h4 class="media-heading">
