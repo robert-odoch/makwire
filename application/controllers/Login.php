@@ -14,7 +14,7 @@ class Login extends CI_Controller
     public function index()
     {
         if (isset($_SESSION['user_id'])) {  // Already logged in user.
-            redirect(base_url("user/{$_SESSION['user_id']}"));
+            redirect(base_url("user/news-feed"));
         }
 
         $data['title'] = 'Log in to your account';
@@ -38,7 +38,7 @@ class Login extends CI_Controller
 
             if (!isset($data['login_errors'])) {
                 if ($this->login_model->user_exists($username, $password)) {
-                    redirect(base_url("user/{$_SESSION['user_id']}"));
+                    redirect(base_url("user/news-feed"));
                 }
                 else {
                     $data['login_errors']['login'] = 'Invalid username/password combination';
