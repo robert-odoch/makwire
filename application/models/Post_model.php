@@ -9,30 +9,6 @@ class Post_model extends CI_Model
         $this->load->model(['utility_model', 'comment_model']);
     }
 
-    public function get_short_post($post, $num_chars)
-    {
-        $short_post = array();
-
-        $word_count = str_word_count($post, 2);
-        $word_positions = array_keys($word_count);
-        $last_word_position = array_pop($word_positions);
-        if ((strlen($post) < $num_chars) ||
-            ((strlen($post) > $num_chars) && ($last_word_position <= $num_chars))) {
-            $short_post['body'] = $post;
-            $short_post['has_more'] = FALSE;
-        }
-        else {
-            $sp = substr($post, 0, $num_chars);
-            $word_count1 = str_word_count($sp, 2);
-            $word_positions = array_keys($word_count1);
-            $last_word_position = array_pop($word_positions);
-            $short_post['body'] = substr($post, 0, ($last_word_position + strlen($word_count[$last_word_position]))) . "...";
-            $short_post['has_more'] = TRUE;
-        }
-
-        return $short_post;
-    }
-
     public function get_post($post_id)
     {
         $post_sql = sprintf("SELECT * FROM posts WHERE post_id = %d",

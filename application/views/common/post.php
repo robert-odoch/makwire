@@ -30,15 +30,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </div>
             </div>
         </header>
-        <p class="post">
-            <?php
-            print(htmlspecialchars($post['post']));
-            if ($post['has_more']) {
-                print "<a href='" . base_url("user/post/{$post['post_id']}") .
-                        "' class='more'>view more</a>";
-            }
-            ?>
-        </p>
+        <p class="post"><?= $post['post']; ?></p>
         <?php
         $object = 'post';
         require("media-footer.php");

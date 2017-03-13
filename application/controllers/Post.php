@@ -55,9 +55,8 @@ class Post extends CI_Controller
             }
         }
 
-        $short_post = $this->post_model->get_short_post($post['post'], 540);
-        $post['post'] = $short_post['body'];
-        $post['has_more'] = $short_post['has_more'];
+        $post_url = base_url("user/post/{$post_id}");
+        $post['post'] = character_limiter($post['post'], 540, "&#8230;<a href='{$post_url}'>view more</a>");
         $data['post'] = $post;
 
         $data['object'] = 'post';
@@ -110,9 +109,8 @@ class Post extends CI_Controller
         $data['num_prev'] = $offset;
         $data['likes'] = $this->post_model->get_likes($post_id, $offset, $limit);
 
-        $short_post = $this->post_model->get_short_post($post['post'], 540);
-        $post['post'] = $short_post['body'];
-        $post['has_more'] = $short_post['has_more'];
+        $post_url = base_url("user/post/{$post_id}");
+        $post['post'] = character_limiter($post['post'], 540, "&#8230;<a href='{$post_url}'>view more</a>");
         $data['post'] = $post;
 
         $data['object'] = 'post';
@@ -152,9 +150,8 @@ class Post extends CI_Controller
         }
 
         $data['comments'] = $this->post_model->get_comments($post_id, $offset, $limit);
-        $short_post = $this->post_model->get_short_post($post['post'], 540);
-        $post['post'] = $short_post['body'];
-        $post['has_more'] = $short_post['has_more'];
+        $post_url = base_url("user/post/{$post_id}");
+        $post['post'] = character_limiter($post['post'], 540, "&#8230;<a href='{$post_url}'>view more</a>");;
         $data['post'] = $post;
 
         $data['object'] = 'post';
@@ -196,9 +193,8 @@ class Post extends CI_Controller
         $data['num_prev'] = $offset;
         $data['shares'] = $this->post_model->get_shares($post_id, $offset, $limit);
 
-        $short_post = $this->post_model->get_short_post($post['post'], 540);
-        $post['post'] = $short_post['body'];
-        $post['has_more'] = $short_post['has_more'];
+        $post_url = base_url("user/post/{$post_id}");
+        $post['post'] = character_limiter($post['post'], 540, "&#8230;<a href='{$post_url}'>view more</a>");
         $data['post'] = $post;
 
         $data['object'] = 'post';

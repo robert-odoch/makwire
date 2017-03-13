@@ -289,7 +289,6 @@ class User extends CI_Controller
 
         $this->load->view('common/header', $data);
 
-        $post['has_more'] = FALSE;
         $data['post'] = $post;
 
         $limit = 10;  // Maximum number of comments to show.

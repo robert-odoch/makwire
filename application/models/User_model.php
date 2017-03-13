@@ -182,9 +182,8 @@ class User_model extends CI_Model
                     $r['post'] = $this->post_model->get_post($r['source_id']);
 
                     // Get only 540 characters from post if possible.
-                    $short_post = $this->post_model->get_short_post($r['post']['post'], 540);
-                    $r['post']['post'] = $short_post['body'];
-                    $r['post']['has_more'] = $short_post['has_more'];
+                    $post_url = base_url("user/post/{$r['post']['post_id']}");
+                    $r['post']['post'] = character_limiter($r['post']['post'], 540, "&#8230;<a href='{$post_url}'>view more</a>");
 
                     // Is it a shared post.
                     $r['post']['shared'] = FALSE;
@@ -763,9 +762,7 @@ class User_model extends CI_Model
                                     $notif['source_id']);
                 $query = $this->utility_model->run_query($post_sql);
                 $post = $query->row_array()['post'];
-                $short_post = $this->post_model->get_short_post($post, 75);
-
-                $notif['post'] = $short_post['body'];
+                $notif['post'] = character_limiter($post, 75);
             }
 
             if (in_array($notif['activity'], array('comment','reply')) &&
@@ -787,8 +784,7 @@ class User_model extends CI_Model
                 $comment = $query->row_array()['comment'];
 
                 // get short comment.
-                $short_comment = $this->post_model->get_short_post($comment, 25);
-                $notif['comment'] = $short_comment['body'];
+                $notif['comment'] = character_limiter($comment, 25);
             }
 
             // Add other actors.
@@ -1199,10 +1195,9 @@ class User_model extends CI_Model
                 case 'post':
                     $r['post'] = $this->post_model->get_post($r['source_id']);
 
-                    // Get only 540 characters from post if possible.
-                    $short_post = $this->post_model->get_short_post($r['post']['post'], 540);
-                    $r['post']['post'] = $short_post['body'];
-                    $r['post']['has_more'] = $short_post['has_more'];
+                    // Get only 540 characters from post if possible.r['post']
+                    $post_url = base_url("user/post/{$r['post']['post_id']}");
+                    $r['post']['post'] = character_limiter($r['post']['post'], 540, "&#8230;<a href='{$post_url}'>view more</a>");
 
                     // Is it a shared post.
                     $r['post']['shared'] = FALSE;
