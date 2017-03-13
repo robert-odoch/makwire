@@ -6,12 +6,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <div role="main" class="main">
 <div class="box">
     <?php if (isset($message)): ?>
-    <h3>Log in to continue</h3>
+    <h4>Log in to continue</h4>
     <?php else: ?>
-    <h3>Log In</h3>
+    <h4>Log In</h4>
     <?php endif; ?>
-</div>
-<div class="box">
     <?php
     if (isset($login_errors) && array_key_exists('login', $login_errors)) {
         print "<div class='alert alert-danger'><p>{$login_errors['login']}</p></div>";
