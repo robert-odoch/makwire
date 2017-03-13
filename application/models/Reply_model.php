@@ -6,25 +6,8 @@ class Reply_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
+        $this->load->model('utility_model');
     }
-
-    /*** Utility ***/
-    private function handle_error($error)
-    {
-        print($error);
-        exit(1);
-    }
-
-    private function run_query($sql)
-    {
-        $query = $this->db->query($sql);
-        if (!$query) {
-            $this->handle_error($this->db->error());
-        }
-
-        return $query;
-    }
-    /*** End Utility ***/
 
     private function has_liked($reply_id)
     {
@@ -34,7 +17,7 @@ class Reply_model extends CI_Model
                                     "WHERE comment_id = %d " .
                                     "LIMIT 1",
                                     $reply_id);
-        $user_query = $this->run_query($user_sql);
+        $user_query = $this->utility_model->run_query($user_sql);
         if ($user_query->row_array()['commenter_id'] == $_SESSION['user_id']) {
             return TRUE;
         }
@@ -44,7 +27,7 @@ class Reply_model extends CI_Model
                      "WHERE (source_id = %d AND source_type = 'reply' AND liker_id = %d) " .
                      "LIMIT 1",
                      $reply_id, $_SESSION['user_id']);
-        return ($this->run_query($like_sql)->num_rows() == 1);
+        return ($this->utility_model->run_query($like_sql)->num_rows() == 1);
     }
 
     public function get_reply($reply_id)
@@ -53,7 +36,7 @@ class Reply_model extends CI_Model
                                 "FROM comments " .
                                 "WHERE (comment_id = %s AND parent_id != 0)",
                                 $reply_id);
-        $reply_query = $this->run_query($reply_sql);
+        $reply_query = $this->utility_model->run_query($reply_sql);
         if ($reply_query->num_rows() == 0) {
             return FALSE;
         }
@@ -86,7 +69,7 @@ class Reply_model extends CI_Model
                             "FROM comments " .
                             "WHERE comment_id = %d",
                             $reply_id);
-        $user_query = $this->run_query($user_sql);
+        $user_query = $this->utility_model->run_query($user_sql);
         if ($user_query->num_rows() == 0) {
             return FALSE;
         }
@@ -105,14 +88,14 @@ class Reply_model extends CI_Model
                             "(liker_id, source_id, source_type) " .
                             "VALUES (%d, %d, 'reply')",
                             $_SESSION['user_id'], $reply_id);
-        $this->run_query($like_sql);
+        $this->utility_model->run_query($like_sql);
 
         // Dispatch an activity.
         $activity_sql = sprintf("INSERT INTO activities " .
                                 "(actor_id, subject_id, source_id, source_type, activity) " .
                                 "VALUES (%d, %d, %d, 'reply', 'like')",
                                 $_SESSION['user_id'], $user_result['commenter_id'], $reply_id);
-        $this->run_query($activity_sql);
+        $this->utility_model->run_query($activity_sql);
 
         return TRUE;
     }
@@ -123,7 +106,7 @@ class Reply_model extends CI_Model
                                 "FROM likes " .
                                 "WHERE (source_type = 'reply' AND source_id = %d)",
                                 $reply_id);
-        return $this->run_query($likes_sql)->row_array()['COUNT(like_id)'];
+        return $this->utility_model->run_query($likes_sql)->row_array()['COUNT(like_id)'];
     }
 
     public function get_likes($reply_id, $offset, $limit)
@@ -133,7 +116,7 @@ class Reply_model extends CI_Model
                                 "WHERE (source_type = 'reply' AND source_id = %d) " .
                                 "LIMIT %d, %d",
                                 $reply_id, $offset, $limit);
-        $likes_query = $this->run_query($likes_sql);
+        $likes_query = $this->utility_model->run_query($likes_sql);
 
         $likes = $likes_query->result_array();
         foreach ($likes as &$like) {

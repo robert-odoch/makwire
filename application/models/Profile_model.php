@@ -6,25 +6,10 @@ class Profile_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
+        $this->load->model('utility_model');
     }
 
     /*** Utility ***/
-    private function handle_error($error)
-    {
-        print($error);
-        exit(1);
-    }
-
-    private function run_query($sql)
-    {
-        $query = $this->db->query($sql);
-        if (!$query) {
-            $this->handle_error($this->db->error());
-        }
-
-        return $query;
-    }
-
     private function are_conflicting_dates($data_date_from, $data_date_to, $rdate_from, $rdate_to)
     {
         if (($data_date_from < $rdate_from) && ($data_date_to > $rdate_from) ||
@@ -44,7 +29,7 @@ class Profile_model extends CI_Model
                                 "FROM user_profile " .
                                 "WHERE (user_id = %d)",
                                 $user_id);
-        $origin_query = $this->run_query($origin_sql);
+        $origin_query = $this->utility_model->run_query($origin_sql);
         if ($origin_query->num_rows() === 0) {
             $data = array(
                 'country'=>NULL,
@@ -60,7 +45,7 @@ class Profile_model extends CI_Model
                                         "FROM countries " .
                                         "WHERE (country_id = %d)",
                                         $data['country_id']);
-                $country_query = $this->run_query($country_sql);
+                $country_query = $this->utility_model->run_query($country_sql);
                 $data['country'] = $country_query->row_array()['country_name'];
             }
             else {
@@ -73,7 +58,7 @@ class Profile_model extends CI_Model
                                         "FROM districts " .
                                         "WHERE (district_id = %d)",
                                         $data['district_id']);
-                $district_query = $this->run_query($district_sql);
+                $district_query = $this->utility_model->run_query($district_sql);
                 $data['district'] = $district_query->row_array()['district_name'];
             }
             else {
@@ -88,7 +73,7 @@ class Profile_model extends CI_Model
                                 "WHERE (user_id = %d) " .
                                 "ORDER BY date_to DESC",
                                 $user_id);
-        $colleges_query = $this->run_query($colleges_sql);
+        $colleges_query = $this->utility_model->run_query($colleges_sql);
 
         $data['colleges'] = array();
         if ($colleges_query->num_rows() > 0) {
@@ -99,7 +84,7 @@ class Profile_model extends CI_Model
                                         "FROM colleges " .
                                         "WHERE (college_id = %d)",
                                         $r['college_id']);
-                $college_query = $this->run_query($college_sql);
+                $college_query = $this->utility_model->run_query($college_sql);
                 $r['college_name'] = $college_query->row_array()['college_name'];
 
                 array_push($data['colleges'], $r);
@@ -112,7 +97,7 @@ class Profile_model extends CI_Model
                                 "WHERE (user_id = %d) " .
                                 "ORDER BY date_to DESC",
                                 $user_id);
-        $schools_query = $this->run_query($schools_sql);
+        $schools_query = $this->utility_model->run_query($schools_sql);
 
         $data['schools'] = array();
         if ($schools_query->num_rows() > 0) {
@@ -123,7 +108,7 @@ class Profile_model extends CI_Model
                                         "FROM schools " .
                                         "WHERE (school_id = %d)",
                                         $r['school_id']);
-                $school_query = $this->run_query($school_sql);
+                $school_query = $this->utility_model->run_query($school_sql);
                 $r['school_name'] = $school_query->row_array()['school_name'];
 
                 array_push($data['schools'], $r);
@@ -136,7 +121,7 @@ class Profile_model extends CI_Model
                                     "WHERE (user_id = %d) " .
                                     "ORDER BY date_to DESC",
                                     $user_id);
-        $programmes_query = $this->run_query($programmes_sql);
+        $programmes_query = $this->utility_model->run_query($programmes_sql);
 
         $data['programmes'] = array();
         if ($programmes_query->num_rows() > 0) {
@@ -147,7 +132,7 @@ class Profile_model extends CI_Model
                                             "FROM programmes " .
                                             "WHERE (programme_id = %d)",
                                             $r['programme_id']);
-                $programme_query = $this->run_query($programme_sql);
+                $programme_query = $this->utility_model->run_query($programme_sql);
                 $r['programme_name'] = $programme_query->row_array()['programme_name'];
 
                 array_push($data['programmes'], $r);
@@ -161,7 +146,7 @@ class Profile_model extends CI_Model
                                 "WHERE (user_id = %d) " .
                                 "ORDER BY date_to DESC",
                                 $user_id);
-        $halls_query = $this->run_query($halls_sql);
+        $halls_query = $this->utility_model->run_query($halls_sql);
 
         $data['halls'] = array();
         if ($halls_query->num_rows() > 0) {
@@ -172,7 +157,7 @@ class Profile_model extends CI_Model
                                     "FROM halls " .
                                     "WHERE (hall_id = %d)",
                                     $r['hall_id']);
-                $hall_query = $this->run_query($hall_sql);
+                $hall_query = $this->utility_model->run_query($hall_sql);
                 $r['hall_name'] = $hall_query->row_array()['hall_name'];
 
                 array_push($data['halls'], $r);
@@ -186,7 +171,7 @@ class Profile_model extends CI_Model
                                 "WHERE (user_id = %d) " .
                                 "ORDER BY date_to DESC",
                                 $user_id);
-        $hostels_query = $this->run_query($hostels_sql);
+        $hostels_query = $this->utility_model->run_query($hostels_sql);
 
         $data['hostels'] = array();
         if ($hostels_query->num_rows() > 0) {
@@ -197,7 +182,7 @@ class Profile_model extends CI_Model
                                         "FROM hostels " .
                                         "WHERE (hostel_id = %d)",
                                         $r['hostel_id']);
-                $hostel_query = $this->run_query($hostel_sql);
+                $hostel_query = $this->utility_model->run_query($hostel_sql);
                 $r['hostel_name'] = $hostel_query->row_array()['hostel_name'];
 
                 array_push($data['hostels'], $r);
@@ -210,7 +195,7 @@ class Profile_model extends CI_Model
     public function get_halls()
     {
         $halls_sql = sprintf("SELECT hall_id, hall_name FROM halls");
-        $halls_query = $this->run_query($halls_sql);
+        $halls_query = $this->utility_model->run_query($halls_sql);
 
         return $halls_query->result_array();
     }
@@ -218,7 +203,7 @@ class Profile_model extends CI_Model
     public function get_hostels()
     {
         $hostels_sql = sprintf("SELECT hostel_id, hostel_name FROM hostels");
-        $hostels_query = $this->run_query($hostels_sql);
+        $hostels_query = $this->utility_model->run_query($hostels_sql);
 
         return $hostels_query->result_array();
     }
@@ -234,7 +219,7 @@ class Profile_model extends CI_Model
                                     "FROM programmes " .
                                     "WHERE (school_id = %d)",
                                     $school_id);
-        $programmes_query = $this->run_query($programmes_sql);
+        $programmes_query = $this->utility_model->run_query($programmes_sql);
 
         return $programmes_query->result_array();
     }
@@ -251,7 +236,7 @@ class Profile_model extends CI_Model
                                     "FROM user_colleges " .
                                     "WHERE (id = %d AND user_id = %d)",
                                     $user_college_id, $_SESSION['user_id']);
-        $user_college_query = $this->run_query($user_college_sql);
+        $user_college_query = $this->utility_model->run_query($user_college_sql);
 
         if ($user_college_query->num_rows() == 0) {
             return FALSE;
@@ -263,7 +248,7 @@ class Profile_model extends CI_Model
                                         "FROM colleges " .
                                         "WHERE (college_id = %d)",
                                         $user_college['college_id']);
-        $college_name_query = $this->run_query($college_name_sql);
+        $college_name_query = $this->utility_model->run_query($college_name_sql);
         $user_college['college_name'] = $college_name_query->row_array()['college_name'];
 
         // Get the school id.
@@ -272,7 +257,7 @@ class Profile_model extends CI_Model
                                     "WHERE (user_id = %d AND date_from = '%s' AND date_to = '%s')",
                                     $_SESSION['user_id'], $user_college['date_from'],
                                     $user_college['date_to']);
-        $school_id_query = $this->run_query($school_id_sql);
+        $school_id_query = $this->utility_model->run_query($school_id_sql);
         $user_college['school']['school_id'] = $school_id_query->row_array()['school_id'];
 
         // Get the name of the school.
@@ -280,7 +265,7 @@ class Profile_model extends CI_Model
                                     "FROM schools " .
                                     "WHERE (school_id = %d)",
                                     $user_college['school']['school_id']);
-        $school_name_query = $this->run_query($school_name_sql);
+        $school_name_query = $this->utility_model->run_query($school_name_sql);
         $user_college['school']['school_name'] = $school_name_query->row_array()['school_name'];
 
         return $user_college;
@@ -295,7 +280,7 @@ class Profile_model extends CI_Model
                                         "FROM user_programmes " .
                                         "WHERE (id = %d AND user_id = %d)",
                                         $user_programme_id, $_SESSION['user_id']);
-        $user_programme_query = $this->run_query($user_programme_sql);
+        $user_programme_query = $this->utility_model->run_query($user_programme_sql);
 
         if ($user_programme_query->num_rows() == 0) {
             return FALSE;
@@ -308,7 +293,7 @@ class Profile_model extends CI_Model
                                     "FROM programmes " .
                                     "WHERE (programme_id = %d)",
                                     $user_programme['programme_id']);
-        $programme_query = $this->run_query($programme_sql);
+        $programme_query = $this->utility_model->run_query($programme_sql);
         $user_programme['programme_name'] = $programme_query->row_array()['programme_name'];
 
         return $user_programme;
@@ -323,7 +308,7 @@ class Profile_model extends CI_Model
                                     "FROM user_halls " .
                                     "WHERE (id = %d AND user_id = %d)",
                                     $user_hall_id, $_SESSION['user_id']);
-        $user_hall_query = $this->run_query($user_hall_sql);
+        $user_hall_query = $this->utility_model->run_query($user_hall_sql);
 
         if ($user_hall_query->num_rows() == 0) {
             return FALSE;
@@ -334,7 +319,7 @@ class Profile_model extends CI_Model
                                     "FROM halls " .
                                     "WHERE (hall_id = %d)",
                                     $user_hall['hall_id']);
-        $hall_name_query = $this->run_query($hall_name_sql);
+        $hall_name_query = $this->utility_model->run_query($hall_name_sql);
         $user_hall['hall_name'] = $hall_name_query->row_array()['hall_name'];
 
         return $user_hall;
@@ -349,7 +334,7 @@ class Profile_model extends CI_Model
                                     "FROM user_hostels " .
                                     "WHERE (id = %d AND user_id = %d)",
                                     $user_hostel_id, $_SESSION['user_id']);
-        $user_hostel_query = $this->run_query($user_hostel_sql);
+        $user_hostel_query = $this->utility_model->run_query($user_hostel_sql);
 
         if ($user_hostel_query->num_rows() == 0) {
             return FALSE;
@@ -361,7 +346,7 @@ class Profile_model extends CI_Model
                                     "FROM hostels " .
                                     "WHERE (hostel_id = %d)",
                                     $user_hostel['hostel_id']);
-        $hostel_name_query = $this->run_query($hostel_name_sql);
+        $hostel_name_query = $this->utility_model->run_query($hostel_name_sql);
         $user_hostel['hostel_name'] = $hostel_name_query->row_array()['hostel_name'];
 
         return $user_hostel;
@@ -370,7 +355,7 @@ class Profile_model extends CI_Model
     public function get_colleges()
     {
         $colleges_sql = sprintf("SELECT college_id, college_name FROM colleges");
-        $colleges_query = $this->run_query($colleges_sql);
+        $colleges_query = $this->utility_model->run_query($colleges_sql);
 
         return $colleges_query->result_array();
     }
@@ -382,14 +367,14 @@ class Profile_model extends CI_Model
                                 "WHERE (school_id = %d AND college_id = %d) " .
                                 "LIMIT 1",
                                 $school_id, $college_id);
-        $school_query = $this->run_query($school_sql);
+        $school_query = $this->utility_model->run_query($school_sql);
         return ($school_query->num_rows() == 1);
     }
 
     public function get_schools()
     {
         $schools_sql = sprintf("SELECT school_id, college_id, school_name FROM schools");
-        $schools_query = $this->run_query($schools_sql);
+        $schools_query = $this->utility_model->run_query($schools_sql);
 
         return $schools_query->result_array();
     }
@@ -404,7 +389,7 @@ class Profile_model extends CI_Model
                                 "FROM user_colleges " .
                                 "WHERE (user_id = %d)",
                                 $_SESSION['user_id']);
-        $dates_query = $this->run_query($dates_sql);
+        $dates_query = $this->utility_model->run_query($dates_sql);
         $dates_results = $dates_query->result_array();
         foreach ($dates_results as $d) {
             $date_from = date_create($d['date_from']);
@@ -421,7 +406,7 @@ class Profile_model extends CI_Model
                                     $_SESSION['user_id'], $data['college_id'],
                                     $this->db->escape($data['start_date']),
                                     $this->db->escape($data['end_date']));
-        $this->run_query($add_college_sql);
+        $this->utility_model->run_query($add_college_sql);
 
         // Also add the school.
         $add_school_sql = sprintf("INSERT INTO user_schools " .
@@ -430,7 +415,7 @@ class Profile_model extends CI_Model
                                     $_SESSION['user_id'], $data['school_id'],
                                     $this->db->escape($data['start_date']),
                                     $this->db->escape($data['end_date']));
-        $this->run_query($add_school_sql);
+        $this->utility_model->run_query($add_school_sql);
 
         return TRUE;
     }
@@ -438,7 +423,7 @@ class Profile_model extends CI_Model
     public function get_countries()
     {
         $countries_sql = sprintf("SELECT country_id, country_name FROM countries");
-        $countries_query = $this->run_query($countries_sql);
+        $countries_query = $this->utility_model->run_query($countries_sql);
 
         return $countries_query->result_array();
     }
@@ -449,7 +434,7 @@ class Profile_model extends CI_Model
                                 "SET country_id = %d " .
                                 "WHERE user_id = %d",
                                 $country_id, $_SESSION['user_id']);
-        $this->run_query($profile_sql);
+        $this->utility_model->run_query($profile_sql);
     }
 
     public function get_districts($district)
@@ -468,7 +453,7 @@ class Profile_model extends CI_Model
                                     "FROM districts " .
                                     "WHERE MATCH(district_name) AGAINST (%s IN BOOLEAN MODE)",
                                     $this->db->escape($key));
-        $districts_query = $this->run_query($districts_sql);
+        $districts_query = $this->utility_model->run_query($districts_sql);
 
         return $districts_query->result_array();
     }
@@ -480,7 +465,7 @@ class Profile_model extends CI_Model
                                 "FROM districts " .
                                 "WHERE (district_id = %d)",
                                 $district_id);
-        $district_query = $this->run_query($district_sql);
+        $district_query = $this->utility_model->run_query($district_sql);
         if ($district_query->num_rows() == 0) {
             return FALSE;
         }
@@ -490,7 +475,7 @@ class Profile_model extends CI_Model
                                 "FROM user_profile " .
                                 "WHERE (user_id = %d AND district_id IS NOT NULL)",
                                 $_SESSION['user_id']);
-        $profile_query = $this->run_query($profile_sql);
+        $profile_query = $this->utility_model->run_query($profile_sql);
         if ($profile_query->num_rows() != 0) {
             return FALSE;
         }
@@ -499,7 +484,7 @@ class Profile_model extends CI_Model
                                 "SET district_id = %d " .
                                 "WHERE user_id = %d",
                                 $district_id, $_SESSION['user_id']);
-        $this->run_query($profile_sql);
+        $this->utility_model->run_query($profile_sql);
 
         return TRUE;
     }
@@ -516,7 +501,7 @@ class Profile_model extends CI_Model
                                 $this->db->escape($user_college['date_from']),
                                 $this->db->escape($user_college['date_to']),
                                 $data['year_of_study']);
-        $this->run_query($programme_sql);
+        $this->utility_model->run_query($programme_sql);
     }
 
     public function add_hall($data)
@@ -530,7 +515,7 @@ class Profile_model extends CI_Model
                                     "WHERE (user_id = %d)",
                                     $_SESSION['user_id']);
 
-        $hall_dates_results = $this->run_query($dates_sql)->result_array();
+        $hall_dates_results = $this->utility_model->run_query($dates_sql)->result_array();
         foreach ($hall_dates_results as $d) {
             $date_from = date_create($d['date_from']);
             $date_to = date_create($d['date_to']);
@@ -546,7 +531,7 @@ class Profile_model extends CI_Model
                                         "FROM user_hostels " .
                                         "WHERE (user_id = %d)",
                                         $_SESSION['user_id']);
-            $hostel_dates_results = $this->run_query($hostel_dates_sql)->result_array();
+            $hostel_dates_results = $this->utility_model->run_query($hostel_dates_sql)->result_array();
             foreach ($hostel_dates_results as $d) {
                 $date_from = date_create($d['date_from']);
                 $date_to = date_create($d['date_to']);
@@ -564,7 +549,7 @@ class Profile_model extends CI_Model
                                 $this->db->escape($data['start_date']),
                                 $this->db->escape($data['end_date']),
                                 $data['resident']);
-        $this->run_query($add_hall_sql);
+        $this->utility_model->run_query($add_hall_sql);
 
         return TRUE;
     }
@@ -579,7 +564,7 @@ class Profile_model extends CI_Model
                                 "FROM user_halls " .
                                 "WHERE (user_id = %d AND id != %d)",
                                 $_SESSION['user_id'], $data['user_hall_id']);
-        $dates_query = $this->run_query($dates_sql);
+        $dates_query = $this->utility_model->run_query($dates_sql);
 
         $dates_results = $dates_query->result_array();
         foreach ($dates_results as $d) {
@@ -597,7 +582,7 @@ class Profile_model extends CI_Model
                                     $this->db->escape($data['start_date']),
                                     $this->db->escape($data['end_date']),
                                     $data['resident'], $data['user_hall_id']);
-        $this->run_query($update_hall_sql);
+        $this->utility_model->run_query($update_hall_sql);
 
         return TRUE;
     }
@@ -613,7 +598,7 @@ class Profile_model extends CI_Model
                                     "FROM user_halls " .
                                     "WHERE (user_id = %d)",
                                     $_SESSION['user_id']);
-        $hall_dates_query = $this->run_query($hall_dates_sql);
+        $hall_dates_query = $this->utility_model->run_query($hall_dates_sql);
 
         $hall_dates_results = $hall_dates_query->result_array();
         foreach ($hall_dates_results as $d) {
@@ -632,7 +617,7 @@ class Profile_model extends CI_Model
                                     "FROM user_hostels " .
                                     "WHERE (user_id = %d)",
                                     $_SESSION['user_id']);
-        $hostel_dates_query = $this->run_query($hostel_dates_sql);
+        $hostel_dates_query = $this->utility_model->run_query($hostel_dates_sql);
 
         $hostel_dates_results = $hostel_dates_query->result_array();
         foreach ($hostel_dates_results as $d) {
@@ -650,7 +635,7 @@ class Profile_model extends CI_Model
                                     $_SESSION['user_id'], $data['hostel_id'],
                                     $this->db->escape($data['start_date']),
                                     $this->db->escape($data['end_date']));
-        $this->run_query($add_hostel_sql);
+        $this->utility_model->run_query($add_hostel_sql);
 
         return TRUE;
     }
@@ -666,7 +651,7 @@ class Profile_model extends CI_Model
                                     "FROM user_halls " .
                                     "WHERE (user_id = %d)",
                                     $_SESSION['user_id']);
-        $hall_dates_query = $this->run_query($hall_dates_sql);
+        $hall_dates_query = $this->utility_model->run_query($hall_dates_sql);
 
         $hall_dates_results = $hall_dates_query->result_array();
         foreach ($hall_dates_results as $d) {
@@ -685,7 +670,7 @@ class Profile_model extends CI_Model
                                     "FROM user_hostels " .
                                     "WHERE (user_id = %d AND id != %d)",
                                     $_SESSION['user_id'], $data['user_hostel_id']);
-        $hostel_dates_query = $this->run_query($hostel_dates_sql);
+        $hostel_dates_query = $this->utility_model->run_query($hostel_dates_sql);
 
         $hostel_dates_results = $hostel_dates_query->result_array();
         foreach ($hostel_dates_results as $d) {
@@ -703,7 +688,7 @@ class Profile_model extends CI_Model
                                         $this->db->escape($data['start_date']),
                                         $this->db->escape($data['end_date']),
                                         $data['user_hostel_id']);
-        $this->run_query($update_hostel_sql);
+        $this->utility_model->run_query($update_hostel_sql);
 
         return TRUE;
     }
@@ -718,7 +703,7 @@ class Profile_model extends CI_Model
                                 "FROM user_colleges " .
                                 "WHERE (user_id = %d AND id != %d)",
                                 $_SESSION['user_id'], $data['user_college_id']);
-        $dates_query = $this->run_query($dates_sql);
+        $dates_query = $this->utility_model->run_query($dates_sql);
         $dates_results = $dates_query->result_array();
         foreach ($dates_results as $d) {
             $date_from = date_create($d['date_from']);
@@ -735,7 +720,7 @@ class Profile_model extends CI_Model
                                         $this->db->escape($data['start_date']),
                                         $this->db->escape($data['end_date']),
                                         $data['user_college_id']);
-        $this->run_query($update_college_sql);
+        $this->utility_model->run_query($update_college_sql);
 
         // Also update the user_schools table.
         // Get the id in the user_schools table.
@@ -745,7 +730,7 @@ class Profile_model extends CI_Model
                                 $_SESSION['user_id'], $data['school_id'],
                                 $this->db->escape($data['old_start_date']),
                                 $this->db->escape($data['old_end_date']));
-        $school_id = $this->run_query($school_id_sql)->row_array()['id'];
+        $school_id = $this->utility_model->run_query($school_id_sql)->row_array()['id'];
 
         $update_school_sql = sprintf("UPDATE user_schools " .
                                         "SET date_from = %s, date_to = %s " .
@@ -753,7 +738,7 @@ class Profile_model extends CI_Model
                                         $this->db->escape($data['start_date']),
                                         $this->db->escape($data['end_date']),
                                         $school_id);
-        $this->run_query($update_school_sql);
+        $this->utility_model->run_query($update_school_sql);
 
         return TRUE;
     }
@@ -764,6 +749,6 @@ class Profile_model extends CI_Model
                                 "SET year_of_study='%d' " .
                                 "WHERE (id = %d)",
                                 $data['year_of_study'], $data['user_programme_id']);
-        $this->run_query($update_sql);
+        $this->utility_model->run_query($update_sql);
     }
 }

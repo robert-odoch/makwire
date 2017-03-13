@@ -6,27 +6,8 @@ class Comment_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
-        $this->load->model(['user_model', 'reply_model']);
+        $this->load->model(['user_model', 'reply_model', 'utility_model']);
     }
-
-    /*** Utility ***/
-    private function handle_error($error)
-    {
-        print($error);
-        exit(1);
-    }
-
-    private function run_query($sql)
-    {
-        $query = $this->db->query($sql);
-        if (!$query) {
-            $this->handle_error($this->db->error());
-        }
-
-        return $query;
-    }
-
-    /*** End Utility ***/
 
     private function has_liked($comment_id)
     {
@@ -34,7 +15,7 @@ class Comment_model extends CI_Model
         $user_sql = sprintf("SELECT commenter_id FROM comments " .
                             "WHERE comment_id = %d LIMIT 1",
                             $comment_id);
-        $query = $this->run_query($user_sql);
+        $query = $this->utility_model->run_query($user_sql);
         if ($query->row_array()['commenter_id'] == $_SESSION['user_id']) {
             return TRUE;
         }
@@ -44,7 +25,7 @@ class Comment_model extends CI_Model
                             "WHERE (source_id = %d AND source_type = 'comment' AND liker_id = %d) " .
                             "LIMIT 1",
                             $comment_id, $_SESSION['user_id']);
-        return ($this->run_query($like_sql)->num_rows() == 1);
+        return ($this->utility_model->run_query($like_sql)->num_rows() == 1);
     }
 
     public function get_comment($comment_id)
@@ -53,7 +34,7 @@ class Comment_model extends CI_Model
                                 "FROM comments " .
                                 "WHERE (comment_id = %d AND parent_id = 0)",
                                 $comment_id);
-        $comment_query = $this->run_query($comment_sql);
+        $comment_query = $this->utility_model->run_query($comment_sql);
         if ($comment_query->num_rows() == 0) {
             return FALSE;
         }
@@ -90,7 +71,7 @@ class Comment_model extends CI_Model
         $likes_sql = sprintf("SELECT COUNT(like_id) FROM likes " .
                                 "WHERE (source_type = 'comment' AND source_id = %d)",
                                 $comment_id);
-        return $this->run_query($likes_sql)->row_array()['COUNT(like_id)'];
+        return $this->utility_model->run_query($likes_sql)->row_array()['COUNT(like_id)'];
     }
 
     public function get_likes($comment_id, $offset, $limit)
@@ -99,7 +80,7 @@ class Comment_model extends CI_Model
                                 "WHERE (source_type = 'comment' AND source_id = %d) " .
                                 "LIMIT %d, %d",
                                 $comment_id, $offset, $limit);
-        $likes_query = $this->run_query($likes_sql);
+        $likes_query = $this->utility_model->run_query($likes_sql);
 
         $likes = $likes_query->result_array();
         foreach ($likes as &$like) {
@@ -117,7 +98,7 @@ class Comment_model extends CI_Model
         $replies_sql = sprintf("SELECT COUNT(comment_id) FROM comments " .
                                 "WHERE (source_type = 'comment' AND source_id = %d)",
                                 $comment_id);
-        return $this->run_query($replies_sql)->row_array()['COUNT(comment_id)'];
+        return $this->utility_model->run_query($replies_sql)->row_array()['COUNT(comment_id)'];
     }
 
     public function get_replies($comment_id, $offset, $limit)
@@ -126,7 +107,7 @@ class Comment_model extends CI_Model
                                 "WHERE (source_type = 'comment' AND parent_id = %d) " .
                                 "LIMIT %d, %d",
                                 $comment_id, $offset, $limit);
-        $replies_query = $this->run_query($replies_sql);
+        $replies_query = $this->utility_model->run_query($replies_sql);
         $results = $replies_query->result_array();
 
         $replies = array();
@@ -144,7 +125,7 @@ class Comment_model extends CI_Model
         // Get the id of the user who commented.
         $user_sql = sprintf("SELECT commenter_id FROM comments WHERE comment_id = %d",
                             $comment_id);
-        $user_query = $this->run_query($user_sql);
+        $user_query = $this->utility_model->run_query($user_sql);
         if ($user_query->num_rows() == 0) {
             return FALSE;
         }
@@ -162,14 +143,14 @@ class Comment_model extends CI_Model
         $like_sql = sprintf("INSERT INTO likes (liker_id, source_id, source_type) " .
                             "VALUES (%d, %d, 'comment')",
                             $_SESSION['user_id'], $comment_id);
-        $this->run_query($like_sql);
+        $this->utility_model->run_query($like_sql);
 
         // Dispatch an activity.
         $activity_sql = sprintf("INSERT INTO activities " .
                                 "(actor_id, subject_id, source_id, source_type, activity) " .
                                 "VALUES (%d, %d, %d, 'comment', 'like')",
                                 $_SESSION['user_id'], $user_result['commenter_id'], $comment_id);
-        $this->run_query($activity_sql);
+        $this->utility_model->run_query($activity_sql);
 
         return TRUE;
     }
@@ -182,12 +163,12 @@ class Comment_model extends CI_Model
                                 "VALUES (%d, %d, %d, 'comment', %s)",
                                 $_SESSION['user_id'], $comment_id, $comment_id,
                                 $this->db->escape($reply));
-        $this->run_query($reply_sql);
+        $this->utility_model->run_query($reply_sql);
 
         // Get the id of the user who commented.
         $user_sql = sprintf("SELECT commenter_id FROM comments WHERE comment_id = %d",
                                 $comment_id);
-        $user_result= $this->run_query($user_sql)->row_array();
+        $user_result= $this->utility_model->run_query($user_sql)->row_array();
 
         // Dispatch an activity.
         $activity_sql = sprintf("INSERT INTO activities " .
@@ -195,7 +176,7 @@ class Comment_model extends CI_Model
                                 "VALUES (%d, %d, %d, 'comment', 'reply')",
                                 $_SESSION['user_id'], $user_result['commenter_id'],
                                 $comment_id);
-        $this->run_query($activity_sql);
+        $this->utility_model->run_query($activity_sql);
     }
 }
 ?>

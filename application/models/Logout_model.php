@@ -6,33 +6,15 @@ class Logout_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
-        $this->load->database();
+        $this->load->model('utility_model');
     }
-
-    /*** Utility ***/
-    private function handle_error($error)
-    {
-        print($error);
-        exit(1);
-    }
-
-    private function run_query($sql)
-    {
-        $query = $this->db->query($sql);
-        if (!$query) {
-            $this->handle_error($this->db->error());
-        }
-
-        return $query;
-    }
-    /*** End Utility ***/
 
     public function logout()
     {
         $login_sql = sprintf("UPDATE users SET logged_in = 0 WHERE user_id = %d",
                                 $_SESSION['user_id']);
 
-        $this->run_query($login_sql);
+        $this->utility_model->run_query($login_sql);
 
         $_SESSION = array();
         session_destroy();
