@@ -82,7 +82,7 @@ require_once('common/user-page-start.php');
                 </h4>
                 <p class="message"><?= $msg['message']; ?></p>
                 <small class="time">
-                    <span class="glyphicon glyphicon-time"></span> <?= $msg['timespan']; ?>
+                    <span class="glyphicon glyphicon-time"></span> <?= $msg['timespan']; ?> ago
                 </small>
                 <?php
                 if ($msg['user_id'] == $_SESSION['user_id'] &&
