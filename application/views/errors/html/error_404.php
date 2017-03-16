@@ -11,7 +11,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 ::-moz-selection { background-color: #E13300; color: white; }
 
 body {
-	background-color: #fff;
+	background-color: #8FBC8F;
 	margin: 40px;
 	font: 13px/20px normal Helvetica, Arial, sans-serif;
 	color: #4F5155;
@@ -45,9 +45,16 @@ code {
 }
 
 #container {
-	margin: 10px;
-	border: 1px solid #D0D0D0;
-	box-shadow: 0 0 8px #D0D0D0;
+    padding: 5px;
+	box-shadow: 0 0 4px #2E8B57;
+    background-color: #fff;
+    border-radius: 2px;
+}
+
+@media (max-width: 767px) {
+    #container {
+        margin: 0;
+    }
 }
 
 p {
