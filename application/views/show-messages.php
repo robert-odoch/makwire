@@ -30,8 +30,8 @@ require_once('common/user-page-start.php');
                 </header>
                 <p><?= htmlspecialchars($m['message']); ?></p>
                 <footer>
+                    <a href="<?= base_url("user/send-message/{$m['sender_id']}"); ?>" title="Reply">Reply</a>
                     <small class="time"><span class="glyphicon glyphicon-time"></span> <?= $m['timespan']; ?> ago</small>
-                    <span> &middot; </span><a href="<?= base_url("user/send-message/{$m['sender_id']}"); ?>" title="Reply">Reply</a>
                 </footer>
             </div>
         </article>

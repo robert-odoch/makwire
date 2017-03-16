@@ -12,10 +12,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <?php endif; ?>
     <?php
     if (isset($login_errors) && array_key_exists('login', $login_errors)) {
-        print "<div class='alert alert-danger'><p>{$login_errors['login']}</p></div>";
+        print "<div class='alert alert-danger'>" .
+                "<span class='glyphicon glyphicon-exclamation-sign'></span> " .
+                "{$login_errors['login']}</div>";
     }
     else if (isset($message)) {
-        print "<div class='alert alert-info'><p>{$message}</p></div>";
+        print "<div class='alert alert-info'>" .
+                "<span class='glyphicon glyphicon-info-sign'></span> " .
+                "{$message}</div>";
         unset($message);
     }
     ?>

@@ -81,9 +81,6 @@ require_once('common/user-page-start.php');
                     </a>
                 </h4>
                 <p class="message"><?= $msg['message']; ?></p>
-                <small class="time">
-                    <span class="glyphicon glyphicon-time"></span> <?= $msg['timespan']; ?> ago
-                </small>
                 <?php
                 if ($msg['user_id'] == $_SESSION['user_id'] &&
                     !$msg['liked']) {
@@ -91,6 +88,9 @@ require_once('common/user-page-start.php');
                             "'>Like</a>";
                 }
                 ?>
+                <small class="time">
+                    <span class="glyphicon glyphicon-time"></span> <?= $msg['timespan']; ?> ago
+                </small>
             </div>
         </div>
     <?php } ?>

@@ -28,16 +28,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <a href="<?= base_url("user/{$comment['commenter_id']}"); ?>"><strong><?= $comment['commenter']; ?></strong></a>
                 </h4>
                 <p class="comment"><?= htmlspecialchars($comment['comment']); ?></p>
-                <small class="time"><span class="glyphicon glyphicon-time"></span> <?= $comment['timespan']; ?> ago</small>
                 <?php
                 if ($comment['viewer_is_friend_to_owner']) {
                     if (!$comment['liked']) {
-                        print '<span> &middot; </span>' .
-                                '<a href="' . base_url("comment/like/{$comment['comment_id']}") . '">Like</a>';
+                        print '<a href="' . base_url("comment/like/{$comment['comment_id']}") . '">Like</a>';
+                        print '<span> &middot; </span>';
                     }
 
-                    print '<span> &middot; </span>' .
-                            '<a href="' . base_url("comment/reply/{$comment['comment_id']}") . '">Reply</a>';
+                    print '<a href="' . base_url("comment/reply/{$comment['comment_id']}") . '">Reply</a>';
                 }
 
                 if ($comment['num_likes'] > 0) {
@@ -53,6 +51,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     print "</a>";
                 }
                 ?>
+                <small class="time"><span class="glyphicon glyphicon-time"></span> <?= $comment['timespan']; ?> ago</small>
             </div>
         </div>
         <?php endforeach; ?>
