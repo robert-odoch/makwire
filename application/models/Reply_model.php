@@ -1,6 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+require_once('exceptions/ReplyNotFoundException.php');
+require_once('exceptions/IllegalAccessException.php');
+
 class Reply_model extends CI_Model
 {
     public function __construct()
@@ -38,7 +41,7 @@ class Reply_model extends CI_Model
                                 $reply_id);
         $reply_query = $this->utility_model->run_query($reply_sql);
         if ($reply_query->num_rows() == 0) {
-            return FALSE;
+            throw new ReplyNotFoundException();
         }
 
         $reply = $reply_query->row_array();
@@ -71,16 +74,16 @@ class Reply_model extends CI_Model
                             $reply_id);
         $user_query = $this->utility_model->run_query($user_sql);
         if ($user_query->num_rows() == 0) {
-            return FALSE;
+            throw new ReplyNotFoundException();
         }
 
         if ($this->has_liked($reply_id)) {
-            return TRUE;
+            return;
         }
 
         $user_result = $user_query->row_array();
         if (!$this->user_model->are_friends($user_result['commenter_id'])) {
-            return FALSE;
+            throw new IllegalAccessException();
         }
 
         // Record the like.
@@ -96,8 +99,6 @@ class Reply_model extends CI_Model
                                 "VALUES (%d, %d, %d, 'reply', 'like')",
                                 $_SESSION['user_id'], $user_result['commenter_id'], $reply_id);
         $this->utility_model->run_query($activity_sql);
-
-        return TRUE;
     }
 
     public function get_num_likes($reply_id)

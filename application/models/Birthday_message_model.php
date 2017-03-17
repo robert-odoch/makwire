@@ -1,6 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+require_once('exceptions/IllegalAccessException.php');
+require_once('exceptions/MessageNotFoundException.php');
+
 class Birthday_message_model extends CI_Model
 {
     public function __construct()
@@ -28,7 +31,7 @@ class Birthday_message_model extends CI_Model
                                 $birthday_message_id);
         $message_query = $this->utility_model->run_query($message_sql);
         if ($message_query->num_rows() == 0) {
-            return FALSE;
+            throw new MessageNotFoundException();
         }
 
         $message = $message_query->row_array();
@@ -56,16 +59,16 @@ class Birthday_message_model extends CI_Model
                             $birthday_message_id);
         $user_query = $this->utility_model->run_query($user_sql);
         if ($user_query->num_rows() == 0) {
-            return FALSE;
+            throw new MessageNotFoundException();
         }
 
         if ($this->has_liked($birthday_message_id)) {
-            return TRUE;
+            return;
         }
 
         $user_result = $user_query->row_array();
         if ($user_result['user_id'] != $_SESSION['user_id']) {
-            return FALSE;
+            throw new IllegalAccessException();
         }
 
         // Record the like.
@@ -81,8 +84,6 @@ class Birthday_message_model extends CI_Model
                                 $_SESSION['user_id'], $user_result['sender_id'],
                                 $birthday_message_id);
         $this->utility_model->run_query($activity_sql);
-
-        return TRUE;
     }
 }
 ?>

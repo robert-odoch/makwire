@@ -20,22 +20,26 @@ class Reply extends CI_Controller
 
     public function like($reply_id, $comment_id, $offset)
     {
-        if (!$this->reply_model->like($reply_id)) {
+        try {
+            $this->reply_model->like($reply_id);
+            redirect($_SERVER['HTTP_REFERER']);
+        }
+        catch (ReplyNotFoundException $e) {
+            show_404();
+        }
+        catch (IllegalAccessException $e) {
             $this->utility_model->show_permission_denied("You don't have the proper permissions " .
                                                             "to like this reply.");
-            return;
         }
-
-        redirect($_SERVER['HTTP_REFERER']);
     }
 
     public function likes($reply_id, $offset=0)
     {
-        $reply = $this->reply_model->get_reply($reply_id);
-        if (!$reply) {
-            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
-                                                            "to view this reply.");
-            return;
+        try {
+            $reply = $this->reply_model->get_reply($reply_id);
+        }
+        catch (ReplyNotFoundException $e) {
+            show_404();
         }
 
         $data = $this->user_model->initialize_user();

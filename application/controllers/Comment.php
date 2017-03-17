@@ -20,20 +20,29 @@ class Comment extends CI_Controller
 
     public function like($comment_id)
     {
-        if (!$this->comment_model->like($comment_id)) {
+        try {
+            $this->comment_model->like($comment_id);
+            redirect($_SERVER['HTTP_REFERER']);
+        }
+        catch (CommentNotFoundException $e) {
+            show_404();
+        }
+        catch (IllegalAccessException $e) {
             $this->utility_model->show_permission_denied("You don't have the proper permissions " .
                                                             "to like this comment.");
-            return;
         }
-
-        redirect($_SERVER['HTTP_REFERER']);
     }
 
     public function reply($comment_id)
     {
-        $comment = $this->comment_model->get_comment($comment_id);
-        if (!$comment ||
-            !$this->user_model->are_friends($comment['commenter_id'])) {
+        try {
+            $comment = $this->comment_model->get_comment($comment_id);
+        }
+        catch (CommentNotFoundException $e) {
+            show_404();
+        }
+
+        if (!$this->user_model->are_friends($comment['commenter_id'])) {
             $this->utility_model->show_permission_denied("You don't have the proper permissions " .
                                                             "to reply to this comment.");
             return;
@@ -63,11 +72,11 @@ class Comment extends CI_Controller
 
     public function likes($comment_id, $offset=0)
     {
-        $comment = $this->comment_model->get_comment($comment_id);
-        if (!$comment) {
-            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
-                                                            "to view this comment.");
-            return;
+        try {
+            $comment = $this->comment_model->get_comment($comment_id);
+        }
+        catch (CommentNotFoundException $e) {
+            show_404();
         }
 
         $data = $this->user_model->initialize_user();
@@ -101,11 +110,11 @@ class Comment extends CI_Controller
 
     public function replies($comment_id, $offset=0)
     {
-        $comment = $this->comment_model->get_comment($comment_id);
-        if (!$comment) {
-            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
-                                                            "to view this comment.");
-            return;
+        try {
+            $comment = $this->comment_model->get_comment($comment_id);
+        }
+        catch (CommentNotFoundException $e) {
+            show_404();
         }
 
         $data = $this->user_model->initialize_user();

@@ -1,6 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+require_once('exceptions/IllegalAccessException.php');
+require_once('exceptions/PostNotFoundException.php');
+
 class Post_model extends CI_Model
 {
     public function __construct()
@@ -15,7 +18,7 @@ class Post_model extends CI_Model
                      $post_id);
         $post_query = $this->utility_model->run_query($post_sql);
         if ($post_query->num_rows() == 0){
-            return FALSE;
+            throw new PostNotFoundException();
         }
 
         $post = $post_query->row_array();
@@ -131,17 +134,16 @@ class Post_model extends CI_Model
         $user_sql = sprintf("SELECT user_id FROM posts WHERE post_id = %d",
                             $post_id);
         $user_query = $this->utility_model->run_query($user_sql);
-        if ($user_query->num_rows() == 0) {
-            return FALSE;
+        if ($user_query->num_rows() == 0) {  // Post doesn't exist.
+            throw new PostNotFoundException();
         }
-
         if ($this->has_liked($post_id)) {
-            return TRUE;
+            return;
         }
 
         $user_result = $user_query->row_array();
         if (!$this->user_model->are_friends($user_result['user_id'])) {
-            return FALSE;
+            throw new IllegalAccessException();
         }
 
         $like_sql = sprintf("INSERT INTO likes (liker_id, source_id, source_type) " .
@@ -155,8 +157,6 @@ class Post_model extends CI_Model
                                 "VALUES (%d, %d, %d, 'post', 'like')",
                                 $_SESSION['user_id'], $user_result['user_id'], $post_id);
         $this->utility_model->run_query($activity_sql);
-
-        return TRUE;
     }
 
     public function comment($post_id, $comment)
@@ -187,16 +187,16 @@ class Post_model extends CI_Model
                             $post_id);
         $user_query = $this->utility_model->run_query($user_sql);
         if ($user_query->num_rows() == 0) {
-            return FALSE;
+            throw new PostNotFoundException();
         }
 
         if ($this->has_shared($post_id)) {
-            return TRUE;
+            return;
         }
 
         $user_result = $user_query->row_array();
         if (!$this->user_model->are_friends($user_result['user_id'])) {
-            return FALSE;
+            throw new IllegalAccessException();
         }
 
         // Insert it into the shares table.
@@ -211,8 +211,6 @@ class Post_model extends CI_Model
                                 "VALUES (%d, %d, %d, 'post', 'share')",
                                 $_SESSION['user_id'], $user_result['user_id'], $post_id);
         $this->utility_model->run_query($activity_sql);
-
-        return TRUE;
     }
 
     public function get_likes($post_id, $offset, $limit)

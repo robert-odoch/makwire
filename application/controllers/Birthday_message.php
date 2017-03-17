@@ -23,13 +23,17 @@ class Birthday_message extends CI_Controller
 
     public function like($birthday_message_id)
     {
-        if (!$this->birthday_message_model->like($birthday_message_id)) {
+        try {
+            $this->birthday_message_model->like($birthday_message_id);
+            redirect($_SERVER['HTTP_REFERER']);
+        }
+        catch (MessageNotFoundException $e) {
+            show_404();
+        }
+        catch (IllegalAccessException $e) {
             $this->utility_model->show_permission_denied("You don't have the proper permissions " .
                                                             "to like this message.");
-            return;
         }
-
-        redirect($_SERVER['HTTP_REFERER']);
     }
 }
 ?>

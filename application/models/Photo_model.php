@@ -1,6 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+require_once('exceptions/PhotoNotFoundException.php');
+require_once('exceptions/IllegalAccessException.php');
+
 class Photo_model extends CI_Model
 {
     public function __construct()
@@ -16,7 +19,7 @@ class Photo_model extends CI_Model
                      $photo_id);
         $photo_query = $this->utility_model->run_query($photo_sql);
         if ($photo_query->num_rows() == 0) {
-            return FALSE;
+            throw new PhotoNotFoundException();
         }
 
         $photo = $photo_query->row_array();
@@ -125,7 +128,7 @@ class Photo_model extends CI_Model
         return $this->utility_model->run_query($shares_sql)->row_array()['COUNT(share_id)'];
     }
 
-    public function post($data)
+    public function publish($data)
     {
     }
 
@@ -136,16 +139,16 @@ class Photo_model extends CI_Model
                             $photo_id);
         $user_query = $this->utility_model->run_query($user_sql);
         if ($user_query->num_rows() == 0) {
-            return FALSE;
+            throw new PhotoNotFoundException();
         }
 
         if ($this->has_liked($photo_id)) {
-            return TRUE;
+            return;
         }
 
         $user_result = $user_query->row_array();
         if (!$this->user_model->are_friends($user_result['user_id'])) {
-            return FALSE;
+            throw new IllegalAccessException();
         }
 
         $like_sql = sprintf("INSERT INTO likes (liker_id, source_id, source_type) " .
@@ -159,8 +162,6 @@ class Photo_model extends CI_Model
                                 "VALUES (%d, %d, %d, 'photo', 'like')",
                                 $_SESSION['user_id'], $user_result['user_id'], $photo_id);
         $this->utility_model->run_query($activity_sql);
-
-        return TRUE;
     }
 
     public function comment($photo_id, $comment)
@@ -191,16 +192,17 @@ class Photo_model extends CI_Model
                             $photo_id);
         $user_query = $this->utility_model->run_query($user_sql);
         if ($user_query->num_rows() == 0) {
-            return FALSE;
+            throw new PhotoNotFoundException();
+
         }
 
         if ($this->has_shared($photo_id)) {
-            return TRUE;
+            return;
         }
 
         $user_result = $user_query->row_array();
         if (!$this->user_model->are_friends($user_result['user_id'])) {
-            return FALSE;
+            throw new IllegalAccessException();
         }
 
         // Insert it into the shares table.
@@ -215,8 +217,6 @@ class Photo_model extends CI_Model
                                 "VALUES (%d, %d, %d, 'photo', 'share')",
                                 $_SESSION['user_id'], $user_result['user_id'], $photo_id);
         $this->utility_model->run_query($activity_sql);
-
-        return TRUE;
     }
 
     public function get_likes($photo_id, $offset, $limit)

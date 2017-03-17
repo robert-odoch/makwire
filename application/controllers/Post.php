@@ -20,20 +20,29 @@ class Post extends CI_Controller
 
     public function like($post_id)
     {
-        if (!$this->post_model->like($post_id)) {
+        try {
+            $this->post_model->like($post_id);
+            redirect($_SERVER['HTTP_REFERER']);
+        }
+        catch (PostNotFoundException $e) {
+            show_404();
+        }
+        catch (IllegalAccessException $e) {
             $this->utility_model->show_permission_denied("You don't have the proper permissions " .
                                                             "to like this post.");
-            return;
         }
-
-        redirect($_SERVER['HTTP_REFERER']);
     }
 
     public function comment($post_id)
     {
-        $post = $this->post_model->get_post($post_id);
-        if (!$post ||
-            !$this->user_model->are_friends($post['user_id'])) {
+        try {
+            $post = $this->post_model->get_post($post_id);
+        }
+        catch (PostNotFoundException $e) {
+            show_404();
+        }
+
+        if (!$this->user_model->are_friends($post['user_id'])) {
             $this->utility_model->show_permission_denied("You don't have the proper permissions " .
                                                             "to comment on this post.");
             return;
@@ -66,23 +75,26 @@ class Post extends CI_Controller
 
     public function share($post_id)
     {
-        $share = $this->post_model->share($post_id);
-        if (!$share) {
+        try {
+            $this->post_model->share($post_id);
+            redirect(base_url("user/{$_SESSION['user_id']}"));
+        }
+        catch (PostNotFoundException $e) {
+            show_404();
+        }
+        catch (IllegalAccessException $e) {
             $this->utility_model->show_permission_denied("You don't have the proper permissions " .
                                                             "to share this post.");
-            return;
         }
-
-        redirect(base_url("user/{$_SESSION['user_id']}"));
     }
 
     public function likes($post_id, $offset=0)
     {
-        $post = $this->post_model->get_post($post_id);
-        if (!$post) {
-            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
-                                                            "to view this post.");
-            return;
+        try {
+            $post = $this->post_model->get_post($post_id);
+        }
+        catch (PostNotFoundException $e) {
+            show_404();
         }
 
         $data = $this->user_model->initialize_user();
@@ -120,11 +132,11 @@ class Post extends CI_Controller
 
     public function comments($post_id, $offset=0)
     {
-        $post = $this->post_model->get_post($post_id);
-        if (!$post) {
-            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
-                                                            "to view this post.");
-            return;
+        try {
+            $post = $this->post_model->get_post($post_id);
+        }
+        catch (PostNotFoundException $e) {
+            show_404();
         }
 
         $data = $this->user_model->initialize_user();
@@ -161,11 +173,11 @@ class Post extends CI_Controller
 
     public function shares($post_id, $offset=0)
     {
-        $post = $this->post_model->get_post($post_id);
-        if (!$post) {
-            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
-                                                            "to view this post.");
-            return;
+        try {
+            $post = $this->post_model->get_post($post_id);
+        }
+        catch (PostNotFoundException $e) {
+            show_404();
         }
 
         $data = $this->user_model->initialize_user();

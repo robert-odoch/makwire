@@ -20,20 +20,29 @@ class Photo extends CI_Controller
 
     public function like($photo_id)
     {
-        if (!$this->photo_model->like($photo_id)) {
+        try {
+            $this->photo_model->like($photo_id);
+            redirect($_SERVER['HTTP_REFERER']);
+        }
+        catch (PhotoNotFoundException $e) {
+            show_404();
+        }
+        catch (IllegalAccessException $e) {
             $this->utility_model->show_permission_denied("You don't have the proper permissions " .
                                                             "to like this photo.");
-            return;
         }
-
-        redirect($_SERVER['HTTP_REFERER']);
     }
 
     public function comment($photo_id)
     {
-        $photo = $this->photo_model->get_photo($photo_id);
-        if (!$photo ||
-            !$this->user_model->are_friends($photo['user_id'])) {
+        try {
+            $photo = $this->photo_model->get_photo($photo_id);
+        }
+        catch (PhotoNotFoundException $e) {
+            show_404();
+        }
+
+        if (!$this->user_model->are_friends($photo['user_id'])) {
             $this->utility_model->show_permission_denied("You don't have the proper permissions " .
                                                             "to comment on this photo.");
             return;
@@ -63,23 +72,26 @@ class Photo extends CI_Controller
 
     public function share($photo_id)
     {
-        $share = $this->photo_model->share($photo_id);
-        if (!$share) {
+        try {
+            $this->photo_model->share($photo_id);
+            redirect(base_url("user/{$_SESSION['user_id']}"));
+        }
+        catch (PhotoNotFoundException $e) {
+            show_404();
+        }
+        catch (IllegalAccessException $e) {
             $this->utility_model->show_permission_denied("You don't have the proper permissions " .
                                                             "to share this photo.");
-            return;
         }
-
-        redirect(base_url("user/{$_SESSION['user_id']}"));
     }
 
     public function likes($photo_id, $offset=0)
     {
-        $photo = $this->photo_model->get_photo($photo_id);
-        if (!$photo) {
-            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
-                                                            "to view this photo.");
-            return;
+        try {
+            $photo = $this->photo_model->get_photo($photo_id);
+        }
+        catch (PhotoNotFoundException $e) {
+            show_404();
         }
 
         $data = $this->user_model->initialize_user();
@@ -114,11 +126,11 @@ class Photo extends CI_Controller
 
     public function comments($photo_id, $offset=0)
     {
-        $photo = $this->photo_model->get_photo($photo_id);
-        if (!$photo) {
-            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
-                                                            "to view this photo.");
-            return;
+        try {
+            $photo = $this->photo_model->get_photo($photo_id);
+        }
+        catch (PhotoNotFoundException $e) {
+            show_404();
         }
 
         $data = $this->user_model->initialize_user();
@@ -151,11 +163,11 @@ class Photo extends CI_Controller
 
     public function shares($photo_id, $offset=0)
     {
-        $photo = $this->photo_model->get_photo($photo_id);
-        if (!$photo) {
-            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
-                                                            "to view this photo.");
-            return;
+        try {
+            $photo = $this->photo_model->get_photo($photo_id);
+        }
+        catch (PhotoNotFoundException $e) {
+            show_404();
         }
 
         $data = $this->user_model->initialize_user();
