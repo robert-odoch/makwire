@@ -65,7 +65,7 @@ class Upload extends CI_Controller
                 }
 
                 // Record it in the database.
-                $this->upload_model->set_profile_picture($upload_data);
+                $this->user_model->set_profile_picture($upload_data);
                 redirect(base_url("/user/{$_SESSION['user_id']}"));
             }
         }
