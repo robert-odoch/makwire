@@ -1,6 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+require_once('exceptions/IllegalAccessException.php');
+require_once('exceptions/UserNotFoundException.php');
+
 class User_model extends CI_Model
 {
     public function __construct()
@@ -98,14 +101,20 @@ class User_model extends CI_Model
 
     public function initialize_user()
     {
-        $data['primary_user'] = $this->get_profile_name($_SESSION['user_id']);
+        try {
+            $data['primary_user'] = $this->get_profile_name($_SESSION['user_id']);
+        }
+        catch (UserNotFoundException $e) {
+            throw $e;
+        }
+
+        $data['profile_pic_path'] = $this->get_profile_pic_path($_SESSION['user_id']);
         $data['people_you_may_know'] = $this->get_suggested_users(0, 4);
         $data['num_friend_requests'] = $this->get_num_friend_requests(TRUE);
         $data['num_active_friends'] = $this->get_num_chat_users(TRUE);
         $data['num_new_messages'] = $this->get_num_messages(TRUE);
         $data['num_new_notifs'] = $this->get_num_notifs(TRUE);
         $data['chat_users'] = $this->get_chat_users(TRUE);
-        $data['profile_pic_path'] = $this->get_profile_pic_path($_SESSION['user_id']);
 
         return $data;
     }
@@ -115,6 +124,9 @@ class User_model extends CI_Model
         $name_sql = sprintf("SELECT profile_name FROM users WHERE user_id = %d",
                             $user_id);
         $query = $this->utility_model->run_query($name_sql);
+        if ($query->num_rows() == 0) {
+            throw new UserNotFoundException();
+        }
 
         return ucfirst($query->row_array()['profile_name']);
     }
@@ -938,7 +950,7 @@ class User_model extends CI_Model
     {
         $friendship_status = $this->get_friendship_status($target_id);
         if ($friendship_status['are_friends'] || $friendship_status['fr_sent']) {
-            return FALSE;
+            throw new IllegalAccessException();
         }
 
         $fr_sql = sprintf("INSERT INTO friend_requests " .
@@ -952,8 +964,6 @@ class User_model extends CI_Model
                                 "VALUES (%d, %d, %d, 'user', 'friend_request')",
                                 $_SESSION['user_id'], $target_id, $target_id);
         $this->utility_model->run_query($activity_sql);
-
-        return TRUE;
     }
 
     public function confirm_friend_request($friend_id)
@@ -964,7 +974,7 @@ class User_model extends CI_Model
                             $_SESSION['user_id'], $friend_id);
         $id_query = $this->utility_model->run_query($id_sql);
         if ($id_query->num_rows() == 0) {
-            return FALSE;
+            throw new IllegalAccessException();
         }
 
         // Add the user to the list of friends.

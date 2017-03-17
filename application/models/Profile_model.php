@@ -1,6 +1,11 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+require_once('exceptions/ProgrammeNotFoundException.php');
+require_once('exceptions/CollegeNotFoundException.php');
+require_once('exceptions/HostelNotFoundException.php');
+require_once('exceptions/HallNotFoundException.php');
+
 class Profile_model extends CI_Model
 {
     public function __construct()
@@ -239,7 +244,7 @@ class Profile_model extends CI_Model
         $user_college_query = $this->utility_model->run_query($user_college_sql);
 
         if ($user_college_query->num_rows() == 0) {
-            return FALSE;
+            throw new CollegeNotFoundException();
         }
 
         // Get the name of the college.
@@ -283,7 +288,7 @@ class Profile_model extends CI_Model
         $user_programme_query = $this->utility_model->run_query($user_programme_sql);
 
         if ($user_programme_query->num_rows() == 0) {
-            return FALSE;
+            throw new ProgrammeNotFoundException();
         }
 
         $user_programme = $user_programme_query->row_array();
@@ -311,7 +316,7 @@ class Profile_model extends CI_Model
         $user_hall_query = $this->utility_model->run_query($user_hall_sql);
 
         if ($user_hall_query->num_rows() == 0) {
-            return FALSE;
+            throw new HallNotFoundException();
         }
 
         $user_hall = $user_hall_query->row_array();
@@ -337,7 +342,7 @@ class Profile_model extends CI_Model
         $user_hostel_query = $this->utility_model->run_query($user_hostel_sql);
 
         if ($user_hostel_query->num_rows() == 0) {
-            return FALSE;
+            throw HostelNotFoundException();
         }
 
         $user_hostel = $user_hostel_query->row_array();
