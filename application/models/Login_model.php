@@ -19,7 +19,7 @@ class Login_model extends CI_Model
      * @param $password the password supplied by the user.
      * @return true if the given username and password exists on record.
      */
-    public function user_exists($username, $password)
+    public function is_valid_login($username, $password)
     {
         $user_sql = sprintf("SELECT user_id, passwd FROM users WHERE uname = %s",
                                 $this->db->escape($username));

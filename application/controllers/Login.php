@@ -13,7 +13,9 @@ class Login extends CI_Controller
 
     public function index()
     {
-        if (isset($_SESSION['user_id'])) {  // Already logged in user.
+        if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
+
+            // Already logged in user.
             redirect(base_url("user/news-feed"));
         }
 
@@ -37,7 +39,7 @@ class Login extends CI_Controller
             }
 
             if (!isset($data['login_errors'])) {
-                if ($this->login_model->user_exists($username, $password)) {
+                if ($this->login_model->is_valid_login($username, $password)) {
                     redirect(base_url("user/news-feed"));
                 }
                 else {
@@ -46,7 +48,7 @@ class Login extends CI_Controller
             }
         }
 
-        if (isset($_SESSION['message']) && ! empty($_SESSION['message'])) {
+        if (isset($_SESSION['message']) && !empty($_SESSION['message'])) {
             $data['message'] = $_SESSION['message'];
             unset($_SESSION['message']);
         }
