@@ -1,6 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+/**
+ * Contains function for loggin in a user.
+ */
 class Login_model extends CI_Model
 {
     public function __construct()
@@ -9,6 +12,13 @@ class Login_model extends CI_Model
         $this->load->model('utility_model');
     }
 
+    /**
+     * Checks whether the given username and password matches a record.
+     *
+     * @param $username the username supplied by the user.
+     * @param $password the password supplied by the user.
+     * @return true if the given username and password exists on record.
+     */
     public function user_exists($username, $password)
     {
         $user_sql = sprintf("SELECT user_id, passwd FROM users WHERE uname = %s",

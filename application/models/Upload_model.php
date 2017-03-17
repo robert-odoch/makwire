@@ -1,6 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+/**
+ * Contains functions related to file uploads.
+ */
 class Upload_model extends CI_Model
 {
     public function __construct()
@@ -9,6 +12,11 @@ class Upload_model extends CI_Model
         $this->load->model('utility_model');
     }
 
+    /**
+     * Sets a new profile picture for a user.
+     *
+     * @param $data an array containing details about an uploaded photo.
+     */
     public function set_profile_picture($data)
     {
         // Store image data in the images table.

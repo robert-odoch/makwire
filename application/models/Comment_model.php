@@ -4,6 +4,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require_once('exceptions/IllegalAccessException.php');
 require_once('exceptions/CommentNotFoundException.php');
 
+/**
+ * Contains functions relating to comments on a post, photo.
+ */
 class Comment_model extends CI_Model
 {
     public function __construct()
@@ -12,6 +15,14 @@ class Comment_model extends CI_Model
         $this->load->model(['utility_model', 'user_model', 'reply_model']);
     }
 
+    /**
+     * Checks whether a user has already liked a comment.
+     *
+     * A user is not allowed ot like his own comment.
+     *
+     * @param $comment_id the ID of the comment in the comments table.
+     * @return TRUE if the user has already liked the comment, or is the owner of the comment.
+     */
     private function has_liked($comment_id)
     {
         // Check whether this comment is from the user liking the comment.
@@ -31,6 +42,14 @@ class Comment_model extends CI_Model
         return ($this->utility_model->run_query($like_sql)->num_rows() == 1);
     }
 
+    /**
+     * Gets a comment plus other comment metadata.
+     *
+     * Throws CommentNotFoundException if the comment cannot be found.
+     *
+     * @param $comment_id the ID of the comment in the comments table.
+     * @return comment with the given ID.
+     */
     public function get_comment($comment_id)
     {
         $comment_sql = sprintf("SELECT commenter_id, comment, source_id, source_type, date_entered " .
@@ -69,6 +88,12 @@ class Comment_model extends CI_Model
         return $comment;
     }
 
+    /**
+     * Gets the number of users who liked a comment.
+     *
+     * @param $comment_id the ID of the comment in the comments table.
+     * @return the number of users who have like this comment.
+     */
     public function get_num_likes($comment_id)
     {
         $likes_sql = sprintf("SELECT COUNT(like_id) FROM likes " .
@@ -77,6 +102,14 @@ class Comment_model extends CI_Model
         return $this->utility_model->run_query($likes_sql)->row_array()['COUNT(like_id)'];
     }
 
+    /**
+     * Gets the users who liked a comment plus their metadata.
+     *
+     * @param $comment_id the ID of the comment in the comments table.
+     * @param $offset the record to begin fetching from.
+     * @param $limit the maximum number of records to return.
+     * @return the users who have liked a comment.
+     */
     public function get_likes($comment_id, $offset, $limit)
     {
         $likes_sql = sprintf("SELECT * FROM likes " .
@@ -96,6 +129,12 @@ class Comment_model extends CI_Model
         return $likes;
     }
 
+    /**
+     * Gets the number of replies on a comment.
+     *
+     * @param $comment_id the ID of the comment in the comments table.
+     * @return the number of replies on this comment.
+     */
     public function get_num_replies($comment_id)
     {
         $replies_sql = sprintf("SELECT COUNT(comment_id) FROM comments " .
@@ -104,6 +143,14 @@ class Comment_model extends CI_Model
         return $this->utility_model->run_query($replies_sql)->row_array()['COUNT(comment_id)'];
     }
 
+    /**
+     * Gets the replies on a comment plus their metadata.
+     *
+     * @param $comment_id the ID of the comment in the comments table.
+     * @param $offset the record to begin fetching from.
+     * @param $limit the maximum number of records to return.
+     * @return the replies on this comment.
+     */
     public function get_replies($comment_id, $offset, $limit)
     {
         $replies_sql = sprintf("SELECT comment_id FROM comments " .
@@ -123,6 +170,16 @@ class Comment_model extends CI_Model
         return $replies;
     }
 
+    /**
+     * Records a like of a comment.
+     *
+     * Throws CommentNotFoundException exception if the comment can't be found.
+     * It may also throw IllegalAccessException if a user attempts to like a comment
+     * that was made by a user who is not his friend.
+     * A user is not allowed to like his own comment.
+     *
+     * @param $comment_id the ID of the comment in the comments table.
+     */
     public function like($comment_id)
     {
         // Get the id of the user who commented.
@@ -156,6 +213,12 @@ class Comment_model extends CI_Model
         $this->utility_model->run_query($activity_sql);
     }
 
+    /**
+     * Records a reply on a comment.
+     *
+     * @param $comment_id the ID of the comment in the comments table.
+     * @param $reply the reply on this comment.
+     */
     public function reply($comment_id, $reply)
     {
         // Record the reply.

@@ -4,6 +4,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require_once('exceptions/ReplyNotFoundException.php');
 require_once('exceptions/IllegalAccessException.php');
 
+/**
+ * Contains functions related to a reply.
+ */
 class Reply_model extends CI_Model
 {
     public function __construct()
@@ -12,6 +15,14 @@ class Reply_model extends CI_Model
         $this->load->model('utility_model');
     }
 
+    /**
+     * Checks whether a user has already liked a reply.
+     *
+     * A user is not allowed to like his own reply.
+     *
+     * @param $reply_id the ID of the reply in the comments table.
+     * @return TRUE if this user has already liked the reply, or is the owner of the reply.
+     */
     private function has_liked($reply_id)
     {
         // Check whether this reply belongs to the current user.
@@ -33,6 +44,14 @@ class Reply_model extends CI_Model
         return ($this->utility_model->run_query($like_sql)->num_rows() == 1);
     }
 
+    /**
+     * Gets a reply plus other reply metadata.
+     *
+     * Throws ReplyNotFoundException if the reply is not on record.
+     *
+     * @param $reply_id the ID of the reply in the comments table.
+     * @return the reply with the given ID.
+     */
     public function get_reply($reply_id)
     {
         $reply_sql = sprintf("SELECT * " .
@@ -66,6 +85,15 @@ class Reply_model extends CI_Model
         return $reply;
     }
 
+    /**
+     * Records a like of a reply.
+     *
+     * Throws ReplyNotFoundException exception if the reply is not on record.
+     * It may also throw IllegalAccessException if a user attempts to like
+     * a reply that was made by a user who is not his friend.
+     *
+     * @param $reply_id the ID of the reply in the comments table.
+     */
     public function like($reply_id)
     {
         $user_sql = sprintf("SELECT commenter_id " .
@@ -101,6 +129,12 @@ class Reply_model extends CI_Model
         $this->utility_model->run_query($activity_sql);
     }
 
+    /**
+     * Gets the number of users who liked a reply.
+     *
+     * @param $reply_id the ID of the reply in the comments table.
+     * @return the number of likes on this reply.
+     */
     public function get_num_likes($reply_id)
     {
         $likes_sql = sprintf("SELECT COUNT(like_id) " .
@@ -110,6 +144,14 @@ class Reply_model extends CI_Model
         return $this->utility_model->run_query($likes_sql)->row_array()['COUNT(like_id)'];
     }
 
+    /**
+     * Gets users who liked a reply.
+     *
+     * @param $reply_id the ID of the reply in the comments table.
+     * @param offset the position to begin returning records from.
+     * @param $limit the maximum number of records to return.
+     * @return the users who liked this reply.
+     */
     public function get_likes($reply_id, $offset, $limit)
     {
         $likes_sql = sprintf("SELECT * " .

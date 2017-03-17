@@ -4,6 +4,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require_once('exceptions/IllegalAccessException.php');
 require_once('exceptions/PostNotFoundException.php');
 
+/**
+ * Contains functions related to a post.
+ */
 class Post_model extends CI_Model
 {
     public function __construct()
@@ -12,6 +15,14 @@ class Post_model extends CI_Model
         $this->load->model(['utility_model', 'comment_model']);
     }
 
+    /**
+     * Gets a post plus other post metadata.
+     *
+     * Throws PostNotFoundException if the post cannot be found.
+     *
+     * @param $post_id the ID of the post in the posts table.
+     * @return the post with the given ID.
+     */
     public function get_post($post_id)
     {
         $post_sql = sprintf("SELECT * FROM posts WHERE post_id = %d",
@@ -52,6 +63,14 @@ class Post_model extends CI_Model
         return $post;
     }
 
+    /**
+     * Checks whether a user has already liked a post.
+     *
+     * A user is not allowed to like his own post.
+     *
+     * @param $post_id the ID of the post in the posts table.
+     * @return TRUE if this user has already liked the post, or is the owner of the post.
+     */
     private function has_liked($post_id)
     {
         // Check whether this post belongs to the current user.
@@ -70,6 +89,14 @@ class Post_model extends CI_Model
         return ($this->utility_model->run_query($like_sql)->num_rows() == 1);
     }
 
+    /**
+     * Checks whether a user has already shared a post.
+     *
+     * Until groups are implemented, a user is not allowed to share his own post.
+     *
+     * @param $post_id the ID of the post in the posts table.
+     * @return TRUE this user has already shared the post, or is the owner of the post.
+     */
     private function has_shared($post_id)
     {
         // Check whether this post belongs to the current user.
@@ -88,6 +115,12 @@ class Post_model extends CI_Model
         return ($this->utility_model->run_query($share_sql)->num_rows() == 1);
     }
 
+    /**
+     * Gets the number of users who liked a post.
+     *
+     * @param $post_id the ID of the post in the posts table.
+     * @return the number of likes on this post.
+     */
     public function get_num_likes($post_id)
     {
         $likes_sql = sprintf("SELECT COUNT(like_id) FROM likes " .
@@ -96,6 +129,12 @@ class Post_model extends CI_Model
         return $this->utility_model->run_query($likes_sql)->row_array()['COUNT(like_id)'];
     }
 
+    /**
+     * Get the number of comments made on a post.
+     *
+     * @param $post_id the ID of the post in the posts table.
+     * @return the number of comments on this post.
+     */
     public function get_num_comments($post_id)
     {
         $comments_sql = sprintf("SELECT COUNT(comment_id) FROM comments " .
@@ -104,6 +143,12 @@ class Post_model extends CI_Model
         return $this->utility_model->run_query($comments_sql)->row_array()['COUNT(comment_id)'];
     }
 
+    /**
+     * Gets the number of users who shared a post.
+     *
+     * @param post_id the ID of the post in the posts table.
+     * @return the number of users who shared this post.
+     */
     public function get_num_shares($post_id)
     {
         $shares_sql = sprintf("SELECT COUNT(share_id) FROM shares " .
@@ -112,6 +157,14 @@ class Post_model extends CI_Model
         return $this->utility_model->run_query($shares_sql)->row_array()['COUNT(share_id)'];
     }
 
+    /**
+     * Allows a user to add a new post on his status.
+     *
+     * @param $post the contents of the post.
+     * @param $audience can be group or timeline.
+     * @param $audience_id the ID of the audience. Either group ID, or user ID
+     * if post is made on a timeline.
+     */
     public function post($post, $audience, $audience_id)
     {
         // Save the post.
@@ -129,6 +182,15 @@ class Post_model extends CI_Model
         $this->utility_model->run_query($activity_sql);
     }
 
+    /**
+     * Records a like of a post.
+     *
+     * Throws PostNotFoundException exception if the post is not on record.
+     * It may also throw IllegalAccessException if a user attempts to like
+     * a post published by a user who is not his friend.
+     *
+     * @param $post_id the ID of the post in the posts table.
+     */
     public function like($post_id)
     {
         $user_sql = sprintf("SELECT user_id FROM posts WHERE post_id = %d",
@@ -159,6 +221,12 @@ class Post_model extends CI_Model
         $this->utility_model->run_query($activity_sql);
     }
 
+    /**
+     * Records a comment on a post.
+     *
+     * @param $post_id the ID of the post in the posts table.
+     * @param $comment the comment a user made.
+     */
     public function comment($post_id, $comment)
     {
         // Record the comment.
@@ -181,6 +249,15 @@ class Post_model extends CI_Model
         $this->utility_model->run_query($activity_sql);
     }
 
+    /**
+     * Shares a post on a user's timeline.
+     *
+     * Throws PostNotFoundException if a post is not on record.
+     * It may also throw IllegalAccessException if a user attempts to share
+     * a post that was published by a user who is not his friend.
+     *
+     * @param $post_id the ID of the post in the posts table.
+     */
     public function share($post_id)
     {
         $user_sql = sprintf("SELECT user_id FROM posts WHERE post_id = %d",
@@ -213,6 +290,14 @@ class Post_model extends CI_Model
         $this->utility_model->run_query($activity_sql);
     }
 
+    /**
+     * Get users who liked a post.
+     *
+     * @param $post_id the ID of the post in the posts table.
+     * @param offset the position to begin returning records from.
+     * @param $limit the maximum number of records to return.
+     * @return the users who liked this post.
+     */
     public function get_likes($post_id, $offset, $limit)
     {
         $likes_sql = sprintf("SELECT * FROM likes " .
@@ -232,6 +317,14 @@ class Post_model extends CI_Model
         return $likes;
     }
 
+    /**
+     * Gets the comments made on a post.
+     *
+     * @param $post_id the ID of the post in the posts table.
+     * @param offset the position to begin returning records from.
+     * @param $limit the maximum number of records to return.
+     * @return the comments made on this post.
+     */
     public function get_comments($post_id, $offset, $limit)
     {
         $comments_sql = sprintf("SELECT comment_id FROM comments " .
@@ -251,6 +344,14 @@ class Post_model extends CI_Model
         return $comments;
     }
 
+    /**
+     * Gets the users who shared a photo.
+     *
+     * @param $post_id the ID of the post in the posts table.
+     * @param offset the position to begin returning records from.
+     * @param $limit the maximum number of records to return.
+     * @return the users who shared this post.
+     */
     public function get_shares($post_id, $offset, $limit)
     {
         $shares_sql = sprintf("SELECT user_id AS sharer_id, date_shared FROM shares " .

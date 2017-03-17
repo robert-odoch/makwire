@@ -4,6 +4,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require_once('exceptions/PhotoNotFoundException.php');
 require_once('exceptions/IllegalAccessException.php');
 
+/**
+ * Contains functions related to a photo.
+ */
 class Photo_model extends CI_Model
 {
     public function __construct()
@@ -12,6 +15,14 @@ class Photo_model extends CI_Model
         $this->load->model(['utility_model', 'user_model', 'comment_model']);
     }
 
+    /**
+     * Gets a photo plus other photo metadata.
+     *
+     * Throws PhotoNotFoundException if the photo cannot be found.
+     *
+     * @param $photo_id the ID of the photo in the user_photos table.
+     * @return the photo with the given ID.
+     */
     public function get_photo($photo_id)
     {
         // Get the photo.
@@ -68,6 +79,14 @@ class Photo_model extends CI_Model
         return $photo;
     }
 
+    /**
+     * Checks whether a user has already liked a photo.
+     *
+     * A user is not allowed to like his own photo.
+     *
+     * @param $photo_id the ID of the photo in the user_photos table.
+     * @return TRUE if this user has already liked the photo, or is the owner of the photo.
+     */
     private function has_liked($photo_id)
     {
         // Check whether this photo belongs to the current user.
@@ -86,6 +105,14 @@ class Photo_model extends CI_Model
         return ($this->utility_model->run_query($like_sql)->num_rows() == 1);
     }
 
+    /**
+     * Checks whether a user has already shared a photo.
+     *
+     * Until groups are implemented, a user is not allowed to share his own photo.
+     *
+     * @param $photo_id the ID of the photo in the user_photos table.
+     * @return TRUE this user has already shared the photo, or is the owner of the photo.
+     */
     private function has_shared($photo_id)
     {
         // Check whether this photo belongs to the current user.
@@ -104,6 +131,12 @@ class Photo_model extends CI_Model
         return ($this->utility_model->run_query($share_sql)->num_rows() == 1);
     }
 
+    /**
+     * Gets the number of users who liked a photo.
+     *
+     * @param $photo_id the ID of the photo in the user_photos table.
+     * @return the number of likes on this photo.
+     */
     public function get_num_likes($photo_id)
     {
         $likes_sql = sprintf("SELECT COUNT(like_id) FROM likes " .
@@ -112,6 +145,12 @@ class Photo_model extends CI_Model
         return $this->utility_model->run_query($likes_sql)->row_array()['COUNT(like_id)'];
     }
 
+    /**
+     * Get the number of comments made on a photo.
+     *
+     * @param $photo_id the ID of the photo in the user_photos table.
+     * @return the number of comments on this photo.
+     */
     public function get_num_comments($photo_id)
     {
         $comments_sql = sprintf("SELECT COUNT(comment_id) FROM comments " .
@@ -120,6 +159,12 @@ class Photo_model extends CI_Model
         return $this->utility_model->run_query($comments_sql)->row_array()['COUNT(comment_id)'];
     }
 
+    /**
+     * Gets the number of users who shared a photo.
+     *
+     * @param photo_id the ID of the photo in the user_photos table.
+     * @return the number of users who shared this photo.
+     */
     public function get_num_shares($photo_id)
     {
         $shares_sql = sprintf("SELECT COUNT(share_id) FROM shares " .
@@ -128,10 +173,24 @@ class Photo_model extends CI_Model
         return $this->utility_model->run_query($shares_sql)->row_array()['COUNT(share_id)'];
     }
 
+    /**
+     * Allows a user to add a new photo on his status.
+     *
+     * @param $data an array containing details about the uploaded photo.
+     */
     public function publish($data)
     {
     }
 
+    /**
+     * Records a like of a photo.
+     *
+     * Throws PhotoNotFoundException exception if photo is not on record.
+     * It may also throw IllegalAccessException if a user attempts to like
+     * a photo published by a user who is not his friend.
+     *
+     * @param $photo_id the ID of the photo in the user_photos table.
+     */
     public function like($photo_id)
     {
         // Get the id of the owner of this photo.
@@ -164,6 +223,12 @@ class Photo_model extends CI_Model
         $this->utility_model->run_query($activity_sql);
     }
 
+    /**
+     * Records a comment on a photo.
+     *
+     * @param $photo_id the ID of the photo in the user_photos table.
+     * @param $comment the comment a user made.
+     */
     public function comment($photo_id, $comment)
     {
         // Record the comment.
@@ -186,6 +251,15 @@ class Photo_model extends CI_Model
         $this->utility_model->run_query($activity_sql);
     }
 
+    /**
+     * Shares a photo on a user's timeline.
+     *
+     * Throws PhotoNotFoundException if a photo is not on record.
+     * It may also throw IllegalAccessException if a user attempts to share
+     * a photo that was published by a user who is not his friend.
+     *
+     * @param $photo_id the ID of the photo in the user_photos table.
+     */
     public function share($photo_id)
     {
         $user_sql = sprintf("SELECT user_id FROM user_photos WHERE photo_id = %d",
@@ -219,6 +293,14 @@ class Photo_model extends CI_Model
         $this->utility_model->run_query($activity_sql);
     }
 
+    /**
+     * Get users who liked a photo.
+     *
+     * @param $photo_id the ID of the photo in the user_photos table.
+     * @param offset the position to begin returning records from.
+     * @param $limit the maximum number of records to return.
+     * @return the users who liked this photo.
+     */
     public function get_likes($photo_id, $offset, $limit)
     {
         $likes_sql = sprintf("SELECT * FROM likes " .
@@ -238,6 +320,14 @@ class Photo_model extends CI_Model
         return $likes;
     }
 
+    /**
+     * Gets the comments made on a photo.
+     *
+     * @param $photo_id the ID of the photo in the user_photos table.
+     * @param offset the position to begin returning records from.
+     * @param $limit the maximum number of records to return.
+     * @return the comments made on this photo.
+     */
     public function get_comments($photo_id, $offset, $limit)
     {
         $comments_sql = sprintf("SELECT comment_id FROM comments " .
@@ -257,6 +347,14 @@ class Photo_model extends CI_Model
         return $comments;
     }
 
+    /**
+     * Gets the users who shared a photo.
+     *
+     * @param $photo_id the ID of the photo in the user_photos table.
+     * @param offset the position to begin returning records from.
+     * @param $limit the maximum number of records to return.
+     * @return the users who shared this photo.
+     */
     public function get_shares($photo_id, $offset, $limit)
     {
         $shares_sql = sprintf("SELECT user_id AS sharer_id, date_shared FROM shares " .

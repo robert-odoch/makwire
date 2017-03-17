@@ -4,6 +4,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require_once('exceptions/IllegalAccessException.php');
 require_once('exceptions/MessageNotFoundException.php');
 
+/**
+ * Contains functions relating to a message sent to a user on his birthday.
+ */
 class Birthday_message_model extends CI_Model
 {
     public function __construct()
@@ -12,6 +15,12 @@ class Birthday_message_model extends CI_Model
         $this->load->model(['utility_model', 'user_model', 'reply_model']);
     }
 
+    /**
+     * Checks whether a user has already liked a message.
+     *
+     * @param $birthday_message_id the id of the message in the birthday_messages table.
+     * @return TRUE if the user has already liked this message, or is the owner of the message.
+     */
     private function has_liked($birthday_message_id)
     {
         // Check whether user has liked to message already.
@@ -23,6 +32,14 @@ class Birthday_message_model extends CI_Model
         return ($this->utility_model->run_query($like_sql)->num_rows() == 1);
     }
 
+    /**
+     * Gets a birthday message plus other message metadata.
+     *
+     * Throws MessageNotFoundException if the message cannot be found on record.
+     *
+     * @param $birthday_message_id the id of the message in the birthday_messages table.
+     * @return birthday message with the given ID plus other data.
+     */
     public function get_message($birthday_message_id)
     {
         $message_sql = sprintf("SELECT * " .
@@ -51,6 +68,15 @@ class Birthday_message_model extends CI_Model
         return $message;
     }
 
+    /**
+     * Records a like of a birthday message.
+     *
+     * Throws MessageNotFoundException if the message cannot be found on record.
+     * It may also throw IllegalAccessException if the user attempts to like a
+     * message that was not sent for his birthday.
+     *
+     * @param $birthday_message_id the id of the message in the birthday_messages table.
+     */
     public function like($birthday_message_id)
     {
         // Get the id of the user who sent the message.

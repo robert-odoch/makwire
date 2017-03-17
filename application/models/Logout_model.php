@@ -1,6 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+/**
+ * Contians functions for logging out a user.
+ */
 class Logout_model extends CI_Model
 {
     public function __construct()
@@ -9,6 +12,9 @@ class Logout_model extends CI_Model
         $this->load->model('utility_model');
     }
 
+    /**
+     * Logs out a user.
+     */
     public function logout()
     {
         $login_sql = sprintf("UPDATE users SET logged_in = 0 WHERE user_id = %d",

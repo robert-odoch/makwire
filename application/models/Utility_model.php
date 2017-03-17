@@ -1,6 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+/**
+ * Contians utility functions shared among models.
+ */
 class Utility_model extends CI_Model
 {
     public function __construct()
@@ -9,12 +12,23 @@ class Utility_model extends CI_Model
         $this->load->model('user_model');
     }
 
+    /**
+     * Handle database errors.
+     *
+     * @param $error the resulting error from running a query.
+     */
     public function handle_error($error)
     {
         print($error);
         exit(1);
     }
 
+    /**
+     * Runs a query againsts the database.
+     *
+     * @param $sql the SQL query to be run.
+     * @return query object.
+     */
     public function run_query($sql)
     {
         $query = $this->db->query($sql);
@@ -25,17 +39,27 @@ class Utility_model extends CI_Model
         return $query;
     }
 
-    public function show_success($success_message)
+    /**
+     * Shows a success message.
+     *
+     * @param $message the message to display.
+     */
+    public function show_success($message)
     {
         $data = $this->user_model->initialize_user();
         $data['title'] = "Success!";
         $this->load->view("common/header", $data);
 
-        $data['success'] = $success_message;
+        $data['messagesss'] = $message;
         $this->load->view("show-success", $data);
         $this->load->view("common/footer");
     }
 
+    /**
+     * Shows message if a user attempts to perfrom an illegal activity.
+     *
+     * @param $message the message to display.
+     */
     public function show_permission_denied($message)
     {
         $data = $this->user_model->initialize_user();
