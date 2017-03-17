@@ -58,6 +58,10 @@ class User_model extends CI_Model
                         "DAY(dob) AS day, date_created " .
                         "FROM users WHERE (user_id = %d)", $user_id);
         $query = $this->utility_model->run_query($sql);
+        if ($query->num_rows() == 0) {
+            return FALSE;
+        }
+
         $result = $query->row_array();
 
         return (
@@ -101,14 +105,8 @@ class User_model extends CI_Model
 
     public function initialize_user()
     {
-        try {
-            $data['primary_user'] = $this->get_profile_name($_SESSION['user_id']);
-        }
-        catch (UserNotFoundException $e) {
-            throw $e;
-        }
-
         $data['profile_pic_path'] = $this->get_profile_pic_path($_SESSION['user_id']);
+        $data['primary_user'] = $this->get_profile_name($_SESSION['user_id']);
         $data['people_you_may_know'] = $this->get_suggested_users(0, 4);
         $data['num_friend_requests'] = $this->get_num_friend_requests(TRUE);
         $data['num_active_friends'] = $this->get_num_chat_users(TRUE);
