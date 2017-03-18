@@ -160,7 +160,7 @@ div#primary-user a:hover {
 
 .gallery div {
     padding: 0 5px;
-    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 .gallery img {
@@ -558,7 +558,7 @@ form input[type="file"] {
 }
 
 form .has-error {
-    border-top: 2px solid rgba(255,0,0,.3);
+    border-top: 2px solid rgba(255,0,0,.3) !important;
     background-color: #F2DEDE;
     border: 1px solid #EBCCD1;
     color: #A94442;
