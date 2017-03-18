@@ -144,6 +144,7 @@ class User_model extends CI_Model
         else {
             $profile_pic_path = $path_query->row_array()['profile_pic_path'];
             $profile_pic_path =  str_replace("{$_SERVER['DOCUMENT_ROOT']}makwire/", '', $profile_pic_path);
+            $profile_pic_path = str_replace("uploads", "uploads/small", $profile_pic_path);
             $profile_pic_path = base_url($profile_pic_path);
         }
 
@@ -168,7 +169,7 @@ class User_model extends CI_Model
         $photo_id = $this->db->insert_id();
 
         // Update profile_pic_path in the users table.
-        $profile_pic_path = "{$data['file_path']}thumbnails/{$data['file_name']}";
+        $profile_pic_path = "{$data['file_path']}small/{$data['file_name']}";
         $update_sql = sprintf("UPDATE users " .
                                 "SET profile_pic_path = %s " .
                                 "WHERE (user_id = %d) LIMIT 1",
@@ -404,6 +405,32 @@ class User_model extends CI_Model
         return $friends;
     }
 
+    public function get_num_photos($user_id) {
+        $sql = sprintf("SELECT COUNT(photo_id) FROM user_photos " .
+                        "WHERE (user_id = %d)",
+                        $user_id);
+        return $this->utility_model->run_query($sql)->row_array()['COUNT(photo_id)'];
+    }
+
+    public function get_photos($user_id, $offset, $limit)
+    {
+        $sql = sprintf("SELECT photo_id, full_path FROM user_photos " .
+                        "WHERE (user_id = %d) " .
+                        "LIMIT %d, %d",
+                        $user_id, $offset, $limit);
+        $photos = $this->utility_model->run_query($sql)->result_array();
+        $alt = $this->get_profile_name($user_id);
+        foreach ($photos as &$photo) {
+            $photo['alt'] = $alt;
+            $web_path = str_replace("{$_SERVER['DOCUMENT_ROOT']}makwire", '', $photo['full_path']);
+            $web_path = str_replace('/uploads', 'uploads/medium', $web_path);
+            $photo['web_path'] = base_url("{$web_path}");
+        }
+        unset($photo);
+
+        return $photos;
+    }
+
     public function get_all_friends($user_id)
     {
         $sql = sprintf("SELECT user_id, friend_id FROM friends " .
@@ -454,6 +481,51 @@ class User_model extends CI_Model
         }
 
         return $chat_users;
+    }
+
+    /**
+     * Gets users whose name or email address matches query.
+     *
+     * @param $query name or email address entered by user.
+     * @return Array users whose name or email address match the query.
+     */
+    public function get_searched_user($query, $offset, $limit)
+    {
+        $friends_ids = $this->get_friends_ids($_SESSION['user_id']);
+        $friends_ids[] = 0;
+        $friends_ids = implode(',', $friends_ids);
+
+        if (filter_var($query, FILTER_VALIDATE_EMAIL)) {
+            $sql = sprintf("SELECT user_id, profile_name FROM users " .
+                            "WHERE email = %s AND user_id NOT IN(%s)",
+                            $this->db->escape($query), $friends_ids);
+        }
+        else {
+            $keywords = preg_split("/[\s,]+/", $query);
+            foreach ($keywords as &$keyword) {
+                $keyword = strtolower("+{$keyword}");
+
+                // The @ sign breaks this query.
+                $keyword = str_replace('@', '', $keyword);
+            }
+            unset($keyword);
+
+            $key = implode(' ', $keywords);
+            $sql = sprintf("SELECT user_id, profile_name FROM users " .
+                            "WHERE MATCH(profile_name) AGAINST (%s IN BOOLEAN MODE) AND " .
+                                    "user_id NOT IN(%s)" .
+                            "LIMIT %d, %d",
+                            $this->db->escape($key), $friends_ids,
+                            $offset, $limit);
+        }
+
+        $results = $this->utility_model->run_query($sql)->result_array();
+        foreach ($results as &$r) {
+            $r['profile_pic_path'] = $this->get_profile_pic_path($r['user_id']);
+        }
+        unset($r);
+
+        return $results;
     }
 
     public function get_num_notifs($filter=TRUE)
