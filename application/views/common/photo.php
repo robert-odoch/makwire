@@ -45,6 +45,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </div>
             </div>
         </header>
+
+        <?php
+        if (strlen($photo['description']) > 0) {
+            print "<p>{$photo['description']}</p>";
+        }
+        ?>
         <img src="<?= $photo['web_path']; ?>" alt="<?= $photo['alt']?>">
         <?php
         $object = 'photo';
