@@ -10,11 +10,9 @@ if ($is_visitor) {
 ?>
 
 <div class="box">
-    <?php
-    if (!$is_visitor) {
-        print("<h4>Friends</h4>");
-    }
-    ?>
+    <?php if (!$is_visitor) { ?>
+    <h4>Friends</h4>
+    <?php } ?>
 
     <?php if (count($friends) == 0): ?>
     <div class="alert alert-info">
