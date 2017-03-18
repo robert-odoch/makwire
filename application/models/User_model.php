@@ -1,8 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-require_once('exceptions/IllegalAccessException.php');
-require_once('exceptions/UserNotFoundException.php');
+spl_autoload_register(function ($class) {
+    include("exceptions/{$class}.php");
+});
 
 class User_model extends CI_Model
 {

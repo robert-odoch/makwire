@@ -1,8 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-require_once('exceptions/ReplyNotFoundException.php');
-require_once('exceptions/IllegalAccessException.php');
+spl_autoload_register(function ($class) {
+    include("exceptions/{$class}.php");
+});
 
 /**
  * Contains functions related to a reply.

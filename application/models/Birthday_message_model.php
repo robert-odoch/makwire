@@ -1,8 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-require_once('exceptions/IllegalAccessException.php');
-require_once('exceptions/MessageNotFoundException.php');
+spl_autoload_register(function ($class) {
+    include("exceptions/{$class}.php");
+});
 
 /**
  * Contains functions relating to a message sent to a user on his birthday.
