@@ -8,11 +8,14 @@ require_once('common/user-page-start.php');
     <h4><?= $heading; ?></h4>
         <?php if (isset($error)) { ?>
             <div class="alert alert-danger">
+                <span class="glyphicon glyphicon-exclamation-sign"></span>
                 <?= $error; ?>
             </div>
         <?php } ?>
-        <form action="<?= base_url("upload/profile-picture"); ?>" method="post" enctype="multipart/form-data" role="form">
-            <input type="file" name="userfile" size="20">
+        <form action="<?= $form_action; ?>" method="post"
+            enctype="multipart/form-data" role="form">
+            <label for="userfile">Choose a photo:</label>
+            <input type="file" name="userfile" id="userfile">
             <input type="submit" name="submit" value="Upload" class="btn btn-sm">
         </form>
 </div>
