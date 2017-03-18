@@ -23,8 +23,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <ul>
                 <li><a href="<?= base_url("user/profile"); ?>">Edit Profile</a></li>
                 <li><a href="<?= base_url("user/friends"); ?>">Friends</a></li>
-                <li><a href="<?= base_url("user/groups"); ?>">Groups</a></li>
                 <li><a href="<?= base_url("user/photos"); ?>">Photos</a></li>
+                <li><a href="<?= base_url("user/groups"); ?>">Groups</a></li>
             </ul>
         </nav>
     </aside>
