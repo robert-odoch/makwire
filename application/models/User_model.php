@@ -157,14 +157,12 @@ class User_model extends CI_Model
      */
     public function set_profile_picture($data)
     {
-        // Store image data in the images table.
+        // Record photo data in the photos table.
         $photo_sql = sprintf("INSERT INTO user_photos " .
-                                "(user_id, original_name, image_size, image_type, " .
-                                "image_width, image_height, full_path) " .
-                                "VALUES (%d, %s, %d, %s, %d, %d, %s)",
-                                $_SESSION['user_id'], $this->db->escape($data['orig_name']),
-                                $data['file_size'], $this->db->escape($data['file_type']),
-                                $data['image_width'], $data['image_height'],
+                                "(user_id image_type, full_path) " .
+                                "VALUES (%d, %s, %s)",
+                                $_SESSION['user_id'],
+                                $this->db->escape($data['file_type']),
                                 $this->db->escape($data['full_path']));
         $this->utility_model->run_query($photo_sql);
         $photo_id = $this->db->insert_id();
@@ -1148,11 +1146,13 @@ class User_model extends CI_Model
     public function get_news_feed_posts_and_photos($offset, $limit)
     {
         $friends_ids = $this->get_friends_ids();
+
         // Add a zero element; so if network is empty the IN part of the query won't fail
         $friends_ids[] = 0;
         $friends_ids = implode(',', $friends_ids);
 
-        /* Get IDs of shared posts and photos.
+        /*
+         * Get IDs of shared posts and photos.
          * IDs are got seperately b'se an ID of a shared post can be equal to an ID of
          * a shared photo as they are in different tables.
          */
