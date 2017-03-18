@@ -161,9 +161,9 @@ class Post_model extends CI_Model
      * Allows a user to add a new post on his status.
      *
      * @param $post the contents of the post.
-     * @param $audience can be group or timeline.
-     * @param $audience_id the ID of the audience. Either group ID, or user ID
-     * if post is made on a timeline.
+     * @param $audience target audience for the post. May be group or timeline.
+     * @param $audience_id the ID of the targe audience. Same as  user ID
+     * if audience timeline.
      */
     public function post($post, $audience, $audience_id)
     {
