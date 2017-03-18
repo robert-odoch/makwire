@@ -106,8 +106,8 @@ class Upload extends CI_Controller
                 $this->image_lib->resize();
 
                 // Record it in the database.
-                $this->photo_model->publish($upload_data);
-                redirect(base_url("user/{$_SESSION['user_id']}"));
+                $photo_id = $this->photo_model->publish($upload_data);
+                redirect(base_url("photo/add-description/{$photo_id}"));
             }
         }
 
