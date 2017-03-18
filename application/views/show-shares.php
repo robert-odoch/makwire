@@ -20,16 +20,18 @@ switch ($object) {
     <h4>Shares</h4>
     <?php if (count($shares) == 0) { ?>
     <div class="alert alert-info">
-        <p><span class="glyphicon glyphicon-info-sign"></span> No shares to show.</p>
+        <p>
+            <span class="glyphicon glyphicon-info-sign"></span> No shares to show.
+        </p>
     </div>
     <?php } else {
         if (isset($has_prev)) {
-            print("<a href='" . base_url("{$object}/shares/{$$object[$object . '_id']}/{$prev_offset}") . "'>" .
-                  "View previous shares.</a>");
+            print "<a href='" . base_url("{$object}/shares/{$$object[$object . '_id']}/{$prev_offset}") . "'>" .
+                  "View previous shares.</a>";
         }
     ?>
     <div class="shares">
-        <?php foreach($shares as $share): ?>
+        <?php foreach($shares as $share) { ?>
         <div class="media">
             <div class="media-left">
                 <img class="media-object" src="<?= $share['profile_pic_path']; ?>"
@@ -46,12 +48,15 @@ switch ($object) {
                 </small>
             </div>
         </div>
-        <?php endforeach; ?>
+        <?php } ?>
     </div>
     <?php } // (count($shares) == 0) ?>
 </div><!-- box -->
+
 <?php if ($has_next) { ?>
-<div class="box more">
-    <a href="<?= base_url("{$object}/shares/{$$object[$object . '_id']}/{$next_offset}"); ?>">View more shares</a>
-</div>
+    <div class="box more">
+        <a href="<?= base_url("{$object}/shares/{$$object[$object . '_id']}/{$next_offset}"); ?>">
+            View more shares
+        </a>
+    </div>
 <?php } ?>

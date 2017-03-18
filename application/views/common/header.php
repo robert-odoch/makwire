@@ -1,5 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -27,7 +28,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <nav role="navigation" class="navbar navbar-inverse navbar-fixed-top">
                 <div class="wrapper">
                     <div class="navbar-header">
-                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                            data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                             <span class="sr-only">Toggle navigation</span>
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
@@ -38,51 +40,63 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <div id="navbar" class="navbar-collapse collapse">
                         <ul class="nav navbar-nav navbar-right">
                             <?php
-                            if (isset($_SESSION['user_id'])): ?>
+                            if (isset($_SESSION['user_id'])) { ?>
                             <li>
                                 <a href="<?= base_url('user/chat'); ?>">Chat
-                                <?php
-                                if ($num_active_friends > 0) {
-                                    print "<span class='badge'>{$num_active_friends}</span>";
-                                }
-                                ?>
+                                    <?php
+                                    if ($num_active_friends > 0) {
+                                        print "<span class='badge'>{$num_active_friends}</span>";
+                                    }
+                                    ?>
                                 </a>
                             </li>
                             <li>
                                 <a href="<?= base_url('user/messages'); ?>">
-                                <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> Messages
-                                <?php
-                                if ($num_new_messages > 0) {
-                                    print "<span class='badge'>{$num_new_messages}</span>";
-                                }
-                                ?>
+                                    <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+                                    Messages
+                                    <?php
+                                    if ($num_new_messages > 0) {
+                                        print "<span class='badge'>{$num_new_messages}</span>";
+                                    }
+                                    ?>
                                 </a>
                             </li>
                             <li>
                                 <a href="<?= base_url('user/notifications'); ?>">
-                                <span class="glyphicon glyphicon-bell" aria-hidden="true"></span> Notifications
-                                <?php
-                                if ($num_new_notifs > 0) {
-                                    print " <span class='badge'>{$num_new_notifs}</span>";
-                                }
-                                ?>
+                                    <span class="glyphicon glyphicon-bell" aria-hidden="true"></span>
+                                    Notifications
+                                    <?php
+                                    if ($num_new_notifs > 0) {
+                                        print " <span class='badge'>{$num_new_notifs}</span>";
+                                    }
+                                    ?>
                                 </a>
                             </li>
                             <li>
-                                <a href="<?= base_url('user/friend-requests'); ?>"><span class="glyphicon glyphicon-user"></span> Friends
-                                <?php
-                                if ($num_friend_requests > 0) {
-                                    print " <span class='badge'>{$num_friend_requests}</span>";
-                                }
-                                ?>
+                                <a href="<?= base_url('user/friend-requests'); ?>">
+                                    <span class="glyphicon glyphicon-user"></span> Friends
+                                    <?php
+                                    if ($num_friend_requests > 0) {
+                                        print " <span class='badge'>{$num_friend_requests}</span>";
+                                    }
+                                    ?>
                                 </a>
                             </li>
-                            <li><a href="<?= base_url('logout'); ?>"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
-                            <?php else: ?>
-                            <li><a href="<?= base_url('login'); ?>"><span class="glyphicon glyphicon-log-in"></span> Log In</a></li>
-                            <?php endif; ?>
+                            <li>
+                                <a href="<?= base_url('logout'); ?>">
+                                    <span class="glyphicon glyphicon-log-out"></span> Log out
+                                </a>
+                            </li>
+                            <?php } else { ?>
+                            <li>
+                                <a href="<?= base_url('login'); ?>">
+                                    <span class="glyphicon glyphicon-log-in"></span>
+                                    Log In
+                                </a>
+                            </li>
+                            <?php } ?>
                         </ul>
                     </div>
                 </div>
             </nav>
-        </header><?php echo "\n"; ?>
+        </header><?= "\n"; ?>

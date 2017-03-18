@@ -6,11 +6,13 @@ require_once('common/user-page-start.php');
 
 <div class="box">
     <h4>Notifications</h4>
-    <?php if (count($notifications) == 0): ?>
+    <?php if (count($notifications) == 0) { ?>
     <div class="alert alert-info">
-        <p><span class="glyphicon glyphicon-info-sign"></span> No notifications to show.</p>
+        <p>
+            <span class="glyphicon glyphicon-info-sign"></span> No notifications to show.
+        </p>
     </div>
-    <?php else:
+    <?php } else {
         if (isset($has_prev)) { ?>
             <i><a href="<?= base_url("user/notifications/{$prev_offset}"); ?>">
                 View previous notifications.
@@ -185,20 +187,22 @@ require_once('common/user-page-start.php');
             }
             ?>
         </ul>
-    <?php endif; ?>
+    <?php } ?>
 </div><!-- box -->
-<?php
-if ($has_next) {
-    print '<div class="box more">' .
-            '<a href="' . base_url("user/notifications/{$next_offset}/") . '">View ';
-    if (isset($older)) {
-        // Showing new notifications, but we also have to give a link to older notifications.
-        print 'older ';
-    }
-    else {
-        print 'more ';
-    }
-    print 'notifications</a>' .
-            '</div>';
-}
-?>
+
+<?php if ($has_next) { ?>
+    <div class="box more">
+        <a href="<?= base_url("user/notifications/{$next_offset}/"); ?>">
+            View
+            <?php
+            if (isset($older)) {
+                // Showing new notifications, but we also have to give a link to older notifications.
+                print ' older ';
+            }
+            else {
+                print ' more ';
+            }
+            ?>
+            notifications</a>
+    </div>
+<?php } ?>

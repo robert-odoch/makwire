@@ -1,5 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+
 ?>
 
 <fieldset>
@@ -11,11 +12,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <optgroup>
                     <?php
                     for ($i=1; $i < 32; $i++) {
-                        print("<option value='{$i}'");
+                        print "<option value='{$i}'";
                         if (isset($start_day) && ($start_day == $i)) {
-                            print(" selected");
+                            print " selected";
                         }
-                        print(">{$i}</option>");
+                        print ">{$i}</option>";
                     }
                     ?>
                 </optgroup>
@@ -31,11 +32,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 7=>'Jul',8=>'Aug',9=>'Sep',
                                 10=>'Oct',11=>'Nov',12=>'Dec');
                 foreach ($months as $k => $v) {
-                    print("<option value='{$k}'");
+                    print "<option value='{$k}'";
                     if (isset($start_month) && ($start_month == $k)) {
-                        print(" selected");
+                        print " selected";
                     }
-                    print(">{$v}</option>");
+                    print ">{$v}</option>";
                 }
                 ?>
                 </optgroup>
@@ -49,11 +50,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 $starting_year = date('Y');
                 for ($i = 0; $i != 20; ++$i) {
                     $year = $starting_year - $i;
-                    print("<option value='{$year}'");
+                    print "<option value='{$year}'";
                     if (isset($start_year) && ($start_year == $year)) {
-                        print(" selected");
+                        print " selected";
                     }
-                    print(">{$year}</option>");
+                    print ">{$year}</option>";
                 }
                 ?>
                 </optgroup>
@@ -69,11 +70,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <optgroup>
                     <?php
                     for ($i=1; $i < 32; $i++) {
-                        print("<option value='{$i}'");
+                        print "<option value='{$i}'";
                         if (isset($end_day) && ($end_day == $i)) {
-                            print(" selected");
+                            print " selected";
                         }
-                        print(">{$i}</option>");
+                        print ">{$i}</option>";
                     }
                     ?>
                 </optgroup>
@@ -85,11 +86,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <optgroup>
                 <?php
                 foreach ($months as $k => $v) {
-                    print("<option value='{$k}'");
+                    print "<option value='{$k}'";
                     if (isset($end_month) && ($end_month == $k)) {
-                        print(" selected");
+                        print " selected";
                     }
-                    print(">{$v}</option>");
+                    print ">{$v}</option>";
                 }
                 ?>
                 </optgroup>
@@ -103,11 +104,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 $starting_year = date('Y') + 6;
                 for ($i = 0; $i != 24; ++$i) {
                     $year = $starting_year - $i;
-                    print("<option value='{$year}'");
+                    print "<option value='{$year}'";
                     if (isset($end_year) && ($end_year == $year)) {
-                        print(" selected");
+                        print " selected";
                     }
-                    print(">{$year}</option>");
+                    print ">{$year}</option>";
                 }
                 ?>
                 </optgroup>

@@ -7,11 +7,12 @@ require_once('common/user-page-start.php');
 <div class="box">
     <h4><?= $heading; ?></h4>
     <?php if (isset($error_message)) { ?>
-    <div class="alert alert-danger">
-        <p>
-            <span class"glyphicon glyphicon-exclamation-sign"></span> <?= $error_message; ?>
-        </p>
-    </div>
+        <div class="alert alert-danger">
+            <p>
+                <span class"glyphicon glyphicon-exclamation-sign"></span>
+                <?= $error_message; ?>
+            </p>
+        </div>
     <?php } ?>
 
     <form action="<?= $form_action ?>" method="post" accept-charset="utf-8" role="form">
@@ -19,19 +20,19 @@ require_once('common/user-page-start.php');
             <div class="form-group">
                 <label for="college">College</label>
                 <?php if (isset($colleges)) { ?>
-                <select name="college" id="college" class="form-control">
-                    <optgroup>
-                    <?php
-                    foreach ($colleges as $c) {
-                        print "<option value='{$c['college_id']}'";
-                        if (isset($college_id) && ($college_id == $c['college_id'])) {
-                            print ' selected';
+                    <select name="college" id="college" class="form-control">
+                        <optgroup>
+                        <?php
+                        foreach ($colleges as $c) {
+                            print "<option value='{$c['college_id']}'";
+                            if (isset($college_id) && ($college_id == $c['college_id'])) {
+                                print ' selected';
+                            }
+                            print ">{$c['college_name']}</option>";
                         }
-                        print ">{$c['college_name']}</option>";
-                    }
-                    ?>
-                    </optgroup>
-                </select>
+                        ?>
+                        </optgroup>
+                    </select>
                 <?php
                 } else {  // Editing a college.
                     print "<p>{$user_college['college_name']}</p>";
@@ -42,19 +43,19 @@ require_once('common/user-page-start.php');
             <div class="form-group">
                 <label for="school">School</label>
                 <?php if (isset($schools)) { ?>
-                <select name="school" id="school" class="form-control">
-                    <optgroup>
-                    <?php
-                    foreach ($schools as $s) {
-                        print "<option value='{$s['school_id']}'";
-                        if (isset($school_id) && ($school_id == $s['school_id'])) {
-                            print ' selected';
+                    <select name="school" id="school" class="form-control">
+                        <optgroup>
+                        <?php
+                        foreach ($schools as $s) {
+                            print "<option value='{$s['school_id']}'";
+                            if (isset($school_id) && ($school_id == $s['school_id'])) {
+                                print ' selected';
+                            }
+                            print ">{$s['school_name']}</option>";
                         }
-                        print ">{$s['school_name']}</option>";
-                    }
-                    ?>
-                    </optgroup>
-                </select>
+                        ?>
+                        </optgroup>
+                    </select>
                 <?php
                 } else {  // Editing a college.
                     print "<p>{$user_college['school']['school_name']}</p>";

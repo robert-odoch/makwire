@@ -22,7 +22,8 @@ require_once('common/user-page-start.php');
             <p>Please fill and submit this form.</p>
         <?php } ?>
 
-        <form action="<?= base_url("request-admin/add-district"); ?>" method="post" accept-charset="utf-8" role="form">
+        <form action="<?= base_url("request-admin/add-district"); ?>" method="post"
+            accept-charset="utf-8" role="form">
             <fieldset>
                 <div class="form-group">
                     <label for="district">District</label>

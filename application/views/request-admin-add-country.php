@@ -24,7 +24,8 @@ require_once('common/user-page-start.php');
             </p>
         <?php } ?>
 
-        <form action="<?= base_url("request-admin/add-country"); ?>" method="post" accept-charset="utf-8" role="form">
+        <form action="<?= base_url("request-admin/add-country"); ?>" method="post"
+            accept-charset="utf-8" role="form">
             <fieldset>
                 <div class="form-group">
                     <label for="country">Country</label>

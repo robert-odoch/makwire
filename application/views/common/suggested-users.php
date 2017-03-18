@@ -1,8 +1,10 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-if (count($people_you_may_know) > 0) {
 ?>
+
+
+<?php if (count($people_you_may_know) > 0) { ?>
     <h4>People you may know</h4>
     <div class="suggested-users">
         <?php foreach ($people_you_may_know as $p) { ?>
@@ -13,7 +15,9 @@ if (count($people_you_may_know) > 0) {
                 </div>
                 <div class="media-body">
                     <h4 class="media-heading">
-                        <a href="<?= base_url("user/profile/{$p['user_id']}"); ?>"><?= $p['profile_name']; ?></a>
+                        <a href="<?= base_url("user/profile/{$p['user_id']}"); ?>">
+                            <?= $p['profile_name']; ?>
+                        </a>
                     </h4>
                     <a href="<?= base_url("user/add-friend/{$p['user_id']}"); ?>"
                         class="btn btn-xs">Add friend</a>
@@ -21,6 +25,4 @@ if (count($people_you_may_know) > 0) {
             </div>
         <?php } ?>
     </div>
-<?php
-}
-?>
+<?php } ?>

@@ -14,13 +14,19 @@ require_once('common/user-page-start.php');
         <?php if (count($districts) > 0) { ?>
             <p>Districts that matched</p>
             <ul>
-                <?php foreach($districts as $district): ?>
-                    <li><a href="<?= base_url("user/add-district/{$district['district_id']}"); ?>"><?= $district['district_name']; ?></a></li>
-                <?php endforeach; ?>
+                <?php foreach($districts as $district) { ?>
+                    <li>
+                        <a href="<?= base_url("user/add-district/{$district['district_id']}"); ?>">
+                            <?= $district['district_name']; ?>
+                        </a>
+                    </li>
+                <?php } ?>
             </ul>
         <?php } else { ?>
             <p>
-                It seems the district you entered <?= "<em><b>{$district}</b></em>"; ?> is not in our records. However, you can <a href="<?= base_url("request-admin/add-district"); ?>">request the
+                It seems the district you entered <?= "<em><b>{$district}</b></em>"; ?>
+                is not in our records. However, you can
+                <a href="<?= base_url("request-admin/add-district"); ?>">request the
                 administrator to add it to the records</a>.
             </p>
         <?php } // count($districts) > 0). ?>
@@ -31,7 +37,8 @@ require_once('common/user-page-start.php');
         </div>
         <?php } ?>
 
-        <form action="<?= base_url("user/add-district"); ?>" method="post" accept-charset="utf-8" role="form">
+        <form action="<?= base_url("user/add-district"); ?>" method="post"
+            accept-charset="utf-8" role="form">
             <fieldset>
                 <div class="form-group">
                     <label for="district">District</label>

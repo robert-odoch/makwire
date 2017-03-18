@@ -17,31 +17,39 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </a>
                 </strong>
             </h4>
-            <p class="comment"><?= htmlspecialchars($$object['comment']); ?></p>
 
+            <p class="comment"><?= htmlspecialchars($$object['comment']); ?></p>
             <?php
             if ($$object['num_likes'] > 0) {
-                print "<a href='" . base_url("{$object}/likes/{$$object['comment_id']}") . "'>{$$object['num_likes']}";
+                print "<a href='" . base_url("{$object}/likes/{$$object['comment_id']}") .
+                        "'>{$$object['num_likes']}";
                 print ($$object['num_likes'] == 1) ? " like" : " likes";
                 print "</a>";
             }
+
             if ($object == 'comment') {
                 if ($comment['num_replies'] > 0) {
                     if ($$object['num_likes'] > 0) {
                         print "<span> &middot; </span>";
                     }
 
-                    print "<a href='". base_url("comment/replies/{$comment['comment_id']}") . "'>{$comment['num_replies']}";
+                    print "<a href='". base_url("comment/replies/{$comment['comment_id']}") .
+                            "'>{$comment['num_replies']}";
                     print ($comment['num_replies'] == 1) ? " reply" : " replies";
                     print "</a>";
                 }
             }
             ?>
-            <small class="time"><span class="glyphicon glyphicon-time"></span> <?= $$object['timespan']; ?> ago</small>
+            <small class="time">
+                <span class="glyphicon glyphicon-time"></span>
+                <?= $$object['timespan']; ?> ago
+            </small>
         </div>
     </div>
+
     <?php if ($object == 'comment') { ?>
-        <form action="<?= base_url("comment/reply/{$comment['comment_id']}"); ?>" method="post" accept-charset="utf-8" role="form">
+        <form action="<?= base_url("comment/reply/{$comment['comment_id']}"); ?>"
+            method="post" accept-charset="utf-8" role="form">
             <input type="text" name="reply" placeholder="Write a reply..." class="fluid
             <?php
             if (isset($reply_error)) {

@@ -28,16 +28,16 @@ switch ($object) {
     </div>
     <?php } else {
         if (isset($has_prev)) {
-            print("<a href='" . base_url("$object/likes/{$$object[$object . '_id']}/{$prev_offset}") . "'>" .
-                  "View previous likes.</a>");
+            print "<a href='" . base_url("$object/likes/{$$object[$object . '_id']}/{$prev_offset}") .
+                    "'>View previous likes.</a>";
         }
     ?>
     <div class="likes">
-        <?php foreach($likes as $like): ?>
+        <?php foreach($likes as $like) { ?>
         <div class="media">
             <div class="media-left">
                 <img class="media-object" src="<?= $like['profile_pic_path']; ?>"
-                alt="<?= $like['liker']; ?>">
+                    alt="<?= $like['liker']; ?>">
             </div>
             <div class="media-body">
                 <h4 class="media-heading">
@@ -50,12 +50,15 @@ switch ($object) {
                 </small>
             </div>
         </div>
-        <?php endforeach; ?>
+        <?php } ?>
     </div>
     <?php } ?>
 </div><!-- box -->
+
 <?php if ($has_next) { ?>
-<div class="box more">
-    <a href="<?= base_url("{$object}/likes/{$$object[$object . '_id']}/{$next_offset}"); ?>">View more likes</a>
-</div>
+    <div class="box more">
+        <a href="<?= base_url("{$object}/likes/{$$object[$object . '_id']}/{$next_offset}"); ?>">
+            View more likes
+        </a>
+    </div>
 <?php } ?>

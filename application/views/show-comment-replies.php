@@ -13,14 +13,12 @@ require_once("common/comment-or-reply.php");
     </div>
     <?php } else {
         if (isset($has_prev)) {
-            print("<a href='" . base_url("comment/replies/{$comment['comment_id']}/{$prev_offset}") . "'>" .
-                  "View previous replies.</a>");
+            print "<a href='" . base_url("comment/replies/{$comment['comment_id']}/{$prev_offset}") . "'>" .
+                    "View previous replies.</a>";
         }
     ?>
     <div class="replies">
-        <?php
-        foreach($replies as $reply):
-        ?>
+        <?php foreach($replies as $reply) { ?>
         <div class="media">
             <div class="media-left">
                 <img class="media-object" src="<?= $reply['profile_pic_path']; ?>"
@@ -28,8 +26,11 @@ require_once("common/comment-or-reply.php");
             </div>
             <div class="media-body">
                 <h4 class="media-heading">
-                    <a href="<?= base_url("user/{$reply['commenter_id']}"); ?>"><strong><?= $reply['commenter']; ?></strong></a>
+                    <a href="<?= base_url("user/{$reply['commenter_id']}"); ?>">
+                        <strong><?= $reply['commenter']; ?></strong>
+                    </a>
                 </h4>
+
                 <p class="reply"><?= htmlspecialchars($reply['comment']); ?></p>
                 <?php
                 if ($reply['viewer_is_friend_to_owner'] && !$reply['liked']) {
@@ -45,15 +46,20 @@ require_once("common/comment-or-reply.php");
                     print "</a>";
                 }
                 ?>
-                <small class="time"><span class="glyphicon glyphicon-time"></span> <?= $reply['timespan']; ?> ago</small>
+                <small class="time">
+                    <span class="glyphicon glyphicon-time"></span> <?= $reply['timespan']; ?> ago
+                </small>
             </div>
         </div>
-        <?php endforeach; ?>
+        <?php } ?>
     </div>
     <?php } // (count($replies) == 0) ?>
 </div><!-- box -->
+
 <?php if ($has_next) { ?>
-<div class="box more">
-    <a href="<?= base_url("comment/replies/{$comment['comment_id']}/{$next_offset}"); ?>">View more replies</a>
-</div>
+    <div class="box more">
+        <a href="<?= base_url("comment/replies/{$comment['comment_id']}/{$next_offset}"); ?>">
+            View more replies
+        </a>
+    </div>
 <?php } ?>

@@ -24,17 +24,19 @@ require_once('common/user-page-start.php');
                 ?>
             </div>
         </fieldset>
+
         <input type="submit" value="Send" class="btn btn-sm">
     </form>
+    
     <?php
     if (count($messages) > 0) {
         if (isset($has_prev)) {
             print '<a href="' . base_url("user/send-message/{$suid}/{$prev_offset}") . '">' .
-                'View previous messages</a>';
+                    'View previous messages</a>';
         }
     ?>
         <div class="messages">
-            <?php foreach ($messages as $m): ?>
+            <?php foreach ($messages as $m) { ?>
             <article class="media message">
                 <div class="media-body">
                     <header>
@@ -52,14 +54,15 @@ require_once('common/user-page-start.php');
                     </footer>
                 </div>
             </article>
-            <?php endforeach; ?>
+            <?php } ?>
         </div>
     <?php }  // (count($messages) > 0) ?>
 </div><!-- box -->
-<?php
-if ($has_next) {
-    print '<div class="box previous">' .
-        '<a href="' . base_url("user/send-message/{$suid}/{$next_offset}") . '">View more messages</a>' .
-        '</div>';
-}
-?>
+
+<?php if ($has_next) { ?>
+    <div class="box previous">
+        <a href="<?= base_url("user/send-message/{$suid}/{$next_offset}"); ?>">
+            View more messages
+        </a>
+    </div>
+<?php } ?>

@@ -66,41 +66,42 @@ require_once('common/user-page-start.php');
 </div>
 
 <?php if (count($birthday_messages) > 0) { ?>
-<div class="box birthday-messages">
-    <h4>Birthday Messages</h4>
-    <?php foreach ($birthday_messages as $msg) { ?>
-        <div class="media">
-            <div class="media-left">
-                <img src="<?= $msg['profile_pic_path']; ?>" alt="<?= $msg['sender']; ?>"
-                    class="media-object">
+    <div class="box birthday-messages">
+        <h4>Birthday Messages</h4>
+        <?php foreach ($birthday_messages as $msg) { ?>
+            <div class="media">
+                <div class="media-left">
+                    <img src="<?= $msg['profile_pic_path']; ?>" alt="<?= $msg['sender']; ?>"
+                        class="media-object">
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading">
+                        <a href="<?= base_url("user/{$msg['sender_id']}"); ?>">
+                            <strong><?= $msg['sender']; ?></strong>
+                        </a>
+                    </h4>
+                    <p class="message"><?= $msg['message']; ?></p>
+                    <?php
+                    if ($msg['user_id'] == $_SESSION['user_id'] &&
+                        !$msg['liked']) {
+                        print "<a href='" . base_url("birthday-message/like/{$msg['id']}") .
+                                "'>Like</a>";
+                    }
+                    ?>
+                    <small class="time">
+                        <span class="glyphicon glyphicon-time"></span> <?= $msg['timespan']; ?> ago
+                    </small>
+                </div>
             </div>
-            <div class="media-body">
-                <h4 class="media-heading">
-                    <a href="<?= base_url("user/{$msg['sender_id']}"); ?>">
-                        <strong><?= $msg['sender']; ?></strong>
-                    </a>
-                </h4>
-                <p class="message"><?= $msg['message']; ?></p>
-                <?php
-                if ($msg['user_id'] == $_SESSION['user_id'] &&
-                    !$msg['liked']) {
-                    print "<a href='" . base_url("birthday-message/like/{$msg['id']}") .
-                            "'>Like</a>";
-                }
-                ?>
-                <small class="time">
-                    <span class="glyphicon glyphicon-time"></span> <?= $msg['timespan']; ?> ago
-                </small>
-            </div>
-        </div>
-    <?php } ?>
-</div>
+        <?php } ?>
+    </div>
+<?php }  // (count($birthday_messages) > 0) ?>
+
 
 <?php if ($has_next) { ?>
-<div class="box more">
-    <a href="<?= base_url("user/birthday/{$user_id}/{$age}/{$next_offset}"); ?>">
-        View more messages.
-    </a>
-</div>
+    <div class="box more">
+        <a href="<?= base_url("user/birthday/{$user_id}/{$age}/{$next_offset}"); ?>">
+            View more messages.
+        </a>
+    </div>
 <?php } ?>
-<?php }  // (count($birthday_messages) > 0) ?>

@@ -55,7 +55,9 @@ if (!$is_visitor) {
     if (empty($posts_and_photos) && $is_visitor) { ?>
         <div class="box">
             <div class="alert alert-info">
-                <p><span class="glyphicon glyphicon-info-sign"></span> No previous posts.</p>
+                <p>
+                    <span class="glyphicon glyphicon-info-sign"></span> No previous posts.
+                </p>
             </div>
         </div>
     <?php
@@ -72,10 +74,12 @@ if (!$is_visitor) {
         if ($has_next) {
             print '<div class="box more">';
             if ($page == 'news-feed') {
-                print '<a href="' . base_url("user/news-feed/{$next_offset}") . '">View more stories</a>';
+                print '<a href="' . base_url("user/news-feed/{$next_offset}") .
+                        '">View more stories</a>';
             }
             else if ($page == 'index') {
-                print '<a href="' . base_url("user/{$user_id}/{$next_offset}") . '">View more posts</a>';
+                print '<a href="' . base_url("user/{$user_id}/{$next_offset}") .
+                        '">View more posts</a>';
             }
             print '</div>';
         }

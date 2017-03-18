@@ -6,18 +6,20 @@ require_once('common/user-page-start.php');
 
 <div class="box">
     <h4>Messages</h4>
-    <?php if (count($messages) == 0): ?>
+    <?php if (count($messages) == 0) { ?>
     <div class="alert alert-info">
-        <p><span class="glyphicon glyphicon-info-sign"></span> No messages to show.</p>
+        <p>
+            <span class="glyphicon glyphicon-info-sign"></span> No messages to show.
+        </p>
     </div>
-    <?php else:
+    <?php } else {
         if (isset($has_prev)) { ?>
             <a href="<?= base_url("user/messages/{$prev_offset}"); ?>">
                 View previous messages.
             </a>
         <?php } ?>
     <div class="messages">
-        <?php foreach ($messages as $m): ?>
+        <?php foreach ($messages as $m) { ?>
         <article class="media message">
             <div class="media-body">
                 <header>
@@ -30,26 +32,33 @@ require_once('common/user-page-start.php');
                 </header>
                 <p><?= htmlspecialchars($m['message']); ?></p>
                 <footer>
-                    <a href="<?= base_url("user/send-message/{$m['sender_id']}"); ?>" title="Reply">Reply</a>
-                    <small class="time"><span class="glyphicon glyphicon-time"></span> <?= $m['timespan']; ?> ago</small>
+                    <a href="<?= base_url("user/send-message/{$m['sender_id']}"); ?>"
+                        title="Reply">Reply</a>
+                    <small class="time">
+                        <span class="glyphicon glyphicon-time"></span>
+                        <?= $m['timespan']; ?> ago
+                    </small>
                 </footer>
             </div>
         </article>
-        <?php endforeach; ?>
+        <?php } ?>
     </div>
-    <?php endif; ?>
+    <?php } ?>
 </div><!-- box -->
-<?php
-if ($has_next) {
-    print '<div class="box more previous">' .
-            '<a href="' . base_url("user/messages/{$next_offset}") . '">View ';
-    if (isset($older)) {
-        print 'older ';
-    }
-    else {
-        print 'more ';
-    }
-    print 'messages</a> ' .
-            '</div>';
-}
-?>
+
+<?php if ($has_next) { ?>
+    <div class="box more previous">
+        <a href="<?= base_url("user/messages/{$next_offset}"); ?>">
+            View
+            <?php
+            if (isset($older)) {
+                print ' older ';
+            }
+            else {
+                print 'more ';
+            }
+            ?>
+            messages
+        </a>
+    </div>
+<?php } ?>

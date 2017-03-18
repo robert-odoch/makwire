@@ -1,5 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+
 ?>
 
 <div class="wrapper">
@@ -9,17 +10,33 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <ul>
                     <li>
                         <a href="<?= base_url('user/chat/'); ?>">Chat
-                        <?php if($num_active_friends > 0) print " ({$num_active_friends})"; ?>
+                            <?php
+                            if($num_active_friends > 0) {
+                                print " ({$num_active_friends})";
+                            }
+                            ?>
                         </a>
-                    </li><span> &middot; </span>
+                    </li>
+                    <span> &middot; </span>
+
                     <li>
                         <a href="<?= base_url('user/messages/'); ?>">Messages
-                        <?php if ($num_new_messages > 0) print " ({$num_new_messages})"; ?>
+                            <?php
+                            if ($num_new_messages > 0) {
+                                print " ({$num_new_messages})";
+                            }
+                            ?>
                         </a>
-                    </li><span> &middot; </span>
+                    </li>
+                    <span> &middot; </span>
+
                     <li>
                         <a href="<?= base_url('user/notifications/'); ?>">Notifications
-                        <?php if ($num_new_notifs > 0) print " ({$num_new_notifs})"; ?>
+                            <?php
+                            if ($num_new_notifs > 0) {
+                                print " ({$num_new_notifs})";
+                            }
+                            ?>
                         </a>
                     </li>
                 </ul>

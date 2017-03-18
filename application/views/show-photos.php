@@ -8,11 +8,12 @@ if ($is_visitor) {
     require_once("common/secondary-user-nav.php");
 }
 ?>
+
 <div class="box">
     <?php if (!$is_visitor) { ?>
-    <h4>Photos</h4>
+        <h4>Photos</h4>
     <?php } ?>
-    
+
     <?php if (count($photos) == 0) { ?>
         <div class="alert alert-info">
             <span class="glyphicon glyphicon-info-sign"></span> No photos to show.
@@ -33,6 +34,7 @@ if ($is_visitor) {
     </div>
     <?php } ?>
 </div><!-- box -->
+
 <?php if ($has_next) { ?>
     <div class="box more">
         <a href="<?= base_url("user/photos/{$user_id}/{$next_offset}"); ?>">View more photos</a>
