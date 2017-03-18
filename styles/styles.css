@@ -477,6 +477,9 @@ article header a:hover {
 article p {
     margin-bottom: 3px;
 }
+article.photo p {
+    margin-bottom: 0;
+}
 
 article p a.more {
     display: inline-block;
