@@ -33,7 +33,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     "updated {$photo['user_gender']} profile picture.";
                         } else {
                             print "<a href='" . base_url("user/{$photo['user_id']}") .
-                                    "'>{$photo['author']}</a>";
+                                    "'>{$photo['author']}</a> " .
+                                    "added a new photo";
                         }
                     }
                     ?>
