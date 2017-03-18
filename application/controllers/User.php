@@ -103,10 +103,16 @@ class User extends CI_Controller
 
         $data['is_visitor'] = ($user_id == $_SESSION['user_id']) ? FALSE : TRUE;;
         if ($data['is_visitor']) {
+            try {
+                $data['secondary_user'] = $this->user_model->get_profile_name($user_id);
+            }
+            catch (UserNotFoundException $e) {
+                show_404();
+            }
+
+            $data['suid'] = $user_id;
             $data['su_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
             $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
-            $data['secondary_user'] = $this->user_model->get_profile_name($user_id);
-            $data['suid'] = $user_id;
             $data['title'] = format_name($data['secondary_user']) . ' posts';
         }
 
@@ -116,6 +122,7 @@ class User extends CI_Controller
             $data['post_error'] = $_SESSION['post_error'];
             unset($_SESSION['post_error']);
         }
+
 
         $limit = 10;  // Maximum number of posts to show.
         $data['has_next'] = FALSE;
@@ -134,8 +141,11 @@ class User extends CI_Controller
 
     public function birthday($user_id, $age, $offset=0)
     {
-        if (!$this->user_model->are_friends($user_id) ||
-            !$this->user_model->can_view_birthday($user_id, $age)) {
+        if (!$this->user_model->can_view_birthday($user_id, $age)) {
+            show_404();
+        }
+
+        if (!$this->user_model->are_friends($user_id)) {
             $this->utility_model->show_permission_denied("You don't have the proper permissions.");
             return;
         }
@@ -143,7 +153,6 @@ class User extends CI_Controller
         $data = $this->user_model->initialize_user();
         $data['user'] = $this->user_model->get_profile_name($user_id);
         $data['title'] = format_name($data['user']) . ' birthday';
-
         $data['is_visitor'] = ($user_id == $_SESSION['user_id']) ? FALSE : TRUE;
 
         $this->load->view("common/header", $data);
@@ -215,14 +224,20 @@ class User extends CI_Controller
 
     public function send_message($user_id, $offset=0)
     {
+        $data = $this->user_model->initialize_user();
+        try {
+            $data['secondary_user'] = $this->user_model->get_profile_name($user_id);
+        }
+        catch (UserNotFoundException $e) {
+            show_404();
+        }
+
         if (!$this->user_model->are_friends($user_id)) {
             $this->utility_model->show_permission_denied("You don't have the proper permissions " .
                                                             "to send a message to this user.");
             return;
         }
 
-        $data = $this->user_model->initialize_user();
-        $data['secondary_user'] = $this->user_model->get_profile_name($user_id);
         $data['suid'] = $user_id;
         $data['title'] = "Send a message to {$data['secondary_user']}";
         $this->load->view('common/header', $data);
@@ -277,11 +292,11 @@ class User extends CI_Controller
 
     public function post($post_id, $offset=0)
     {
-        $post = $this->post_model->get_post($post_id);
-        if (!$post) {
-            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
-                                                            "to view this post.");
-            return;
+        try {
+            $post = $this->post_model->get_post($post_id);
+        }
+        catch (PostNotFoundException $e) {
+            show_404();
         }
 
         $data = $this->user_model->initialize_user();
@@ -358,11 +373,11 @@ class User extends CI_Controller
 
     public function photo($photo_id, $offset=0)
     {
-        $photo = $this->photo_model->get_photo($photo_id);
-        if (!$photo) {
-            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
-                                                            "to view this photo.");
-            return;
+        try {
+            $photo = $this->photo_model->get_photo($photo_id);
+        }
+        catch (PhotoNotFoundException $e) {
+            show_404();
         }
 
         $data = $this->user_model->initialize_user();
@@ -426,25 +441,25 @@ class User extends CI_Controller
 
     public function add_friend($user_id)
     {
-        $friend_request_sent = $this->user_model->send_friend_request($user_id);
-        if (!$friend_request_sent) {
+        try {
+            $this->user_model->send_friend_request($user_id);
+            $this->utility_model->show_success("Friend request sent.");
+        }
+        catch (IllegalAccessException $e) {
             $this->utility_model->show_permission_denied("Either the two of you are already friends, " .
                                                             "or there exists a pending freind request.");
-            return;
         }
-
-        $this->utility_model->show_success("Friend request sent.");
     }
 
     public function accept_friend($user_id)
     {
-        $confirmed = $this->user_model->confirm_friend_request($user_id);
-        if (!$confirmed) {
-            $this->utility_model->show_permission_denied("This user didn't send you a friend request.");
-            return;
+        try {
+            $this->user_model->confirm_friend_request($user_id);
+            redirect(base_url("user/{$user_id}"));
         }
-
-        redirect(base_url("user/{$user_id}"));
+        catch (IllegalAccessException $e) {
+            $this->utility_model->show_permission_denied("This user didn't send you a friend request.");
+        }
     }
 
     public function messages($offset=0)
@@ -509,10 +524,16 @@ class User extends CI_Controller
 
         $data['is_visitor'] = ($user_id == $_SESSION['user_id']) ? FALSE : TRUE;
         if ($data['is_visitor']) {
+            try {
+                $data['secondary_user'] = $this->user_model->get_profile_name($user_id);
+            }
+            catch (UserNotFoundException $e) {
+                show_404();
+            }
+
             $data['are_friends'] = TRUE;
             $data['su_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
             $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
-            $data['secondary_user'] = $this->user_model->get_profile_name($user_id);
             $data['suid'] = $user_id;
             $data['title'] = format_name($data['secondary_user']) . ' friends';
         }
@@ -543,10 +564,16 @@ class User extends CI_Controller
 
         $data['is_visitor'] = ($user_id == $_SESSION['user_id']) ? FALSE : TRUE;
         if ($data['is_visitor']) {
+            try {
+                $data['secondary_user'] = $this->user_model->get_profile_name($user_id);
+            }
+            catch (UserNotFoundException $e) {
+                show_404();
+            }
+
             $data['are_friends'] = $this->user_model->are_friends($user_id);
             $data['su_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
             $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
-            $data['secondary_user'] = $this->user_model->get_profile_name($user_id);
             $data['suid'] = $user_id;
             $data['title'] = "About {$data['secondary_user']}";
         }
@@ -678,10 +705,11 @@ class User extends CI_Controller
             }
         }
 
-        $user_college = $this->profile_model->get_user_college($user_college_id);
-        if (!$user_college) {
-            $this->utility_model->show_permission_denied("You don't have the proper permissions to edit this college.");
-            return;
+        try {
+            $user_college = $this->profile_model->get_user_college($user_college_id);
+        }
+        catch (CollegeNotFoundException $e) {
+            show_404();
         }
 
         $data['user_college'] = $user_college;
@@ -719,10 +747,11 @@ class User extends CI_Controller
         $data['title'] = "Add your programme";
         $this->load->view('common/header', $data);
 
-        $user_college = $this->profile_model->get_user_college($user_college_id);
-        if (!$user_college) {
-            $this->utility_model->show_permission_denied("You don't have the proper permissions.");
-            return;
+        try {
+            $user_college = $this->profile_model->get_user_college($user_college_id);
+        }
+        catch (CollegeNotFoundException $e) {
+            show_404();
         }
 
         $data['user_college'] = $user_college;
@@ -749,10 +778,11 @@ class User extends CI_Controller
             return;
         }
 
-        $user_programme = $this->profile_model->get_user_programme($user_programme_id);
-        if (!$user_programme) {
-            $this->utility_model->show_permission_denied("You don't have the proper permissions.");
-            return;
+        try {
+            $user_programme = $this->profile_model->get_user_programme($user_programme_id);
+        }
+        catch (ProgrammeNotFoundException $e) {
+            show_404();
         }
 
         $data['user_programme'] = $user_programme;
@@ -860,10 +890,11 @@ class User extends CI_Controller
             }
         }
 
-        $user_hall = $this->profile_model->get_user_hall($user_hall_id);
-        if (!$user_hall) {
-            $this->utility_model->show_permission_denied("You don't have the proper permissions.");
-            return;
+        try {
+            $user_hall = $this->profile_model->get_user_hall($user_hall_id);
+        }
+        catch (HallNotFoundException $e) {
+            show_404();
         }
 
         $data['user_hall'] = $user_hall;
@@ -982,10 +1013,11 @@ class User extends CI_Controller
             }
         }
 
-        $user_hostel = $this->profile_model->get_user_hostel($user_hostel_id);
-        if (!$user_hostel) {
-            $this->utility_model->show_permission_denied("You don't have the proper permissions.");
-            return;
+        try {
+            $user_hostel = $this->profile_model->get_user_hostel($user_hostel_id);
+        }
+        catch (HostelNotFoundException $e) {
+            show_404();
         }
 
         $data['user_hostel'] = $user_hostel;
