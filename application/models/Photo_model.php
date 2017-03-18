@@ -80,6 +80,22 @@ class Photo_model extends CI_Model
     }
 
     /**
+     * Adds a brief description about a photo.
+     *
+     * Assumes that the photo alreay exists in the user_photos table.
+     *
+     * @param $description the description entered by the user.
+     * @param $photo_id the id of the photo in the user_photos table.
+     */
+    public function add_description($description, $photo_id)
+    {
+        $sql = sprintf("UPDATE user_photos SET description = %s " .
+                        "WHERE (photo_id = %d)",
+                        $this->db->escape($description, $photo_id), $photo_id);
+        $this->utility_model->run_query($sql);
+    }
+
+    /**
      * Checks whether a user has already liked a photo.
      *
      * A user is not allowed to like his own photo.
@@ -180,6 +196,7 @@ class Photo_model extends CI_Model
      * @param $audience the target audience for the photo. May be timeline or group.
      * @param $audience_id the ID of the target audience. Same as user ID if
      * audience is timeline.
+     * @return $photo_id the ID of the photo in the user_photos table.
      */
     public function publish($data, $audience, $audience_id)
     {
@@ -199,6 +216,8 @@ class Photo_model extends CI_Model
                                 "VALUES (%d, %d, %d, 'photo', 'photo')",
                                 $_SESSION['user_id'], $_SESSION['user_id'], $photo_id);
         $this->utility_model->run_query($activity_sql);
+
+        return $photo_id;
     }
 
     /**
