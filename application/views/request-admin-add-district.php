@@ -13,10 +13,13 @@ require_once('common/user-page-start.php');
     <?php } else { ?>
         <?php if (isset($error_message)) { ?>
         <div class="alert alert-danger">
-            <p><?= "{$error_message}"; ?></p>
+            <p>
+                <span class="glyphicon glyphicon-exclamation-sign"></span>
+                <?= "{$error_message}"; ?>
+            </p>
         </div>
         <?php } else { ?>
-            <p>Please fill out and submit this form.</p>
+            <p>Please fill and submit this form.</p>
         <?php } ?>
 
         <form action="<?= base_url("request-admin/add-district"); ?>" method="post" accept-charset="utf-8" role="form">

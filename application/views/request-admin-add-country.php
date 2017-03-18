@@ -13,12 +13,14 @@ require_once('common/user-page-start.php');
     <?php } else { ?>
         <?php if (isset($error_message)) { ?>
         <div class="alert alert-danger">
-            <p><?= "{$error_message}"; ?></p>
+            <p>
+                <span class="glyphicon glyphicon-exclamation-sign"></span>
+                <?= "{$error_message}"; ?>
+            </p>
         </div>
         <?php } else { ?>
             <p>
-                You can request the administrator to add your country to the records.
-                Please fill out and submit this form.
+                Please fill and submit this form.
             </p>
         <?php } ?>
 
