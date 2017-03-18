@@ -1,11 +1,13 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-require_once('exceptions/ProgrammeNotFoundException.php');
-require_once('exceptions/CollegeNotFoundException.php');
-require_once('exceptions/HostelNotFoundException.php');
-require_once('exceptions/HallNotFoundException.php');
+spl_autoload_register(function ($class) {
+    include("exceptions/{$class}.php");
+});
 
+/**
+ * Contains functions related to a user's profile.
+ */
 class Profile_model extends CI_Model
 {
     public function __construct()
@@ -14,7 +16,15 @@ class Profile_model extends CI_Model
         $this->load->model('utility_model');
     }
 
-    /*** Utility ***/
+    /**
+     * Checks whether two date ranges overlap with each other.
+     *
+     * @param $data_date_from user submitted start date.
+     * @param $data_date_to user submitted end date
+     * @param $rdate_from start date from the database.
+     * @param $rdate_to end date from the database.
+     * @return TRUE if the dates overlap.
+     */
     private function are_conflicting_dates($data_date_from, $data_date_to, $rdate_from, $rdate_to)
     {
         if (($data_date_from < $rdate_from) && ($data_date_to > $rdate_from) ||
@@ -25,8 +35,31 @@ class Profile_model extends CI_Model
 
         return FALSE;
     }
-    /*** End Utility ***/
 
+    /**
+     * Checks whether a given school exists and is under a specified college.
+     *
+     * @param $college_id the college ID of the school in the schools table.
+     * @param $school_id the ID of the school in the schools table.
+     * @return TRUE if given school exists under specified college.
+     */
+    public function college_and_school_exists($college_id, $school_id)
+    {
+        $school_sql = sprintf("SELECT school_id " .
+                                "FROM schools " .
+                                "WHERE (school_id = %d AND college_id = %d) " .
+                                "LIMIT 1",
+                                $school_id, $college_id);
+        $school_query = $this->utility_model->run_query($school_sql);
+        return ($school_query->num_rows() == 1);
+    }
+
+    /**
+     * Gets full profile for a user.
+     *
+     * @param $user_id the ID of the user in the users table.
+     * @return user profile.
+     */
     public function get_profile($user_id)
     {
         // Get the country and district.
@@ -197,24 +230,36 @@ class Profile_model extends CI_Model
         return $data;
     }
 
-    public function get_halls()
+    /**
+     * Gets all colleges form the colleges table.
+     *
+     * @return all colleges in the colleges table.
+     */
+    public function get_colleges()
     {
-        $halls_sql = sprintf("SELECT hall_id, hall_name FROM halls");
-        $halls_query = $this->utility_model->run_query($halls_sql);
+        $colleges_sql = sprintf("SELECT college_id, college_name FROM colleges");
+        $colleges_query = $this->utility_model->run_query($colleges_sql);
 
-        return $halls_query->result_array();
+        return $colleges_query->result_array();
     }
 
-    public function get_hostels()
+    /**
+     * Gets all schools from the schools table.
+     *
+     * @return all schools in the schools table.
+     */
+    public function get_schools()
     {
-        $hostels_sql = sprintf("SELECT hostel_id, hostel_name FROM hostels");
-        $hostels_query = $this->utility_model->run_query($hostels_sql);
+        $schools_sql = sprintf("SELECT school_id, college_id, school_name FROM schools");
+        $schools_query = $this->utility_model->run_query($schools_sql);
 
-        return $hostels_query->result_array();
+        return $schools_query->result_array();
     }
 
     /**
      * Gets the programmes under a school so that a user can add it as his programme.
+     *
+     * @param $school_id the ID of shool in the schools table.
      * @return programmes offered under a particular school.
      */
     public function get_programmes($school_id)
@@ -230,7 +275,76 @@ class Profile_model extends CI_Model
     }
 
     /**
-     * @param $user_college_id: The ID in the user_colleges table.
+     * Gets all halls from the halls table.
+     *
+     * @return all halls in the halls table.
+     */
+    public function get_halls()
+    {
+        $halls_sql = sprintf("SELECT hall_id, hall_name FROM halls");
+        $halls_query = $this->utility_model->run_query($halls_sql);
+
+        return $halls_query->result_array();
+    }
+
+    /**
+     * Gets all hostels from the hostels table.
+     *
+     * @return all hostels in the hostels table.
+     */
+    public function get_hostels()
+    {
+        $hostels_sql = sprintf("SELECT hostel_id, hostel_name FROM hostels");
+        $hostels_query = $this->utility_model->run_query($hostels_sql);
+
+        return $hostels_query->result_array();
+    }
+
+    /**
+     * Gets all countries from the countries table.
+     *
+     * @return all countries in the countries table.
+     */
+    public function get_countries()
+    {
+        $countries_sql = sprintf("SELECT country_id, country_name FROM countries");
+        $countries_query = $this->utility_model->run_query($countries_sql);
+
+        return $countries_query->result_array();
+    }
+
+    /**
+     * Gets all districts from the districts table matching the name of a district
+     * entered by a user.
+     *
+     * @param $district the name of a district entered by a user.
+     * @return all districts from the districts table matching $district.
+     */
+    public function get_searched_district($district)
+    {
+        $keywords = preg_split("/[\s,]+/", $district);
+        foreach ($keywords as &$keyword) {
+            $keyword = strtolower("+{$keyword}");
+        }
+        unset($keyword);
+
+        $key = implode(' ', $keywords);
+        $districts_sql = sprintf("SELECT district_id, district_name " .
+                                    "FROM districts " .
+                                    "WHERE MATCH(district_name) AGAINST (%s IN BOOLEAN MODE)",
+                                    $this->db->escape($key));
+        $districts_query = $this->utility_model->run_query($districts_sql);
+
+        return $districts_query->result_array();
+    }
+
+    /**
+     * Gets details for a college attended by a user.
+     *
+     * Throws CollegeNotFoundException if no matching record is found.
+     *
+     * @param $user_college_id the ID of the record in the user_colleges table.
+     * @return details for a college attended by a user.
      */
     public function get_user_college($user_college_id)
     {
@@ -277,7 +391,12 @@ class Profile_model extends CI_Model
     }
 
     /**
-     * @param $user_programme_id: The ID of this entry in the user_programmes table.
+     * Gets details for a programme studied by a user.
+     *
+     * Throws ProgrammeNotFoundException if no matching record is found.
+     *
+     * @param $user_programme_id the ID of the record in the user_programmes table.
+     * @return details for a programme studied by a user.
      */
     public function get_user_programme($user_programme_id)
     {
@@ -304,6 +423,14 @@ class Profile_model extends CI_Model
         return $user_programme;
     }
 
+    /**
+     * Gets details for a hall where a user was attached to/resident of.
+     *
+     * Throws HallNotFoundException if no matching record is found.
+     *
+     * @param $user_hall_id the ID Of the record in the user_halls table.
+     * @return the details for a hall where a user was attached to/resident of.
+     */
     public function get_user_hall($user_hall_id)
     {
         $user_hall_sql = sprintf("SELECT id, hall_id, date_from, date_to, resident, " .
@@ -330,6 +457,14 @@ class Profile_model extends CI_Model
         return $user_hall;
     }
 
+    /**
+     * Gets details for a hostel where a user stayed at.
+     *
+     * Throws HostelNotFoundException if no matching record is found.
+     *
+     * @param $user_hostel_id the ID of the record in the user_hostels table.
+     * @return details for a hostel where a user stayed at.
+     */
     public function get_user_hostel($user_hostel_id)
     {
         $user_hostel_sql = sprintf("SELECT id, hostel_id, date_from, date_to, " .
@@ -342,7 +477,7 @@ class Profile_model extends CI_Model
         $user_hostel_query = $this->utility_model->run_query($user_hostel_sql);
 
         if ($user_hostel_query->num_rows() == 0) {
-            throw HostelNotFoundException();
+            throw new HostelNotFoundException();
         }
 
         $user_hostel = $user_hostel_query->row_array();
@@ -357,33 +492,11 @@ class Profile_model extends CI_Model
         return $user_hostel;
     }
 
-    public function get_colleges()
-    {
-        $colleges_sql = sprintf("SELECT college_id, college_name FROM colleges");
-        $colleges_query = $this->utility_model->run_query($colleges_sql);
-
-        return $colleges_query->result_array();
-    }
-
-    public function college_and_school_exists($college_id, $school_id)
-    {
-        $school_sql = sprintf("SELECT school_id " .
-                                "FROM schools " .
-                                "WHERE (school_id = %d AND college_id = %d) " .
-                                "LIMIT 1",
-                                $school_id, $college_id);
-        $school_query = $this->utility_model->run_query($school_sql);
-        return ($school_query->num_rows() == 1);
-    }
-
-    public function get_schools()
-    {
-        $schools_sql = sprintf("SELECT school_id, college_id, school_name FROM schools");
-        $schools_query = $this->utility_model->run_query($schools_sql);
-
-        return $schools_query->result_array();
-    }
-
+    /**
+     * Adds a college which a user attended to a his proifle.
+     *
+     * @param $data an array of details about the college.
+     */
     public function add_college($data)
     {
         // First check whether a college already exists in the range of years provided.
@@ -425,75 +538,11 @@ class Profile_model extends CI_Model
         return TRUE;
     }
 
-    public function get_countries()
-    {
-        $countries_sql = sprintf("SELECT country_id, country_name FROM countries");
-        $countries_query = $this->utility_model->run_query($countries_sql);
-
-        return $countries_query->result_array();
-    }
-
-    public function add_country($country_id)
-    {
-        $profile_sql = sprintf("UPDATE user_profile " .
-                                "SET country_id = %d " .
-                                "WHERE user_id = %d",
-                                $country_id, $_SESSION['user_id']);
-        $this->utility_model->run_query($profile_sql);
-    }
-
-    public function get_districts($district)
-    {
-        $keywords = preg_split("/[\s,]+/", $district);
-        for ($i=0; $i!=count($keywords); ++$i) {
-            $keywords[$i] = "+{$keywords[$i]}";
-        }
-
-        $key = '';
-        foreach ($keywords as $keyword) {
-            $key .= "{$keyword} ";
-        }
-
-        $districts_sql = sprintf("SELECT district_id, district_name " .
-                                    "FROM districts " .
-                                    "WHERE MATCH(district_name) AGAINST (%s IN BOOLEAN MODE)",
-                                    $this->db->escape($key));
-        $districts_query = $this->utility_model->run_query($districts_sql);
-
-        return $districts_query->result_array();
-    }
-
-    public function add_district($district_id)
-    {
-        // First check if a district with that id exists.
-        $district_sql = sprintf("SELECT district_name " .
-                                "FROM districts " .
-                                "WHERE (district_id = %d)",
-                                $district_id);
-        $district_query = $this->utility_model->run_query($district_sql);
-        if ($district_query->num_rows() == 0) {
-            return FALSE;
-        }
-
-        // Next check if this user hasn't added district already.
-        $profile_sql = sprintf("SELECT district_id " .
-                                "FROM user_profile " .
-                                "WHERE (user_id = %d AND district_id IS NOT NULL)",
-                                $_SESSION['user_id']);
-        $profile_query = $this->utility_model->run_query($profile_sql);
-        if ($profile_query->num_rows() != 0) {
-            return FALSE;
-        }
-
-        $profile_sql = sprintf("UPDATE user_profile " .
-                                "SET district_id = %d " .
-                                "WHERE user_id = %d",
-                                $district_id, $_SESSION['user_id']);
-        $this->utility_model->run_query($profile_sql);
-
-        return TRUE;
-    }
-
+    /**
+     * Adds a user's programme of study to his proifle.
+     *
+     * @param $data an array of details for a programme.
+     */
     public function add_programme($data)
     {
         $user_college = $this->get_user_college($data['user_college_id']);
@@ -509,6 +558,11 @@ class Profile_model extends CI_Model
         $this->utility_model->run_query($programme_sql);
     }
 
+    /**
+     * Adds a user's hall of residence/attachment to a his profile.
+     *
+     * @param $data an array of details for a hall.
+     */
     public function add_hall($data)
     {
         // First check whether a hall already exists in the range of years provided.
@@ -559,39 +613,11 @@ class Profile_model extends CI_Model
         return TRUE;
     }
 
-    public function update_hall($data)
-    {
-        // Check whether a hall already exists in the range of years provided.
-        $data_date_from = date_create($data['start_date']);
-        $data_date_to = date_create($data['end_date']);
-
-        $dates_sql = sprintf("SELECT date_from, date_to " .
-                                "FROM user_halls " .
-                                "WHERE (user_id = %d AND id != %d)",
-                                $_SESSION['user_id'], $data['user_hall_id']);
-        $dates_query = $this->utility_model->run_query($dates_sql);
-
-        $dates_results = $dates_query->result_array();
-        foreach ($dates_results as $d) {
-            $date_from = date_create($d['date_from']);
-            $date_to = date_create($d['date_to']);
-            if ($this->are_conflicting_dates($data_date_from, $data_date_to, $date_from, $date_to)) {
-                return FALSE;
-            }
-        }
-
-        // If we have reached this point, then attempt the update.
-        $update_hall_sql = sprintf("UPDATE user_halls " .
-                                    "SET date_from = %s, date_to = %s, resident = %d " .
-                                    "WHERE (id = %d)",
-                                    $this->db->escape($data['start_date']),
-                                    $this->db->escape($data['end_date']),
-                                    $data['resident'], $data['user_hall_id']);
-        $this->utility_model->run_query($update_hall_sql);
-
-        return TRUE;
-    }
-
+    /**
+     * Adds a hostel where a user stayed at to his profile.
+     *
+     * @param $data an array of details about the hostel.
+     */
     public function add_hostel($data)
     {
         // First check whether a hall already exists in the range of years provided,
@@ -645,6 +671,170 @@ class Profile_model extends CI_Model
         return TRUE;
     }
 
+    /**
+     * Adds a user's country of origin to his profile.
+     *
+     * @param $country_id the ID of the country in the countries table.
+     */
+    public function add_country($country_id)
+    {
+        $profile_sql = sprintf("UPDATE user_profile " .
+                                "SET country_id = %d " .
+                                "WHERE user_id = %d",
+                                $country_id, $_SESSION['user_id']);
+        $this->utility_model->run_query($profile_sql);
+    }
+
+    /**
+     * Adds a district where a user if from to his profile.
+     *
+     * @param $district_id the ID of the district in the districts table.
+     */
+    public function add_district($district_id)
+    {
+        // First check if a district with that id exists.
+        $district_sql = sprintf("SELECT district_name " .
+                                "FROM districts " .
+                                "WHERE (district_id = %d)",
+                                $district_id);
+        $district_query = $this->utility_model->run_query($district_sql);
+        if ($district_query->num_rows() == 0) {
+            return FALSE;
+        }
+
+        // Next check if this user hasn't added district already.
+        $profile_sql = sprintf("SELECT district_id " .
+                                "FROM user_profile " .
+                                "WHERE (user_id = %d AND district_id IS NOT NULL)",
+                                $_SESSION['user_id']);
+        $profile_query = $this->utility_model->run_query($profile_sql);
+        if ($profile_query->num_rows() != 0) {
+            return FALSE;
+        }
+
+        $profile_sql = sprintf("UPDATE user_profile " .
+                                "SET district_id = %d " .
+                                "WHERE user_id = %d",
+                                $district_id, $_SESSION['user_id']);
+        $this->utility_model->run_query($profile_sql);
+
+        return TRUE;
+    }
+
+    /**
+     * Updates the details about a college which a user attended.
+     *
+     * @param $data an array of details to be updated.
+     */
+    public function update_college($data)
+    {
+        // Check whether a college already exists in the range of years provided.
+        $data_date_from = date_create($data['start_date']);
+        $data_date_to = date_create($data['end_date']);
+
+        $dates_sql = sprintf("SELECT date_from, date_to " .
+                                "FROM user_colleges " .
+                                "WHERE (user_id = %d AND id != %d)",
+                                $_SESSION['user_id'], $data['user_college_id']);
+        $dates_query = $this->utility_model->run_query($dates_sql);
+        $dates_results = $dates_query->result_array();
+        foreach ($dates_results as $d) {
+            $date_from = date_create($d['date_from']);
+            $date_to = date_create($d['date_to']);
+            if ($this->are_conflicting_dates($data_date_from, $data_date_to, $date_from, $date_to)) {
+                return FALSE;
+            }
+        }
+
+        // If we have reached this point, then attempt the update.
+        $update_college_sql = sprintf("UPDATE user_colleges " .
+                                        "SET date_from = %s, date_to = %s " .
+                                        "WHERE (id = %d)",
+                                        $this->db->escape($data['start_date']),
+                                        $this->db->escape($data['end_date']),
+                                        $data['user_college_id']);
+        $this->utility_model->run_query($update_college_sql);
+
+        // Also update the user_schools table.
+        // Get the id in the user_schools table.
+        $school_id_sql = sprintf("SELECT id FROM user_schools " .
+                                "WHERE (user_id = %d AND school_id = %d AND " .
+                                "date_from = %s AND date_to = %s)",
+                                $_SESSION['user_id'], $data['school_id'],
+                                $this->db->escape($data['old_start_date']),
+                                $this->db->escape($data['old_end_date']));
+        $school_id = $this->utility_model->run_query($school_id_sql)->row_array()['id'];
+
+        $update_school_sql = sprintf("UPDATE user_schools " .
+                                        "SET date_from = %s, date_to = %s " .
+                                        "WHERE (id = %d)",
+                                        $this->db->escape($data['start_date']),
+                                        $this->db->escape($data['end_date']),
+                                        $school_id);
+        $this->utility_model->run_query($update_school_sql);
+
+        return TRUE;
+    }
+
+    /**
+     * Updates the datails about a programme a user studied.
+     *
+     * @param $data an array of details to be updated.
+     */
+    public function update_programme($data)
+    {
+        $update_sql = sprintf("UPDATE user_programmes " .
+                                "SET year_of_study='%d' " .
+                                "WHERE (id = %d)",
+                                $data['year_of_study'], $data['user_programme_id']);
+        $this->utility_model->run_query($update_sql);
+    }
+
+    /**
+     * Updates the detials about a user's hall.
+     *
+     * Things updated include start date and end date.
+     *
+     * @param $data an array of details to be updated.
+     */
+    public function update_hall($data)
+    {
+        // Check whether a hall already exists in the range of years provided.
+        $data_date_from = date_create($data['start_date']);
+        $data_date_to = date_create($data['end_date']);
+
+        $dates_sql = sprintf("SELECT date_from, date_to " .
+                                "FROM user_halls " .
+                                "WHERE (user_id = %d AND id != %d)",
+                                $_SESSION['user_id'], $data['user_hall_id']);
+        $dates_query = $this->utility_model->run_query($dates_sql);
+
+        $dates_results = $dates_query->result_array();
+        foreach ($dates_results as $d) {
+            $date_from = date_create($d['date_from']);
+            $date_to = date_create($d['date_to']);
+            if ($this->are_conflicting_dates($data_date_from, $data_date_to, $date_from, $date_to)) {
+                return FALSE;
+            }
+        }
+
+        // If we have reached this point, then attempt the update.
+        $update_hall_sql = sprintf("UPDATE user_halls " .
+                                    "SET date_from = %s, date_to = %s, resident = %d " .
+                                    "WHERE (id = %d)",
+                                    $this->db->escape($data['start_date']),
+                                    $this->db->escape($data['end_date']),
+                                    $data['resident'], $data['user_hall_id']);
+        $this->utility_model->run_query($update_hall_sql);
+
+        return TRUE;
+    }
+
+    /**
+     * Updates the datails about a user's hostel.
+     *
+     * @param $data an array of update details.
+     */
     public function update_hostel($data)
     {
         // Check whether a hall already exists in the range of years provided,
@@ -696,64 +886,5 @@ class Profile_model extends CI_Model
         $this->utility_model->run_query($update_hostel_sql);
 
         return TRUE;
-    }
-
-    public function update_college($data)
-    {
-        // Check whether a college already exists in the range of years provided.
-        $data_date_from = date_create($data['start_date']);
-        $data_date_to = date_create($data['end_date']);
-
-        $dates_sql = sprintf("SELECT date_from, date_to " .
-                                "FROM user_colleges " .
-                                "WHERE (user_id = %d AND id != %d)",
-                                $_SESSION['user_id'], $data['user_college_id']);
-        $dates_query = $this->utility_model->run_query($dates_sql);
-        $dates_results = $dates_query->result_array();
-        foreach ($dates_results as $d) {
-            $date_from = date_create($d['date_from']);
-            $date_to = date_create($d['date_to']);
-            if ($this->are_conflicting_dates($data_date_from, $data_date_to, $date_from, $date_to)) {
-                return FALSE;
-            }
-        }
-
-        // If we have reached this point, then attempt the update.
-        $update_college_sql = sprintf("UPDATE user_colleges " .
-                                        "SET date_from = %s, date_to = %s " .
-                                        "WHERE (id = %d)",
-                                        $this->db->escape($data['start_date']),
-                                        $this->db->escape($data['end_date']),
-                                        $data['user_college_id']);
-        $this->utility_model->run_query($update_college_sql);
-
-        // Also update the user_schools table.
-        // Get the id in the user_schools table.
-        $school_id_sql = sprintf("SELECT id FROM user_schools " .
-                                "WHERE (user_id = %d AND school_id = %d AND " .
-                                "date_from = %s AND date_to = %s)",
-                                $_SESSION['user_id'], $data['school_id'],
-                                $this->db->escape($data['old_start_date']),
-                                $this->db->escape($data['old_end_date']));
-        $school_id = $this->utility_model->run_query($school_id_sql)->row_array()['id'];
-
-        $update_school_sql = sprintf("UPDATE user_schools " .
-                                        "SET date_from = %s, date_to = %s " .
-                                        "WHERE (id = %d)",
-                                        $this->db->escape($data['start_date']),
-                                        $this->db->escape($data['end_date']),
-                                        $school_id);
-        $this->utility_model->run_query($update_school_sql);
-
-        return TRUE;
-    }
-
-    public function update_programme($data)
-    {
-        $update_sql = sprintf("UPDATE user_programmes " .
-                                "SET year_of_study='%d' " .
-                                "WHERE (id = %d)",
-                                $data['year_of_study'], $data['user_programme_id']);
-        $this->utility_model->run_query($update_sql);
     }
 }
