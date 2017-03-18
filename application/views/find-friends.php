@@ -10,36 +10,92 @@ require_once('common/user-page-start.php');
         <fieldset>
             <div class="form-group">
                 <label for="query">Name or email address</label>
-                <input type="search" name="query" id="query" class="fluid" placeholder="Search for a friend">
+                <input type="search" name="query" id="query" class="fluid
+                <?php
+                if (isset($error)) {
+                    print ' has-error';
+                }
+                ?>">
+
+                <?php
+                if (isset($error)) {
+                    print "<span class='error'>{$error}</span>";
+                }
+                ?>
             </div>
         </fieldset>
         <input type="submit" value="Search" class="btn btn-sm">
     </form>
 </div><!-- .box -->
-<?php if (count($suggested_users) > 0): ?>
-<div class="box">
-    <h4>People you may know</h4>
-    <div class="suggested-users">
-        <?php foreach ($suggested_users as $user): ?>
-        <div class="media">
-            <div class="media-left">
-                <img class="media-object" src="<?= $user['profile_pic_path']; ?>"
-                alt="<?= $user['profile_name']; ?>">
-            </div>
-            <div class="media-body">
-                <h4 class="media-heading">
-                    <a href="<?= base_url("user/profile/{$user['user_id']}"); ?>"><?= $user['profile_name']; ?></a>
-                </h4>
-                <a href="<?= base_url("user/add-friend/{$user['user_id']}"); ?>"
-                    class="btn btn-xs">Add friend</a>
-            </div>
+
+<?php if (isset($search_results) && count($search_results) > 0) { ?>
+    <div class="box">
+        <h4>Search results</h4>
+        <div class="users">
+            <?php foreach ($search_results as $user) { ?>
+                <div class="media">
+                    <div class="media-left">
+                        <img class="media-object" src="<?= $user['profile_pic_path']; ?>"
+                            alt="<?= $user['profile_name']; ?>">
+                    </div>
+                    <div class="media-body">
+                        <h4 class="media-heading">
+                            <a href="<?= base_url("user/profile/{$user['user_id']}"); ?>">
+                                <?= $user['profile_name']; ?>
+                            </a>
+                        </h4>
+                        <a href="<?= base_url("user/add-friend/{$user['user_id']}"); ?>"
+                            class="btn btn-xs">Add friend</a>
+                    </div>
+                </div>
+            <?php } ?>
         </div>
-        <?php endforeach; ?>
     </div>
-</div><!-- .box -->
-<?php if ($has_next): ?>
-<div class="box more">
-    <a href="<?= base_url("user/find-friends/{$next_offset}"); ?>">View more suggestions</a>
-</div>
-<?php endif; ?>
-<?php endif; ?>
+
+    <?php if ($has_next) { ?>
+        <div class="box more">
+            <a href="<?= base_url("user/find-friends/{$next_offset}"); ?>">View more results</a>
+        </div>
+    <?php } ?>
+<?php } elseif (isset($search_results)) { ?>
+    <div class="box">
+        <h4>Search results</h4>
+        <div class="alert alert-info">
+            <p>
+                <span class="glyphicon glyphicon-info-sign"></span>
+                You search query returned no results.
+            </p>
+        </div>
+    </div>
+<?php } ?>
+
+<?php if (isset($suggested_users) && count($suggested_users) > 0) { ?>
+    <div class="box">
+        <h4>People you may know</h4>
+        <div class="suggested-users">
+            <?php foreach ($suggested_users as $user) { ?>
+            <div class="media">
+                <div class="media-left">
+                    <img class="media-object" src="<?= $user['profile_pic_path']; ?>"
+                    alt="<?= $user['profile_name']; ?>">
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading">
+                        <a href="<?= base_url("user/profile/{$user['user_id']}"); ?>">
+                            <?= $user['profile_name']; ?>
+                        </a>
+                    </h4>
+                    <a href="<?= base_url("user/add-friend/{$user['user_id']}"); ?>"
+                        class="btn btn-xs">Add friend</a>
+                </div>
+            </div>
+            <?php } ?>
+        </div>
+    </div><!-- .box -->
+
+    <?php if ($has_next) { ?>
+    <div class="box more">
+        <a href="<?= base_url("user/find-friends/{$next_offset}"); ?>">View more suggestions</a>
+    </div>
+    <?php } ?>
+<?php } ?>
