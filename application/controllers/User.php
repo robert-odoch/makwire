@@ -123,7 +123,6 @@ class User extends CI_Controller
             unset($_SESSION['post_error']);
         }
 
-
         $limit = 10;  // Maximum number of posts to show.
         $data['has_next'] = FALSE;
         $num_posts_and_photos = $this->user_model->get_num_timeline_posts_and_photos($user_id);
@@ -408,14 +407,44 @@ class User extends CI_Controller
         $this->load->view('common/header', $data);
 
         $limit = 10;  // Maximum number of suggested users to show.
-        $num_suggested_users = $this->user_model->get_num_suggested_users();
         $data['has_next'] = FALSE;
-        if (($num_suggested_users - $offset) > $limit) {
-            $data['has_next'] = TRUE;
-            $data['next_offset'] = ($offset + $limit);
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' || isset($_SESSION['search_results'])) {
+            if (isset($_SESSION['search_results'])) {
+                $query = $_SESSION['query'];
+            }
+            else {
+                $query = trim($this->input->post('query'));
+            }
+
+            if (!$query) {
+                $data['error'] = "Query can't be empty!";
+            }
+            else {
+                if (!isset($_SESSION['search_results'])) {
+                    $_SESSION['query'] = $query;
+                    $_SESSION['search_results'] = TRUE;
+                }
+
+                $data['search_results'] = $this->user_model->get_searched_user($query, $offset, $limit);
+                if ((count($data['search_results']) - $offset) > $limit) {
+                    $data['has_next'] = TRUE;
+                    $data['next_of'] = ($offset + $limit);
+                }
+                else {
+                    unset($_SESSION['search_results']);
+                    unset($_SESSION['query']);
+                }
+            }
+        }
+        else {
+            $data['suggested_users'] = $this->user_model->get_suggested_users($offset, $limit, TRUE);
+            if ((count($data['suggested_users']) - $offset) > $limit) {
+                $data['has_next'] = TRUE;
+                $data['next_offset'] = ($offset + $limit);
+            }
         }
 
-        $data['suggested_users'] = $this->user_model->get_suggested_users($offset, $limit, TRUE);
         $this->load->view('find-friends', $data);
         $this->load->view('common/footer');
     }
@@ -531,7 +560,6 @@ class User extends CI_Controller
                 show_404();
             }
 
-            $data['are_friends'] = TRUE;
             $data['su_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
             $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
             $data['suid'] = $user_id;
@@ -571,7 +599,6 @@ class User extends CI_Controller
                 show_404();
             }
 
-            $data['are_friends'] = $this->user_model->are_friends($user_id);
             $data['su_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
             $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
             $data['suid'] = $user_id;
@@ -582,6 +609,46 @@ class User extends CI_Controller
 
         $data['profile'] = $this->profile_model->get_profile($user_id);
         $this->load->view("profile", $data);
+        $this->load->view("common/footer");
+    }
+
+    public function photos($user_id=NULL, $offset=0)
+    {
+        if ($user_id === NULL) {
+            $user_id = $_SESSION['user_id'];
+        }
+
+        $data = $this->user_model->initialize_user();
+        $data['title'] = format_name($data['primary_user']) . ' photos';
+
+        $data['is_visitor'] = ($user_id == $_SESSION['user_id']) ? FALSE : TRUE;
+        if ($data['is_visitor']) {
+            try {
+                $data['secondary_user'] = $this->user_model->get_profile_name($user_id);
+            }
+            catch (UserNotFoundException $e) {
+                show_404();
+            }
+
+            $data['su_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
+            $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
+            $data['suid'] = $user_id;
+            $data['title'] = format_name($data['secondary_user']) . ' photos';
+        }
+
+        $this->load->view("common/header", $data);
+
+        $limit = 12;  // Maximum number of photos to show.
+        $data['has_next'] = FALSE;
+        $num_photos = $this->user_model->get_num_photos($user_id);
+        if (($num_photos - $offset) > $limit) {
+            $data['has_next'] = TRUE;
+            $data['next_offset'] = ($limit + $offset);
+        }
+
+        $data['photos'] = $this->user_model->get_photos($user_id, $offset, $limit);
+        $data['user_id'] = $user_id;  // Used in view more photos.
+        $this->load->view("show-photos", $data);
         $this->load->view("common/footer");
     }
 
@@ -1077,7 +1144,7 @@ class User extends CI_Controller
                 $data['error_message'] = "Please enter the name of your district or state and try again.";
             }
             else {
-                $data['districts'] = $this->profile_model->get_districts($data['district']);
+                $data['districts'] = $this->profile_model->get_searched_district($data['district']);
             }
         }
         elseif ($district_id) {
