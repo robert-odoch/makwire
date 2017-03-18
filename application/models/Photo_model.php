@@ -174,12 +174,31 @@ class Photo_model extends CI_Model
     }
 
     /**
-     * Allows a user to add a new photo on his status.
+     * Allows a user to add a new photo to his status.
      *
      * @param $data an array containing details about the uploaded photo.
+     * @param $audience the target audience for the photo. May be timeline or group.
+     * @param $audience_id the ID of the target audience. Same as user ID if
+     * audience is timeline.
      */
-    public function publish($data)
+    public function publish($data, $audience, $audience_id)
     {
+        // Record photo data in the photos table.
+        $photo_sql = sprintf("INSERT INTO user_photos " .
+                                "(user_id, image_type, full_path) " .
+                                "VALUES (%d, %s, %s)",
+                                $_SESSION['user_id'],
+                                $this->db->escape($data['file_type']),
+                                $this->db->escape($data['full_path']));
+        $this->utility_model->run_query($photo_sql);
+        $photo_id = $this->db->insert_id();
+
+        // Dispatch an activity.
+        $activity_sql = sprintf("INSERT INTO activities " .
+                                "(actor_id, subject_id, source_id, source_type, activity) " .
+                                "VALUES (%d, %d, %d, 'photo', 'photo')",
+                                $_SESSION['user_id'], $_SESSION['user_id'], $photo_id);
+        $this->utility_model->run_query($activity_sql);
     }
 
     /**
