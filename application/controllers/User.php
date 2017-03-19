@@ -344,7 +344,7 @@ class User extends CI_Controller
 				$data['next_offset'] = ($offset + $limit);
 			}
 			else {
-			    $num_notifications = $this->user_model->get_num_notifs(FALSE);
+			    $num_notifications = $this->user_model->get_num_notifications(FALSE);
 
                 // Here, we are determining if there are older notifications.
                 // And if they are there, get the correct offset to use
@@ -358,7 +358,7 @@ class User extends CI_Controller
 			}
 		}
 		else {
-		    $num_notifications = $this->user_model->get_num_notifs(FALSE);
+		    $num_notifications = $this->user_model->get_num_notifications(FALSE);
 		    $data['notifications'] = $this->user_model->get_notifications($offset, $limit, FALSE);
 		    if (($num_notifications - $offset) > $limit) {
 		        $data['has_next'] = TRUE;
