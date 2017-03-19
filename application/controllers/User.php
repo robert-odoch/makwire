@@ -438,7 +438,7 @@ class User extends CI_Controller
             }
         }
         else {
-            $data['suggested_users'] = $this->user_model->get_suggested_users($offset, $limit, TRUE);
+            $data['suggested_users'] = $this->user_model->get_suggested_users($offset, $limit);
             if ((count($data['suggested_users']) - $offset) > $limit) {
                 $data['has_next'] = TRUE;
                 $data['next_offset'] = ($offset + $limit);
