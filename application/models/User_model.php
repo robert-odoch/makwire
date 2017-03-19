@@ -976,36 +976,29 @@ class User_model extends CI_Model
         return $data;
     }
 
-    public function get_num_suggested_users()
+    public function get_suggested_users($offset, $limit)
     {
-        return count($this->get_suggested_users(NULL, NULL, FALSE));
-    }
+        $friends_ids = $this->get_friends_ids();
+        $friends_ids[] = 0;
+        $friends_ids = implode(',', $friends_ids);
 
-    public function get_suggested_users($offset, $limit, $use_limit=TRUE)
-    {
-        if ($use_limit) {
-            $users_sql = sprintf("SELECT user_id, profile_name FROM users " .
-                                "WHERE (user_id != %d) LIMIT %d, %d",
-                                $_SESSION['user_id'], $offset, $limit);
-        }
-        else {
-            $users_sql = sprintf("SELECT user_id, profile_name FROM users " .
-                                "WHERE (user_id != %d)",
-                                $_SESSION['user_id']);
-        }
-        $users_query = $this->utility_model->run_query($users_sql);
-        $results = $users_query->result_array();
+        $sql = sprintf("SELECT u.user_id, COUNT(*) FROM users AS u " .
+                        "LEFT JOIN friends AS f " .
+                            "ON (u.user_id = f.user_id OR u.user_id = f.friend_id) ".
+                        "WHERE u.user_id NOT IN (%s) AND u.user_id != %d AND " .
+                            "(f.friend_id IN(%s) OR f.user_id IN (%s)) " .
+                        "GROUP BY u.user_id " .
+                        "ORDER BY COUNT(*) DESC",
+                        $friends_ids, $_SESSION['user_id'],
+                        $friends_ids, $friends_ids,
+                        $offset, $limit);
 
-        $users = array();
-        foreach ($results as $user) {
-            // Only add to list if they are not friends and friend request hasn't been sent.
-            $fr_status = $this->get_friendship_status($user['user_id']);
-            if (!$fr_status['are_friends'] && !$fr_status['fr_sent']) {
-                $user['profile_name'] = ucfirst($user['profile_name']);
-                $user['profile_pic_path'] = $this->get_profile_pic_path($user['user_id']);
-                array_push($users, $user);
-            }
+        $users = $this->utility_model->run_query($sql)->result_array();
+        foreach ($users as &$user) {
+            $user['profile_pic_path'] = $this->get_profile_pic_path($user['user_id']);
+            $user['profile_name'] = $this->get_profile_name($user['user_id']);
         }
+        unset($user);
 
         return $users;
     }
