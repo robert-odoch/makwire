@@ -5,6 +5,9 @@ spl_autoload_register(function ($class) {
     include("exceptions/{$class}.php");
 });
 
+/**
+ * Contains functions related to a particular user.
+ */
 class User_model extends CI_Model
 {
     public function __construct()
@@ -16,8 +19,11 @@ class User_model extends CI_Model
         ]);
     }
 
-    /*** Utility ***/
-
+    /**
+     * Closure used for sorting notifications.
+     *
+     * @param $key the field that will be used for sorting.
+     */
     private function build_sorter($key)
     {
         return function ($a, $b) use ($key) {
@@ -27,6 +33,94 @@ class User_model extends CI_Model
         };
     }
 
+    /**
+     * Checks whether an account has not been logged out from another location.
+     *
+     * @return true if this account has not been logged out.
+     */
+    public function confirm_logged_in()
+    {
+        $logged_in_sql = sprintf("SELECT logged_in FROM users WHERE user_id = %d",
+                                $_SESSION['user_id']);
+        $logged_in_query = $this->utility_model->run_query($logged_in_sql);
+
+        if (!$logged_in_query->row_array()['logged_in']) {
+            unset($_SESSION['user_id']);
+            $_SESSION = array();
+            $_SESSION['message'] = "This account was logged out from another location.<br>" .
+                                   "Please log in again to continue using this account.<br>" .
+                                   "We are sorry for bothering you.";
+            redirect(base_url("login"));
+        }
+    }
+
+    /**
+     * Checks whether a user is currently logged in.
+     *
+     * @param $user_id ID of the user to check for.
+     * @return TRUE if this user is logged in.
+     */
+    public function active($user_id)
+    {
+        $logged_in_sql = sprintf("SELECT logged_in FROM users " .
+                                    "WHERE user_id = %d LIMIT 1",
+                                    $user_id);
+        $query = $this->utility_model->run_query($logged_in_sql);
+
+        return $query->row_array()['logged_in'];
+    }
+
+    /**
+     * Checks whether two users are friends.
+     *
+     * @param $user_id ID of the user to check for.
+     * @return true if the current logged in user is a friend to the user
+     * with the specified ID.
+     */
+    public function are_friends($user_id)
+    {
+        if ($user_id == $_SESSION['user_id']) {
+            return TRUE;
+        }
+
+        $friends_ids = $this->get_friends_ids();
+        return in_array($user_id, $friends_ids);
+    }
+
+    /**
+     * Checks whether a user has reached age and
+     * and whether the user reached the specified age when he was
+     * already registered on makwire.
+     *
+     * @param $user_id the ID of the user having birthday.
+     * @param $age the user's age on this birthday.
+     * @return true if user has reached age and the user reached this age when
+     * he was already registered on makwire
+     */
+    public function can_view_birthday($user_id, $age)
+    {
+        $sql = sprintf("SELECT YEAR(dob) AS year, MONTH(dob) AS month, " .
+                        "DAY(dob) AS day, date_created " .
+                        "FROM users WHERE (user_id = %d)", $user_id);
+        $query = $this->utility_model->run_query($sql);
+        if ($query->num_rows() == 0) {
+            return FALSE;
+        }
+
+        $result = $query->row_array();
+
+        return (
+            (date_create(($result['year']+$age) . "-{$result['month']}-{$result['day']}") >
+             date_create($result['date_created'])) &&
+            ($age <= (date('Y') - $result['year']))
+        );
+    }
+
+    /**
+     * Gets the IDs of the current logged in user's friends.
+     *
+     * @return Array for friends IDs.
+     */
     private function get_friends_ids()
     {
         $friends_sql = sprintf("SELECT user_id, friend_id " .
@@ -49,49 +143,15 @@ class User_model extends CI_Model
     }
 
     /**
-     * Checks whether a user reached the specified age when he/she was
-     * already registered and the user has reached that age
-     * i.e., age <= user's age.
+     * Gets the date of birth for a user.
+     *
+     * @param @user_id the ID of the user whose DOB is required.
+     * @return DOB for this user.
      */
-    public function can_view_birthday($user_id, $age)
+    public function get_dob($user_id)
     {
-        $sql = sprintf("SELECT YEAR(dob) AS year, MONTH(dob) AS month, " .
-                        "DAY(dob) AS day, date_created " .
-                        "FROM users WHERE (user_id = %d)", $user_id);
-        $query = $this->utility_model->run_query($sql);
-        if ($query->num_rows() == 0) {
-            return FALSE;
-        }
-
-        $result = $query->row_array();
-
-        return (
-            (date_create(($result['year']+$age) . "-{$result['month']}-{$result['day']}") >
-             date_create($result['date_created'])) &&
-            ($age <= (date('Y') - $result['year']))
-        );
-    }
-
-    public function get_dob($user_id) {
         $sql = sprintf("SELECT dob FROM users WHERE user_id = %d", $user_id);
         return $this->utility_model->run_query($sql)->row_array()['dob'];
-    }
-    /*** End Utility ***/
-
-    public function confirm_logged_in()
-    {
-        $logged_in_sql = sprintf("SELECT logged_in FROM users WHERE user_id = %d",
-                                $_SESSION['user_id']);
-        $logged_in_query = $this->utility_model->run_query($logged_in_sql);
-
-        if (!$logged_in_query->row_array()['logged_in']) {
-            unset($_SESSION['user_id']);
-            $_SESSION = array();
-            $_SESSION['message'] = "This account was logged out from another location.<br>" .
-                                   "Please log in again to continue using this account.<br>" .
-                                   "We are sorry for bothering you.";
-            redirect(base_url("login"));
-        }
     }
 
     public function create_dummy_user($user)
@@ -104,6 +164,11 @@ class User_model extends CI_Model
         $this->utility_model->run_query($q);
     }
 
+    /**
+     * Sets up variables common to all user accounts.
+     *
+     * @return Array of these common variables.
+     */
     public function initialize_user()
     {
         $data['profile_pic_path'] = $this->get_profile_pic_path($_SESSION['user_id']);
@@ -112,12 +177,18 @@ class User_model extends CI_Model
         $data['num_friend_requests'] = $this->get_num_friend_requests(TRUE);
         $data['num_active_friends'] = $this->get_num_chat_users(TRUE);
         $data['num_new_messages'] = $this->get_num_messages(TRUE);
-        $data['num_new_notifs'] = $this->get_num_notifs(TRUE);
+        $data['num_new_notifs'] = $this->get_num_notifications(TRUE);
         $data['chat_users'] = $this->get_chat_users(TRUE);
 
         return $data;
     }
 
+    /**
+    * Gets the profile name for a user.
+    *
+    * @param $user_id the ID of the user whose name is required.
+    * @return this user's profile name.
+    */
     public function get_profile_name($user_id)
     {
         $name_sql = sprintf("SELECT profile_name FROM users WHERE user_id = %d",
@@ -130,6 +201,13 @@ class User_model extends CI_Model
         return ucfirst($query->row_array()['profile_name']);
     }
 
+    /**
+     * Gets a path for a user's profile picture that can be used on the web.
+     *
+     * @param $user_id the ID of the user whose profile picture is required.
+     * @return path to profile picture if the user has set a profile picture or
+     * path to the dafault profile picture.
+     */
     public function get_profile_pic_path($user_id)
     {
         $path_sql = sprintf("SELECT profile_pic_path " .
@@ -186,16 +264,14 @@ class User_model extends CI_Model
         $this->utility_model->run_query($activity_sql);
     }
 
-    public function are_friends($user_id)
-    {
-        if ($user_id == $_SESSION['user_id']) {
-            return TRUE;
-        }
-
-        $friends_ids = $this->get_friends_ids();
-        return in_array($user_id, $friends_ids);
-    }
-
+    /**
+     * Gets the number of posts and photos that can be displayed on a user's
+     * timeline.
+     *
+     * @param $user_id ID of the user to be shown.
+     * @return number of posts and photos that can be displayed on this user's
+     * timeline.
+     */
     public function get_num_timeline_posts_and_photos($user_id)
     {
         // Get number of posts and photos posted by this user.
@@ -211,6 +287,12 @@ class User_model extends CI_Model
         return $this->utility_model->run_query($num_posts_and_photos_sql)->row_array()['COUNT(activity_id)'];
     }
 
+    /**
+     * Gets the posts and photos to be displayed on a user's timeline.
+     *
+     * @param $user_id ID of the user to be displayed.
+     * @return posts and photos to be displayed.
+     */
     public function get_timeline_posts_and_photos($user_id, $offset, $limit)
     {
         // Get posts and photos posted/shared by this user.
@@ -272,13 +354,29 @@ class User_model extends CI_Model
         return $posts_and_photos;
     }
 
-    public function get_num_birthday_messages($user_id) {
+    /**
+    * Gets the number of messages sent to a user on his birthday.
+    *
+    * @param $user_id ID of the user who had a birthday.
+    * @param $age the age he had reached on his birthday.
+    * @return number of messages sent to a user on his birthday.
+    */
+    public function get_num_birthday_messages($user_id, $age)
+    {
         $sql = sprintf("SELECT COUNT(id) FROM birthday_messages " .
-                        "WHERE (user_id = %d)",
-                        $user_id);
+                        "WHERE (user_id = %d AND age = %d)",
+                        $user_id, $age);
         return $this->utility_model->run_query($sql)->row_array()['COUNT(id)'];
     }
 
+    /**
+    * Gets the messages that were sent to a user on his birthday.
+    *
+    * @param $user_id ID of the user who had a birthday.
+    * @param $age the age he had reached on his birthday.
+    * @param $offset
+    * @param $limit
+    */
     public function get_birthday_messages($user_id, $age, $offset, $limit)
     {
         $sql = sprintf("SELECT id " .
@@ -296,6 +394,13 @@ class User_model extends CI_Model
         return $messages;
     }
 
+    /**
+     * Sends a birthday message to a user.
+     *
+     * @param $message the message to be sent.
+     * @param $user_id ID of the user to send the message to.
+     * @param $age the age he had reached on his birthday.
+     */
     public function send_birthday_message($message, $user_id, $age)
     {
         // Record the message.
@@ -314,6 +419,12 @@ class User_model extends CI_Model
         $this->utility_model->run_query($activity_sql);
     }
 
+    /**
+     * Gets the number of messages sent to a user from chat.
+     *
+     * @param $filter whether to return only unread messages.
+     * @return number of messages.
+     */
     public function get_num_messages($filter=TRUE)
     {
         if ($filter) {
@@ -332,6 +443,13 @@ class User_model extends CI_Model
         return $this->utility_model->run_query($sql)->row_array()['COUNT(message_id)'];
     }
 
+    /**
+     * Gets the messages sent to a user from chat.
+     *
+     * @param $offset
+     * @param $limit
+     * @param $filter whether to return only unread messages.
+     */
     public function get_messages($offset, $limit, $filter=TRUE)
     {
         if ($filter) {
@@ -366,23 +484,28 @@ class User_model extends CI_Model
         return $messages;
     }
 
-    public function active($user_id)
-    {
-        $logged_in_sql = sprintf("SELECT logged_in FROM users WHERE user_id = %d LIMIT 1",
-                                    $user_id);
-        $query = $this->utility_model->run_query($logged_in_sql);
-
-        return $query->row_array()['logged_in'];
-    }
-
+    /**
+     * Gets the number of friends for a user.
+     *
+     * @param $user_id ID of the user whose number of friends is required.
+     * @return number of friends for this user.
+     */
     public function get_num_friends($user_id)
     {
-        $sql = sprintf("SELECT COUNT(user_id) FROM friends " .
+        $sql = sprintf("SELECT COUNT(id) FROM friends " .
                         "WHERE (user_id = %d) OR (friend_id = %d)",
                         $user_id, $user_id);
-        return $this->utility_model->run_query($sql)->row_array()['COUNT(user_id)'];
+        return $this->utility_model->run_query($sql)->row_array()['COUNT(id)'];
     }
 
+    /**
+     * Gets the friends for a user.
+     *
+     * @param $user_id ID of user whose friends are required.
+     * @param $offset
+     * @param $limit
+     * @return this user's friends.
+     */
     public function get_friends($user_id, $offset, $limit)
     {
         $sql = sprintf("SELECT user_id, friend_id FROM friends " .
@@ -406,13 +529,28 @@ class User_model extends CI_Model
         return $friends;
     }
 
-    public function get_num_photos($user_id) {
+    /**
+     * Gets the number of photos uploaded by a user.
+     *
+     * @param $user_id ID of user whose number of photos is required.
+     * @return number of photos uploaded by this user.
+     */
+    public function get_num_photos($user_id)
+    {
         $sql = sprintf("SELECT COUNT(photo_id) FROM user_photos " .
                         "WHERE (user_id = %d)",
                         $user_id);
         return $this->utility_model->run_query($sql)->row_array()['COUNT(photo_id)'];
     }
 
+    /**
+     * Gets the photos uploaded by a user.
+     *
+     * @param $user_id ID of user whose photos are required.
+     * @param $offset
+     * @param $limit
+     * @return photos uploaded by this user.
+     */
     public function get_photos($user_id, $offset, $limit)
     {
         $sql = sprintf("SELECT photo_id, full_path FROM user_photos " .
@@ -432,6 +570,12 @@ class User_model extends CI_Model
         return $photos;
     }
 
+    /**
+     * Gets all friends for a user.
+     *
+     * @param $user_id ID of user whose friends are required.
+     * @return all friends for user with ID $user_id.
+     */
     public function get_all_friends($user_id)
     {
         $sql = sprintf("SELECT user_id, friend_id FROM friends " .
@@ -453,11 +597,23 @@ class User_model extends CI_Model
         return $friends;
     }
 
+    /**
+     * Gets the number of friends who are currently logged in.
+     *
+     * @param $filter whether to count only logged in users.
+     * @return number friends who are currently logged in.
+     */
     public function get_num_chat_users($filter=TRUE)
     {
         return count($this->get_chat_users(TRUE));
     }
 
+    /**
+     * Gets friends who are currently logged in.
+     *
+     * @param $filter whether to strictly return only logged in users.
+     * @return friends who are currently logged in.
+     */
     public function get_chat_users($filter=TRUE)
     {
         $chat_users = array();
@@ -485,9 +641,11 @@ class User_model extends CI_Model
     }
 
     /**
-     * Gets users whose name or email address matches query.
+     * Gets users whose name or email address matches a query.
      *
      * @param $query name or email address entered by user.
+     * @param $offset
+     * @param $limit
      * @return Array users whose name or email address match the query.
      */
     public function get_searched_user($query, $offset, $limit)
@@ -529,7 +687,14 @@ class User_model extends CI_Model
         return $results;
     }
 
-    public function get_num_notifs($filter=TRUE)
+    /**
+     * Gets the number of notifications for a user.
+     *
+     * @param $fitlter specifies whether only unread notifications should be
+     * counted.
+     * @return number of notifications for this user.
+     */
+    public function get_num_notifications($filter=TRUE)
     {
         // Notifications that can/can't be combined together if the are performed on
         // the same object.
@@ -665,6 +830,15 @@ class User_model extends CI_Model
         return $num_notifications;
     }
 
+    /**
+     * Gets notifications for a user.
+     *
+     * @param $offset
+     * @param $limit
+     * @param $fitlter specifies whether only unread notifications should be
+     * returned.
+     * @return notifications for this user.
+     */
     public function get_notifications($offset, $limit, $filter=TRUE)
     {
         // Notifications that can/can't be combined together if the are performed on
@@ -936,6 +1110,14 @@ class User_model extends CI_Model
         return $notifications;
     }
 
+    /**
+     * Gets whether two users are friends or there exists a freind request
+     * between them.
+     *
+     * @param $user_id ID of user to check for.
+     * @return whether two users are friends or there exists a freind request
+     * between them.
+     */
     public function get_friendship_status($user_id)
     {
         // Check whether the two users are already friends.
@@ -976,6 +1158,13 @@ class User_model extends CI_Model
         return $data;
     }
 
+    /**
+     * Gets users whom the current logged user might be knowing.
+     *
+     * @param $offset
+     * @param $limit
+     * @return users whom the current logged user might be knowing.
+     */
     public function get_suggested_users($offset, $limit)
     {
         $friends_ids = $this->get_friends_ids();
@@ -1003,6 +1192,13 @@ class User_model extends CI_Model
         return $users;
     }
 
+    /**
+     * Gets the number of friend requests sent to a user.
+     *
+     * @param $filter whether to count only friend request that haven't been
+     * seen.
+     * @return number of friend requests for the current logged in user.
+     */
     public function get_num_friend_requests($filter=TRUE)
     {
         if ($filter) {
@@ -1019,6 +1215,11 @@ class User_model extends CI_Model
         return $this->utility_model->run_query($req_sql)->row_array()['COUNT(user_id)'];
     }
 
+    /**
+     * Gets friend requests sent to a user.
+     *
+     * @return friend requests for the current logged in user.
+     */
     public function get_friend_requests()
     {
         $req_sql = sprintf("SELECT user_id, seen FROM friend_requests " .
@@ -1044,6 +1245,15 @@ class User_model extends CI_Model
         return $friend_requests;
     }
 
+    /**
+     * Sends a friend request to a user.
+     *
+     * Throws IllegalAccessException if a user attempts to send a freind
+     * request to a user with whom they are already friends or there exists
+     * a pending friend request.
+     *
+     * @param $target_id ID of user to send request to.
+     */
     public function send_friend_request($target_id)
     {
         $friendship_status = $this->get_friendship_status($target_id);
@@ -1064,6 +1274,14 @@ class User_model extends CI_Model
         $this->utility_model->run_query($activity_sql);
     }
 
+    /**
+     * Confirms a friend request sent to a user.
+     *
+     * Throws IllegalAccessException if a user attempts to confirm a
+     * friend request that doesn't exist.
+     *
+     * @param $friend_id ID of the user who sent him a request.
+     */
     public function confirm_friend_request($friend_id)
     {
         // First check whether a friend request actually exist.
@@ -1093,10 +1311,14 @@ class User_model extends CI_Model
                                 "VALUES (%d, %d, %d, 'user', 'confirmed_friend_request')",
                                 $_SESSION['user_id'], $friend_id, $_SESSION['user_id']);
         $this->utility_model->run_query($activity_sql);
-
-        return TRUE;
     }
 
+    /**
+     * Sends a chat message to a user.
+     *
+     * @param $message the message to be sent.
+     * @param $receiver_id ID the receiver
+     */
     public function send_message($message, $receiver_id)
     {
         $message_sql = sprintf("INSERT INTO messages " .
@@ -1107,6 +1329,12 @@ class User_model extends CI_Model
         $this->utility_model->run_query($message_sql);
     }
 
+    /**
+     * Gets the number of chat messages that exists between two users.
+     *
+     * @param $user_id ID of user whom this user was chatting with.
+     * @return number of chat messages between these two users.
+     */
     public function get_num_conversation($user_id)
     {
         $sql = sprintf("SELECT COUNT(message_id) FROM messages " .
@@ -1117,6 +1345,14 @@ class User_model extends CI_Model
         return $this->utility_model->run_query($sql)->row_array()['COUNT(message_id)'];
     }
 
+    /**
+     * Gets chat messages that exists between two users.
+     *
+     * @param $user_id ID of user whom this user was chatting with.
+     * @param $offset
+     * @param $limit
+     * @return chat messages between these two users.
+     */
     public function get_conversation($user_id, $offset, $limit)
     {
         $sql = sprintf("SELECT * FROM messages " .
@@ -1154,6 +1390,11 @@ class User_model extends CI_Model
         return $messages;
     }
 
+    /**
+     * Gets number of posts and photos on a user's news feed.
+     *
+     * @return number of posts and photos on this user's news feed.
+     */
     public function get_num_news_feed_posts_and_photos()
     {
         $friends_ids = $this->get_friends_ids();
@@ -1209,6 +1450,13 @@ class User_model extends CI_Model
         return ($num_posts + $num_photos + $num_shared_posts_and_photos);
     }
 
+    /**
+     * Gets posts and photos to be shown on a user's news feed.
+     *
+     * @param $offset
+     * @param $limit
+     * @return number of posts and photos to be shown on this user's news feed.
+     */
     public function get_news_feed_posts_and_photos($offset, $limit)
     {
         $friends_ids = $this->get_friends_ids();
