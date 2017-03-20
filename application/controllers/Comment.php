@@ -18,7 +18,7 @@ class Comment extends CI_Controller
         $this->user_model->confirm_logged_in();
     }
 
-    public function like($comment_id)
+    public function like($comment_id=0)
     {
         try {
             $this->comment_model->like($comment_id);
@@ -33,7 +33,7 @@ class Comment extends CI_Controller
         }
     }
 
-    public function reply($comment_id)
+    public function reply($comment_id=0)
     {
         try {
             $comment = $this->comment_model->get_comment($comment_id);
@@ -70,7 +70,7 @@ class Comment extends CI_Controller
         $this->load->view("common/footer");
     }
 
-    public function likes($comment_id, $offset=0)
+    public function likes($comment_id=0, $offset=0)
     {
         try {
             $comment = $this->comment_model->get_comment($comment_id);
@@ -108,7 +108,7 @@ class Comment extends CI_Controller
         $this->load->view("common/footer");
     }
 
-    public function replies($comment_id, $offset=0)
+    public function replies($comment_id=0, $offset=0)
     {
         try {
             $comment = $this->comment_model->get_comment($comment_id);

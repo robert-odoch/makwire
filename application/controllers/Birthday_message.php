@@ -21,7 +21,7 @@ class Birthday_message extends CI_Controller
         $this->user_model->confirm_logged_in();
     }
 
-    public function like($birthday_message_id)
+    public function like($birthday_message_id=0)
     {
         try {
             $this->birthday_message_model->like($birthday_message_id);

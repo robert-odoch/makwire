@@ -18,7 +18,7 @@ class Post extends CI_Controller
         $this->user_model->confirm_logged_in();
     }
 
-    public function like($post_id)
+    public function like($post_id=0)
     {
         try {
             $this->post_model->like($post_id);
@@ -33,7 +33,7 @@ class Post extends CI_Controller
         }
     }
 
-    public function comment($post_id)
+    public function comment($post_id=0)
     {
         try {
             $post = $this->post_model->get_post($post_id);
@@ -73,7 +73,7 @@ class Post extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function share($post_id)
+    public function share($post_id=0)
     {
         try {
             $this->post_model->share($post_id);
@@ -88,7 +88,7 @@ class Post extends CI_Controller
         }
     }
 
-    public function likes($post_id, $offset=0)
+    public function likes($post_id=0, $offset=0)
     {
         try {
             $post = $this->post_model->get_post($post_id);
@@ -130,7 +130,7 @@ class Post extends CI_Controller
         $this->load->view("common/footer");
     }
 
-    public function comments($post_id, $offset=0)
+    public function comments($post_id=0, $offset=0)
     {
         try {
             $post = $this->post_model->get_post($post_id);
@@ -171,7 +171,7 @@ class Post extends CI_Controller
         $this->load->view("common/footer");
     }
 
-    public function shares($post_id, $offset=0)
+    public function shares($post_id=0, $offset=0)
     {
         try {
             $post = $this->post_model->get_post($post_id);

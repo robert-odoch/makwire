@@ -96,7 +96,7 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function index($user_id, $offset=0)
+    public function index($user_id=0, $offset=0)
     {
         $data = $this->user_model->initialize_user();
         $data['title'] = format_name($data['primary_user']) . ' posts';
@@ -138,7 +138,7 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function birthday($user_id, $age, $offset=0)
+    public function birthday($user_id=0, $age=0, $offset=0)
     {
         if (!$this->user_model->can_view_birthday($user_id, $age)) {
             show_404();
@@ -157,7 +157,7 @@ class User extends CI_Controller
         $this->load->view("common/header", $data);
 
         $limit = 10;
-        $num_birthday_messages = $this->user_model->get_num_birthday_messages($user_id);
+        $num_birthday_messages = $this->user_model->get_num_birthday_messages($user_id, $age);
         $data['has_next'] = FALSE;
         if (($num_birthday_messages - $offset) > $limit) {
             $data['has_next'] = TRUE;
@@ -178,7 +178,7 @@ class User extends CI_Controller
         $this->load->view("common/footer");
     }
 
-    public function send_birthday_message($user_id, $age)
+    public function send_birthday_message($user_id=0, $age=0)
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->utility_model->show_permission_denied("You don't have the proper permissions.");
@@ -221,7 +221,7 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function send_message($user_id, $offset=0)
+    public function send_message($user_id=0, $offset=0)
     {
         $data = $this->user_model->initialize_user();
         try {
@@ -289,7 +289,7 @@ class User extends CI_Controller
         redirect(base_url("user/{$_SESSION['user_id']}"));
     }
 
-    public function post($post_id, $offset=0)
+    public function post($post_id=0, $offset=0)
     {
         try {
             $post = $this->post_model->get_post($post_id);
@@ -370,7 +370,7 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function photo($photo_id, $offset=0)
+    public function photo($photo_id=0, $offset=0)
     {
         try {
             $photo = $this->photo_model->get_photo($photo_id);
@@ -468,7 +468,7 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function add_friend($user_id)
+    public function add_friend($user_id=0)
     {
         try {
             $this->user_model->send_friend_request($user_id);
@@ -480,7 +480,7 @@ class User extends CI_Controller
         }
     }
 
-    public function accept_friend($user_id)
+    public function accept_friend($user_id=0)
     {
         try {
             $this->user_model->confirm_friend_request($user_id);
@@ -714,7 +714,7 @@ class User extends CI_Controller
         $this->load->view("common/footer");
     }
 
-    public function edit_college($user_college_id=NULL)
+    public function edit_college($user_college_id=0)
     {
         $data = $this->user_model->initialize_user();
         $data['title'] = "Edit your college";
@@ -797,7 +797,7 @@ class User extends CI_Controller
         $this->load->view("common/footer");
     }
 
-    public function add_programme($user_college_id=NULL)
+    public function add_programme($user_college_id=0)
     {
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $data['user_college_id']= $this->input->post('user-college-id');
@@ -830,7 +830,7 @@ class User extends CI_Controller
         $this->load->view("common/footer");
     }
 
-    public function edit_programme($user_programme_id=NULL)
+    public function edit_programme($user_programme_id=0)
     {
         $data = $this->user_model->initialize_user();
         $data['title'] = "Edit your programme";
@@ -911,7 +911,7 @@ class User extends CI_Controller
         $this->load->view("common/footer");
     }
 
-    public function edit_hall($user_hall_id=NULL)
+    public function edit_hall($user_hall_id=0)
     {
         $data = $this->user_model->initialize_user();
         $data['title'] = "Edit hall of attachment/residence";
@@ -1034,7 +1034,7 @@ class User extends CI_Controller
         $this->load->view("common/footer");
     }
 
-    public function edit_hostel($user_hostel_id=NULL)
+    public function edit_hostel($user_hostel_id=0)
     {
         $data = $this->user_model->initialize_user();
         $data['title'] = "Edit hostel";
@@ -1132,7 +1132,7 @@ class User extends CI_Controller
         $this->load->view("common/footer");
     }
 
-    public function add_district($district_id=null)
+    public function add_district($district_id=0)
     {
         $data = $this->user_model->initialize_user();
         $data['title'] = "Add your district";
