@@ -1,9 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-spl_autoload_register(function ($class) {
-    include("exceptions/{$class}.php");
-});
+require_once('exceptions/IllegalAccessException.php');
+require_once('exceptions/ReplyNotFoundException.php');
 
 /**
  * Contains functions related to a reply.
@@ -42,7 +41,9 @@ class Reply_model extends CI_Model
                      "WHERE (source_id = %d AND source_type = 'reply' AND liker_id = %d) " .
                      "LIMIT 1",
                      $reply_id, $_SESSION['user_id']);
-        return ($this->utility_model->run_query($like_sql)->num_rows() == 1);
+        $like_query = $this->utility_model->run_query($like_sql);
+
+        return ($likes_query->num_rows() == 1);
     }
 
     /**
@@ -142,7 +143,9 @@ class Reply_model extends CI_Model
                                 "FROM likes " .
                                 "WHERE (source_type = 'reply' AND source_id = %d)",
                                 $reply_id);
-        return $this->utility_model->run_query($likes_sql)->row_array()['COUNT(like_id)'];
+        $likes_query = $this->utility_model->run_query($likes_sql);
+
+        return $likes_query->row_array()['COUNT(like_id)'];
     }
 
     /**

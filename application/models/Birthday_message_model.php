@@ -1,9 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-spl_autoload_register(function ($class) {
-    include("exceptions/{$class}.php");
-});
+require_once('exceptions/IllegalAccessException.php');
+require_once('exceptions/MessageNotFoundException.php');
 
 /**
  * Contains functions relating to a message sent to a user on his birthday.
@@ -30,7 +29,9 @@ class Birthday_message_model extends CI_Model
                                     "AND liker_id = %d) " .
                             "LIMIT 1",
                             $birthday_message_id, $_SESSION['user_id']);
-        return ($this->utility_model->run_query($like_sql)->num_rows() == 1);
+        $like_query = $this->utility_model->run_query($like_sql);
+
+        return ($like_query->num_rows() == 1);
     }
 
     /**

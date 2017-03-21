@@ -1,9 +1,10 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-spl_autoload_register(function ($class) {
-    include("exceptions/{$class}.php");
-});
+require_once('exceptions/CollegeNotFoundException.php');
+require_once('exceptions/ProgrammeNotFoundException.php');
+require_once('exceptions/HostelNotFoundException.php');
+require_once('exceptions/HallNotFoundException.php');
 
 /**
  * Contains functions related to a user's profile.
@@ -51,6 +52,7 @@ class Profile_model extends CI_Model
                                 "LIMIT 1",
                                 $school_id, $college_id);
         $school_query = $this->utility_model->run_query($school_sql);
+
         return ($school_query->num_rows() == 1);
     }
 

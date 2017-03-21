@@ -1,9 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-spl_autoload_register(function ($class) {
-    include("exceptions/{$class}.php");
-});
+require_once('exceptions/UserNotFoundException.php');
+require_once('exceptions/IllegalAccessException.php');
 
 /**
  * Contains functions related to a particular user.
