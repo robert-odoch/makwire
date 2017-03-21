@@ -7,7 +7,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <div class="input-group">
         <p>From</p>
         <div>
-            <label for="start-day">Date</label>
+            <label for="start-day">Day</label>
             <select name="start-day" id="start-day">
                 <optgroup>
                     <?php
@@ -65,7 +65,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <div class="input-group">
         <p>To</p>
         <div>
-            <label for="end-day">Date</label>
+            <label for="end-day">Day</label>
             <select name="end-day" id="end-day">
                 <optgroup>
                     <?php
