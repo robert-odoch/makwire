@@ -145,6 +145,8 @@ class Register extends CI_Controller
                 $data['user_email_id'] = $user_email_id;
 
                 session_start();
+                session_regenerate_id(TRUE);
+
                 $_SESSION['data'] = $data;
                 redirect(base_url('register/step-three'));
             }
@@ -197,8 +199,9 @@ class Register extends CI_Controller
             }
             else {
                 session_start();
-                $data = array_merge($data, $_SESSION['data']);
+                session_regenerate_id(TRUE);
 
+                $data = array_merge($data, $_SESSION['data']);
                 $user_id = $this->register_model->register_user($data);
                 unset($_SESSION['data']);
 
