@@ -176,7 +176,7 @@ class Register extends CI_Controller
             if (strlen($passwd1) < 6) {
                 $error_messages['passwd1'] = "Password must be atleast 6 characters long!";
             }
-            elseif (!preg_match('/^[A-Za-z0-9]{3,}$/', $passwd1)) {
+            elseif (!preg_match('/^(\w*(?=\w*\d)(?=\w*[a-z])(?=\w*[A-Z])\w*){6,}$/', $passwd1)) {
                     $error_messages['passwd1'] = "Please ensure that your password adheres to " .
                                                     "the above requirements.";
             }
