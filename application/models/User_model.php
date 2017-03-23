@@ -107,12 +107,9 @@ class User_model extends CI_Model
         }
 
         $result = $query->row_array();
-
-        return (
-            (date_create(($result['year']+$age) . "-{$result['month']}-{$result['day']}") >
-             date_create($result['date_created'])) &&
-            ($age <= (date('Y') - $result['year']))
-        );
+        return (date_create(($result['year']+$age) . "-{$result['month']}-{$result['day']}") >
+                    date_create($result['date_created'])) &&
+                ($age <= (date('Y') - $result['year']));
     }
 
     /**
@@ -150,17 +147,9 @@ class User_model extends CI_Model
     public function get_dob($user_id)
     {
         $sql = sprintf("SELECT dob FROM users WHERE user_id = %d", $user_id);
-        return $this->utility_model->run_query($sql)->row_array()['dob'];
-    }
+        $query = $this->utility_model->run_query($sql);
 
-    public function create_dummy_user($user)
-    {
-        $q = sprintf("INSERT INTO users (dob, fname, lname, email, gender, uname, passwd) " .
-                     "VALUES (%s, %s, %s, %s, %s, %s, %s)", $this->db->escape($user['dob']),
-                     $this->db->escape($user['firstname']), $this->db->escape($user['lastname']),
-                     $this->db->escape($user['email']), $this->db->escape($user['gender']),
-                     $this->db->escape($user['username']), $this->db->escape(password_hash($user['password'], PASSWORD_BCRYPT)));
-        $this->utility_model->run_query($q);
+        return $query->row_array()['dob'];
     }
 
     /**
@@ -282,8 +271,9 @@ class User_model extends CI_Model
                                                      "activity IN('post','photo','profile_pic_change')) OR " .
                                                      "(actor_id = %d AND activity = 'share'))",
                                             $user_id, $user_id);
+        $query = $this->utility_model->run_query($num_posts_and_photos_sql);
 
-        return $this->utility_model->run_query($num_posts_and_photos_sql)->row_array()['COUNT(activity_id)'];
+        return $query->row_array()['COUNT(activity_id)'];
     }
 
     /**
@@ -365,7 +355,9 @@ class User_model extends CI_Model
         $sql = sprintf("SELECT COUNT(id) FROM birthday_messages " .
                         "WHERE (user_id = %d AND age = %d)",
                         $user_id, $age);
-        return $this->utility_model->run_query($sql)->row_array()['COUNT(id)'];
+        $query = $this->utility_model->run_query($sql);
+
+        return $query->row_array()['COUNT(id)'];
     }
 
     /**
@@ -439,7 +431,8 @@ class User_model extends CI_Model
                             $_SESSION['user_id']);
         }
 
-        return $this->utility_model->run_query($sql)->row_array()['COUNT(message_id)'];
+        $query = $this->utility_model->run_query($sql);
+        return $query->row_array()['COUNT(message_id)'];
     }
 
     /**
@@ -494,7 +487,9 @@ class User_model extends CI_Model
         $sql = sprintf("SELECT COUNT(id) FROM friends " .
                         "WHERE (user_id = %d) OR (friend_id = %d)",
                         $user_id, $user_id);
-        return $this->utility_model->run_query($sql)->row_array()['COUNT(id)'];
+        $query = $this->utility_model->run_query($sql);
+
+        return $query->row_array()['COUNT(id)'];
     }
 
     /**
@@ -539,7 +534,9 @@ class User_model extends CI_Model
         $sql = sprintf("SELECT COUNT(photo_id) FROM user_photos " .
                         "WHERE (user_id = %d)",
                         $user_id);
-        return $this->utility_model->run_query($sql)->row_array()['COUNT(photo_id)'];
+        $query = $this->utility_model->run_query($sql);
+
+        return $query->row_array()['COUNT(photo_id)'];
     }
 
     /**
@@ -1211,7 +1208,8 @@ class User_model extends CI_Model
                                 $_SESSION['user_id']);
         }
 
-        return $this->utility_model->run_query($req_sql)->row_array()['COUNT(user_id)'];
+        $req_query = $this->utility_model->run_query($req_sql);
+        return $req_query->row_array()['COUNT(user_id)'];
     }
 
     /**
@@ -1341,7 +1339,9 @@ class User_model extends CI_Model
                                 "(receiver_id = %d AND sender_id = %d)",
                         $user_id, $_SESSION['user_id'],
                         $_SESSION['user_id'], $user_id);
-        return $this->utility_model->run_query($sql)->row_array()['COUNT(message_id)'];
+        $query = $this->utility_model->run_query($sql);
+
+        return $query->row_array()['COUNT(message_id)'];
     }
 
     /**
