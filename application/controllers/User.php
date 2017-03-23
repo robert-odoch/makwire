@@ -427,7 +427,8 @@ class User extends CI_Controller
                 }
 
                 $data['search_results'] = $this->user_model->get_searched_user($query, $offset, $limit);
-                if ((count($data['search_results']) - $offset) > $limit) {
+                $num_search_results = count($this->user_model->get_searched_user($query, $offset, $limit+1));
+                if (($num_search_results - $offset) > $limit) {
                     $data['has_next'] = TRUE;
                     $data['next_of'] = ($offset + $limit);
                 }
