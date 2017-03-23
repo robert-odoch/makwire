@@ -22,54 +22,6 @@ class User extends CI_Controller
         $this->user_model->confirm_logged_in();
     }
 
-    // TODO: Delete this funtion when everything is done.
-    public function dummy()
-    {
-        $users = array(
-            array(
-                'dob'=>'1996-05-11',
-                'firstname'=>'Robert',
-                'lastname'=>'Odoch',
-                'email'=>'rodoch@cess.mak.ac.ug',
-                'gender'=>'M',
-                'username'=>'xizo',
-                'password'=>'frey'
-            ),
-            array(
-                'dob'=>'1996-01-01',
-                'firstname'=>'Alex',
-                'lastname'=>'Moruleng',
-                'email'=>'malex@cess.mak.ac.ug',
-                'gender'=>'M',
-                'username'=>'moru',
-                'password'=>'alex'
-            ),
-            array(
-                'dob'=>'1996-02-26',
-                'firstname'=>'Ronald',
-                'lastname'=>'Gubi',
-                'email'=>'gronald@cess.mak.ac.ug',
-                'gender'=>'M',
-                'username'=>'gubi',
-                'password'=>'badd'
-            ),
-            array(
-                'dob'=>'1994-10-09',
-                'firstname'=>'Pius',
-                'lastname'=>'Owaro',
-                'email'=>'opius@cess.mak.ac.ug',
-                'gender'=>'M',
-                'username'=>'obbo',
-                'password'=>'pius'
-            )
-        );
-
-        foreach($users as $user)
-        {
-            $this->user_model->create_dummy_user($user);
-        }
-    }
-
     public function news_feed($offset = 0)
     {
         $data = $this->user_model->initialize_user();
