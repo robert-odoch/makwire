@@ -158,6 +158,10 @@ class Register extends CI_Controller
 
     public function step_three()
     {
+        if (!isset($_SESSION['data']) || !is_array($_SESSION['data'])) {
+            redirect(base_url('register/step-one'));
+        }
+
         $data['title'] = "Sign Up: step 3 of 3";
         $this->load->view('common/header', $data);
 
