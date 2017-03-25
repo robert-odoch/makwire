@@ -52,9 +52,9 @@ class Register extends CI_Controller
                         $data['info_message'] = "Please use the link in the email sent to " .
                                                 "<strong>{$email}</strong> to continue with " .
                                                 "the registration process.<br>" .
-                                                "If you deleted the email, then you can " .
+                                                "If you deleted the email, then we can " .
                                                 "<a href='" . base_url("register/resend_email/{$email}") .
-                                                "'>request for another email to be sent.</a>";
+                                                "'>resend the email.</a>";
                     }
                 }
                 else {
