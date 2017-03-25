@@ -39,6 +39,28 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </div>
 
                 <div class="box">
+                    <h4>Search Results</h4>
+                    <div class="users">
+                        <div class="media">
+                            <div class="media-left">
+                                <img src="<?= base_url('images/missing_user.png'); ?>"
+                                class="media-object" alt="Odoch Robert">
+                            </div>
+                            <div class="media-body">
+                                <h4 class="media-heading">
+                                    <a href="#">
+                                        Odoch Robert
+                                    </a>
+                                </h4>
+                                <a href="#" class="btn btn-xs">
+                                    Block user
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box">
                     <h4>Blocked Users</h4>
                     <div class="alert alert-info">
                         <p>You have not blocked any users.</p>
