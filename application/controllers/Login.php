@@ -40,7 +40,14 @@ class Login extends CI_Controller
 
             if (!isset($data['login_errors'])) {
                 if ($this->login_model->is_valid_login($username, $password)) {
-                    redirect(base_url("user/news-feed"));
+                    if (isset($_SESSION['return_uri'])) {
+                        $return_url = base_url(str_replace("/makwire/", "", $_SESSION['return_uri']));
+                        unset($_SESSION['return_uri']);
+                        redirect($return_url);
+                    }
+                    else {
+                        redirect(base_url("user/news-feed"));
+                    }
                 }
                 else {
                     $data['login_errors']['login'] = 'Invalid username/password combination';
