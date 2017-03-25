@@ -12,13 +12,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <fieldset>
                     <div class="form-group">
                         <label for="first-name">First Name</label>
-                        <input type="text" name="fname" id="first-name" size="30"
+                        <input type="text" name="fname" id="first-name" class="fluid
+                        <?php
+                        if (isset($error_messages) && isset($error_messages['fname'])) {
+                            print ' has-error';
+                        }
+                        ?>"
                         <?php
                         if (isset($fname)) {
                             print " value='{$fname}'";
-                        }
-                        if (isset($error_messages) && isset($error_messages['fname'])) {
-                            print ' class="has-error"';
                         }
                         ?>>
                         <?php
@@ -29,13 +31,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </div>
                     <div class="form-group">
                         <label for="last-name">Last Name</label>
-                        <input type="text" name="lname" id="last-name" size="30"
+                        <input type="text" name="lname" id="last-name" class="fluid
+                        <?php
+                        if (isset($error_messages) && isset($error_messages['lname'])) {
+                            print ' has-error';
+                        }
+                        ?>"
                         <?php
                         if (isset($lname)) {
                             print " value='{$lname}'";
-                        }
-                        if (isset($error_messages) && isset($error_messages['lname'])) {
-                            print ' class="has-error"';
                         }
                         ?>>
                         <?php

@@ -16,13 +16,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             Must be atleast 3 characters long<br>
                             Only letters and numbers are allowed.
                         </span>
-                        <input type="text" name="uname" id="user-name" size="30"
+                        <input type="text" name="uname" id="user-name" class="fluid
+                        <?php
+                        if (isset($error_messages) && isset($error_messages['uname'])) {
+                            print ' has-error';
+                        }
+                        ?>"
                         <?php
                         if (isset($uname)) {
                             print " value='{$uname}'";
-                        }
-                        if (isset($error_messages) && isset($error_messages['uname'])) {
-                            print ' class="has-error"';
                         }
                         ?>>
                         <?php
@@ -37,12 +39,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             Must be atleast 6 characters long.<br>
                             Include atleast one uppercase letter, a lowercase letter, and a number.
                         </span>
-                        <input type="password" name="passwd1" id="passwd1" size="30"
+                        <input type="password" name="passwd1" id="passwd1" class="fluid
                         <?php
                         if (isset($error_messages) && isset($error_messages['passwd1'])) {
-                            print ' class="has-error"';
+                            print ' has-error';
                         }
-                        ?>>
+                        ?>">
                         <?php
                         if (isset($error_messages) && isset($error_messages['passwd1'])) {
                             print "<span class='error'>{$error_messages['passwd1']}</span>";
@@ -51,12 +53,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </div>
                     <div class="form-group">
                         <label for="passwd2">Confirm Password:</label>
-                        <input type="password" name="passwd2" id="passwd2" size="30"
+                        <input type="password" name="passwd2" id="passwd2" class="fluid
                         <?php
                         if (isset($error_messages) && isset($error_messages['passwd2'])) {
-                            print ' class="has-error"';
+                            print ' has-error';
                         }
-                        ?>>
+                        ?>">
                         <?php
                         if (isset($error_messages) && isset($error_messages['passwd2'])) {
                             print "<span class='error'>{$error_messages['passwd2']}</span>";

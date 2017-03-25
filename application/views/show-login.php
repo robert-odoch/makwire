@@ -29,11 +29,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <fieldset>
                     <div class="form-group">
                         <label for="username">Username</label>
-                        <input type="text" name="username" id="username" size="30"<?php
+                        <input type="text" name="username" id="username" class="fluid
+                        <?php
                         if (isset($login_errors) && array_key_exists('username', $login_errors)) {
-                            print " class='has-error'";
+                            print " has-error";
                         }
+                        ?>"
 
+                        <?php
                         if (isset($username)) {
                             print " value='{$username}'";
                         }
@@ -46,13 +49,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input type="password" name="password" id="password" size="30"
+                        <input type="password" name="password" id="password" class="fluid
                         <?php
                         if (isset($login_errors) &&
                             array_key_exists('password', $login_errors)) {
-                            print " class='has-error'";
+                            print " has-error";
                         }
-                        ?>>
+                        ?>">
                         <?php
                         if (isset($login_errors) && array_key_exists('password', $login_errors)) {
                             print "<span class='error'>{$login_errors['password']}</span>\n";
