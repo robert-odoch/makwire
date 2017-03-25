@@ -44,7 +44,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         '<li><a href="' . base_url("user/friends/{$suid}") . '">Friends</a></li>' .
                         '<li><a href="' . base_url("user/groups/{$suid}") . '">Groups</a></li>';
                 break;
-            case 'about':
+            case 'profile':
                 print '<li><a href="' . base_url("user/{$suid}") . '">Timeline</a></li>' .
                         '<li><a href="' . base_url("user/profile/{$suid}") . '" class="active">About</a></li>' .
                         '<li><a href="' . base_url("user/photos/{$suid}") . '">Photos</a></li>' .

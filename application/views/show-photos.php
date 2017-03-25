@@ -1,10 +1,10 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+define('PAGE', 'photos');
 require_once('common/user-page-start.php');
 
 if ($is_visitor) {
-    define('PAGE', 'photos');
     require_once("common/secondary-user-nav.php");
 }
 ?>

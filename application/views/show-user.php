@@ -1,10 +1,10 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+define('PAGE', $page);
 require_once('common/user-page-start.php');
 
 if ($is_visitor) {
-    define('PAGE', 'timeline');
     require_once("common/secondary-user-nav.php");
 }
 
@@ -77,7 +77,7 @@ if (!$is_visitor) {
                 print '<a href="' . base_url("user/news-feed/{$next_offset}") .
                         '">View more stories</a>';
             }
-            else if ($page == 'index') {
+            else if ($page == 'timeline') {
                 print '<a href="' . base_url("user/{$user_id}/{$next_offset}") .
                         '">View more posts</a>';
             }

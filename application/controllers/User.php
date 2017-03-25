@@ -85,7 +85,7 @@ class User extends CI_Controller
         }
 
         $data['posts_and_photos'] = $this->user_model->get_timeline_posts_and_photos($user_id, $offset, $limit);
-        $data['page'] = 'index';
+        $data['page'] = 'timeline';
         $data['user_id'] = $user_id;
         $this->load->view('show-user', $data);
         $this->load->view('common/footer');
