@@ -6,16 +6,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <div class="wrapper">
     <div class="col-large">
         <div role="main" class="main user-home">
-            <div class="side-content">
-                <nav class="user-nav" role="navigation">
-                    <ul>
-                        <li><a href="#">Account</a></li>
-                        <li><a href="#">Emails</a></li>
-                        <li><a href="#">Notifications</a></li>
-                        <li><a href="#">Blocked users</a></li>
-                    </ul>
-                </nav>
-            </div>
+            <?php require_once('common/account-settings-nav.php'); ?>
 
             <div class="main-content">
                 <div class="box">
@@ -59,6 +50,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         </fieldset>
 
                         <input type="submit" name="submit" value="Update password" class="btn btn-sm">
+                        <a href="<?= base_url('account/forgot-password'); ?>">I forgot my password</a>
                     </form>
                 </div>
 
