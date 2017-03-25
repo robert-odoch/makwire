@@ -13,6 +13,10 @@ h3 {
     margin-top: 10px;
 }
 
+h5 {
+    font-weight: bold;
+}
+
 .navbar-fixed-top {
     border-bottom: 2px solid #f00;
 }
@@ -38,6 +42,11 @@ ul {
     margin: 0;
 }
 
+ul.bullet {
+    list-style-type: square;
+    margin-left: 40px;
+}
+
 a {
     color: #2E8B57;
 }
@@ -50,7 +59,7 @@ a:focus {
 
 .wrap-single {
     margin: auto;
-    width: 50%;
+    width: 25%;
 }
 
 .wrapper {
@@ -93,6 +102,10 @@ a:focus {
     width: 50px;
 }
 
+div.media {
+    margin: 0 0 2px 0;
+}
+
 div.likes div.media,
 div.shares div.media,
 div.replies div.media,
@@ -104,7 +117,6 @@ div.suggested-users div.media,
 div.birthday-messages div.media {
     border-bottom: 1px dotted #8FBC8F;
     padding-bottom: 2px;
-    margin: 0 0 2px 0;
 }
 
 div.media:last-child,
@@ -530,14 +542,18 @@ form div.input-group div {
     display: inline-block;
 }
 
-form input,
-form textarea {
+form textarea,
+form input[type="text"],
+form input[type="email"],
+form input[type="search"],
+form input[type="password"] {
     border-radius: 1px 1px 3px 3px;
     border: 1px solid #8FBC8F;
     border-top: 2px solid #2E8B57;
     background-color: #8FBC8F;
     font-weight: bold;
     padding: 1px 5px;
+    width: 60%;
     color: #fff;
 }
 
@@ -554,14 +570,14 @@ form input[type="file"] {
 }
 
 .fluid {
-    width: 100%;
+    width: 100% !important;
 }
 
 form .has-error {
+    border: 1px solid #EBCCD1 !important;
     border-top: 2px solid rgba(255,0,0,.3) !important;
-    background-color: #F2DEDE;
-    border: 1px solid #EBCCD1;
-    color: #A94442;
+    background-color: #F2DEDE !important;
+    color: #A94442 !important;
 }
 
 span.error {
