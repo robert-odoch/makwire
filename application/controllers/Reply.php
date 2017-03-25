@@ -69,7 +69,7 @@ class Reply extends CI_Controller
 
         $data['object'] = 'reply';
         $data['reply'] = $reply;
-        $this->load->view("show-likes", $data);
+        $this->load->view("show/likes", $data);
         $this->load->view("common/footer");
     }
 }

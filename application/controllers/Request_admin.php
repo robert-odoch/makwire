@@ -40,7 +40,7 @@ class Request_admin extends CI_Controller
             }
         }
 
-        $this->load->view("request-admin-add-district", $data);
+        $this->load->view("request-admin/add-district", $data);
         $this->load->view("common/footer");
     }
 
@@ -63,7 +63,7 @@ class Request_admin extends CI_Controller
             }
         }
 
-        $this->load->view("request-admin-add-country", $data);
+        $this->load->view("request-admin/add-country", $data);
         $this->load->view("common/footer");
     }
 }

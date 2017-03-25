@@ -45,7 +45,7 @@ class User extends CI_Controller
         $data['posts_and_photos'] = $this->user_model->get_news_feed_posts_and_photos($offset, $limit);
         $data['page'] = 'news-feed';
         $data['is_visitor'] = FALSE;
-        $this->load->view('show-user', $data);
+        $this->load->view('show/user', $data);
         $this->load->view('common/footer');
     }
 
@@ -87,7 +87,7 @@ class User extends CI_Controller
         $data['posts_and_photos'] = $this->user_model->get_timeline_posts_and_photos($user_id, $offset, $limit);
         $data['page'] = 'timeline';
         $data['user_id'] = $user_id;
-        $this->load->view('show-user', $data);
+        $this->load->view('show/user', $data);
         $this->load->view('common/footer');
     }
 
@@ -127,7 +127,7 @@ class User extends CI_Controller
         $data['user_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
         $data['dob'] = $this->user_model->get_dob($user_id);
         $data['age'] = $age;
-        $this->load->view("show-birthday", $data);
+        $this->load->view("show/birthday", $data);
         $this->load->view("common/footer");
     }
 
@@ -268,7 +268,7 @@ class User extends CI_Controller
         $data['num_prev'] = $offset;
         $data['comments'] = $this->post_model->get_comments($post_id, $offset, $limit);
 
-        $this->load->view('show-post', $data);
+        $this->load->view('show/post', $data);
         $this->load->view('common/footer');
     }
 
@@ -319,7 +319,7 @@ class User extends CI_Controller
 		    }
 		}
 
-        $this->load->view('show-notifications', $data);
+        $this->load->view('show/notifications', $data);
         $this->load->view('common/footer');
     }
 
@@ -349,7 +349,7 @@ class User extends CI_Controller
         $data['num_prev'] = $offset;
         $data['comments'] = $this->photo_model->get_comments($photo_id, $offset, $limit);
 
-        $this->load->view("show-photo", $data);
+        $this->load->view("show/photo", $data);
         $this->load->view("common/footer");
     }
 
@@ -492,7 +492,7 @@ class User extends CI_Controller
             }
         }
 
-        $this->load->view('show-messages', $data);
+        $this->load->view('show/messages', $data);
         $this->load->view('common/footer');
     }
 
@@ -531,7 +531,7 @@ class User extends CI_Controller
         }
 
         $data['friends'] = $this->user_model->get_friends($user_id, $offset, $limit);
-        $this->load->view("show-friends", $data);
+        $this->load->view("show/friends", $data);
         $this->load->view("common/footer");
     }
 
@@ -602,7 +602,7 @@ class User extends CI_Controller
 
         $data['photos'] = $this->user_model->get_photos($user_id, $offset, $limit);
         $data['user_id'] = $user_id;  // Used in view more photos.
-        $this->load->view("show-photos", $data);
+        $this->load->view("show/photos", $data);
         $this->load->view("common/footer");
     }
 
@@ -664,7 +664,7 @@ class User extends CI_Controller
 
         $data['heading'] = "Add College";
         $data['form_action'] = base_url("user/add-college");
-        $this->load->view("edit-college", $data);
+        $this->load->view("edit/college", $data);
         $this->load->view("common/footer");
     }
 
@@ -747,7 +747,7 @@ class User extends CI_Controller
 
         $data['heading'] = "Edit College";
         $data['form_action'] = base_url("user/edit-college");
-        $this->load->view("edit-college", $data);
+        $this->load->view("edit/college", $data);
         $this->load->view("common/footer");
     }
 
@@ -780,7 +780,7 @@ class User extends CI_Controller
 
         $data['heading'] = "Add Programme";
         $data['form_action'] = base_url("user/add-programme");
-        $this->load->view("edit-programme", $data);
+        $this->load->view("edit/programme", $data);
         $this->load->view("common/footer");
     }
 
@@ -811,7 +811,7 @@ class User extends CI_Controller
 
         $data['heading'] = "Edit Programme Details";
         $data['form_action'] = base_url("user/edit-programme");
-        $this->load->view("edit-programme", $data);
+        $this->load->view("edit/programme", $data);
         $this->load->view("common/footer");
     }
 
@@ -861,7 +861,7 @@ class User extends CI_Controller
 
         $data['heading'] = "Add Hall";
         $data['form_action'] = base_url("user/add-hall");
-        $this->load->view("edit-hall", $data);
+        $this->load->view("edit/hall", $data);
         $this->load->view("common/footer");
     }
 
@@ -936,7 +936,7 @@ class User extends CI_Controller
 
         $data['heading'] = "Edit Hall";
         $data['form_action'] = base_url("user/edit-hall");
-        $this->load->view("edit-hall", $data);
+        $this->load->view("edit/hall", $data);
         $this->load->view("common/footer");
     }
 
@@ -984,7 +984,7 @@ class User extends CI_Controller
         $data['heading'] = "Add Hostel";
         $data['form_action'] = base_url("user/add-hostel");
         $data['hostels'] = $this->profile_model->get_hostels();
-        $this->load->view("edit-hostel", $data);
+        $this->load->view("edit/hostel", $data);
         $this->load->view("common/footer");
     }
 
@@ -1057,7 +1057,7 @@ class User extends CI_Controller
 
         $data['heading'] = "Edit Hostel";
         $data['form_action'] = base_url("user/edit-hostel");
-        $this->load->view("edit-hostel", $data);
+        $this->load->view("edit/hostel", $data);
         $this->load->view("common/footer");
     }
 
@@ -1082,7 +1082,7 @@ class User extends CI_Controller
         else {
             $data['countries'] = $this->profile_model->get_countries();
         }
-        $this->load->view("edit-country", $data);
+        $this->load->view("edit/country", $data);
         $this->load->view("common/footer");
     }
 
@@ -1111,7 +1111,7 @@ class User extends CI_Controller
         }
 
         $data['heading'] = "Add District";
-        $this->load->view("edit-district", $data);
+        $this->load->view("edit/district", $data);
         $this->load->view("common/footer");
     }
 }

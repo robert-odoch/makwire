@@ -80,7 +80,7 @@ class Register extends CI_Controller
             }
         }
 
-        $this->load->view('register-step-one', $data);
+        $this->load->view('register/step-one', $data);
         $this->load->view('common/external-page-footer');
     }
 
@@ -152,7 +152,7 @@ class Register extends CI_Controller
             }
         }
 
-        $this->load->view('register-step-two', $data);
+        $this->load->view('register/step-two', $data);
         $this->load->view('common/external-page-footer');
     }
 
@@ -214,7 +214,7 @@ class Register extends CI_Controller
             }
         }
 
-        $this->load->view('register-step-three', $data);
+        $this->load->view('register/step-three', $data);
         $this->load->view('common/external-page-footer');
     }
 

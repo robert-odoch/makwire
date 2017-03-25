@@ -43,7 +43,7 @@ class Reply_model extends CI_Model
                      $reply_id, $_SESSION['user_id']);
         $like_query = $this->utility_model->run_query($like_sql);
 
-        return ($likes_query->num_rows() == 1);
+        return ($like_query->num_rows() == 1);
     }
 
     /**

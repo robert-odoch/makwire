@@ -127,7 +127,7 @@ class Post extends CI_Controller
         $data['post'] = $post;
 
         $data['object'] = 'post';
-        $this->load->view("show-likes", $data);
+        $this->load->view("show/likes", $data);
         $this->load->view("common/footer");
     }
 
@@ -168,7 +168,7 @@ class Post extends CI_Controller
         $data['post'] = $post;
 
         $data['object'] = 'post';
-        $this->load->view("show-comments", $data);
+        $this->load->view("show/comments", $data);
         $this->load->view("common/footer");
     }
 
@@ -211,7 +211,7 @@ class Post extends CI_Controller
         $data['post'] = $post;
 
         $data['object'] = 'post';
-        $this->load->view("show-shares", $data);
+        $this->load->view("show/shares", $data);
         $this->load->view("common/footer");
     }
 }

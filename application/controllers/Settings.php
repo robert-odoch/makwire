@@ -25,7 +25,7 @@ class Settings extends CI_Controller
         $data['title'] = 'Account settings';
         $this->load->view('common/header', $data);
 
-        $this->load->view('account-settings');
+        $this->load->view('settings/account');
         $this->load->view('common/footer');
     }
 
@@ -35,7 +35,7 @@ class Settings extends CI_Controller
         $data['title'] = 'Email settings';
         $this->load->view('common/header', $data);
 
-        $this->load->view('email-settings');
+        $this->load->view('settings/email');
         $this->load->view('common/footer');
 
     }
@@ -46,7 +46,7 @@ class Settings extends CI_Controller
         $data['title'] = 'Notification settings';
         $this->load->view('common/header', $data);
 
-        $this->load->view('notification-settings');
+        $this->load->view('settings/notification');
         $this->load->view('common/footer');
     }
 
@@ -56,7 +56,7 @@ class Settings extends CI_Controller
         $data['title'] = 'Blocked users';
         $this->load->view('common/header', $data);
 
-        $this->load->view('block-user');
+        $this->load->view('settings/block-user');
         $this->load->view('common/footer');
     }
 

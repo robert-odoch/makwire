@@ -24,7 +24,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <nav role="navigation" class="user-nav">
             <ul>
                 <?php
-                if ($is_visitor) {
+                if (!defined('PAGE') || PAGE === 'timeline' || $is_visitor) {
                     print '<li><a href="' . base_url("user/profile") . '">Edit Profile</a></li>' .
                             '<li><a href="' . base_url("user/news-feed") . '">News feed</a></li>' .
                             '<li><a href="' . base_url("user/photos") . '">Photos</a></li>' .

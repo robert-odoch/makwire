@@ -60,7 +60,7 @@ class Login extends CI_Controller
             unset($_SESSION['message']);
         }
 
-        $this->load->view('show-login', $data);
+        $this->load->view('show/login', $data);
         $this->load->view('common/external-page-footer');
     }
 }

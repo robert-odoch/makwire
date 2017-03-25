@@ -156,7 +156,7 @@ class Photo extends CI_Controller
 
         $data['object'] = 'photo';
         $data['photo'] = $photo;
-        $this->load->view("show-likes", $data);
+        $this->load->view("show/likes", $data);
         $this->load->view("common/footer");
     }
 
@@ -193,7 +193,7 @@ class Photo extends CI_Controller
         $data['comments'] = $this->photo_model->get_comments($photo_id, $offset, $limit);
         $data['object'] = 'photo';
         $data['photo'] = $photo;
-        $this->load->view("show-comments", $data);
+        $this->load->view("show/comments", $data);
         $this->load->view("common/footer");
     }
 
@@ -232,7 +232,7 @@ class Photo extends CI_Controller
 
         $data['object'] = 'photo';
         $data['photo'] = $photo;
-        $this->load->view("show-shares", $data);
+        $this->load->view("show/shares", $data);
         $this->load->view("common/footer");
     }
 }
