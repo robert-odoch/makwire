@@ -6,10 +6,10 @@ require_once('common/user-page-start.php');
 
 <div class="box">
     <h4>Find friends</h4>
-    <form action="" method="post" enctype="multipart/form-data" accept-charset="utf-8" role="form">
+    <form action="" method="post" accept-charset="utf-8" role="form">
         <fieldset>
             <div class="form-group">
-                <label for="query">Name or email address</label>
+                <label for="query">Search by full name or email address</label>
                 <input type="search" name="query" id="query" class="fluid
                 <?php
                 if (isset($error)) {
