@@ -14,8 +14,7 @@ class Birthday_message extends CI_Controller
         }
 
         $this->load->model([
-            'user_model', 'birthday_message_model'
-            'utility_model'
+            'user_model', 'birthday_message_model', 'utility_model'
         ]);
 
         // Check whether the user hasn't been logged out from some where else.
@@ -32,8 +31,9 @@ class Birthday_message extends CI_Controller
             show_404();
         }
         catch (IllegalAccessException $e) {
-            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
-                                                            "to like this message.");
+            $this->utility_model->show_permission_denied(
+                "You don't have the proper permissions to like this message."
+            );
         }
     }
 }

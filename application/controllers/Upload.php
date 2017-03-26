@@ -31,11 +31,11 @@ class Upload extends CI_Controller
     public function profile_picture()
     {
         $data = $this->user_model->initialize_user();
-        $data['title'] = "Change profile picture";
-        $this->load->view("common/header", $data);
+        $data['title'] = 'Change profile picture';
+        $this->load->view('common/header', $data);
 
-        $data['heading'] = "Change profile picture";
-        if ($_SERVER['REQUEST_METHOD'] === "POST") {
+        $data['heading'] = 'Change profile picture';
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!$this->upload->do_upload('userfile')) {
                 $data['error'] = $this->upload->display_errors();
                 $this->load->view('upload-image', $data);
@@ -73,17 +73,17 @@ class Upload extends CI_Controller
         }
 
         $data['form_action'] = base_url('upload/profile-picture');
-        $this->load->view("upload-image", $data);
-        $this->load->view("common/footer");
+        $this->load->view('upload-image', $data);
+        $this->load->view('common/footer');
     }
 
     public function photo()
     {
         $data = $this->user_model->initialize_user();
-        $data['title'] = "Add new photo";
-        $this->load->view("common/header", $data);
+        $data['title'] = 'Add new photo';
+        $this->load->view('common/header', $data);
 
-        $data['heading'] = "Add new photo";
+        $data['heading'] = 'Add new photo';
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
             // Upload the file.
@@ -121,8 +121,8 @@ class Upload extends CI_Controller
         }
 
         $data['form_action'] = base_url('upload/photo');
-        $this->load->view("upload-image", $data);
-        $this->load->view("common/footer");
+        $this->load->view('upload-image', $data);
+        $this->load->view('common/footer');
     }
 }
 ?>

@@ -14,7 +14,7 @@ class Request_admin extends CI_Controller
             redirect(base_url('login'));
         }
 
-        $this->load->model("user_model");
+        $this->load->model('user_model');
 
         // Check whether the user hasn't been logged out from some where else.
         $this->user_model->confirm_logged_in();
@@ -23,14 +23,14 @@ class Request_admin extends CI_Controller
     public function add_district()
     {
         $data = $this->user_model->initialize_user();
-        $data['title'] = "Request admin to add your district or state";
-        $this->load->view("common/header", $data);
+        $data['title'] = 'Request admin to add your district or state';
+        $this->load->view('common/header', $data);
 
         if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $district = $this->input->post("district");
             if (empty(trim($district))) {
-                $data['error_message'] = "Please enter the name of your district " .
-                                            "or state and try again.";
+                $data['error_message'] = 'Please enter the name of your district ' .
+                                            'or state and try again.';
             }
             else {
                 // Submit the request to the administrator.
@@ -40,20 +40,20 @@ class Request_admin extends CI_Controller
             }
         }
 
-        $this->load->view("request-admin/add-district", $data);
-        $this->load->view("common/footer");
+        $this->load->view('request-admin/add-district', $data);
+        $this->load->view('common/footer');
     }
 
     public function add_country()
     {
         $data = $this->user_model->initialize_user();
-        $data['title'] = "Request admin to add your country";
-        $this->load->view("common/header", $data);
+        $data['title'] = 'Request admin to add your country';
+        $this->load->view('common/header', $data);
 
         if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $country = $this->input->post("country");
             if (empty(trim($country))) {
-                $data['error_message'] = "Please enter the name of your country and try again.";
+                $data['error_message'] = 'Please enter the name of your country and try again.';
             }
             else {
                 // Submit the request to the administrator.
@@ -63,8 +63,8 @@ class Request_admin extends CI_Controller
             }
         }
 
-        $this->load->view("request-admin/add-country", $data);
-        $this->load->view("common/footer");
+        $this->load->view('request-admin/add-country', $data);
+        $this->load->view('common/footer');
     }
 }
 

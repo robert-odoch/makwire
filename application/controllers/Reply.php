@@ -29,8 +29,9 @@ class Reply extends CI_Controller
             show_404();
         }
         catch (IllegalAccessException $e) {
-            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
-                                                            "to like this reply.");
+            $this->utility_model->show_permission_denied(
+                "You don't have the proper permissions to like this reply."
+            );
         }
     }
 
@@ -44,8 +45,8 @@ class Reply extends CI_Controller
         }
 
         $data = $this->user_model->initialize_user();
-        $data['title'] = "People who liked this reply";
-        $this->load->view("common/header", $data);
+        $data['title'] = 'People who liked this reply';
+        $this->load->view('common/header', $data);
 
         // Maximum number of likes to display.
         $limit = 10;
@@ -69,8 +70,8 @@ class Reply extends CI_Controller
 
         $data['object'] = 'reply';
         $data['reply'] = $reply;
-        $this->load->view("show/likes", $data);
-        $this->load->view("common/footer");
+        $this->load->view('show/likes', $data);
+        $this->load->view('common/footer');
     }
 }
 ?>

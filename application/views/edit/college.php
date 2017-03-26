@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-require_once('../common/user-page-start.php');
+require_once(dirname(__FILE__) . '/../common/user-page-start.php');
 ?>
 
 <div class="box">
@@ -65,7 +65,7 @@ require_once('../common/user-page-start.php');
         </fieldset>
 
         <?php
-        require_once("../common/show-date-input.php");
+        require_once(dirname(__FILE__) . '/../common/show-date-input.php');
 
         // Only show this if the user is  editing an existing college.
         if (isset($user_college)) {

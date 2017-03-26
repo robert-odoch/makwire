@@ -14,8 +14,7 @@ class User extends CI_Controller
         }
 
         $this->load->model([
-            'user_model', 'post_model',
-            'profile_model', 'photo_model',
+            'user_model', 'post_model', 'profile_model', 'photo_model',
             'utility_model'
         ]);
 
@@ -26,7 +25,7 @@ class User extends CI_Controller
     public function news_feed($offset = 0)
     {
         $data = $this->user_model->initialize_user();
-        $data['title'] = "Makwire | News Feed";
+        $data['title'] = 'Makwire | News Feed';
         $this->load->view('common/header', $data);
 
         if (isset($_SESSION['post_error']) && !empty($_SESSION['post_error'])) {
@@ -98,7 +97,9 @@ class User extends CI_Controller
         }
 
         if (!$this->user_model->are_friends($user_id)) {
-            $this->utility_model->show_permission_denied("You don't have the proper permissions.");
+            $this->utility_model->show_permission_denied(
+                "You don't have the proper permissions."
+            );
             return;
         }
 
@@ -107,7 +108,7 @@ class User extends CI_Controller
         $data['title'] = format_name($data['user']) . ' birthday';
         $data['is_visitor'] = ($user_id == $_SESSION['user_id']) ? FALSE : TRUE;
 
-        $this->load->view("common/header", $data);
+        $this->load->view('common/header', $data);
 
         $limit = 10;
         $num_birthday_messages = $this->user_model->get_num_birthday_messages($user_id, $age);
@@ -127,14 +128,16 @@ class User extends CI_Controller
         $data['user_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
         $data['dob'] = $this->user_model->get_dob($user_id);
         $data['age'] = $age;
-        $this->load->view("show/birthday", $data);
-        $this->load->view("common/footer");
+        $this->load->view('show/birthday', $data);
+        $this->load->view('common/footer');
     }
 
     public function send_birthday_message($user_id=0, $age=0)
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->utility_model->show_permission_denied("You don't have the proper permissions.");
+            $this->utility_model->show_permission_denied(
+                "You don't have the proper permissions."
+            );
             return;
         }
 
@@ -152,7 +155,7 @@ class User extends CI_Controller
     public function chat($offset=0)
     {
         $data = $this->user_model->initialize_user();
-        $data['title'] = "Chat With Friends";
+        $data['title'] = 'Chat With Friends';
         $this->load->view('common/header', $data);
 
         $limit = 10;  // Maximum number of users to show.
@@ -185,8 +188,9 @@ class User extends CI_Controller
         }
 
         if (!$this->user_model->are_friends($user_id)) {
-            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
-                                                            "to send a message to this user.");
+            $this->utility_model->show_permission_denied(
+                "You don't have the proper permissions to send a message to this user."
+            );
             return;
         }
 
@@ -228,7 +232,9 @@ class User extends CI_Controller
     public function new_post()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->utility_model->show_permission_denied("You don't have the proper permissions.");
+            $this->utility_model->show_permission_denied(
+                "You don't have the proper permissions."
+            );
             return;
         }
 
@@ -275,7 +281,7 @@ class User extends CI_Controller
     public function notifications($offset=0)
     {
         $data = $this->user_model->initialize_user();
-        $data['title'] = "Notifications";
+        $data['title'] = 'Notifications';
         $this->load->view('common/header', $data);
 
         $limit = 10;  // Maximum number of notifications to show.
@@ -335,7 +341,7 @@ class User extends CI_Controller
         $data = $this->user_model->initialize_user();
         $data['title'] = format_name($photo['author']) . ' photo';
 
-        $this->load->view("common/header", $data);
+        $this->load->view('common/header', $data);
 
         $data['photo'] = $photo;
 
@@ -349,14 +355,14 @@ class User extends CI_Controller
         $data['num_prev'] = $offset;
         $data['comments'] = $this->photo_model->get_comments($photo_id, $offset, $limit);
 
-        $this->load->view("show/photo", $data);
-        $this->load->view("common/footer");
+        $this->load->view('show/photo', $data);
+        $this->load->view('common/footer');
     }
 
     public function find_friends($offset=0)
     {
         $data = $this->user_model->initialize_user();
-        $data['title'] = "Find Friends";
+        $data['title'] = 'Find Friends';
         $this->load->view('common/header', $data);
 
         $limit = 10;  // Maximum number of suggested users to show.
@@ -406,7 +412,7 @@ class User extends CI_Controller
     public function friend_requests($offset=0)
     {
         $data = $this->user_model->initialize_user();
-        $data['title'] = "Friend Requests";
+        $data['title'] = 'Friend Requests';
         $this->load->view('common/header', $data);
 
         $limit = 10;
@@ -429,8 +435,10 @@ class User extends CI_Controller
             $this->utility_model->show_success("Friend request sent.");
         }
         catch (IllegalAccessException $e) {
-            $this->utility_model->show_permission_denied("Either the two of you are already friends, " .
-                                                            "or there exists a pending freind request.");
+            $this->utility_model->show_permission_denied(
+                "Either the two of you are already friends, " .
+                "or there exists a pending freind request."
+            );
         }
     }
 
@@ -441,14 +449,16 @@ class User extends CI_Controller
             redirect(base_url("user/{$user_id}"));
         }
         catch (IllegalAccessException $e) {
-            $this->utility_model->show_permission_denied("This user didn't send you a friend request.");
+            $this->utility_model->show_permission_denied(
+                "This user didn't send you a friend request."
+            );
         }
     }
 
     public function messages($offset=0)
     {
         $data = $this->user_model->initialize_user();
-        $data['title'] = "Messages";
+        $data['title'] = 'Messages';
         $this->load->view('common/header', $data);
 
         $limit = 10;  // Maximum number of messages to show.
@@ -520,7 +530,7 @@ class User extends CI_Controller
             $data['title'] = format_name($data['secondary_user']) . ' friends';
         }
 
-        $this->load->view("common/header", $data);
+        $this->load->view('common/header', $data);
 
         $limit = 10;  // Maximum number of friends to show.
         $data['has_next'] = FALSE;
@@ -531,8 +541,8 @@ class User extends CI_Controller
         }
 
         $data['friends'] = $this->user_model->get_friends($user_id, $offset, $limit);
-        $this->load->view("show/friends", $data);
-        $this->load->view("common/footer");
+        $this->load->view('show/friends', $data);
+        $this->load->view('common/footer');
     }
 
     public function profile($user_id=NULL)
@@ -542,7 +552,7 @@ class User extends CI_Controller
         }
 
         $data = $this->user_model->initialize_user();
-        $data['title'] = "Edit Profile";
+        $data['title'] = 'Edit Profile';
 
         $data['is_visitor'] = ($user_id == $_SESSION['user_id']) ? FALSE : TRUE;
         if ($data['is_visitor']) {
@@ -559,11 +569,11 @@ class User extends CI_Controller
             $data['title'] = "About {$data['secondary_user']}";
         }
 
-        $this->load->view("common/header", $data);
+        $this->load->view('common/header', $data);
 
         $data['profile'] = $this->profile_model->get_profile($user_id);
-        $this->load->view("profile", $data);
-        $this->load->view("common/footer");
+        $this->load->view('profile', $data);
+        $this->load->view('common/footer');
     }
 
     public function photos($user_id=NULL, $offset=0)
@@ -590,7 +600,7 @@ class User extends CI_Controller
             $data['title'] = format_name($data['secondary_user']) . ' photos';
         }
 
-        $this->load->view("common/header", $data);
+        $this->load->view('common/header', $data);
 
         $limit = 12;  // Maximum number of photos to show.
         $data['has_next'] = FALSE;
@@ -602,28 +612,28 @@ class User extends CI_Controller
 
         $data['photos'] = $this->user_model->get_photos($user_id, $offset, $limit);
         $data['user_id'] = $user_id;  // Used in view more photos.
-        $this->load->view("show/photos", $data);
-        $this->load->view("common/footer");
+        $this->load->view('show/photos', $data);
+        $this->load->view('common/footer');
     }
 
     public function add_college()
     {
         $data = $this->user_model->initialize_user();
-        $data['title'] = "Add your college";
+        $data['title'] = 'Add your college';
         $this->load->view('common/header', $data);
 
-        if ($_SERVER['REQUEST_METHOD'] === "POST") {
-            $data['start_day'] = $this->input->post("start-day");
-            $data['start_month'] = $this->input->post("start-month");
-            $data['start_year'] = $this->input->post("start-year");
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data['start_day'] = $this->input->post('start-day');
+            $data['start_month'] = $this->input->post('start-month');
+            $data['start_year'] = $this->input->post('start-year');
 
-            $data['end_day'] = $this->input->post("end-day");
-            $data['end_month'] = $this->input->post("end-month");
-            $data['end_year'] = $this->input->post("end-year");
+            $data['end_day'] = $this->input->post('end-day');
+            $data['end_month'] = $this->input->post('end-month');
+            $data['end_year'] = $this->input->post('end-year');
 
             // Validate the dates.
             if ($data['end_year'] < $data['start_year']) {
-                $data['error_message'] = "Invalid dates entered! Please check the dates and try again.";
+                $data['error_message'] = 'Invalid dates entered! Please check the dates and try again.';
             }
             elseif (checkdate($data['start_month'], $data['start_day'], $data['start_year']) &&
                     checkdate($data['end_month'], $data['end_day'], $data['end_year'])) {
@@ -631,23 +641,26 @@ class User extends CI_Controller
                 $data['end_date'] = "{$data['end_year']}-{$data['end_month']}-{$data['end_day']}";
             }
             else {
-                $data['error_message'] = "Invalid dates entered! Please check the dates and try again.";
+                $data['error_message'] = 'Invalid dates entered! Please check the dates and try again.';
             }
 
             if (!isset($data['error_message'])) {
-                $data['college_id'] = $this->input->post("college");
-                $data['school_id'] = $this->input->post("school");
+                $data['college_id'] = $this->input->post('college');
+                $data['school_id'] = $this->input->post('school');
 
                 // Make sure college and school exist.
                 if (!$this->profile_model->college_and_school_exists($data['college_id'], $data['school_id'])) {
-                    $data['error_message'] = "Your college and school do not match!<br>Please try again.";
+                    $data['error_message'] = 'Your college and school do not match!<br>' .
+                                                'Please try again.';
                 }
             }
 
             if (!isset($data['error_message'])) {
                 // Try saving the college and school.
                 if ($this->profile_model->add_college($data)) {
-                    $this->utility_model->show_success("Your college and school have been succesfully saved.");
+                    $this->utility_model->show_success(
+                        'Your college and school have been succesfully saved.'
+                    );
                     return;
                 }
                 else {
@@ -662,37 +675,37 @@ class User extends CI_Controller
         $data['colleges'] = $this->profile_model->get_colleges();
         $data['schools'] = $this->profile_model->get_schools();
 
-        $data['heading'] = "Add College";
-        $data['form_action'] = base_url("user/add-college");
-        $this->load->view("edit/college", $data);
-        $this->load->view("common/footer");
+        $data['heading'] = 'Add College';
+        $data['form_action'] = base_url('user/add-college');
+        $this->load->view('edit/college', $data);
+        $this->load->view('common/footer');
     }
 
     public function edit_college($user_college_id=0)
     {
         $data = $this->user_model->initialize_user();
-        $data['title'] = "Edit your college";
+        $data['title'] = 'Edit your college';
         $this->load->view('common/header', $data);
 
-        if ($_SERVER['REQUEST_METHOD'] === "POST") {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // DON'T try to remove this line,
             // $user_college_id useful when re-displaying the form.
-            $user_college_id = $this->input->post("user-college-id");
+            $user_college_id = $this->input->post('user-college-id');
 
-            $data['start_day'] = $this->input->post("start-day");
-            $data['start_month'] = $this->input->post("start-month");
-            $data['start_year'] = $this->input->post("start-year");
+            $data['start_day'] = $this->input->post('start-day');
+            $data['start_month'] = $this->input->post('start-month');
+            $data['start_year'] = $this->input->post('start-year');
 
-            $data['end_day'] = $this->input->post("end-day");
-            $data['end_month'] = $this->input->post("end-month");
-            $data['end_year'] = $this->input->post("end-year");
+            $data['end_day'] = $this->input->post('end-day');
+            $data['end_month'] = $this->input->post('end-month');
+            $data['end_year'] = $this->input->post('end-year');
 
-            $data['old_start_date'] = $this->input->post("old-start-date");
-            $data['old_end_date'] = $this->input->post("old-end-date");
+            $data['old_start_date'] = $this->input->post('old-start-date');
+            $data['old_end_date'] = $this->input->post('old-end-date');
 
             // Validate the dates.
             if ($data['end_year'] < $data['start_year']) {
-                $data['error_message'] = "Invalid dates entered! Please check the dates and try again.";
+                $data['error_message'] = 'Invalid dates entered! Please check the dates and try again.';
             }
             elseif (checkdate($data['start_month'], $data['start_day'], $data['start_year']) &&
                     checkdate($data['end_month'], $data['end_day'], $data['end_year'])) {
@@ -700,23 +713,26 @@ class User extends CI_Controller
                 $data['end_date'] = "{$data['end_year']}-{$data['end_month']}-{$data['end_day']}";
             }
             else {
-                $data['error_message'] = "Invalid dates entered! Please check the dates and try again.";
+                $data['error_message'] = 'Invalid dates entered! Please check the dates and try again.';
             }
 
             if (!isset($data['error_message'])) {
                 $data['user_college_id'] = $user_college_id;
-                $data['college_id'] = $this->input->post("college-id");
-                $data['school_id'] = $this->input->post("school-id");
+                $data['college_id'] = $this->input->post('college-id');
+                $data['school_id'] = $this->input->post('school-id');
 
                 // Check whether college and school exist.
                 if (!$this->profile_model->college_and_school_exists($data['college_id'], $data['school_id'])) {
-                    $data['error_message'] = "Your college and school do not match!<br>Please try again.";
+                    $data['error_message'] = 'Your college and school do not match!<br>' .
+                                                'Please try again.';
                 }
             }
 
             if (!isset($data['error_message'])) {
                 if ($this->profile_model->update_college($data)) {
-                    $this->utility_model->show_success("Your edits have been succesfully saved.");
+                    $this->utility_model->show_success(
+                        'Your edits have been succesfully saved.'
+                    );
                     return;
                 }
                 else {
@@ -745,27 +761,28 @@ class User extends CI_Controller
             $data['end_day'] = $user_college['end_day'];
         }
 
-        $data['heading'] = "Edit College";
-        $data['form_action'] = base_url("user/edit-college");
-        $this->load->view("edit/college", $data);
-        $this->load->view("common/footer");
+        $data['heading'] = 'Edit College';
+        $data['form_action'] = base_url('user/edit-college');
+        $this->load->view('edit/college', $data);
+        $this->load->view('common/footer');
     }
 
     public function add_programme($user_college_id=0)
     {
-        if ($_SERVER['REQUEST_METHOD'] === "POST") {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data['user_college_id']= $this->input->post('user-college-id');
-            $data['programme_id'] = $this->input->post("programme");
-            $data['year_of_study'] = $this->input->post("year-of-study");
+            $data['programme_id'] = $this->input->post('programme');
+            $data['year_of_study'] = $this->input->post('year-of-study');
 
             $this->profile_model->add_programme($data);
-            $this->utility_model->show_success("Your programme details have been " .
-                                                "successfully saved.");
+            $this->utility_model->show_success(
+                'Your programme details have been successfully saved.'
+            );
             return;
         }
 
         $data = $this->user_model->initialize_user();
-        $data['title'] = "Add your programme";
+        $data['title'] = 'Add your programme';
         $this->load->view('common/header', $data);
 
         try {
@@ -778,24 +795,26 @@ class User extends CI_Controller
         $data['user_college'] = $user_college;
         $data['programmes'] = $this->profile_model->get_programmes($user_college['school']['school_id']);
 
-        $data['heading'] = "Add Programme";
-        $data['form_action'] = base_url("user/add-programme");
-        $this->load->view("edit/programme", $data);
-        $this->load->view("common/footer");
+        $data['heading'] = 'Add Programme';
+        $data['form_action'] = base_url('user/add-programme');
+        $this->load->view('edit/programme', $data);
+        $this->load->view('common/footer');
     }
 
     public function edit_programme($user_programme_id=0)
     {
         $data = $this->user_model->initialize_user();
-        $data['title'] = "Edit your programme";
+        $data['title'] = 'Edit your programme';
         $this->load->view('common/header', $data);
 
-        if ($_SERVER['REQUEST_METHOD'] === "POST") {
-            $data['user_programme_id'] = $this->input->post("user-programme-id");
-            $data['year_of_study'] = $this->input->post("year-of-study");
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data['user_programme_id'] = $this->input->post('user-programme-id');
+            $data['year_of_study'] = $this->input->post('year-of-study');
 
             $this->profile_model->update_programme($data);
-            $this->utility_model->show_success("Your edits have been successfully saved.");
+            $this->utility_model->show_success(
+                'Your edits have been successfully saved.'
+            );
             return;
         }
 
@@ -809,31 +828,31 @@ class User extends CI_Controller
         $data['user_programme'] = $user_programme;
         $data['year_of_study'] = $user_programme['year_of_study'];
 
-        $data['heading'] = "Edit Programme Details";
-        $data['form_action'] = base_url("user/edit-programme");
-        $this->load->view("edit/programme", $data);
-        $this->load->view("common/footer");
+        $data['heading'] = 'Edit Programme Details';
+        $data['form_action'] = base_url('user/edit-programme');
+        $this->load->view('edit/programme', $data);
+        $this->load->view('common/footer');
     }
 
     public function add_hall()
     {
         $data = $this->user_model->initialize_user();
-        $data['title'] = "Add hall of attachment/residence";
+        $data['title'] = 'Add hall of attachment/residence';
         $this->load->view('common/header', $data);
 
-        if ($_SERVER['REQUEST_METHOD'] === "POST") {
-            $data['hall_id'] = $this->input->post("hall");
-            $data['resident'] = $this->input->post("resident");
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data['hall_id'] = $this->input->post('hall');
+            $data['resident'] = $this->input->post('resident');
 
-            $data['start_day'] = $this->input->post("start-day");
-            $data['start_month'] = $this->input->post("start-month");
-            $data['start_year'] = $this->input->post("start-year");
+            $data['start_day'] = $this->input->post('start-day');
+            $data['start_month'] = $this->input->post('start-month');
+            $data['start_year'] = $this->input->post('start-year');
 
-            $data['end_day'] = $this->input->post("end-day");
-            $data['end_month'] = $this->input->post("end-month");
-            $data['end_year'] = $this->input->post("end-year");
+            $data['end_day'] = $this->input->post('end-day');
+            $data['end_month'] = $this->input->post('end-month');
+            $data['end_year'] = $this->input->post('end-year');
             if ($data['end_year'] < $data['start_year']) {
-                $data['error_message'] = "Invalid dates entered! Please check the dates and try again.";
+                $data['error_message'] = 'Invalid dates entered! Please check the dates and try again.';
             }
             elseif (checkdate($data['start_month'], $data['start_day'], $data['start_year']) &&
                     checkdate($data['end_month'], $data['end_day'], $data['end_year'])) {
@@ -841,54 +860,56 @@ class User extends CI_Controller
                 $data['end_date'] = "{$data['end_year']}-{$data['end_month']}-{$data['end_day']}";
             }
             else {
-                $data['error_message'] = "Invalid dates entered! Please check the dates and try again.";
+                $data['error_message'] = 'Invalid dates entered! Please check the dates and try again.';
             }
 
             if (!isset($data['error_message'])) {
                 if ($this->profile_model->add_hall($data)) {
-                    $this->utility_model->show_success("Your hall details have been successfully saved.");
+                    $this->utility_model->show_success(
+                        'Your hall details have been successfully saved.'
+                    );
                     return;
                 }
                 else {
-                    $data['error_message'] = "The years you entered either conflict with one of your records.<br>" .
-                                             "Either you indicated that you were in a hostel during that period, or<br>" .
-                                             "The dates overlap with one of your other halls.";
+                    $data['error_message'] = 'The years you entered either conflict with one of your records.<br>' .
+                                             'Either you indicated that you were in a hostel during that period, or<br>' .
+                                             'The dates overlap with one of your other halls.';
                 }
             }
         }
 
         $data['halls'] = $this->profile_model->get_halls();
 
-        $data['heading'] = "Add Hall";
-        $data['form_action'] = base_url("user/add-hall");
-        $this->load->view("edit/hall", $data);
-        $this->load->view("common/footer");
+        $data['heading'] = 'Add Hall';
+        $data['form_action'] = base_url('user/add-hall');
+        $this->load->view('edit/hall', $data);
+        $this->load->view('common/footer');
     }
 
     public function edit_hall($user_hall_id=0)
     {
         $data = $this->user_model->initialize_user();
-        $data['title'] = "Edit hall of attachment/residence";
+        $data['title'] = 'Edit hall of attachment/residence';
         $this->load->view('common/header', $data);
 
-        if ($_SERVER['REQUEST_METHOD'] === "POST") {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // DON'T join these two lines into 1,
             // $user_hall_id is usefull for re-displaying the form incase of any error.
-            $user_hall_id = $this->input->post("user-hall-id");
+            $user_hall_id = $this->input->post('user-hall-id');
             $data['user_hall_id'] = $user_hall_id;
 
-            $data['hall_id'] = $this->input->post("hall-id");
-            $data['resident'] = $this->input->post("resident");
+            $data['hall_id'] = $this->input->post('hall-id');
+            $data['resident'] = $this->input->post('resident');
 
-            $data['start_day'] = $this->input->post("start-day");
-            $data['start_month'] = $this->input->post("start-month");
-            $data['start_year'] = $this->input->post("start-year");
+            $data['start_day'] = $this->input->post('start-day');
+            $data['start_month'] = $this->input->post('start-month');
+            $data['start_year'] = $this->input->post('start-year');
 
-            $data['end_day'] = $this->input->post("end-day");
-            $data['end_month'] = $this->input->post("end-month");
-            $data['end_year'] = $this->input->post("end-year");
+            $data['end_day'] = $this->input->post('end-day');
+            $data['end_month'] = $this->input->post('end-month');
+            $data['end_year'] = $this->input->post('end-year');
             if ($data['end_year'] < $data['start_year']) {
-                $data['error_message'] = "Invalid dates entered! Please check the dates and try again.";
+                $data['error_message'] = 'Invalid dates entered! Please check the dates and try again.';
             }
             elseif (checkdate($data['start_month'], $data['start_day'], $data['start_year']) &&
                     checkdate($data['end_month'], $data['end_day'], $data['end_year'])) {
@@ -896,17 +917,19 @@ class User extends CI_Controller
                 $data['end_date'] = "{$data['end_year']}-{$data['end_month']}-{$data['end_day']}";
             }
             else {
-                $data['error_message'] = "Invalid dates entered! Please check the dates and try again.";
+                $data['error_message'] = 'Invalid dates entered! Please check the dates and try again.';
             }
 
             if (!isset($data['error_message'])) {
                 if ($this->profile_model->update_hall($data)) {
-                    $this->utility_model->show_success("Your edits have been successfully saved.");
+                    $this->utility_model->show_success(
+                        'Your edits have been successfully saved.'
+                    );
                     return;
                 }
                 else {
-                    $data['error_message'] = "The years you entered conflict with one of your records.<br>" .
-                                                "You cannot be attached to/a resident of two halls at the same time.";
+                    $data['error_message'] = 'The years you entered conflict with one of your records.<br>' .
+                                                'You cannot be attached to/a resident of two halls at the same time.';
                 }
             }
         }
@@ -934,30 +957,30 @@ class User extends CI_Controller
             $data['old_end_date'] = $user_hall['date_to'];
         }
 
-        $data['heading'] = "Edit Hall";
-        $data['form_action'] = base_url("user/edit-hall");
-        $this->load->view("edit/hall", $data);
-        $this->load->view("common/footer");
+        $data['heading'] = 'Edit Hall';
+        $data['form_action'] = base_url('user/edit-hall');
+        $this->load->view('edit/hall', $data);
+        $this->load->view('common/footer');
     }
 
     public function add_hostel()
     {
         $data = $this->user_model->initialize_user();
-        $data['title'] = "Add hostel";
+        $data['title'] = 'Add hostel';
         $this->load->view('common/header', $data);
 
-        if ($_SERVER['REQUEST_METHOD'] === "POST") {
-            $data['hostel_id'] = $this->input->post("hostel");
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data['hostel_id'] = $this->input->post('hostel');
 
-            $data['start_day'] = $this->input->post("start-day");
-            $data['start_month'] = $this->input->post("start-month");
-            $data['start_year'] = $this->input->post("start-year");
+            $data['start_day'] = $this->input->post('start-day');
+            $data['start_month'] = $this->input->post('start-month');
+            $data['start_year'] = $this->input->post('start-year');
 
-            $data['end_day'] = $this->input->post("end-day");
-            $data['end_month'] = $this->input->post("end-month");
-            $data['end_year'] = $this->input->post("end-year");
+            $data['end_day'] = $this->input->post('end-day');
+            $data['end_month'] = $this->input->post('end-month');
+            $data['end_year'] = $this->input->post('end-year');
             if ($data['end_year'] < $data['start_year']) {
-                $data['error_message'] = "Invalid dates entered! Please check the dates and try again.";
+                $data['error_message'] = 'Invalid dates entered! Please check the dates and try again.';
             }
             elseif (checkdate($data['start_month'], $data['start_day'], $data['start_year']) &&
                     checkdate($data['end_month'], $data['end_day'], $data['end_year'])) {
@@ -965,52 +988,54 @@ class User extends CI_Controller
                 $data['end_date'] = "{$data['end_year']}-{$data['end_month']}-{$data['end_day']}";
             }
             else {
-                $data['error_message'] = "Invalid dates entered! Please check the dates and try again.";
+                $data['error_message'] = 'Invalid dates entered! Please check the dates and try again.';
             }
 
             if (!isset($data['error_message'])) {
                 if ($this->profile_model->add_hostel($data)) {
-                    $this->utility_model->show_success("Your hostel details have been successfully saved.");
+                    $this->utility_model->show_success(
+                        'Your hostel details have been successfully saved.'
+                    );
                     return;
                 }
                 else {
-                    $data['error_message'] = "The hostel you entered conflicts with one of your records.<br>" .
-                                             "Either you indicated that you are a resident of a hall, Or<br>" .
-                                             "The date overlaps with that of one of the hostels you have been to.";
+                    $data['error_message'] = 'The hostel you entered conflicts with one of your records.<br>' .
+                                             'Either you indicated that you are a resident of a hall, Or<br>' .
+                                             'The date overlaps with that of one of the hostels you have been to.';
                 }
             }
         }
 
-        $data['heading'] = "Add Hostel";
-        $data['form_action'] = base_url("user/add-hostel");
+        $data['heading'] = 'Add Hostel';
+        $data['form_action'] = base_url('user/add-hostel');
         $data['hostels'] = $this->profile_model->get_hostels();
-        $this->load->view("edit/hostel", $data);
-        $this->load->view("common/footer");
+        $this->load->view('edit/hostel', $data);
+        $this->load->view('common/footer');
     }
 
     public function edit_hostel($user_hostel_id=0)
     {
         $data = $this->user_model->initialize_user();
-        $data['title'] = "Edit hostel";
+        $data['title'] = 'Edit hostel';
         $this->load->view('common/header', $data);
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
             // DON'T join these two lines into 1,
             // $user_hall_id is usefull for re-displaying the form incase of any error.
-            $user_hostel_id = $this->input->post("user-hostel-id");
+            $user_hostel_id = $this->input->post('user-hostel-id');
             $data['user_hostel_id'] = $user_hostel_id;
 
-            $data['hostel_id'] = $this->input->post("hostel-id");
+            $data['hostel_id'] = $this->input->post('hostel-id');
 
-            $data['start_day'] = $this->input->post("start-day");
-            $data['start_month'] = $this->input->post("start-month");
-            $data['start_year'] = $this->input->post("start-year");
+            $data['start_day'] = $this->input->post('start-day');
+            $data['start_month'] = $this->input->post('start-month');
+            $data['start_year'] = $this->input->post('start-year');
 
-            $data['end_day'] = $this->input->post("end-day");
-            $data['end_month'] = $this->input->post("end-month");
-            $data['end_year'] = $this->input->post("end-year");
+            $data['end_day'] = $this->input->post('end-day');
+            $data['end_month'] = $this->input->post('end-month');
+            $data['end_year'] = $this->input->post('end-year');
             if ($data['end_year'] < $data['start_year']) {
-                $data['error_message'] = "Invalid dates entered! Please check the dates and try again.";
+                $data['error_message'] = 'Invalid dates entered! Please check the dates and try again.';
             }
             elseif (checkdate($data['start_month'], $data['start_day'], $data['start_year']) &&
                     checkdate($data['end_month'], $data['end_day'], $data['end_year'])) {
@@ -1018,18 +1043,20 @@ class User extends CI_Controller
                 $data['end_date'] = "{$data['end_year']}-{$data['end_month']}-{$data['end_day']}";
             }
             else {
-                $data['error_message'] = "Invalid dates entered! Please check the dates and try again.";
+                $data['error_message'] = 'Invalid dates entered! Please check the dates and try again.';
             }
 
             if (!isset($data['error_message'])) {
                 if ($this->profile_model->update_hostel($data)) {
-                    $this->utility_model->show_success("Your edits have been successfully saved.");
+                    $this->utility_model->show_success(
+                        'Your edits have been successfully saved.'
+                    );
                     return;
                 }
                 else {
-                    $data['error_message'] = "The hostel you entered conflicts with one of your records.<br>" .
-                                             "Either you indicated that you are a resident of a hall, Or<br>" .
-                                             "The date overlaps with that of one of the hostels you have been to.";
+                    $data['error_message'] = 'The hostel you entered conflicts with one of your records.<br>' .
+                                             'Either you indicated that you are a resident of a hall, Or<br>' .
+                                             'The date overlaps with that of one of the hostels you have been to.';
                 }
             }
         }
@@ -1055,47 +1082,47 @@ class User extends CI_Controller
             $data['old_end_date'] = $user_hostel['date_to'];
         }
 
-        $data['heading'] = "Edit Hostel";
-        $data['form_action'] = base_url("user/edit-hostel");
-        $this->load->view("edit/hostel", $data);
-        $this->load->view("common/footer");
+        $data['heading'] = 'Edit Hostel';
+        $data['form_action'] = base_url('user/edit-hostel');
+        $this->load->view('edit/hostel', $data);
+        $this->load->view('common/footer');
     }
 
     public function add_country()
     {
         $data = $this->user_model->initialize_user();
-        $data['title'] = "Add your country of origin";
+        $data['title'] = 'Add your country of origin';
         $this->load->view('common/header', $data);
 
-        if ($_SERVER['REQUEST_METHOD'] === "POST") {
-            $country_id = $this->input->post("country");
-            if ($country_id == "none") {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $country_id = $this->input->post('country');
+            if ($country_id == 'none') {
                 // Display a form allowing the user to enter his/her country
                 // and notifiy the admin.
-                redirect(base_url("request-admin/add-country"));
+                redirect(base_url('request-admin/add-country'));
             }
             else {
                 $this->profile_model->add_country($country_id);
-                $data['success_message'] = "Your country details have been successfully saved.";
+                $data['success_message'] = 'Your country details have been successfully saved.';
             }
         }
         else {
             $data['countries'] = $this->profile_model->get_countries();
         }
-        $this->load->view("edit/country", $data);
-        $this->load->view("common/footer");
+        $this->load->view('edit/country', $data);
+        $this->load->view('common/footer');
     }
 
     public function add_district($district_id=0)
     {
         $data = $this->user_model->initialize_user();
-        $data['title'] = "Add your district";
+        $data['title'] = 'Add your district';
         $this->load->view('common/header', $data);
 
-        if ($_SERVER['REQUEST_METHOD'] === "POST") {
-            $data['district'] = $this->input->post("district");
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data['district'] = $this->input->post('district');
             if (empty(trim($data['district']))) {
-                $data['error_message'] = "Please enter the name of your district or state and try again.";
+                $data['error_message'] = 'Please enter the name of your district or state and try again.';
             }
             else {
                 $data['districts'] = $this->profile_model->get_searched_district($data['district']);
@@ -1103,16 +1130,16 @@ class User extends CI_Controller
         }
         elseif ($district_id) {
             if ($this->profile_model->add_district($district_id)) {
-                $data['success_message'] = "Your district details have been successfully updated.";
+                $data['success_message'] = 'Your district details have been successfully updated.';
             }
             else {
-                $data['error_message'] = "Sorry, but an error occured.";
+                $data['error_message'] = 'Sorry, but an error occured.';
             }
         }
 
-        $data['heading'] = "Add District";
-        $this->load->view("edit/district", $data);
-        $this->load->view("common/footer");
+        $data['heading'] = 'Add District';
+        $this->load->view('edit/district', $data);
+        $this->load->view('common/footer');
     }
 }
 ?>

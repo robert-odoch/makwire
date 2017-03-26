@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-require_once('../common/user-page-start.php');
+require_once(dirname(__FILE__) . '/../common/user-page-start.php');
 ?>
 
 <div class="box">
@@ -61,7 +61,7 @@ require_once('../common/user-page-start.php');
                 </div>
             </div>
         </fieldset>
-        <?php require_once("../common/show-date-input.php"); ?>
+        <?php require_once(dirname(__FILE__) . '/../common/show-date-input.php'); ?>
         <?php if (isset($user_hall)) { ?>
             <fieldset>
                 <input type="hidden" name="user-hall-id" value="<?= $user_hall['id']; ?>">

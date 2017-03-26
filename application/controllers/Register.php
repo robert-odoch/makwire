@@ -11,16 +11,16 @@ class Register extends CI_Controller
 
     public function step_one()
     {
-        $data['title'] = "Sign Up: step 1 of 3";
+        $data['title'] = 'Sign Up: step 1 of 3';
         $this->load->view('common/header', $data);
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $email = trim($this->input->post('email'));
             if (strlen($email) == 0) {
-                $data['error_message'] = "Please enter an email address!";
+                $data['error_message'] = 'Please enter an email address!';
             }
             elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $data['error_message'] = "Please enter a valid email address!";
+                $data['error_message'] = 'Please enter a valid email address!';
             }
             else {
                 $valid_mak_domains = [
@@ -95,7 +95,7 @@ class Register extends CI_Controller
             }
         }
 
-        $data['title'] = "Sign Up: step 2 of 3";
+        $data['title'] = 'Sign Up: step 2 of 3';
         $this->load->view('common/header', $data);
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -117,7 +117,7 @@ class Register extends CI_Controller
 
             $gender = trim($this->input->post('gender'));
             if (!in_array($gender, ['male', 'female'])) {
-                $error_messages['gender'] = "Please select your gender.";
+                $error_messages['gender'] = 'Please select your gender.';
             }
             else {
                 $data['gender'] = ($gender == 'male')? 'M': 'F';
@@ -127,7 +127,7 @@ class Register extends CI_Controller
             $month = $this->input->post('month');
             $year = $this->input->post('year');
             if (!checkdate($month, $day, $year)) {
-                $error_messages['dob'] = "Invalid date of birth!";
+                $error_messages['dob'] = 'Invalid date of birth!';
             }
             else {
                 $data['dob'] = "{$year}-{$month}-{$day}";
@@ -162,17 +162,17 @@ class Register extends CI_Controller
             redirect(base_url('register/step-one'));
         }
 
-        $data['title'] = "Sign Up: step 3 of 3";
+        $data['title'] = 'Sign Up: step 3 of 3';
         $this->load->view('common/header', $data);
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $uname = trim($this->input->post('uname'));
             if (strlen($uname) < 3) {
-                $error_messages['uname'] = "Username must be atleast 3 characters long!";
+                $error_messages['uname'] = 'Username must be atleast 3 characters long!';
             }
             elseif (!preg_match('/^[A-Za-z0-9]{3,}$/', $uname)) {
-                $error_messages['uname'] = "Please ensure that your username adheres to " .
-                                            "the above requirements.";
+                $error_messages['uname'] = 'Please ensure that your username adheres to ' .
+                                            'the above requirements.';
             }
             else {
                 $data['uname'] = $uname;
@@ -180,16 +180,16 @@ class Register extends CI_Controller
 
             $passwd1 = $this->input->post('passwd1');
             if (strlen($passwd1) < 6) {
-                $error_messages['passwd1'] = "Password must be atleast 6 characters long!";
+                $error_messages['passwd1'] = 'Password must be atleast 6 characters long!';
             }
             elseif (!preg_match('/^(\w*(?=\w*\d)(?=\w*[a-z])(?=\w*[A-Z])\w*){6,}$/', $passwd1)) {
-                    $error_messages['passwd1'] = "Please ensure that your password adheres to " .
-                                                    "the above requirements.";
+                    $error_messages['passwd1'] = 'Please ensure that your password adheres to " .
+                                                    "the above requirements.';
             }
             else {
                 $passwd2 = $this->input->post('passwd2');
                 if ($passwd1 != $passwd2) {
-                    $error_messages['passwd2'] = "The two passwords do not match!";
+                    $error_messages['passwd2'] = 'The two passwords do not match!';
                 }
                 else {
                     $data['passwd'] = $passwd1;

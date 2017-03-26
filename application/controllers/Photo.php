@@ -29,13 +29,15 @@ class Photo extends CI_Controller
         }
 
         if ($photo['user_id'] != $_SESSION['user_id']) {
-            $this->utility_model->show_permission_denied("You don't have the proper permissions.");
+            $this->utility_model->show_permission_denied(
+                "You don't have the proper permissions."
+            );
             return;
         }
 
         $data = $this->user_model->initialize_user();
         $data['title'] = 'Say something about this photo';
-        $this->load->view("common/header", $data);
+        $this->load->view('common/header', $data);
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $description = trim(strip_tags($this->input->post('description')));
@@ -64,8 +66,9 @@ class Photo extends CI_Controller
             show_404();
         }
         catch (IllegalAccessException $e) {
-            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
-                                                            "to like this photo.");
+            $this->utility_model->show_permission_denied(
+                "You don't have the proper permissions to like this photo."
+            );
         }
     }
 
@@ -79,14 +82,15 @@ class Photo extends CI_Controller
         }
 
         if (!$this->user_model->are_friends($photo['user_id'])) {
-            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
-                                                            "to comment on this photo.");
+            $this->utility_model->show_permission_denied(
+                "You don't have the proper permissions to comment on this photo."
+            );
             return;
         }
 
         $data = $this->user_model->initialize_user();
         $data['title'] = 'Comment on this photo';
-        $this->load->view("common/header", $data);
+        $this->load->view('common/header', $data);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $comment = trim(strip_tags($this->input->post('comment')));
@@ -116,8 +120,9 @@ class Photo extends CI_Controller
             show_404();
         }
         catch (IllegalAccessException $e) {
-            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
-                                                            "to share this photo.");
+            $this->utility_model->show_permission_denied(
+                "You don't have the proper permissions to share this photo."
+            );
         }
     }
 
@@ -131,8 +136,8 @@ class Photo extends CI_Controller
         }
 
         $data = $this->user_model->initialize_user();
-        $data['title'] = "People who liked this photo";
-        $this->load->view("common/header", $data);
+        $data['title'] = 'People who liked this photo';
+        $this->load->view('common/header', $data);
 
         // Maximum number of likes to display.
         $limit = 10;
@@ -156,8 +161,8 @@ class Photo extends CI_Controller
 
         $data['object'] = 'photo';
         $data['photo'] = $photo;
-        $this->load->view("show/likes", $data);
-        $this->load->view("common/footer");
+        $this->load->view('show/likes', $data);
+        $this->load->view('common/footer');
     }
 
     public function comments($photo_id=0, $offset=0)
@@ -171,7 +176,7 @@ class Photo extends CI_Controller
 
         $data = $this->user_model->initialize_user();
         $data['title'] = 'Comments on this photo';
-        $this->load->view("common/header", $data);
+        $this->load->view('common/header', $data);
 
         // Maximum number of comments to display.
         $limit = 10;
@@ -193,8 +198,8 @@ class Photo extends CI_Controller
         $data['comments'] = $this->photo_model->get_comments($photo_id, $offset, $limit);
         $data['object'] = 'photo';
         $data['photo'] = $photo;
-        $this->load->view("show/comments", $data);
-        $this->load->view("common/footer");
+        $this->load->view('show/comments', $data);
+        $this->load->view('common/footer');
     }
 
     public function shares($photo_id=0, $offset=0)
@@ -207,8 +212,8 @@ class Photo extends CI_Controller
         }
 
         $data = $this->user_model->initialize_user();
-        $data['title'] = "People who shared this photo";
-        $this->load->view("common/header", $data);
+        $data['title'] = 'People who shared this photo';
+        $this->load->view('common/header', $data);
 
         // Maximum number of shares to display.
         $limit = 10;
@@ -232,8 +237,8 @@ class Photo extends CI_Controller
 
         $data['object'] = 'photo';
         $data['photo'] = $photo;
-        $this->load->view("show/shares", $data);
-        $this->load->view("common/footer");
+        $this->load->view('show/shares', $data);
+        $this->load->view('common/footer');
     }
 }
 ?>

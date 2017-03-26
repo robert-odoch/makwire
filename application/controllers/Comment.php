@@ -29,8 +29,9 @@ class Comment extends CI_Controller
             show_404();
         }
         catch (IllegalAccessException $e) {
-            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
-                                                            "to like this comment.");
+            $this->utility_model->show_permission_denied(
+                "You don't have the proper permissions to like this comment."
+            );
         }
     }
 
@@ -44,16 +45,17 @@ class Comment extends CI_Controller
         }
 
         if (!$this->user_model->are_friends($comment['commenter_id'])) {
-            $this->utility_model->show_permission_denied("You don't have the proper permissions " .
-                                                            "to reply to this comment.");
+            $this->utility_model->show_permission_denied(
+                "You don't have the proper permissions to reply to this comment."
+            );
             return;
         }
 
         $data = $this->user_model->initialize_user();
-        $data['title'] = "Reply to Comment";
-        $this->load->view("common/header", $data);
+        $data['title'] ='Reply to Comment';
+        $this->load->view('common/header', $data);
 
-        if ($_SERVER['REQUEST_METHOD'] === "POST") {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $reply = trim(strip_tags($this->input->post('reply')));
             if (!$reply) {
                 $data['reply_error'] = "Reply can't be empty!";
@@ -67,8 +69,8 @@ class Comment extends CI_Controller
 
         $data['comment'] = $comment;
         $data['object'] = 'comment';
-        $this->load->view("comment", $data);
-        $this->load->view("common/footer");
+        $this->load->view('comment', $data);
+        $this->load->view('common/footer');
     }
 
     public function likes($comment_id=0, $offset=0)
@@ -81,8 +83,8 @@ class Comment extends CI_Controller
         }
 
         $data = $this->user_model->initialize_user();
-        $data['title'] = "People who liked this comment";
-        $this->load->view("common/header", $data);
+        $data['title'] = 'People who liked this comment';
+        $this->load->view('common/header', $data);
 
         // Maximum number of likes to display.
         $limit = 10;
@@ -105,8 +107,8 @@ class Comment extends CI_Controller
 
         $data['object'] = 'comment';
         $data['comment'] = $comment;
-        $this->load->view("show/likes", $data);
-        $this->load->view("common/footer");
+        $this->load->view('show/likes', $data);
+        $this->load->view('common/footer');
     }
 
     public function replies($comment_id=0, $offset=0)
@@ -119,8 +121,8 @@ class Comment extends CI_Controller
         }
 
         $data = $this->user_model->initialize_user();
-        $data['title'] = "People who replied to this comment";
-        $this->load->view("common/header", $data);
+        $data['title'] = 'People who replied to this comment';
+        $this->load->view('common/header', $data);
 
         // Maximum number of replies to display.
         $limit = 10;
@@ -142,8 +144,8 @@ class Comment extends CI_Controller
         $data['replies'] = $this->comment_model->get_replies($comment_id, $offset, $limit);
         $data['object'] = 'comment';
         $data['comment'] = $comment;
-        $this->load->view("show/comment-replies", $data);
-        $this->load->view("common/footer");
+        $this->load->view('show/comment-replies', $data);
+        $this->load->view('common/footer');
     }
 }
 ?>

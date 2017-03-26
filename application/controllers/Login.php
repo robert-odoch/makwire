@@ -16,11 +16,11 @@ class Login extends CI_Controller
         if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
 
             // Already logged in user.
-            redirect(base_url("user/news-feed"));
+            redirect(base_url('user/news-feed'));
         }
 
         $data['title'] = 'Log in to your account';
-        $this->load->view("common/header", $data);
+        $this->load->view('common/header', $data);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (empty(trim($this->input->post('username')))) {
@@ -41,12 +41,14 @@ class Login extends CI_Controller
             if (!isset($data['login_errors'])) {
                 if ($this->login_model->is_valid_login($username, $password)) {
                     if (isset($_SESSION['return_uri'])) {
-                        $return_url = base_url(str_replace("/makwire/", "", $_SESSION['return_uri']));
+                        $return_url = base_url(
+                            str_replace('/makwire/', '', $_SESSION['return_uri'])
+                        );
                         unset($_SESSION['return_uri']);
                         redirect($return_url);
                     }
                     else {
-                        redirect(base_url("user/news-feed"));
+                        redirect(base_url('user/news-feed'));
                     }
                 }
                 else {
