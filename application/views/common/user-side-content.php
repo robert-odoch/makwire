@@ -24,7 +24,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <nav role="navigation" class="user-nav">
             <ul>
                 <li><a href="<?= base_url('user/profile'); ?>">Profile</a></li>
-                <li><a href="<?= base_url('user/settings/account'); ?>">Settings</a></li>
+                <li><a href="<?= base_url('settings/account'); ?>">Settings</a></li>
             </ul>
         </nav>
     </aside>
