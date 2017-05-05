@@ -60,14 +60,14 @@ class Utility_model extends CI_Model
      *
      * @param $message the message to display.
      */
-    public function show_permission_denied($message)
+    public function show_error($title, $message)
     {
         $data = $this->user_model->initialize_user();
-        $data['title'] = "Permission Denied!";
+        $data['title'] = $title;
         $this->load->view("common/header", $data);
 
         $data['message'] = $message;
-        $this->load->view("show-permission-denied", $data);
+        $this->load->view("show/error", $data);
         $this->load->view("common/footer");
     }
 }
