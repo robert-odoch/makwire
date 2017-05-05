@@ -29,7 +29,8 @@ class Photo extends CI_Controller
         }
 
         if ($photo['user_id'] != $_SESSION['user_id']) {
-            $this->utility_model->show_permission_denied(
+            $this->utility_model->show_error(
+                "Permission Denied!",
                 "You don't have the proper permissions."
             );
             return;
@@ -61,7 +62,8 @@ class Photo extends CI_Controller
             show_404();
         }
         catch (IllegalAccessException $e) {
-            $this->utility_model->show_permission_denied(
+            $this->utility_model->show_error(
+                "Permission Denied!",
                 "You don't have the proper permissions to like this photo."
             );
         }
@@ -77,7 +79,8 @@ class Photo extends CI_Controller
         }
 
         if (!$this->user_model->are_friends($photo['user_id'])) {
-            $this->utility_model->show_permission_denied(
+            $this->utility_model->show_error(
+                "Permission Denied!",
                 "You don't have the proper permissions to comment on this photo."
             );
             return;
@@ -115,7 +118,8 @@ class Photo extends CI_Controller
             show_404();
         }
         catch (IllegalAccessException $e) {
-            $this->utility_model->show_permission_denied(
+            $this->utility_model->show_error(
+                "Permission Denied!",
                 "You don't have the proper permissions to share this photo."
             );
         }

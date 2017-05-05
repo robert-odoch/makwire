@@ -29,7 +29,8 @@ class Post extends CI_Controller
             show_404();
         }
         catch (IllegalAccessException $e) {
-            $this->utility_model->show_permission_denied(
+            $this->utility_model->show_error(
+                "Permission Denied!",
                 "You don't have the proper permissions to like this post."
             );
         }
@@ -45,7 +46,8 @@ class Post extends CI_Controller
         }
 
         if (!$this->user_model->are_friends($post['user_id'])) {
-            $this->utility_model->show_permission_denied(
+            $this->utility_model->show_error(
+                "Permission Denied!",
                 "You don't have the proper permissions to comment on this post."
             );
             return;
@@ -88,7 +90,8 @@ class Post extends CI_Controller
             show_404();
         }
         catch (IllegalAccessException $e) {
-            $this->utility_model->show_permission_denied(
+            $this->utility_model->show_error(
+                "Permission Denied!",
                 "You don't have the proper permissions to share this post."
             );
         }

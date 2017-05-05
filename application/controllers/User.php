@@ -95,7 +95,8 @@ class User extends CI_Controller
         }
 
         if (!$this->user_model->are_friends($user_id)) {
-            $this->utility_model->show_permission_denied(
+            $this->utility_model->show_error(
+                "Permission Denied!",
                 "You don't have the proper permissions."
             );
             return;
@@ -133,7 +134,8 @@ class User extends CI_Controller
     public function send_birthday_message($user_id=0, $age=0)
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->utility_model->show_permission_denied(
+            $this->utility_model->show_error(
+                "Permission Denied!",
                 "You don't have the proper permissions."
             );
             return;
@@ -177,6 +179,15 @@ class User extends CI_Controller
 
     public function send_message($user_id=0, $offset=0)
     {
+        // Prevent a user from sending a message to himself.
+        if ($user_id === $_SESSION['user_id']) {
+            $this->utility_model->show_error(
+                "Unsupported Operation!",
+                "You can't send a message to yourself."
+            );
+            return;
+        }
+
         $data = $this->user_model->initialize_user();
         try {
             $data['secondary_user'] = $this->user_model->get_profile_name($user_id);
@@ -186,7 +197,8 @@ class User extends CI_Controller
         }
 
         if (!$this->user_model->are_friends($user_id)) {
-            $this->utility_model->show_permission_denied(
+            $this->utility_model->show_error(
+                "Permission Denied!",
                 "You don't have the proper permissions to send a message to this user."
             );
             return;
@@ -230,7 +242,8 @@ class User extends CI_Controller
     public function new_post()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->utility_model->show_permission_denied(
+            $this->utility_model->show_error(
+                "Permission Denied!",
                 "You don't have the proper permissions."
             );
             return;
@@ -433,7 +446,8 @@ class User extends CI_Controller
             $this->utility_model->show_success("Friend request sent.");
         }
         catch (IllegalAccessException $e) {
-            $this->utility_model->show_permission_denied(
+            $this->utility_model->show_error(
+                "Permission Denied!",
                 "Either the two of you are already friends, " .
                 "or there exists a pending freind request."
             );
@@ -447,7 +461,8 @@ class User extends CI_Controller
             redirect(base_url("user/{$user_id}"));
         }
         catch (IllegalAccessException $e) {
-            $this->utility_model->show_permission_denied(
+            $this->utility_model->show_error(
+                "Permission Denied!",
                 "This user didn't send you a friend request."
             );
         }
