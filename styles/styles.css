@@ -154,8 +154,7 @@ div#primary-user {
     margin-bottom: 5px;
 }
 
-div#primary-user h4.media-heading a,
-div#secondary-user h4.media-heading a {
+div#primary-user h4.media-heading a {
     color: #2E8B57;
     font-weight: bold;
 }
@@ -219,6 +218,7 @@ nav#short-cuts h5 {
 }
 nav#short-cuts ul li {
     padding: 2px 0;
+    margin-left: 18px;
     border-bottom: 1px solid #8FBC8F;
 }
 
@@ -226,7 +226,7 @@ nav#short-cuts ul li:last-child {
     border-bottom: none;
 }
 nav#short-cuts ul li a {
-    display: inline-block;
+    display: block;
     padding: 5px 0;
     text-decoration: none;
 }
@@ -335,6 +335,10 @@ div#secondary-user h4 {
     display: inline-block;
     font-weight: bold;
     margin-top: 0;
+}
+
+div#secondary-user h4 a {
+    text-decoration: none;
 }
 
 div#secondary-user .btn {
