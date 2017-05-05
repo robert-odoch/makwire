@@ -40,7 +40,7 @@ class Photo extends CI_Controller
         $data['title'] = 'Say something about this photo';
         $this->load->view('common/header', $data);
 
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $description = trim(strip_tags($this->input->post('description')));
             $this->photo_model->add_description($description, $photo_id);
             redirect(base_url("user/{$_SESSION['user_id']}"));

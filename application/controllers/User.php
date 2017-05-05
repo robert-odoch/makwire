@@ -379,7 +379,7 @@ class User extends CI_Controller
         $limit = 10;  // Maximum number of suggested users to show.
         $data['has_next'] = FALSE;
 
-        if ($_SERVER['REQUEST_METHOD'] == 'POST' || isset($_SESSION['search_results'])) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_SESSION['search_results'])) {
             if (isset($_SESSION['search_results'])) {
                 $query = $_SESSION['query'];
             }

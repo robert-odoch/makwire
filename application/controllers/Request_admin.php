@@ -26,7 +26,7 @@ class Request_admin extends CI_Controller
         $data['title'] = 'Request admin to add your district or state';
         $this->load->view('common/header', $data);
 
-        if ($_SERVER['REQUEST_METHOD'] == "POST") {
+        if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $district = $this->input->post("district");
             if (empty(trim($district))) {
                 $data['error_message'] = 'Please enter the name of your district ' .
@@ -50,7 +50,7 @@ class Request_admin extends CI_Controller
         $data['title'] = 'Request admin to add your country';
         $this->load->view('common/header', $data);
 
-        if ($_SERVER['REQUEST_METHOD'] == "POST") {
+        if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $country = $this->input->post("country");
             if (empty(trim($country))) {
                 $data['error_message'] = 'Please enter the name of your country and try again.';

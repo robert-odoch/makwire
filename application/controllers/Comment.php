@@ -53,6 +53,16 @@ class Comment extends CI_Controller
             return;
         }
 
+        // Only allow a user to reply to his comment if there is atleast one reply.
+        if ($comment['commenter_id'] == $_SESSION['user_id'] &&
+            $comment['num_replies'] == 0) {
+            $this->utility_model->show_error(
+                "Permission Denied!",
+                "For you to reply to your own comment, atleast on user must have replied to your comment"
+            );
+            return;
+        }
+
         $data = $this->user_model->initialize_user();
         $data['title'] ='Reply to Comment';
         $this->load->view('common/header', $data);

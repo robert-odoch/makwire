@@ -14,7 +14,7 @@ class Register extends CI_Controller
         $data['title'] = 'Sign Up: step 1 of 3';
         $this->load->view('common/header', $data);
 
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = trim($this->input->post('email'));
             if (strlen($email) == 0) {
                 $data['error_message'] = 'Please enter an email address!';
@@ -98,7 +98,7 @@ class Register extends CI_Controller
         $data['title'] = 'Sign Up: step 2 of 3';
         $this->load->view('common/header', $data);
 
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $fname = trim($this->input->post('fname'));
             if (strlen($fname) == 0) {
                 $error_messages['fname'] = "First name can't be empty!";
@@ -165,7 +165,7 @@ class Register extends CI_Controller
         $data['title'] = 'Sign Up: step 3 of 3';
         $this->load->view('common/header', $data);
 
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $uname = trim($this->input->post('uname'));
             if (strlen($uname) < 3) {
                 $error_messages['uname'] = 'Username must be atleast 3 characters long!';
