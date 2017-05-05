@@ -14,8 +14,10 @@ require_once('common/user-page-start.php');
         <?php } ?>
         <form action="<?= $form_action; ?>" method="post"
             enctype="multipart/form-data" role="form">
-            <label for="userfile">Choose a photo:</label>
-            <input type="file" name="userfile" id="userfile">
+            <div class="form-group">
+                <label for="userfile">Choose a photo:</label>
+                <input type="file" name="userfile" id="userfile" class="form-control">
+            </div>
             <input type="submit" name="submit" value="Upload" class="btn btn-sm">
         </form>
 </div>
