@@ -30,10 +30,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         </div>
 
         <nav role="navigation" id="short-cuts">
-            <h5>Quick Access</h5>
+            <h5><span class="glyphicon glyphicon-heart"></span> Favorites</h5>
             <ul>
                 <li><a href="<?= base_url('user/news-feed'); ?>">News Feed</a></li>
             </ul>
+            <h5><span class="glyphicon glyphicon-bookmark"></span> Quick Access</h5>
         </nav>
     </aside>
 </div>
