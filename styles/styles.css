@@ -125,15 +125,6 @@ article.media:last-child {
     border: none !important;
 }
 
-div#secondary-user div.media {
-    margin-bottom: 3px;
-}
-
-div#secondary-user ul {
-    background-color: #8FBC8F;
-    clear: both;
-}
-
 div#secondary-user ul li {
     margin-right: -5px;
     display: inline;
@@ -145,6 +136,9 @@ div#secondary-user ul li a {
     font-weight: bold;
     padding: 5px;
     color: #000;
+}
+div#secondary-user ul li:first-child a {
+    padding: 5px 5px 5px 0;
 }
 
 div#secondary-user ul li a.active {
@@ -184,25 +178,16 @@ div#primary-user a:hover {
     height: 100px;
 }
 
-.user-nav ul {
+nav.user-nav ul {
     background-color: #8FBC8F;
     border-radius: 3px;
 }
 
-ul.dropdown-menu  {
-    background-color: #8FBC8F;
-}
-
-.user-nav ul li,
-ul.dropdown-menu li {
+nav.user-nav ul li {
     border-bottom: 1px solid #fff;
 }
 
-ul.dropdown-menu li:last-child {
-    border-bottom: none;
-}
-
-.user-nav li a {
+nav.user-nav li a {
     text-decoration: none;
     font-weight: bold;
     display: block;
@@ -210,29 +195,41 @@ ul.dropdown-menu li:last-child {
     color: #000;
 }
 
-.user-nav li a:hover,
-.user-nav li a:focus {
+nav.user-nav li a:hover,
+nav.user-nav li a:focus {
     background-color: #2E8B57;
 }
 
-.user-nav > ul > li:first-child > a:hover,
-.user-nav > ul > li:first-child > a:focus {
+nav.user-nav > ul > li:first-child > a:hover,
+nav.user-nav > ul > li:first-child > a:focus {
     border-radius: 3px 3px 0 0;
 }
 
-.user-nav > ul > li:last-child > a:hover,
-.user-nav > ul > li:last-child > a:focus {
+nav.user-nav > ul > li:last-child > a:hover,
+nav.user-nav > ul > li:last-child > a:focus {
     border-radius: 0 0 3px 3px;
 }
 
-ul.dropdown-menu li a {
+nav#short-cuts h5 {
+    color: #2E8B57;
     font-weight: bold;
+    margin-bottom: 3px;
+    padding-bottom: 4px;
+    border-bottom: 2px solid #2E8B57;
+}
+nav#short-cuts ul li {
+    padding: 2px 0;
+    border-bottom: 1px solid #8FBC8F;
 }
 
-ul.dropdown-menu li a:hover {
-    background-color: #2E8B57;
+nav#short-cuts ul li:last-child {
+    border-bottom: none;
 }
-
+nav#short-cuts ul li a {
+    display: inline-block;
+    padding: 5px 0;
+    text-decoration: none;
+}
 
 ul.about li,
 ul.profile li,
@@ -318,9 +315,38 @@ div#primary-user img.media-object {
     border-radius: 3px;
 }
 
-div#secondary-user img.media-object {
+div#secondary-user div {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+div#secondary-user img {
+    position: absolute;
+    top: 0;
+    left: 5px;
+    z-index: 1000;
     height: 75px;
     width: 75px;
+    border-radius: 3px;
+}
+
+div#secondary-user h4 {
+    margin-left: 85px;
+    display: inline-block;
+    font-weight: bold;
+    margin-top: 0;
+}
+
+div#secondary-user .btn {
+    float: right;
+}
+
+div#secondary-user nav {
+        background-color: #8FBC8F;
+        border-radius: 0 3px 0 3px;
+}
+div#secondary-user nav ul {
+    margin-left: 85px;
 }
 
 ul.about li:last-child,
@@ -386,12 +412,17 @@ div.main-content {
 }
 
 div.side-content {
-    box-shadow: 0 0 4px #2E8B57;
-    background-color: #fff;
-    border-radius: 3px;
-    padding: 5px;
     float: left;
     width: 30%;
+}
+
+div.side-content aside > div,
+div.side-content aside > nav {
+    padding: 5px;
+    margin-bottom: 5px;
+    border-radius: 3px;
+    background-color: #fff;
+    box-shadow: 0 0 4px #2E8B57;
 }
 
 div.box {
@@ -467,8 +498,8 @@ article.photo > img,
 form#add-description img {
     margin: 5px auto 0 auto;
     max-width: 100%;
-    height: 250px;
     width: 100%;
+    border: 1px solid rgba(143, 188, 143, .2);
 }
 form#add-description img {
     margin-bottom: 5px;
