@@ -42,8 +42,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         '<span> &middot; </span>';
                             }
 
-                            print '<a href="' . base_url("comment/reply/{$comment['comment_id']}") .
-                                    '">Reply</a>';
+                            // Only allow a user to reply to his comment if there is atleast one reply.
+                            if ($comment['commenter_id'] != $_SESSION['user_id'] ||
+                                $comment['num_replies'] > 0) {
+                                print '<a href="' . base_url("comment/reply/{$comment['comment_id']}") .
+                                        '">Reply</a>';
+                            }
                         }
 
                         if ($comment['num_likes'] > 0) {
