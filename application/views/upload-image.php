@@ -1,16 +1,15 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
 require_once('common/user-page-start.php');
 ?>
 
 <div class="box">
     <h4><?= $heading; ?></h4>
         <?php if (isset($error)) { ?>
-            <div class="alert alert-danger">
-                <span class="glyphicon glyphicon-exclamation-sign"></span>
-                <?= $error; ?>
-            </div>
+        <div class="alert alert-danger">
+            <span class="glyphicon glyphicon-exclamation-sign"></span>
+            <?= $error; ?>
+        </div>
         <?php } ?>
         <form action="<?= $form_action; ?>" method="post"
             enctype="multipart/form-data" role="form">
