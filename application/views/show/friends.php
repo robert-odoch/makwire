@@ -3,17 +3,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 define('PAGE', 'friends');
 require_once(dirname(__FILE__) . '/../common/user-page-start.php');
-
-if ($is_visitor) {
-    require_once(dirname(__FILE__) . '/../common/secondary-user-nav.php');
-}
+require_once(dirname(__FILE__) . '/../common/secondary-user-nav.php');
 ?>
 
 <div class="box">
-    <?php if (!$is_visitor) { ?>
-        <h4>Friends</h4>
-    <?php } ?>
-
     <?php if (count($friends) == 0) { ?>
     <div class="alert alert-info">
         <p><span class="glyphicon glyphicon-info-sign"></span> No friends to show.</p>

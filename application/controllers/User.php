@@ -53,20 +53,18 @@ class User extends CI_Controller
         $data = $this->user_model->initialize_user();
         $data['title'] = format_name($data['primary_user']) . ' posts';
 
-        $data['is_visitor'] = ($user_id == $_SESSION['user_id']) ? FALSE : TRUE;;
-        if ($data['is_visitor']) {
-            try {
-                $data['secondary_user'] = $this->user_model->get_profile_name($user_id);
-            }
-            catch (UserNotFoundException $e) {
-                show_404();
-            }
-
-            $data['suid'] = $user_id;
-            $data['su_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
-            $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
-            $data['title'] = format_name($data['secondary_user']) . ' posts';
+        $data['is_visitor'] = ($user_id == $_SESSION['user_id']) ? FALSE : TRUE;
+        try {
+            $data['secondary_user'] = $this->user_model->get_profile_name($user_id);
         }
+        catch (UserNotFoundException $e) {
+            show_404();
+        }
+
+        $data['suid'] = $user_id;
+        $data['su_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
+        $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
+        $data['title'] = format_name($data['secondary_user']) . ' posts';
 
         $this->load->view('common/header', $data);
 
@@ -516,19 +514,17 @@ class User extends CI_Controller
         $data['title'] = format_name($data['primary_user']) . ' friends';
 
         $data['is_visitor'] = ($user_id == $_SESSION['user_id']) ? FALSE : TRUE;
-        if ($data['is_visitor']) {
-            try {
-                $data['secondary_user'] = $this->user_model->get_profile_name($user_id);
-            }
-            catch (UserNotFoundException $e) {
-                show_404();
-            }
-
-            $data['su_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
-            $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
-            $data['suid'] = $user_id;
-            $data['title'] = format_name($data['secondary_user']) . ' friends';
+        try {
+            $data['secondary_user'] = $this->user_model->get_profile_name($user_id);
         }
+        catch (UserNotFoundException $e) {
+            show_404();
+        }
+
+        $data['su_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
+        $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
+        $data['suid'] = $user_id;
+        $data['title'] = format_name($data['secondary_user']) . ' friends';
 
         $this->load->view('common/header', $data);
 
@@ -552,22 +548,19 @@ class User extends CI_Controller
         }
 
         $data = $this->user_model->initialize_user();
-        $data['title'] = 'Edit Profile';
+        $data['title'] = "Profile | {$data['primary_user']}";
 
         $data['is_visitor'] = ($user_id == $_SESSION['user_id']) ? FALSE : TRUE;
-        if ($data['is_visitor']) {
-            try {
-                $data['secondary_user'] = $this->user_model->get_profile_name($user_id);
-            }
-            catch (UserNotFoundException $e) {
-                show_404();
-            }
-
-            $data['su_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
-            $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
-            $data['suid'] = $user_id;
-            $data['title'] = "About {$data['secondary_user']}";
+        try {
+            $data['secondary_user'] = $this->user_model->get_profile_name($user_id);
         }
+        catch (UserNotFoundException $e) {
+            show_404();
+        }
+        $data['su_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
+        $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
+        $data['suid'] = $user_id;
+        $data['title'] = "Profile | {$data['secondary_user']}";
 
         $this->load->view('common/header', $data);
 
@@ -586,19 +579,17 @@ class User extends CI_Controller
         $data['title'] = format_name($data['primary_user']) . ' photos';
 
         $data['is_visitor'] = ($user_id == $_SESSION['user_id']) ? FALSE : TRUE;
-        if ($data['is_visitor']) {
-            try {
-                $data['secondary_user'] = $this->user_model->get_profile_name($user_id);
-            }
-            catch (UserNotFoundException $e) {
-                show_404();
-            }
-
-            $data['su_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
-            $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
-            $data['suid'] = $user_id;
-            $data['title'] = format_name($data['secondary_user']) . ' photos';
+        try {
+            $data['secondary_user'] = $this->user_model->get_profile_name($user_id);
         }
+        catch (UserNotFoundException $e) {
+            show_404();
+        }
+
+        $data['su_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
+        $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
+        $data['suid'] = $user_id;
+        $data['title'] = format_name($data['secondary_user']) . ' photos';
 
         $this->load->view('common/header', $data);
 

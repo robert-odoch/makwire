@@ -27,7 +27,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     $friendship_status['user_id'] == $_SESSION['user_id']) {
                 print "<button class='btn btn-sm'>Friend Request Sent</button>";
             }
-            else {
+            elseif ($suid != $_SESSION['user_id']) {
                 print "<a href='" . base_url("user/add-friend/{$suid}") .
                         "' class='btn btn-sm'>Add Friend</a>";
             }
@@ -39,35 +39,35 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         switch (PAGE) {
             case 'timeline':
                 print '<li><a href="' . base_url("user/{$suid}") . '" class="active">Timeline</a></li>' .
-                        '<li><a href="' . base_url("user/profile/{$suid}") . '">About</a></li>' .
+                        '<li><a href="' . base_url("user/profile/{$suid}") . '">Profile</a></li>' .
                         '<li><a href="' . base_url("user/photos/{$suid}") . '">Photos</a></li>' .
                         '<li><a href="' . base_url("user/friends/{$suid}") . '">Friends</a></li>' .
                         '<li><a href="' . base_url("user/groups/{$suid}") . '">Groups</a></li>';
                 break;
             case 'profile':
                 print '<li><a href="' . base_url("user/{$suid}") . '">Timeline</a></li>' .
-                        '<li><a href="' . base_url("user/profile/{$suid}") . '" class="active">About</a></li>' .
+                        '<li><a href="' . base_url("user/profile/{$suid}") . '" class="active">Profile</a></li>' .
                         '<li><a href="' . base_url("user/photos/{$suid}") . '">Photos</a></li>' .
                         '<li><a href="' . base_url("user/friends/{$suid}") . '">Friends</a></li>' .
                         '<li><a href="' . base_url("user/groups/{$suid}") . '">Groups</a></li>';
                 break;
             case 'photos':
                 print '<li><a href="' . base_url("user/{$suid}") . '">Timeline</a></li>' .
-                        '<li><a href="' . base_url("user/profile/{$suid}") . '">About</a></li>' .
+                        '<li><a href="' . base_url("user/profile/{$suid}") . '">Profile</a></li>' .
                         '<li><a href="' . base_url("user/photos/{$suid}") . '" class="active">Photos</a></li>' .
                         '<li><a href="' . base_url("user/friends/{$suid}") . '">Friends</a></li>' .
                         '<li><a href="' . base_url("user/groups/{$suid}") . '">Groups</a></li>';
                 break;
             case 'friends':
                 print '<li><a href="' . base_url("user/{$suid}") . '">Timeline</a></li>' .
-                        '<li><a href="' . base_url("user/profile/{$suid}") . '">About</a></li>' .
+                        '<li><a href="' . base_url("user/profile/{$suid}") . '">Profile</a></li>' .
                         '<li><a href="' . base_url("user/photos/{$suid}") . '">Photos</a></li>' .
                         '<li><a href="' . base_url("user/friends/{$suid}") . '" class="active">Friends</a></li>' .
                         '<li><a href="' . base_url("user/groups/{$suid}") . '">Groups</a></li>';
                 break;
             case 'groups':
                 print '<li><a href="' . base_url("user/{$suid}") . '">Timeline</a></li>' .
-                        '<li><a href="' . base_url("user/profile/{$suid}") . '">About</a></li>' .
+                        '<li><a href="' . base_url("user/profile/{$suid}") . '">Profile</a></li>' .
                         '<li><a href="' . base_url("user/photos/{$suid}") . '">Photos</a></li>' .
                         '<li><a href="' . base_url("user/friends/{$suid}") . '">Friends</a></li>' .
                         '<li><a href="' . base_url("user/groups/{$suid}") . '" class="active">Groups</a></li>';

@@ -3,17 +3,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 define('PAGE', 'photos');
 require_once(dirname(__FILE__) . '/../common/user-page-start.php');
-
-if ($is_visitor) {
-    require_once(dirname(__FILE__) . '/../common/secondary-user-nav.php');
-}
+require_once(dirname(__FILE__) . '/../common/secondary-user-nav.php');
 ?>
 
 <div class="box">
-    <?php if (!$is_visitor) { ?>
-        <h4>Photos</h4>
-    <?php } ?>
-
     <?php if (count($photos) == 0) { ?>
         <div class="alert alert-info">
             <span class="glyphicon glyphicon-info-sign"></span> No photos to show.
