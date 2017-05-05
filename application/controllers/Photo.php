@@ -41,13 +41,8 @@ class Photo extends CI_Controller
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $description = trim(strip_tags($this->input->post('description')));
-            if (!$description) {
-                $data['error'] = "Comment can't be empty!";
-            }
-            else {
-                $this->photo_model->add_description($description, $photo_id);
-                redirect(base_url("user/{$_SESSION['user_id']}"));
-            }
+            $this->photo_model->add_description($description, $photo_id);
+            redirect(base_url("user/{$_SESSION['user_id']}"));
         }
 
         $data['photo'] = $photo;
