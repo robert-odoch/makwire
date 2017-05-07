@@ -6,12 +6,7 @@ class Account extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-
         session_start();
-        if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
-            $_SESSION['return_uri'] = $_SERVER['REQUEST_URI'];
-            redirect(base_url('login'));
-        }
     }
 
     public function forgot_password()
@@ -21,17 +16,26 @@ class Account extends CI_Controller
 
     public function change_passord()
     {
-
+        if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
+            $_SESSION['return_uri'] = $_SERVER['REQUEST_URI'];
+            redirect(base_url('login'));
+        }
     }
 
     public function deactivate()
     {
-
+        if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
+            $_SESSION['return_uri'] = $_SERVER['REQUEST_URI'];
+            redirect(base_url('login'));
+        }
     }
 
     public function delete()
     {
-
+        if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
+            $_SESSION['return_uri'] = $_SERVER['REQUEST_URI'];
+            redirect(base_url('login'));
+        }
     }
 
 }
