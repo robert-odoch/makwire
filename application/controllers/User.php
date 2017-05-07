@@ -218,7 +218,7 @@ class User extends CI_Controller
             }
         }
 
-        $limit = 10;  // Maximum number of previous messages to show.
+        $limit = 5;  // Maximum number of previous messages to show.
         if ($offset != 0) {
             $data['has_prev'] = TRUE;
             $data['prev_offset'] = 0;
