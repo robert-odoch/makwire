@@ -460,7 +460,7 @@ class User_model extends CI_Model
 
         $messages = $query->result_array();
         foreach ($messages as &$msg) {
-            $message_sql = sprintf("SELECT message, seen, date_sent FROM messages " .
+            $message_sql = sprintf("SELECT message_id, message, seen, date_sent FROM messages " .
                                     "WHERE (receiver_id = %d AND sender_id = %d) " .
                                     "ORDER BY date_sent DESC LIMIT 1",
                                     $_SESSION['user_id'], $msg['sender_id']);

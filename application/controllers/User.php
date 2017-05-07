@@ -210,7 +210,7 @@ class User extends CI_Controller
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $message = trim(strip_tags($this->input->post('message')));
-            if ($message) {
+            if (!$message) {
                 $data['error_message'] = "Message can't be empty!";
             }
             else {
