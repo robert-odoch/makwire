@@ -7,7 +7,7 @@
 
             <div class="main-content">
                 <div class="box">
-                    <h4>Email</h4>
+                    <h4>Emails</h4>
                     <h5>Primary email address</h5>
                     <p class="help-block">
                         You primary makwire email address will be used for
