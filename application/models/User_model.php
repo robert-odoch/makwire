@@ -1364,7 +1364,7 @@ class User_model extends CI_Model
         $sql = sprintf("SELECT * FROM messages " .
                      "WHERE (receiver_id = %d AND sender_id = %d) OR " .
                             "(receiver_id = %d AND sender_id = %d) " .
-                     "ORDER BY date_sent DESC LIMIT %d, %d",
+                     "LIMIT %d, %d",
                      $user_id, $_SESSION['user_id'],
                      $_SESSION['user_id'], $user_id,
                      $offset, $limit);
