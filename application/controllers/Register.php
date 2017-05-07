@@ -46,7 +46,7 @@ class Register extends CI_Controller
                 }
 
                 if (!$is_valid_mak_email) {
-                    $data['error_message'] = 'Please enter a valid email address!';
+                    $data['error_message'] = 'Please enter a Mak email address!';
                 }
                 elseif ($this->register_model->is_registered_email($email)) {
 
@@ -177,7 +177,7 @@ class Register extends CI_Controller
                 $error_messages['uname'] = 'Username must be atleast 3 characters long!';
             }
             elseif (!preg_match('/^[A-Za-z0-9]{3,}$/', $uname)) {
-                $error_messages['uname'] = 'Please ensure that your username adheres to ' .
+                $error_messages['uname'] = 'Please ensure that your username meets ' .
                                             'the above requirements.';
             }
             else {
@@ -189,7 +189,7 @@ class Register extends CI_Controller
                 $error_messages['passwd1'] = 'Password must be atleast 6 characters long!';
             }
             elseif (!preg_match('/^(\w*(?=\w*\d)(?=\w*[a-z])(?=\w*[A-Z])\w*){6,}$/', $passwd1)) {
-                    $error_messages['passwd1'] = 'Please ensure that your password adheres to " .
+                    $error_messages['passwd1'] = 'Please ensure that your password meets " .
                                                     "the above requirements.';
             }
             else {
