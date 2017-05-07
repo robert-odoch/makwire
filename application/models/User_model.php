@@ -445,13 +445,13 @@ class User_model extends CI_Model
     public function get_messages($offset, $limit, $filter=TRUE)
     {
         if ($filter) {
-            $sql = sprintf("SELECT * " .
+            $sql = sprintf("SELECT DISTINCT sender_id " .
                             "FROM messages WHERE (receiver_id = %d AND seen IS FALSE) " .
                             "ORDER BY date_sent DESC LIMIT %d, %d",
                             $_SESSION['user_id'], $offset, $limit);
         }
         else {
-            $sql = sprintf("SELECT * " .
+            $sql = sprintf("SELECT DISTINCT sender_id " .
                             "FROM messages WHERE (receiver_id = %d) " .
                             "ORDER BY date_sent DESC LIMIT %d, %d",
                             $_SESSION['user_id'], $offset, $limit);
@@ -460,8 +460,14 @@ class User_model extends CI_Model
 
         $messages = $query->result_array();
         foreach ($messages as &$msg) {
-            $msg['sender'] = $this->get_profile_name($msg['sender_id']);
-            if (!$msg['seen'] && ($msg['receiver_id'] == $_SESSION['user_id'])) {
+            $message_sql = sprintf("SELECT message, seen, date_sent FROM messages " .
+                                    "WHERE (receiver_id = %d AND sender_id = %d) " .
+                                    "ORDER BY date_sent DESC LIMIT 1",
+                                    $_SESSION['user_id'], $msg['sender_id']);
+            $message_query = $this->utility_model->run_query($message_sql);
+            $msg = array_merge($msg, $message_query->row_array());
+
+            if (!$msg['seen']) {
                 $update_sql = sprintf("UPDATE messages " .
                                         "SET seen = 1 WHERE (message_id = %d) " .
                                         "LIMIT 1",
@@ -469,6 +475,7 @@ class User_model extends CI_Model
                 $this->utility_model->run_query($update_sql);
             }
 
+            $msg['sender'] = $this->get_profile_name($msg['sender_id']);
             $msg['timespan'] = timespan(mysql_to_unix($msg['date_sent']), now(), 1);
         }
         unset($msg);
