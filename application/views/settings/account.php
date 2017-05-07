@@ -7,34 +7,13 @@
 
             <div class="main-content">
                 <div class="box">
-                    <ul>
-                        <li><a href="#">Prefered profile name</a></li>
+                    <h4>Account settings</h4>
+                    <ul class="account-settings">
                         <li><a href="#">Change password</a></li>
+                        <li><a href="#">Prefered display name</a></li>
                         <li><a href="#">Change name</a></li>
                         <li><a href="#">Delete account</a></li>
                     </ul>
-                </div>
-
-                <div class="box">
-                    <h4>Prefered profile name</h4>
-                    <form action="" method="post" accept-charset="utf-8" role="form">
-                        <fieldset>
-                            <div class="radio">
-                                <label for="name1">
-                                    <input type="radio" name="name" value="Odoch Robert" id="name1">
-                                    Odoch Robert
-                                </label>
-                            </div>
-                            <div class="radio">
-                                <label for="name2">
-                                    <input type="radio" name="name" value="Robert Odoch" id="name2">
-                                    Robert Odoch
-                                </label>
-                            </div>
-                        </fieldset>
-
-                        <input type="submit" name="submit" value="Update" class="btn btn-sm">
-                    </form>
                 </div>
 
                 <div class="box">
@@ -57,8 +36,28 @@
 
                         <input type="submit" name="submit" value="Update" class="btn btn-sm">
                     </form>
+                </div>
 
-                    <a href="<?= base_url('account/forgot-password'); ?>">I forgot my password</a>
+                <div class="box">
+                    <h4>Prefered profile name</h4>
+                    <form action="" method="post" accept-charset="utf-8" role="form">
+                        <fieldset>
+                            <div class="radio">
+                                <label for="name1">
+                                    <input type="radio" name="name" value="Odoch Robert" id="name1">
+                                    Odoch Robert
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label for="name2">
+                                    <input type="radio" name="name" value="Robert Odoch" id="name2">
+                                    Robert Odoch
+                                </label>
+                            </div>
+                        </fieldset>
+
+                        <input type="submit" name="submit" value="Update" class="btn btn-sm">
+                    </form>
                 </div>
 
                 <div class="box">

@@ -22,12 +22,14 @@ class Account extends CI_Controller
         }
     }
 
-    public function deactivate()
+    public function set_prefered_name()
     {
-        if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
-            $_SESSION['return_uri'] = $_SERVER['REQUEST_URI'];
-            redirect(base_url('login'));
-        }
+
+    }
+
+    public function change_name()
+    {
+
     }
 
     public function delete()
