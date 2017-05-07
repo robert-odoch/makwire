@@ -66,7 +66,7 @@
                 <input type="submit" name="submit" value="Log In" class="btn btn-sm">
             </form>
             <p style="margin: 5px 0;">
-                Don't have an account? <a href="register-step-one.html"
-                title="Create an account">create one</a>
+                Don't have an account?
+                <a href="<?= base_url('register/step-one'); ?>" title="Create an account">create one</a>
             </p>
         </div><!-- box -->
