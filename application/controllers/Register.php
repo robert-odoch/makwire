@@ -105,7 +105,7 @@ class Register extends CI_Controller
         $this->load->view('common/header', $data);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $fname = trim($this->input->post('fname'));
+            $fname = trim(strip_tags($this->input->post('fname')));
             if (strlen($fname) == 0) {
                 $error_messages['fname'] = "First name can't be empty!";
             }
@@ -113,7 +113,7 @@ class Register extends CI_Controller
                 $data['fname'] = $fname;
             }
 
-            $lname = trim($this->input->post('lname'));
+            $lname = trim(strip_tags($this->input->post('lname')));
             if (strlen($lname) == 0) {
                 $error_messages['lname'] = "Last name can't be empty!";
             }
