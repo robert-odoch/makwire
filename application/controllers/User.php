@@ -251,7 +251,7 @@ class User extends CI_Controller
 
         $post = trim(strip_tags($this->input->post('post')));
         if (!$post) {
-            $_SESSION['post_error'] = "Post can't be empty!";
+            $_SESSION['post_error'] = "Post can't be empty!";  // Used and unset by index() method.
             redirect(base_url("user/{$_SESSION['user_id']}"));
         }
 

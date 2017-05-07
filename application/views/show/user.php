@@ -29,7 +29,7 @@ if (!$is_visitor) {
         <form action="<?= base_url('user/new-post'); ?>" method="post"
             accept-charset="utf-8" role="form">
             <div class="form-group">
-                <label for="post" class="hidden">New Post</label>
+                <label for="post" class="sr-only">New Post</label>
                 <textarea name="post" placeholder="What's new?" class="fluid
                 <?php
                 if (isset($post_error)) {
@@ -38,7 +38,7 @@ if (!$is_visitor) {
                 ?>
                 "></textarea>
                 <?php
-                if (isset($post_errors)) {
+                if (isset($post_error)) {
                     print "<span class='error'>{$post_error}</span>";
                 }
                 ?>
