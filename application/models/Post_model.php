@@ -179,7 +179,7 @@ class Post_model extends CI_Model
     {
         // Save the post.
         $post_sql = sprintf("INSERT INTO posts (audience_id, audience, post, user_id) " .
-                            "VALUES (%d, %s, %s, %d)",
+                            "VALUES (%d, '%s', %s, %d)",
                             $audience_id, $audience,
                             $this->db->escape($post), $_SESSION['user_id']);
         $this->utility_model->run_query($post_sql);
