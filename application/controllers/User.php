@@ -209,11 +209,11 @@ class User extends CI_Controller
         $this->load->view('common/header', $data);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (empty(trim($this->input->post('message')))) {
+            $message = trim(strip_tags($this->input->post('message')));
+            if ($message) {
                 $data['error_message'] = "Message can't be empty!";
             }
             else {
-                $message = strip_tags($this->input->post('message'));
                 $this->user_model->send_message($message, $user_id);
             }
         }
@@ -384,7 +384,7 @@ class User extends CI_Controller
                 $query = $_SESSION['query'];
             }
             else {
-                $query = trim($this->input->post('query'));
+                $query = trim(strip_tags($this->input->post('query')));
             }
 
             if (!$query) {
@@ -1101,7 +1101,7 @@ class User extends CI_Controller
         $this->load->view('common/header', $data);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $country_id = $this->input->post('country');
+            $country_id = trim(strip_tags($this->input->post('country')));
             if ($country_id == 'none') {
                 // Display a form allowing the user to enter his/her country
                 // and notifiy the admin.
@@ -1126,8 +1126,8 @@ class User extends CI_Controller
         $this->load->view('common/header', $data);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data['district'] = $this->input->post('district');
-            if (empty(trim($data['district']))) {
+            $data['district'] = trim(strip_tags($this->input->post('district')));
+            if (empty($data['district'])) {
                 $data['error_message'] = 'Please enter the name of your district or state and try again.';
             }
             else {
