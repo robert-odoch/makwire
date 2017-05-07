@@ -32,9 +32,14 @@ require_once(dirname(__FILE__) . '/../common/comment-or-reply.php');
                 </h4>
 
                 <p class="reply"><?= htmlspecialchars($reply['comment']); ?></p>
+                <small class="time">
+                    <span class="glyphicon glyphicon-time"></span> <?= $reply['timespan']; ?> ago
+                </small>
+
                 <?php
                 if ($reply['viewer_is_friend_to_owner'] && !$reply['liked']) {
-                    print '<a href="' . base_url("reply/like/{$reply['comment_id']}") . '">Like</a>';
+                    print '<span> &middot; </span>' .
+                            '<a href="' . base_url("reply/like/{$reply['comment_id']}") . '">Like</a>';
                 }
                 if ($reply['num_likes'] > 0) {
                     if (!$reply['liked']) {
@@ -46,9 +51,6 @@ require_once(dirname(__FILE__) . '/../common/comment-or-reply.php');
                     print "</a>";
                 }
                 ?>
-                <small class="time">
-                    <span class="glyphicon glyphicon-time"></span> <?= $reply['timespan']; ?> ago
-                </small>
             </div>
         </div>
         <?php } ?>

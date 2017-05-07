@@ -1,6 +1,5 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
 ?>
 
 <div class="box">
@@ -34,10 +33,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         </h4>
 
                         <p class="comment"><?= htmlspecialchars($comment['comment']); ?></p>
+                        <small class="time">
+                            <span class="glyphicon glyphicon-time"></span>
+                            <?= $comment['timespan']; ?> ago
+                        </small>
+
                         <?php
                         if ($comment['viewer_is_friend_to_owner']) {
                             if (!$comment['liked']) {
-                                print '<a href="' . base_url("comment/like/{$comment['comment_id']}") .
+                                print '<span> &middot; </span>' .
+                                        '<a href="' . base_url("comment/like/{$comment['comment_id']}") .
                                         '">Like</a>' .
                                         '<span> &middot; </span>';
                             }
@@ -65,10 +70,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             print "</a>";
                         }
                         ?>
-                        <small class="time">
-                            <span class="glyphicon glyphicon-time"></span>
-                            <?= $comment['timespan']; ?> ago
-                        </small>
                     </div>
                 </div>
             <?php } ?>
