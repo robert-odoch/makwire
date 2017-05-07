@@ -658,16 +658,6 @@ span.help-block {
     margin-bottom: 5px;
 }
 
-form#send-message {
-    border-bottom: 1px dotted #8FBC8F;
-    padding-bottom: 5px;
-}
-
-form#comment-bottom {
-    padding-top: 5px;
-    border-top: 1px dotted #8FBC8F;
-}
-
 p.post {
     text-align: justify;
     margin: 0;
