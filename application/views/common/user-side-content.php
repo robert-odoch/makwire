@@ -20,7 +20,7 @@
 
         <nav role="navigation" class="user-nav">
             <ul>
-                <li><a href="<?= base_url('user/profile'); ?>">Profile</a></li>
+                <li><a href="<?= base_url('user/profile'); ?>">Edit Profile</a></li>
                 <li><a href="<?= base_url('settings/account'); ?>">Settings</a></li>
             </ul>
         </nav>
