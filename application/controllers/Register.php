@@ -6,6 +6,12 @@ class Register extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+        
+        session_start();
+        if (isset($_SESSION['user_id'])) {
+            redirect(base_url("user/{$_SESSION['user_id']}"));
+        }
+
         $this->load->model('register_model');
     }
 
