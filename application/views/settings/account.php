@@ -7,6 +7,15 @@
 
             <div class="main-content">
                 <div class="box">
+                    <ul>
+                        <li><a href="#">Prefered profile name</a></li>
+                        <li><a href="#">Change password</a></li>
+                        <li><a href="#">Change name</a></li>
+                        <li><a href="#">Delete account</a></li>
+                    </ul>
+                </div>
+
+                <div class="box">
                     <h4>Prefered profile name</h4>
                     <form action="" method="post" accept-charset="utf-8" role="form">
                         <fieldset>
@@ -24,7 +33,7 @@
                             </div>
                         </fieldset>
 
-                        <input type="submit" name="submit" value="Update profile name" class="btn btn-sm">
+                        <input type="submit" name="submit" value="Update" class="btn btn-sm">
                     </form>
                 </div>
 
@@ -46,9 +55,10 @@
                             </div>
                         </fieldset>
 
-                        <input type="submit" name="submit" value="Update password" class="btn btn-sm">
-                        <a href="<?= base_url('account/forgot-password'); ?>">I forgot my password</a>
+                        <input type="submit" name="submit" value="Update" class="btn btn-sm">
                     </form>
+
+                    <a href="<?= base_url('account/forgot-password'); ?>">I forgot my password</a>
                 </div>
 
                 <div class="box">
@@ -91,28 +101,21 @@
                             </div>
                         </fieldset>
 
-                        <input type="submit" name="submit" value="Update name" class="btn btn-sm">
+                        <input type="submit" name="submit" value="Update" class="btn btn-sm">
                     </form>
                 </div>
 
                 <div class="box">
                     <h4>Delete account</h4>
-                    <div class="media">
-                        <div class="media-left">
-                            <span class="glyphicon glyphicon-info-sign"></span>
-                        </div>
-                        <div class="media-body">
-                            <p class="media-heading">
-                                Please be absolutely sure that you really want to delete your account
-                                because
-                                <span style="color: red">
-                                    there is no going back once this action is performed.
-                                </span>
-                            </p>
-                        </div>
-                    </div>
+                        <p>
+                            Please be absolutely sure that you really want to delete your account
+                            because
+                            <span style="color: red">
+                                there is no going back once this action is performed.
+                            </span>
+                        </p>
 
                     <form action="" method="post" accept-charset="utf-8" role="form">
-                        <input type="submit" name="submit" value="Delete my account" class="btn btn-sm">
+                        <input type="submit" name="submit" value="Delete" class="btn btn-sm">
                     </form>
                 </div>

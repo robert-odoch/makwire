@@ -18,15 +18,6 @@
                                 You will be notified if your friends comment on posts
                                 of your friends that you commented on or shared.
                             </span>
-
-                            <label for="watching">
-                                <input type="checkbox" name="watching" id="watching" checked>
-                                Watching
-                            </label>
-                            <span class="help-block">
-                                You will be notified of activies performed on posts that
-                                you are watching.
-                            </span>
                         </div>
 
                         <input type="submit" name="submit" value="Save" class="btn btn-sm">

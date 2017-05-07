@@ -11,7 +11,7 @@
                     <h5>Primary email address</h5>
                     <p class="help-block">
                         You primary makwire email address will be used for
-                        notifications related to your account.
+                        communications related to your account.
                     </p>
                     <form action="" method="post" accept-charset="utf-8" role="form">
                         <div class="form-group">
@@ -26,9 +26,8 @@
 
                     <h5>Backup email address</h5>
                     <p class="help-block">
-                        Your backup makwire email address can be used to reset
-                        your password if you no longer have access to your primary
-                        email address.
+                        Your backup makwire email address can be used if you no
+                        longer have access to your primary email address.
                     </p>
                     <form action="" method="post" accept-charset="utf-8" role="form">
                         <div class="form-group">

@@ -1,8 +1,8 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
 <div class="side-content">
-        <p><span class="glyphicon glyphicon-cog btn btn-sm"></span> <b>Settings</b></p>
     <nav class="user-nav" role="navigation">
+        <p><span class="glyphicon glyphicon-cog btn btn-sm"></span> <b>Settings</b></p>
         <ul>
             <li><a href="<?= base_url('settings/account'); ?>">Account</a></li>
             <li><a href="<?= base_url('settings/emails'); ?>">Emails</a></li>

@@ -420,8 +420,8 @@ div.side-content {
     width: 30%;
 }
 
-div.side-content aside > div,
-div.side-content aside > nav {
+div.side-content > div,
+div.side-content > nav {
     padding: 5px;
     margin-bottom: 5px;
     border-radius: 3px;
