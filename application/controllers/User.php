@@ -211,7 +211,7 @@ class User extends CI_Controller
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $message = trim(strip_tags($this->input->post('message')));
             if (!$message) {
-                $data['error_message'] = "Message can't be empty!";
+                $data['message_error'] = "Message can't be empty!";
             }
             else {
                 $this->user_model->send_message($message, $user_id);
