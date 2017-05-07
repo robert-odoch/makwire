@@ -19,13 +19,31 @@ class Settings extends CI_Controller
         $this->user_model->confirm_logged_in();
     }
 
-    public function account()
+    public function account($page='index')
     {
         $data = $this->user_model->initialize_user();
-        $data['title'] = 'Account settings';
+
+        switch ($page) {
+        case 'change-password':
+            $data['title'] = 'Change password';
+            break;
+        case 'prefered-display-name':
+            $data['title'] = 'Set prefered display name';
+            break;
+        case 'change-name':
+            $data['title'] = 'Change name';
+            break;
+        case 'delete':
+            $data['title'] = 'Delete account';
+            break;
+        default:
+            $data['title'] = 'Account settings';
+            break;
+        }
         $this->load->view('common/header', $data);
 
-        $this->load->view('settings/account');
+
+        $this->load->view("settings/account/{$page}");
         $this->load->view('common/footer');
     }
 
