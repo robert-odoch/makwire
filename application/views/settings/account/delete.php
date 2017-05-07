@@ -1,0 +1,22 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed') ?>
+
+<div class="wrapper">
+    <div class="col-large">
+        <div role="main" class="main user-home">
+            <?php require_once(dirname(__FILE__) . '/../../common/account-settings-nav.php'); ?>
+
+            <div class="main-content">
+                <div class="box">
+                    <h4>Delete account</h4>
+                        <p>
+                            Please be absolutely sure that you really want to delete your account
+                            because
+                            <span style="color: red">
+                                there is no going back once this action is performed.
+                            </span>
+                        </p>
+
+                    <form action="<?= base_url('account/delete'); ?>" method="post" accept-charset="utf-8" role="form">
+                        <input type="submit" name="submit" value="Delete" class="btn btn-sm">
+                    </form>
+                </div>
