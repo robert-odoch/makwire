@@ -1,6 +1,5 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
 define('PAGE', 'photos');
 require_once(dirname(__FILE__) . '/../common/user-page-start.php');
 require_once(dirname(__FILE__) . '/../common/secondary-user-nav.php');

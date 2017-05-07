@@ -1,7 +1,4 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
-
-?>
+<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
 <?php if (count($chat_users) > 0) { ?>
     <div class="active-users">

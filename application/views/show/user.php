@@ -1,6 +1,5 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
 define('PAGE', $page);
 require_once(dirname(__FILE__) . '/../common/user-page-start.php');
 if ($page !== 'news-feed') {

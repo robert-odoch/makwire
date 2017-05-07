@@ -1,7 +1,4 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
-
-?>
+<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
 <div class="side-content">
         <p><span class="glyphicon glyphicon-cog btn btn-sm"></span> <b>Settings</b></p>

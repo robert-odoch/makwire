@@ -1,7 +1,5 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
-?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -90,8 +88,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <?php } else { ?>
                             <li>
                                 <a href="<?= base_url('login'); ?>">
-                                    <span class="glyphicon glyphicon-log-in"></span>
-                                    Log In
+                                    <span class="glyphicon glyphicon-log-in"></span> Log In
                                 </a>
                             </li>
                             <?php } ?>

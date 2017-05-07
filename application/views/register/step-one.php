@@ -1,7 +1,4 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
-
-?>
+<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
 <div class="wrap-single">
     <div role="main" class="main">

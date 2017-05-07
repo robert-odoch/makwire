@@ -1,7 +1,4 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
-
-?>
+<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
 <div id="secondary-user" class="box">
     <div>
