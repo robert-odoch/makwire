@@ -5,29 +5,6 @@ require_once('common/user-page-start.php');
 ?>
 
 <div class="box">
-    <form action="<?= base_url("user/send-message/{$suid}"); ?>" method="post"
-        accept-charset="utf-8" role="form" id="send-message">
-        <fieldset>
-            <div class="form-group">
-                <label for="message" class="sr-only">New Message</label>
-                <input type="text" name="message" id="message" placeholder="Your message..."
-                    class="fluid
-                <?php
-                if (isset($message_error)) {
-                    print ' has-error';
-                }
-                ?>">
-                <?php
-                if (isset($message_error)) {
-                    print "<span class='error'>{$message_error}</span>";
-                }
-                ?>
-            </div>
-        </fieldset>
-
-        <input type="submit" value="Send" class="btn btn-sm">
-    </form>
-    
     <?php
     if (count($messages) > 0) {
         if (isset($has_prev)) {
@@ -57,6 +34,30 @@ require_once('common/user-page-start.php');
             <?php } ?>
         </div>
     <?php }  // (count($messages) > 0) ?>
+
+
+        <form action="<?= base_url("user/send-message/{$suid}"); ?>" method="post"
+            accept-charset="utf-8" role="form" id="send-message">
+            <fieldset>
+                <div class="form-group">
+                    <label for="message" class="sr-only">New Message</label>
+                    <input type="text" name="message" id="message" placeholder="Your message..."
+                        class="fluid
+                    <?php
+                    if (isset($message_error)) {
+                        print ' has-error';
+                    }
+                    ?>">
+                    <?php
+                    if (isset($message_error)) {
+                        print "<span class='error'>{$message_error}</span>";
+                    }
+                    ?>
+                </div>
+            </fieldset>
+
+            <input type="submit" value="Send" class="btn btn-sm">
+        </form>
 </div><!-- box -->
 
 <?php if ($has_next) { ?>
