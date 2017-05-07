@@ -19,21 +19,21 @@
                         <div class="form-group">
                             <label for="email">Email Address:</label>
                             <span class="help-block">
-                                Your Makerere University email address<br>
-                                e.g., name@college.mak.ac.ug
+                                Your Makerere University email address
                             </span>
-                            <input type="email" name="email" id="email" class="fluid
-                            <?php
-                            if (isset($error_message)) {
-                                print ' has-error';
-                            }
-                            ?>"
+                            <input type="email" name="email" id="email" placeholder="e.g., name@college.mak.ac.ug"
+                                class="fluid
+                                <?php
+                                if (isset($error_message)) {
+                                    print ' has-error';
+                                }
+                                ?>"
 
-                            <?php
-                            if (isset($email)) {
-                                print " value = '{$email}' ";
-                            }
-                            ?>>
+                                <?php
+                                if (isset($email)) {
+                                    print " value = '{$email}' ";
+                                }
+                                ?>>
                             <?php
                             if (isset($error_message)) {
                                 print "<span class='error'>{$error_message}</span>";
