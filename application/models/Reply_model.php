@@ -1,6 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+require_once('classes/SimpleReply.php');
 require_once('exceptions/IllegalAccessException.php');
 require_once('exceptions/ReplyNotFoundException.php');
 
@@ -13,37 +14,6 @@ class Reply_model extends CI_Model
     {
         parent::__construct();
         $this->load->model('utility_model');
-    }
-
-    /**
-     * Checks whether a user has already liked a reply.
-     *
-     * A user is not allowed to like his own reply.
-     *
-     * @param $reply_id the ID of the reply in the comments table.
-     * @return TRUE if this user has already liked the reply, or is the owner of the reply.
-     */
-    private function has_liked($reply_id)
-    {
-        // Check whether this reply belongs to the current user.
-        $user_sql = sprintf("SELECT commenter_id " .
-                                    "FROM comments " .
-                                    "WHERE comment_id = %d " .
-                                    "LIMIT 1",
-                                    $reply_id);
-        $user_query = $this->utility_model->run_query($user_sql);
-        if ($user_query->row_array()['commenter_id'] == $_SESSION['user_id']) {
-            return TRUE;
-        }
-
-        // Check whether the user has already liked the reply.
-        $like_sql = sprintf("SELECT like_id FROM likes " .
-                     "WHERE (source_id = %d AND source_type = 'reply' AND liker_id = %d) " .
-                     "LIMIT 1",
-                     $reply_id, $_SESSION['user_id']);
-        $like_query = $this->utility_model->run_query($like_sql);
-
-        return ($like_query->num_rows() == 1);
     }
 
     /**
@@ -76,13 +46,16 @@ class Reply_model extends CI_Model
         // Add the timespan.
         $reply['timespan'] = timespan(mysql_to_unix($reply['date_entered']), now(), 1);
 
-        // Add the number of likes.
-        $reply['num_likes'] = $this->get_num_likes($reply_id);
-
         // Add data used by views.
         $reply['viewer_is_friend_to_owner'] = $this->user_model->are_friends($reply['commenter_id']);
 
-        $reply['liked'] = $this->has_liked($reply_id);
+        $simpleReply = new SimpleReply($reply['comment_id'], 'reply', $reply['commenter_id']);
+
+        // Add the number of likes.
+        $reply['num_likes'] = $this->activity_model->getNumLikes($simpleReply);
+
+        // Has the user liked the reply?
+        $reply['liked'] = $this->activity_model->isLiked($simpleReply);
 
         return $reply;
     }
@@ -98,82 +71,40 @@ class Reply_model extends CI_Model
      */
     public function like($reply_id)
     {
-        $user_sql = sprintf("SELECT commenter_id " .
+        $owner_sql = sprintf("SELECT commenter_id " .
                             "FROM comments " .
                             "WHERE comment_id = %d",
                             $reply_id);
-        $user_query = $this->utility_model->run_query($user_sql);
-        if ($user_query->num_rows() == 0) {
+        $owner_query = $this->utility_model->run_query($owner_sql);
+        if ($owner_query->num_rows() == 0) {
             throw new ReplyNotFoundException();
         }
 
-        if ($this->has_liked($reply_id)) {
-            return;
-        }
-
-        $user_result = $user_query->row_array();
-        if (!$this->user_model->are_friends($user_result['commenter_id'])) {
+        $owner_result = $owner_query->row_array();
+        $owner_id = $owner_result['commenter_id'];
+        if (!$this->user_model->are_friends($owner_id)) {
             throw new IllegalAccessException();
         }
 
         // Record the like.
-        $like_sql = sprintf("INSERT INTO likes " .
-                            "(liker_id, source_id, source_type) " .
-                            "VALUES (%d, %d, 'reply')",
-                            $_SESSION['user_id'], $reply_id);
-        $this->utility_model->run_query($like_sql);
-
-        // Dispatch an activity.
-        $activity_sql = sprintf("INSERT INTO activities " .
-                                "(actor_id, subject_id, source_id, source_type, activity) " .
-                                "VALUES (%d, %d, %d, 'reply', 'like')",
-                                $_SESSION['user_id'], $user_result['commenter_id'], $reply_id);
-        $this->utility_model->run_query($activity_sql);
-    }
-
-    /**
-     * Gets the number of users who liked a reply.
-     *
-     * @param $reply_id the ID of the reply in the comments table.
-     * @return the number of likes on this reply.
-     */
-    public function get_num_likes($reply_id)
-    {
-        $likes_sql = sprintf("SELECT COUNT(like_id) " .
-                                "FROM likes " .
-                                "WHERE (source_type = 'reply' AND source_id = %d)",
-                                $reply_id);
-        $likes_query = $this->utility_model->run_query($likes_sql);
-
-        return $likes_query->row_array()['COUNT(like_id)'];
+        $this->activity_model->like(new SimpleReply($reply_id, 'reply', $owner_id));
     }
 
     /**
      * Gets users who liked a reply.
      *
-     * @param $reply_id the ID of the reply in the comments table.
+     * @param $reply an array containing reply data.
      * @param offset the position to begin returning records from.
      * @param $limit the maximum number of records to return.
      * @return the users who liked this reply.
      */
-    public function get_likes($reply_id, $offset, $limit)
+    public function get_likes(&$reply, $offset, $limit)
     {
-        $likes_sql = sprintf("SELECT * " .
-                                "FROM likes " .
-                                "WHERE (source_type = 'reply' AND source_id = %d) " .
-                                "LIMIT %d, %d",
-                                $reply_id, $offset, $limit);
-        $likes_query = $this->utility_model->run_query($likes_sql);
-
-        $likes = $likes_query->result_array();
-        foreach ($likes as &$like) {
-            $like['profile_pic_path'] = $this->user_model->get_profile_pic_path($like['liker_id']);
-            $like['liker'] = $this->user_model->get_profile_name($like['liker_id']);
-            $like['timespan'] = timespan(mysql_to_unix($like['date_liked']), now(), 1);
-        }
-        unset($like);
-
-        return $likes;
+        return $this->activity_model->getLikes(
+            new SimpleReply($reply['comment_id'], 'reply', $reply['commenter_id']),
+            $offset,
+            $limit
+        );
     }
 }
 ?>

@@ -156,7 +156,7 @@ class Photo extends CI_Controller
         }
 
         $data['num_prev'] = $offset;
-        $data['likes'] = $this->photo_model->get_likes($photo_id, $offset, $limit);
+        $data['likes'] = $this->photo_model->get_likes($photo, $offset, $limit);
 
         $data['object'] = 'photo';
         $data['photo'] = $photo;
@@ -194,7 +194,7 @@ class Photo extends CI_Controller
             $data['next_offset'] = ($offset + $limit);
         }
 
-        $data['comments'] = $this->photo_model->get_comments($photo_id, $offset, $limit);
+        $data['comments'] = $this->photo_model->get_comments($photo, $offset, $limit);
         $data['object'] = 'photo';
         $data['photo'] = $photo;
         $this->load->view('show/comments', $data);
@@ -232,7 +232,7 @@ class Photo extends CI_Controller
         }
 
         $data['num_prev'] = $offset;
-        $data['shares'] = $this->photo_model->get_shares($photo_id, $offset, $limit);
+        $data['shares'] = $this->photo_model->get_shares($photo, $offset, $limit);
 
         $data['object'] = 'photo';
         $data['photo'] = $photo;

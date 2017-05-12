@@ -128,7 +128,7 @@ class Post extends CI_Controller
         }
 
         $data['num_prev'] = $offset;
-        $data['likes'] = $this->post_model->get_likes($post_id, $offset, $limit);
+        $data['likes'] = $this->post_model->get_likes($post, $offset, $limit);
 
         $post_url = base_url("user/post/{$post_id}");
         $post['post'] = character_limiter(
@@ -166,13 +166,12 @@ class Post extends CI_Controller
         }
 
         $data['has_next'] = FALSE;
-        $num_comments = $this->post_model->get_num_comments($post_id);
-        if (($num_comments - $offset) > $limit) {
+        if (($post['num_comments'] - $offset) > $limit) {
             $data['has_next'] = TRUE;
             $data['next_offset'] = ($offset + $limit);
         }
 
-        $data['comments'] = $this->post_model->get_comments($post_id, $offset, $limit);
+        $data['comments'] = $this->post_model->get_comments($post, $offset, $limit);
         $post_url = base_url("user/post/{$post_id}");
         $post['post'] = character_limiter(
             $post['post'], 540, "&#8230;<a href='{$post_url}'>view more</a>"
@@ -209,14 +208,13 @@ class Post extends CI_Controller
         }
 
         $data['has_next'] = FALSE;
-        $num_shares = $this->post_model->get_num_shares($post_id);
-        if (($num_shares - $offset) > $limit) {
+        if (($post['num_shares'] - $offset) > $limit) {
             $data['has_next'] = TRUE;
             $data['next_offset'] = ($offset + $limit);
         }
 
         $data['num_prev'] = $offset;
-        $data['shares'] = $this->post_model->get_shares($post_id, $offset, $limit);
+        $data['shares'] = $this->post_model->get_shares($post, $offset, $limit);
 
         $post_url = base_url("user/post/{$post_id}");
         $post['post'] = character_limiter(

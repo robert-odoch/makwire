@@ -67,7 +67,7 @@ class Reply extends CI_Controller
         }
 
         $data['num_prev'] = $offset;
-        $data['likes'] = $this->reply_model->get_likes($reply_id, $offset, $limit);
+        $data['likes'] = $this->reply_model->get_likes($reply, $offset, $limit);
 
         $data['object'] = 'reply';
         $data['reply'] = $reply;

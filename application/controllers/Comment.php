@@ -115,7 +115,7 @@ class Comment extends CI_Controller
             $data['next_offset'] = ($offset + $limit);
         }
 
-        $data['likes'] = $this->comment_model->get_likes($comment_id, $offset, $limit);
+        $data['likes'] = $this->comment_model->get_likes($comment, $offset, $limit);
 
         $data['object'] = 'comment';
         $data['comment'] = $comment;

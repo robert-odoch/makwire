@@ -283,7 +283,7 @@ class User extends CI_Controller
         }
 
         $data['num_prev'] = $offset;
-        $data['comments'] = $this->post_model->get_comments($post_id, $offset, $limit);
+        $data['comments'] = $this->post_model->get_comments($post, $offset, $limit);
 
         $this->load->view('show/post', $data);
         $this->load->view('common/footer');
@@ -364,7 +364,7 @@ class User extends CI_Controller
         }
 
         $data['num_prev'] = $offset;
-        $data['comments'] = $this->photo_model->get_comments($photo_id, $offset, $limit);
+        $data['comments'] = $this->photo_model->get_comments($photo, $offset, $limit);
 
         $this->load->view('show/photo', $data);
         $this->load->view('common/footer');

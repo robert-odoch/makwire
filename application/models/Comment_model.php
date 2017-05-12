@@ -1,6 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+require_once('classes/SimpleComment.php');
 require_once('exceptions/IllegalAccessException.php');
 require_once('exceptions/CommentNotFoundException.php');
 
@@ -12,36 +13,9 @@ class Comment_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
-        $this->load->model(['utility_model', 'user_model', 'reply_model']);
-    }
-
-    /**
-     * Checks whether a user has already liked a comment.
-     *
-     * A user is not allowed ot like his own comment.
-     *
-     * @param $comment_id the ID of the comment in the comments table.
-     * @return TRUE if the user has already liked the comment, or is the owner of the comment.
-     */
-    private function has_liked($comment_id)
-    {
-        // Check whether this comment is from the user liking the comment.
-        $user_sql = sprintf("SELECT commenter_id FROM comments " .
-                            "WHERE comment_id = %d LIMIT 1",
-                            $comment_id);
-        $query = $this->utility_model->run_query($user_sql);
-        if ($query->row_array()['commenter_id'] == $_SESSION['user_id']) {
-            return TRUE;
-        }
-
-        // Check whether user has liked to comment already.
-        $like_sql = sprintf("SELECT like_id FROM likes " .
-                            "WHERE (source_id = %d AND source_type = 'comment' AND liker_id = %d) " .
-                            "LIMIT 1",
-                            $comment_id, $_SESSION['user_id']);
-        $like_query = $this->utility_model->run_query($like_sql);
-
-        return ($like_query->num_rows() == 1);
+        $this->load->model([
+            'utility_model', 'activity_model', 'user_model', 'reply_model'
+        ]);
     }
 
     /**
@@ -71,10 +45,6 @@ class Comment_model extends CI_Model
         // Get the profile picture of the commenter.
         $comment['profile_pic_path'] = $this->user_model->get_profile_pic_path($comment['commenter_id']);
 
-        // Add the number of likes and replies.
-        $comment['num_likes'] = $this->get_num_likes($comment_id);
-        $comment['num_replies'] = $this->get_num_replies($comment_id);
-
         // The comment ID.
         $comment['comment_id'] = $comment_id;
 
@@ -84,96 +54,16 @@ class Comment_model extends CI_Model
         // Add data used by views.
         $comment['viewer_is_friend_to_owner'] = $this->user_model->are_friends($comment['commenter_id']);
 
+        $simpleComment = new SimpleComment($comment['comment_id'], 'comment', $comment['commenter_id']);
+
+        // Add the number of likes and replies.
+        $comment['num_likes'] = $this->activity_model->getNumLikes($simpleComment);
+        $comment['num_replies'] = $this->get_num_replies($comment_id);
+
         // Has the user liked this comment?
-        $comment['liked'] = $this->has_liked($comment_id);
+        $comment['liked'] = $this->activity_model->isLiked($simpleComment);
 
         return $comment;
-    }
-
-    /**
-     * Gets the number of users who liked a comment.
-     *
-     * @param $comment_id the ID of the comment in the comments table.
-     * @return the number of users who have like this comment.
-     */
-    public function get_num_likes($comment_id)
-    {
-        $likes_sql = sprintf("SELECT COUNT(like_id) FROM likes " .
-                                "WHERE (source_type = 'comment' AND source_id = %d)",
-                                $comment_id);
-        $like_query = $this->utility_model->run_query($likes_sql);
-
-        return $like_query->row_array()['COUNT(like_id)'];
-    }
-
-    /**
-     * Gets the users who liked a comment plus their metadata.
-     *
-     * @param $comment_id the ID of the comment in the comments table.
-     * @param $offset the record to begin fetching from.
-     * @param $limit the maximum number of records to return.
-     * @return the users who have liked a comment.
-     */
-    public function get_likes($comment_id, $offset, $limit)
-    {
-        $likes_sql = sprintf("SELECT * FROM likes " .
-                                "WHERE (source_type = 'comment' AND source_id = %d) " .
-                                "LIMIT %d, %d",
-                                $comment_id, $offset, $limit);
-        $likes_query = $this->utility_model->run_query($likes_sql);
-
-        $likes = $likes_query->result_array();
-        foreach ($likes as &$like) {
-            $like['profile_pic_path'] = $this->user_model->get_profile_pic_path($like['liker_id']);
-            $like['liker'] = $this->user_model->get_profile_name($like['liker_id']);
-            $like['timespan'] = timespan(mysql_to_unix($like['date_liked']), now(), 1);
-        }
-        unset($like);
-
-        return $likes;
-    }
-
-    /**
-     * Gets the number of replies on a comment.
-     *
-     * @param $comment_id the ID of the comment in the comments table.
-     * @return the number of replies on this comment.
-     */
-    public function get_num_replies($comment_id)
-    {
-        $replies_sql = sprintf("SELECT COUNT(comment_id) FROM comments " .
-                                "WHERE (source_type = 'comment' AND source_id = %d)",
-                                $comment_id);
-        $replies_query = $this->utility_model->run_query($replies_sql);
-
-        return $replies_query->row_array()['COUNT(comment_id)'];
-    }
-
-    /**
-     * Gets the replies on a comment plus their metadata.
-     *
-     * @param $comment_id the ID of the comment in the comments table.
-     * @param $offset the record to begin fetching from.
-     * @param $limit the maximum number of records to return.
-     * @return the replies on this comment.
-     */
-    public function get_replies($comment_id, $offset, $limit)
-    {
-        $replies_sql = sprintf("SELECT comment_id FROM comments " .
-                                "WHERE (source_type = 'comment' AND parent_id = %d) " .
-                                "LIMIT %d, %d",
-                                $comment_id, $offset, $limit);
-        $replies_query = $this->utility_model->run_query($replies_sql);
-        $results = $replies_query->result_array();
-
-        $replies = array();
-        foreach ($results as $r) {
-            // Get the detailed reply.
-            $reply = $this->reply_model->get_reply($r['comment_id']);
-            array_push($replies, $reply);
-        }
-
-        return $replies;
     }
 
     /**
@@ -189,34 +79,21 @@ class Comment_model extends CI_Model
     public function like($comment_id)
     {
         // Get the id of the user who commented.
-        $user_sql = sprintf("SELECT commenter_id FROM comments WHERE comment_id = %d",
+        $owner_sql = sprintf("SELECT commenter_id FROM comments WHERE comment_id = %d",
                             $comment_id);
-        $user_query = $this->utility_model->run_query($user_sql);
-        if ($user_query->num_rows() == 0) {
+        $owner_query = $this->utility_model->run_query($owner_sql);
+        if ($owner_query->num_rows() == 0) {
             throw new CommentNotFoundException();
         }
 
-        if ($this->has_liked($comment_id)) {
-            return;
-        }
-
-        $user_result = $user_query->row_array();
-        if (!$this->user_model->are_friends($user_result['commenter_id'])) {
+        $owner_result = $owner_query->row_array();
+        $owner_id = $owner_result['commenter_id'];
+        if (!$this->user_model->are_friends($owner_id)) {
             throw new IllegalAccessException();
         }
 
         // Record the like.
-        $like_sql = sprintf("INSERT INTO likes (liker_id, source_id, source_type) " .
-                            "VALUES (%d, %d, 'comment')",
-                            $_SESSION['user_id'], $comment_id);
-        $this->utility_model->run_query($like_sql);
-
-        // Dispatch an activity.
-        $activity_sql = sprintf("INSERT INTO activities " .
-                                "(actor_id, subject_id, source_id, source_type, activity) " .
-                                "VALUES (%d, %d, %d, 'comment', 'like')",
-                                $_SESSION['user_id'], $user_result['commenter_id'], $comment_id);
-        $this->utility_model->run_query($activity_sql);
+        $this->activity_model->like(new SimpleComment($comment_id, 'comment', $owner_id));
     }
 
     /**
@@ -247,6 +124,66 @@ class Comment_model extends CI_Model
                                 $_SESSION['user_id'], $user_result['commenter_id'],
                                 $comment_id);
         $this->utility_model->run_query($activity_sql);
+    }
+
+    /**
+     * Gets the users who liked a comment plus their metadata.
+     *
+     * @param $comment an array containing comment data.
+     * @param $offset the record to begin fetching from.
+     * @param $limit the maximum number of records to return.
+     * @return the users who have liked a comment.
+     */
+    public function get_likes(&$comment, $offset, $limit)
+    {
+        return $this->activity_model->getLikes(
+            new SimpleComment($comment['comment_id'], 'comment', $comment['commenter_id']),
+            $offset,
+            $limit
+        );
+    }
+
+    /**
+     * Gets the replies on a comment plus their metadata.
+     *
+     * @param $comment_id the ID of the comment in the comments table.
+     * @param $offset the record to begin fetching from.
+     * @param $limit the maximum number of records to return.
+     * @return the replies on this comment.
+     */
+    public function get_replies($comment_id, $offset, $limit)
+    {
+        $replies_sql = sprintf("SELECT comment_id FROM comments " .
+                                "WHERE (source_type = 'comment' AND parent_id = %d) " .
+                                "LIMIT %d, %d",
+                                $comment_id, $offset, $limit);
+        $replies_query = $this->utility_model->run_query($replies_sql);
+        $results = $replies_query->result_array();
+
+        $replies = array();
+        foreach ($results as $r) {
+            // Get the detailed reply.
+            $reply = $this->reply_model->get_reply($r['comment_id']);
+            array_push($replies, $reply);
+        }
+
+        return $replies;
+    }
+
+    /**
+     * Gets the number of replies on a comment.
+     *
+     * @param $comment_id the ID of the comment in the comments table.
+     * @return the number of replies on this comment.
+     */
+    public function get_num_replies($comment_id)
+    {
+        $replies_sql = sprintf("SELECT COUNT(comment_id) FROM comments " .
+                                "WHERE (source_type = 'comment' AND source_id = %d)",
+                                $comment_id);
+        $replies_query = $this->utility_model->run_query($replies_sql);
+
+        return $replies_query->row_array()['COUNT(comment_id)'];
     }
 }
 ?>
