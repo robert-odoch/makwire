@@ -25,7 +25,10 @@ defined('PAGE') OR define('PAGE', '')
             <ul>
                 <li>
                     <a href="<?= base_url('user/profile'); ?>"
-                        <?php if (PAGE == 'profile') print ' class="active"'; ?>
+                        <?php
+                        if (PAGE == 'profile' && $suid == $_SESSION['user_id'])
+                            print ' class="active"';
+                        ?>
                         >Edit Profile</a>
                 </li>
                 <li><a href="<?= base_url('settings/account'); ?>">Settings</a></li>
