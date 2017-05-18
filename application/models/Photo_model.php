@@ -153,6 +153,7 @@ class Photo_model extends CI_Model
 
         $owner_result = $owner_query->row_array();
         $owner_id = $owner_result['user_id'];
+        
         if (!$this->user_model->are_friends($owner_id)) {
             throw new IllegalAccessException();
         }
