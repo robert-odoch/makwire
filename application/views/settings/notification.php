@@ -3,7 +3,10 @@
 <div class="wrapper">
     <div class="col-large">
         <div role="main" class="main user-home">
-            <?php require_once(dirname(__FILE__) . '/../common/account-settings-nav.php'); ?>
+            <?php
+            define('PAGE', 'notifications');
+            require_once(dirname(__FILE__) . '/../common/account-settings-nav.php');
+            ?>
 
             <div class="main-content">
                 <div class="box">
