@@ -80,16 +80,23 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
                         </a>
                     </h4>
                     <p class="message"><?= $msg['message']; ?></p>
-                    <?php
-                    if ($msg['user_id'] == $_SESSION['user_id'] &&
-                        !$msg['liked']) {
-                        print "<a href='" . base_url("birthday-message/like/{$msg['id']}") .
-                                "'>Like</a>";
-                    }
-                    ?>
                     <small class="time">
                         <span class="glyphicon glyphicon-time"></span> <?= $msg['timespan']; ?> ago
                     </small>
+                    <?php
+                    if ($msg['num_likes'] > 0) {
+                        print "<span> &middot; </span>" .
+                                "<a href='" . base_url("birthday-message/likes/{$msg['id']}") .
+                                "'>{$msg['num_likes']}";
+                        print ($msg['num_likes'] == 1) ? " like" : " likes";
+                        print "</a>";
+                    }
+                    if ($msg['viewer_is_friend_to_owner']) {
+                        print "<span> &middot; </span>" .
+                                "<a href='" . base_url("birthday-message/like/{$msg['id']}") .
+                                "'>Like</a>";
+                    }
+                    ?>
                 </div>
             </div>
         <?php } ?>

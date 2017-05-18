@@ -54,6 +54,14 @@ class Birthday_message_model extends CI_Model
         );
         $message['liked'] = $this->activity_model->isLiked($simpleBirthdayMessage);
 
+        // Get the number of likes.
+        $message['num_likes'] = $this->activity_model->getNumLikes($simpleBirthdayMessage);
+
+        // Check whether the user currently viewing the page is a friend to the
+        // owner of the birthday message. This will allow us to only show the
+        // like button to friends of the owner.
+        $message['viewer_is_friend_to_owner'] = $this->user_model->are_friends($message['sender_id']);
+
         return $message;
     }
 
@@ -80,7 +88,7 @@ class Birthday_message_model extends CI_Model
         $owner_result = $owner_query->row_array();
         $owner_id = $owner_result['sender_id'];
 
-        if ($user_result['user_id'] != $_SESSION['user_id']) {
+        if (! $this->user_model->are_friends($owner_id)) {
             throw new IllegalAccessException();
         }
 
