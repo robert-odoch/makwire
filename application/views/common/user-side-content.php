@@ -1,4 +1,7 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+defined('PAGE') OR define('PAGE', '')
+?>
 
 <div class="side-content">
     <div>
