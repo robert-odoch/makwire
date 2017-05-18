@@ -580,6 +580,7 @@ class User extends CI_Controller
         $this->load->view('common/header', $data);
 
         $data['profile'] = $this->profile_model->get_profile($user_id);
+        $data['page'] = 'profile';
         $this->load->view('profile', $data);
         $this->load->view('common/footer');
     }

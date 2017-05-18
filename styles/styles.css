@@ -227,8 +227,13 @@ nav#short-cuts ul li:last-child {
 }
 nav#short-cuts ul li a {
     display: block;
-    padding: 5px 0;
+    padding: 5px;
     text-decoration: none;
+}
+
+nav#short-cuts ul li a:hover,
+nav#short-cuts ul li a.active {
+    background-color: #EFEEE5;
 }
 
 ul.about li,
