@@ -13,6 +13,9 @@ switch ($object) {
     case 'reply':
         require_once(dirname(__FILE__) . '/../common/comment-or-reply.php');
         break;
+    case 'message':
+        require_once(dirname(__FILE__) . '/../common/birthday-message.php');
+        break;
     default:
         // Do nothing.
         break;

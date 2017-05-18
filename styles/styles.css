@@ -678,7 +678,8 @@ div#comment {
 }
 
 div#reply img.media-object,
-div#comment img.media-object {
+div#comment img.media-object,
+div#birthday-message img.media-object {
     height: 49.4px;  /* Always the same as the height of media-body */
 }
 

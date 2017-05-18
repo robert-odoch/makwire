@@ -97,5 +97,22 @@ class Birthday_message_model extends CI_Model
             new SimpleBirthdayMessage($birthday_message_id, 'birthday_message', $owner_id)
         );
     }
+
+    /**
+     * Get users who liked a birthday message.
+     *
+     * @param $message an array containing photo data.
+     * @param $offset the position to begin returning records from.
+     * @param $limit the maximum number of records to return.
+     * @return the users who liked this birthday message.
+     */
+    public function get_likes(&$message, $offset, $limit)
+    {
+        return $this->activity_model->getLikes(
+            new SimpleBirthdayMessage($message['id'], 'birthday_message', $message['sender_id']),
+            $offset,
+            $limit
+        );
+    }
 }
 ?>

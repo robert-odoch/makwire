@@ -21,10 +21,10 @@ class Birthday_message extends CI_Controller
         $this->user_model->confirm_logged_in();
     }
 
-    public function like($birthday_message_id=0)
+    public function like($message_id=0)
     {
         try {
-            $this->birthday_message_model->like($birthday_message_id);
+            $this->birthday_message_model->like($message_id);
             redirect($_SERVER['HTTP_REFERER']);
         }
         catch (MessageNotFoundException $e) {
@@ -36,6 +36,45 @@ class Birthday_message extends CI_Controller
                 "You don't have the proper permissions to like this message."
             );
         }
+    }
+
+    public function likes($message_id=0, $offset=0)
+    {
+        try {
+            $message = $this->birthday_message_model->get_message($message_id);
+        }
+        catch (MessageNotFoundException $e) {
+            show_404();
+        }
+
+        $data = $this->user_model->initialize_user();
+        $data['title'] = 'People who liked this message';
+        $this->load->view('common/header', $data);
+
+        // Maximum number of likes to display.
+        $limit = 10;
+
+        if ($offset != 0) {
+            $data['has_prev'] = TRUE;
+            $data['prev_offset'] = 0;
+            if ($offset > $limit) {
+                $data['prev_offset'] = ($offset - $limit);
+            }
+        }
+
+        $data['has_next'] = FALSE;
+        if (($message['num_likes'] - $offset) > $limit) {
+            $data['has_next'] = TRUE;
+            $data['next_offset'] = ($offset + $limit);
+        }
+
+        $data['num_prev'] = $offset;
+        $data['likes'] = $this->birthday_message_model->get_likes($message, $offset, $limit);
+
+        $data['object'] = 'message';
+        $data['message'] = $message;
+        $this->load->view('show/likes', $data);
+        $this->load->view('common/footer');
     }
 }
 ?>
