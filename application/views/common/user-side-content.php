@@ -22,7 +22,7 @@
             <ul>
                 <li>
                     <a href="<?= base_url('user/profile'); ?>"
-                        <?php if ($page == 'profile') print ' class="active"'; ?>
+                        <?php if (PAGE == 'profile') print ' class="active"'; ?>
                         >Edit Profile</a>
                 </li>
                 <li><a href="<?= base_url('settings/account'); ?>">Settings</a></li>
@@ -34,7 +34,7 @@
         <h5><span class="glyphicon glyphicon-star"></span> Favorites</h5>
         <ul>
             <li><a href="<?= base_url('user/news-feed'); ?>"
-                <?php if ($page == 'news-feed') print ' class="active"'; ?>
+                <?php if (PAGE == 'news-feed') print ' class="active"'; ?>
                 >News Feed</a>
             </li>
         </ul>

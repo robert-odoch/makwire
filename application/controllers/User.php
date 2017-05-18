@@ -42,7 +42,6 @@ class User extends CI_Controller
         }
 
         $data['posts_and_photos'] = $this->user_model->get_news_feed_posts_and_photos($offset, $limit);
-        $data['page'] = 'news-feed';
         $data['is_visitor'] = FALSE;
         $this->load->view('show/user', $data);
         $this->load->view('common/footer');
@@ -580,7 +579,6 @@ class User extends CI_Controller
         $this->load->view('common/header', $data);
 
         $data['profile'] = $this->profile_model->get_profile($user_id);
-        $data['page'] = 'profile';
         $this->load->view('profile', $data);
         $this->load->view('common/footer');
     }
