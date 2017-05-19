@@ -39,9 +39,8 @@ defined('PAGE') OR define('PAGE', '')
     <nav role="navigation" id="short-cuts">
         <h5><span class="glyphicon glyphicon-star"></span> Favorites</h5>
         <ul>
-            <li><a href="<?= base_url('user/news-feed'); ?>"
-                <?php if (PAGE == 'news-feed') print ' class="active"'; ?>
-                >News Feed</a>
+            <li<?php if (PAGE == 'news-feed') print ' class="active"'; ?>>
+                <a href="<?= base_url('user/news-feed'); ?>">News Feed</a>
             </li>
         </ul>
         <h5><span class="glyphicon glyphicon-bookmark"></span> Quick Access</h5>
