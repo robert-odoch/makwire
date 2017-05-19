@@ -981,7 +981,7 @@ class User_model extends CI_Model
             $birthdays = $this->utility_model->run_query($birthdays_sql)->result_array();
             foreach ($birthdays as &$bd) {
                 // Get the activity_id.
-                $sql = sprintf("SELECT activity_id, date_entered FROM activities " .
+                $sql = sprintf("SELECT activity_id FROM activities " .
                                 "WHERE (actor_id = %d AND activity = 'birthday' AND " .
                                 "YEAR(date_entered) = %d)",
                                 $bd['user_id'], date('Y'));
