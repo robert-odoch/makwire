@@ -239,26 +239,6 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function new_post()
-    {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->utility_model->show_error(
-                "Permission Denied!",
-                "You don't have the proper permissions."
-            );
-            return;
-        }
-
-        $post = trim(strip_tags($this->input->post('post')));
-        if (!$post) {
-            $_SESSION['post_error'] = "Post can't be empty!";  // Used and unset by index() method.
-            redirect(base_url("user/{$_SESSION['user_id']}"));
-        }
-
-        $this->post_model->post($post, 'timeline', $_SESSION['user_id']);
-        redirect(base_url("user/{$_SESSION['user_id']}"));
-    }
-
     public function post($post_id=0, $offset=0)
     {
         try {

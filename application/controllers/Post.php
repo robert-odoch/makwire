@@ -19,6 +19,26 @@ class Post extends CI_Controller
         $this->user_model->confirm_logged_in();
     }
 
+    public function new()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->utility_model->show_error(
+                "Permission Denied!",
+                "You don't have the proper permissions."
+            );
+            return;
+        }
+
+        $post = trim(strip_tags($this->input->post('post')));
+        if (!$post) {
+            $_SESSION['post_error'] = "Post can't be empty!";  // Used and unset by index() method.
+            redirect(base_url("user/{$_SESSION['user_id']}"));
+        }
+
+        $this->post_model->post($post, 'timeline', $_SESSION['user_id']);
+        redirect(base_url("user/{$_SESSION['user_id']}"));
+    }
+
     public function like($post_id=0)
     {
         try {

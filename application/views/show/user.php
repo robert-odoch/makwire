@@ -26,7 +26,7 @@ if (!$is_visitor) {
                 </a>
             </li>
         </ul>
-        <form action="<?= base_url('user/new-post'); ?>" method="post"
+        <form action="<?= base_url('post/new'); ?>" method="post"
             accept-charset="utf-8" role="form">
             <div class="form-group">
                 <label for="post" class="sr-only">New Post</label>
