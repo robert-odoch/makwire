@@ -481,6 +481,10 @@ article.photo header {
     padding-bottom: 2px;
 }
 
+article.media.message {
+    margin-top: 5px;
+}
+
 p.reply,
 p.comment,
 p.message,
