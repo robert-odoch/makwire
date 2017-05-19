@@ -763,10 +763,9 @@ class User_model extends CI_Model
                                     $atomic_notifs, $last_read_date_sql);
 
             // Get Birthday notifications.
-            $today = date("Y-m-d");
             $birthdays_sql = sprintf("SELECT user_id FROM users " .
-                                        "WHERE user_id IN(%s) AND dob = '%s'",
-                                        $friends_ids, $today);
+                                        "WHERE user_id IN(%s) AND DAY(dob) = %d AND MONTH(dob) = %d",
+                                        $friends_ids, date('d'), date('m'));
         }
         else {
             // Query to get activities that were performed by this user..
@@ -803,7 +802,7 @@ class User_model extends CI_Model
         $num_notifications = $this->utility_model->run_query($notifs_sql)->num_rows();
 
         if (isset($birthdays_sql)) {
-            $birthdays = $this->utility_model->utility_model->run_query($birthdays_sql)->result_array();
+            $birthdays = $this->utility_model->run_query($birthdays_sql)->result_array();
 
             foreach ($birthdays as $bd) {
                 // Check if this birthday has been inserted in activities table.
@@ -908,11 +907,10 @@ class User_model extends CI_Model
                                     $offset, $limit);
 
             // Get Birthday notifications.
-            $today = date("Y-m-d");
             $birthdays_sql = sprintf("SELECT user_id, dob, CONCAT(dob, ' 00:00:00') as date_entered " .
                                         "FROM users " .
-                                        "WHERE (user_id IN (%s) AND dob = '%s')",
-                                        $friends_ids, $today);
+                                        "WHERE (user_id IN (%s) AND DAY(dob) = %d and MONTH(dob) = %d)",
+                                        $friends_ids, date('d'), date('m'));
         }
         else {
             // Query to get activities that were performed by this user..
@@ -983,7 +981,7 @@ class User_model extends CI_Model
             $birthdays = $this->utility_model->run_query($birthdays_sql)->result_array();
             foreach ($birthdays as &$bd) {
                 // Get the activity_id.
-                $sql = sprintf("SELECT activity_id FROM activities " .
+                $sql = sprintf("SELECT activity_id, date_entered FROM activities " .
                                 "WHERE (actor_id = %d AND activity = 'birthday' AND " .
                                 "YEAR(date_entered) = %d)",
                                 $bd['user_id'], date('Y'));
@@ -1001,7 +999,7 @@ class User_model extends CI_Model
                     $bd['activity'] = "birthday";
                     $bd['subject_id'] = $bd['user_id'];
                     $bd['actor_id'] = $bd['user_id'];
-                    $bd['date_entered'] = date_format(now(), 'Y-m-d H:i:s');
+                    $bd['date_entered'] = date_format(date_create(), 'Y-m-d H:i:s');
                 }
                 else {
                     $activity_id = $query->row()->activity_id;

@@ -157,16 +157,15 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
                     break;
                 case 'birthday':
                     $dob_array = explode('-', $notif['dob']);
-                    $age = date('Y') - $dob_array[0];
                     if (date_create(date('Y-m-d')) ==
-                        date_create(($dob_array[0]+$age) . "-{$dob_array[1]}-{$dob_array[2]}")) {
+                        date_create(($dob_array[0]+$notif['age']) . "-{$dob_array[1]}-{$dob_array[2]}")) {
                         print("<li><a href='" . base_url("/user/birthday/{$notif['actor_id']}/{$notif['age']}") .
                                 "'>Today is <strong class='object'>" .
                                 format_name($notif['actor'], '</strong>') . " birthday.</a></li>");
                     }
                     else {
-                        $birthday = date_create(($dob_array[0] + $age) . "-{$dob_array[1]}-{$dob_array[2]}");
-                        $birthday = $birthday->format('F j, Y');
+                        $birthday = date_create(($dob_array[0] + $notif['age']) . "-{$dob_array[1]}-{$dob_array[2]}");
+                        $birthday = $birthday->format('F jS, Y');
                         print("<li><a href='" . base_url("/user/birthday/{$notif['actor_id']}/{$notif['age']}") .
                                 "'><strong class='object'>" .
                                 format_name($notif['actor'], '</strong>') . " birthday was on {$birthday}.</a></li>");
