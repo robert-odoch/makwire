@@ -15,7 +15,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
             <ul>
                 <?php foreach($districts as $district) { ?>
                     <li>
-                        <a href="<?= base_url("user/add-district/{$district['district_id']}"); ?>">
+                        <a href="<?= base_url("profile/add-district/{$district['district_id']}"); ?>">
                             <?= $district['district_name']; ?>
                         </a>
                     </li>
@@ -37,7 +37,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
         </div>
         <?php } ?>
 
-        <form action="<?= base_url('user/add-district'); ?>" method="post"
+        <form action="<?= base_url('profile/add-district'); ?>" method="post"
             accept-charset="utf-8" role="form">
             <fieldset>
                 <div class="form-group">

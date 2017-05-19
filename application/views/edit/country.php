@@ -10,7 +10,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
             <p><?= $success_message; ?></p>
         </div>
     <?php } else { ?>
-        <form action="<?= base_url("user/edit-country"); ?>" method="post"
+        <form action="<?= base_url("profile/edit-country"); ?>" method="post"
             accept-charset="utf-8" role="form">
             <fieldset>
                 <div class="form-group">
