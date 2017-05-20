@@ -39,6 +39,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
             </div>
         </div>
     </h4>
+    <?php if ($is_visitor) { ?>
     <form action="<?= base_url("user/send-birthday-message/{$user_id}/{$age}") ?>"
         method="post" accept-charset="utf-8" role="form">
         <fieldset>
@@ -62,6 +63,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
         </fieldset>
         <input type="submit" name="submit" value="Send" class="btn btn-sm">
     </form>
+    <?php } ?>
 </div>
 
 <?php if (count($birthday_messages) > 0) { ?>
@@ -91,10 +93,22 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
                         print ($msg['num_likes'] == 1) ? " like" : " likes";
                         print "</a>";
                     }
+                    if ($msg['num_replies'] > 0) {
+                        print "<span> &middot; </span>" .
+                                "<a href='" . base_url("birthday-message/replies/{$msg['id']}") .
+                                "'>{$msg['num_replies']}";
+                        print ($msg['num_replies'] == 1) ? ' reply' : ' replies';
+                        print "</a>";
+                    }
                     if ($msg['viewer_is_friend_to_owner']) {
                         print "<span> &middot; </span>" .
                                 "<a href='" . base_url("birthday-message/like/{$msg['id']}") .
                                 "'>Like</a>";
+                    }
+                    if ($msg['user_can_reply']) {
+                        print "<span> &middot; </span>" .
+                                "<a href='" . base_url("birthday-message/reply/{$msg['id']}") .
+                                "'>Reply</a>";
                     }
                     ?>
                 </div>
