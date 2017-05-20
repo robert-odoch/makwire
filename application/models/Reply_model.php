@@ -13,7 +13,7 @@ class Reply_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('utility_model');
+        $this->load->model('utility_model', 'activity_model');
     }
 
     /**
@@ -28,7 +28,7 @@ class Reply_model extends CI_Model
     {
         $reply_sql = sprintf("SELECT * " .
                                 "FROM comments " .
-                                "WHERE (comment_id = %s AND parent_id != 0)",
+                                "WHERE (comment_id = %d AND parent_id != 0)",
                                 $reply_id);
         $reply_query = $this->utility_model->run_query($reply_sql);
         if ($reply_query->num_rows() == 0) {
