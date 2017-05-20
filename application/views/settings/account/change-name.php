@@ -14,23 +14,6 @@
                     <form action="<?= base_url('account/change-name'); ?>" method="post" accept-charset="utf-8" role="form">
                         <fieldset>
                             <div class="form-group">
-                                <label for="first-name">First Name</label>
-                                <input type="text" name="fname" id="first-name" size="30"
-                                <?php
-                                if (isset($fname)) {
-                                    print " value='{$fname}'";
-                                }
-                                if (isset($error_messages) && isset($error_messages['fname'])) {
-                                    print ' class="has-error"';
-                                }
-                                ?>>
-                                <?php
-                                if (isset($error_messages) && isset($error_messages['fname'])) {
-                                    print "<span class='error'>{$error_messages['fname']}</span>";
-                                }
-                                ?>
-                            </div>
-                            <div class="form-group">
                                 <label for="last-name">Last Name</label>
                                 <input type="text" name="lname" id="last-name" size="30"
                                 <?php
@@ -44,6 +27,23 @@
                                 <?php
                                 if (isset($error_messages) && isset($error_messages['lname'])) {
                                     print "<span class='error'>{$error_messages['lname']}</span>";
+                                }
+                                ?>
+                            </div>
+                            <div class="form-group">
+                                <label for="other-names">Other Names</label>
+                                <input type="text" name="other_names" id="other-names" size="30"
+                                <?php
+                                if (isset($other_names)) {
+                                    print " value='{$other_names}'";
+                                }
+                                if (isset($error_messages) && isset($error_messages['other_names'])) {
+                                    print ' class="has-error"';
+                                }
+                                ?>>
+                                <?php
+                                if (isset($error_messages) && isset($error_messages['other_names'])) {
+                                    print "<span class='error'>{$error_messages['other_names']}</span>";
                                 }
                                 ?>
                             </div>

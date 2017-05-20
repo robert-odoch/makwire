@@ -102,12 +102,12 @@ class Register_model extends CI_Model
     public function register_user($data)
     {
         // Create the user's account.
-        $profile_name = ucfirst($data['lname']) . ' ' . ucfirst($data['fname']);
+        $profile_name = ucfirst($data['lname']) . ' ' . ucwords($data['other_names']);
         $reg_sql = sprintf("INSERT INTO users " .
-                            "(dob, fname, lname, gender, uname, passwd, profile_name) " .
+                            "(dob, lname, other_names, gender, uname, passwd, profile_name) " .
                             "VALUES (%s, %s, %s, '%s', %s, %s, %s)",
-                            $data['dob'], $this->db->escape($data['fname']),
-                            $this->db->escape($data['lname']), $data['gender'],
+                            $data['dob'], $this->db->escape($data['lname']),
+                            $this->db->escape($data['other_names']), $data['gender'],
                             $this->db->escape($data['uname']),
                             $this->db->escape(password_hash($data['passwd'], PASSWORD_BCRYPT)),
                             $this->db->escape($profile_name));
