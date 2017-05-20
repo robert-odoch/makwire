@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
  * Contains functions for recording and getting activities
- * (e.g., like, comment, shares) performed on an object.
+ * (e.g., like, comment, shares, replies) performed on an object.
  */
 class Activity_model extends CI_Model
 {
@@ -51,6 +51,25 @@ class Activity_model extends CI_Model
                                 "VALUES (%d, %d, %d, '%s', '%s')",
                                 $_SESSION['user_id'], $object->getOwnerId(), $object->getId(),
                                 $object->getType(), 'share');
+        $this->utility_model->run_query($activity_sql);
+    }
+
+    public function reply(Replyable $object, $reply)
+    {
+        // Record the reply.
+        $reply_sql = sprintf("INSERT INTO comments " .
+                                "(commenter_id, parent_id, source_id, source_type, comment) " .
+                                "VALUES (%d, %d, %d, '%s', %s)",
+                                $_SESSION['user_id'], $object->getId(), $object->getId(),
+                                $object->getType(), $this->db->escape($reply));
+        $this->utility_model->run_query($reply_sql);
+
+        // Dispatch an activity.
+        $activity_sql = sprintf("INSERT INTO activities " .
+                                "(actor_id, subject_id, source_id, source_type, activity) " .
+                                "VALUES (%d, %d, %d, '%s', '%s')",
+                                $_SESSION['user_id'], $object->getOwnerId(),
+                                $object->getId(), $object->getType(), 'reply');
         $this->utility_model->run_query($activity_sql);
     }
 
@@ -111,6 +130,25 @@ class Activity_model extends CI_Model
         return $shares;
     }
 
+    public function getReplies(Replyable $object, $offset, $limit)
+    {
+        $replies_sql = sprintf("SELECT comment_id FROM comments " .
+                                "WHERE (source_type = '%s' AND parent_id = %d) " .
+                                "LIMIT %d, %d",
+                                $object->getType(), $object->getId(), $offset, $limit);
+        $replies_query = $this->utility_model->run_query($replies_sql);
+        $results = $replies_query->result_array();
+
+        $replies = array();
+        foreach ($results as $r) {
+            // Get the detailed reply.
+            $reply = $this->reply_model->get_reply($r['comment_id']);
+            array_push($replies, $reply);
+        }
+
+        return $replies;
+    }
+
     public function getComments(Commentable $object, $offset, $limit)
     {
         $this->load->model('comment_model');
@@ -150,6 +188,16 @@ class Activity_model extends CI_Model
         $shares_query = $this->utility_model->run_query($shares_sql);
 
         return $shares_query->row_array()['COUNT(share_id)'];
+    }
+
+    public function getNumReplies(Replyable $object)
+    {
+        $replies_sql = sprintf("SELECT COUNT(comment_id) FROM comments " .
+                                "WHERE (source_type = '%s' AND parent_id = %d)",
+                                $object->getType(), $object->getId());
+        $replies_query = $this->utility_model->run_query($replies_sql);
+
+        return $replies_query->row_array()['COUNT(comment_id)'];
     }
 
     public function getNumComments(Commentable $object)
