@@ -58,7 +58,7 @@ class Comment extends CI_Controller
             $comment['num_replies'] == 0) {
             $this->utility_model->show_error(
                 "Permission Denied!",
-                "For you to reply to your own comment, atleast on user must have replied to your comment"
+                "For you to reply to your own comment, atleast one of your friends must have replied."
             );
             return;
         }
@@ -156,7 +156,7 @@ class Comment extends CI_Controller
         $data['replies'] = $this->comment_model->get_replies($comment_id, $offset, $limit);
         $data['object'] = 'comment';
         $data['comment'] = $comment;
-        $this->load->view('show/comment-replies', $data);
+        $this->load->view('show/replies', $data);
         $this->load->view('common/footer');
     }
 }
