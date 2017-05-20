@@ -58,7 +58,7 @@ class Comment_model extends CI_Model
 
         // Add the number of likes and replies.
         $comment['num_likes'] = $this->activity_model->getNumLikes($simpleComment);
-        $comment['num_replies'] = $this->get_num_replies($comment_id);
+        $comment['num_replies'] = $this->activity_model->getNumReplies($simpleComment);
 
         // Has the user liked this comment?
         $comment['liked'] = $this->activity_model->isLiked($simpleComment);
@@ -104,26 +104,17 @@ class Comment_model extends CI_Model
      */
     public function reply($comment_id, $reply)
     {
-        // Record the reply.
-        $reply_sql = sprintf("INSERT INTO comments " .
-                                "(commenter_id, parent_id, source_id, source_type, comment) " .
-                                "VALUES (%d, %d, %d, 'comment', %s)",
-                                $_SESSION['user_id'], $comment_id, $comment_id,
-                                $this->db->escape($reply));
-        $this->utility_model->run_query($reply_sql);
-
         // Get the id of the user who commented.
-        $user_sql = sprintf("SELECT commenter_id FROM comments WHERE comment_id = %d",
-                                $comment_id);
-        $user_result= $this->utility_model->run_query($user_sql)->row_array();
+        $owner_sql = sprintf("SELECT commenter_id FROM comments WHERE comment_id = %d",
+                            $comment_id);
+        $owner_result= $this->utility_model->run_query($owner_sql)->row_array();
+        $owner_id = $owner_result['commenter_id'];
 
-        // Dispatch an activity.
-        $activity_sql = sprintf("INSERT INTO activities " .
-                                "(actor_id, subject_id, source_id, source_type, activity) " .
-                                "VALUES (%d, %d, %d, 'comment', 'reply')",
-                                $_SESSION['user_id'], $user_result['commenter_id'],
-                                $comment_id);
-        $this->utility_model->run_query($activity_sql);
+        // Record the reply.
+        $this->activity_model->reply(
+            new SimpleComment($comment_id, 'comment', $owner_id),
+            $reply
+        );
     }
 
     /**
@@ -168,22 +159,6 @@ class Comment_model extends CI_Model
         }
 
         return $replies;
-    }
-
-    /**
-     * Gets the number of replies on a comment.
-     *
-     * @param $comment_id the ID of the comment in the comments table.
-     * @return the number of replies on this comment.
-     */
-    public function get_num_replies($comment_id)
-    {
-        $replies_sql = sprintf("SELECT COUNT(comment_id) FROM comments " .
-                                "WHERE (source_type = 'comment' AND source_id = %d)",
-                                $comment_id);
-        $replies_query = $this->utility_model->run_query($replies_sql);
-
-        return $replies_query->row_array()['COUNT(comment_id)'];
     }
 }
 ?>
