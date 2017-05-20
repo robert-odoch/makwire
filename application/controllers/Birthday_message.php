@@ -76,5 +76,90 @@ class Birthday_message extends CI_Controller
         $this->load->view('show/likes', $data);
         $this->load->view('common/footer');
     }
+
+    public function reply($message_id)
+    {
+        try {
+            $message = $this->birthday_message_model->get_message($message_id);
+        }
+        catch (MessageNotFoundException $e) {
+            show_404();
+        }
+
+        // Only allow a user to reply to his message if there is atleast one reply.
+        if ($message['sender_id'] == $_SESSION['user_id'] &&
+            $message['num_replies'] == 0) {
+            $this->utility_model->show_error(
+                "Permission Denied!",
+                "For you to reply to your own message, atleast one of your friends must have replied."
+            );
+            return;
+        }
+
+        if (!$message['user_can_reply']) {
+            $this->utility_model->show_error(
+                "Permission Denied!",
+                "You don't have the proper permissions to reply to this message."
+            );
+            return;
+        }
+
+        $data = $this->user_model->initialize_user();
+        $data['title'] = 'Reply to birthday message';
+        $this->load->view('common/header', $data);
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $reply = trim(strip_tags($this->input->post('reply')));
+            if (strlen($reply) == 0) {
+                $data['reply_error'] = "Reply can't be empty!";
+            }
+            else {
+                $this->birthday_message_model->reply($message_id, $reply);
+                $this->replies($message_id);
+                return;
+            }
+        }
+
+        $data['message'] = $message;
+        $this->load->view('reply-birthday-message', $data);
+        $this->load->view('common/footer');
+    }
+
+    public function replies($message_id=0, $offset=0)
+    {
+        try {
+            $message = $this->birthday_message_model->get_message($message_id);
+        }
+        catch (MessageNotFoundException $e) {
+            show_404();
+        }
+
+        $data = $this->user_model->initialize_user();
+        $data['title'] = 'People who replied to this message';
+        $this->load->view('common/header', $data);
+
+        // Maximum number of replies to display.
+        $limit = 10;
+
+        if ($offset != 0) {
+            $data['has_prev'] = TRUE;
+            $data['prev_offset'] = 0;
+            if ($offset > $limit) {
+                $data['prev_offset'] = ($offset - $limit);
+            }
+        }
+
+        $data['has_next'] = FALSE;
+        if (($message['num_replies'] - $offset) > $limit) {
+            $data['has_next'] = TRUE;
+            $data['next_offset'] = ($offset + $limit);
+        }
+
+        $data['replies'] = $this->birthday_message_model->get_replies($message, $offset, $limit);
+        $data['object'] = 'birthday-message';
+        $data['message'] = $message;
+        $this->load->view('show/replies', $data);
+        $this->load->view('common/footer');
+    }
 }
 ?>

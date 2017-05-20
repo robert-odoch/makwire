@@ -57,10 +57,17 @@ class Birthday_message_model extends CI_Model
         // Get the number of likes.
         $message['num_likes'] = $this->activity_model->getNumLikes($simpleBirthdayMessage);
 
-        // Check whether the user currently viewing the page is a friend to the
-        // owner of the birthday message. This will allow us to only show the
-        // like button to friends of the owner.
+        // Get number of replies.
+        $message['num_replies'] = $this->activity_model->getNumReplies($simpleBirthdayMessage);
+
+        // This will allow us to only show thelike link to friends of the owner.
         $message['viewer_is_friend_to_owner'] = $this->user_model->are_friends($message['sender_id']);
+
+        // Only the user with a birthday and the user who sent this message can
+        // reply to it.
+        $message['user_can_reply'] = $_SESSION['user_id'] == $message['user_id'] ||
+                                     ($_SESSION['user_id'] == $message['sender_id'] &&
+                                      $message['num_replies'] > 0);
 
         return $message;
     }
@@ -109,6 +116,36 @@ class Birthday_message_model extends CI_Model
     public function get_likes(&$message, $offset, $limit)
     {
         return $this->activity_model->getLikes(
+            new SimpleBirthdayMessage($message['id'], 'birthday_message', $message['sender_id']),
+            $offset,
+            $limit
+        );
+    }
+
+    /**
+     * Records a reply to a birthday message.
+     *
+     * @param $message_id the ID of the comment in the birthday_messages table.
+     * @param $reply the reply on this message.
+     */
+    public function reply($message_id, $reply)
+    {
+        // Get the ID of the owner of this photo.
+        $owner_sql = sprintf("SELECT sender_id FROM birthday_messages WHERE id = %d",
+                            $message_id);
+        $owner_result = $this->utility_model->run_query($owner_sql)->row_array();
+        $owner_id = $owner_result['sender_id'];
+
+        // Record the reply.
+        $this->activity_model->reply(
+            new SimpleBirthdayMessage($message_id, 'birthday_message', $owner_id),
+            $reply
+        );
+    }
+
+    public function get_replies(&$message, $offset, $limit)
+    {
+        return $this->activity_model->getReplies(
             new SimpleBirthdayMessage($message['id'], 'birthday_message', $message['sender_id']),
             $offset,
             $limit

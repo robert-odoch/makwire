@@ -29,7 +29,23 @@
                 print ($message['num_likes'] == 1) ? " like" : " likes";
                 print "</a>";
             }
+            if ($message['num_replies'] > 0) {
+                print "<span> &middot; </span>" .
+                        "<a href='" . base_url("birthday-message/replies/{$message['id']}") .
+                        "'>{$message['num_replies']}";
+                print ($message['num_replies'] == 1) ? ' reply' : ' replies';
+                print "</a>";
+            }
             ?>
+
         </div>
     </div>
+
+    <?php if ($message['user_can_reply']) { ?>
+        <form action='<?= base_url("birthday-message/reply/{$message['id']}"); ?>'
+              method="post" accept-charset="utf-8" role="form">
+            <label for="reply" class="sr-only">Reply</label>
+            <input type="text" name="reply" id="reply" class="fluid" placeholder="Leave a reply...">
+        </form>
+    <?php } ?>
 </div><!-- box -->
