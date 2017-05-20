@@ -233,7 +233,6 @@ nav#short-cuts ul li a {
 nav#short-cuts ul li:hover,
 nav#short-cuts ul li.active {
     background-color: #EFEEE5;
-    opacity: .8;
 }
 
 ul.about li,
