@@ -211,45 +211,10 @@ class User_model extends CI_Model
         else {
             $profile_pic_path = $path_query->row_array()['profile_pic_path'];
             $profile_pic_path =  str_replace("{$_SERVER['DOCUMENT_ROOT']}makwire/", '', $profile_pic_path);
-            $profile_pic_path = str_replace("uploads", "uploads/small", $profile_pic_path);
             $profile_pic_path = base_url($profile_pic_path);
         }
 
         return $profile_pic_path;
-    }
-
-    /**
-     * Sets a new profile picture for a user.
-     *
-     * @param $data an array containing details about an uploaded photo.
-     */
-    public function set_profile_picture($data)
-    {
-        // Record photo data in the photos table.
-        $photo_sql = sprintf("INSERT INTO user_photos " .
-                                "(user_id image_type, full_path) " .
-                                "VALUES (%d, %s, %s)",
-                                $_SESSION['user_id'],
-                                $this->db->escape($data['file_type']),
-                                $this->db->escape($data['full_path']));
-        $this->utility_model->run_query($photo_sql);
-        $photo_id = $this->db->insert_id();
-
-        // Update profile_pic_path in the users table.
-        $profile_pic_path = "{$data['file_path']}small/{$data['file_name']}";
-        $update_sql = sprintf("UPDATE users " .
-                                "SET profile_pic_path = %s " .
-                                "WHERE (user_id = %d) LIMIT 1",
-                                $this->db->escape($profile_pic_path),
-                                $_SESSION['user_id']);
-        $this->utility_model->run_query($update_sql);
-
-        // Dispatch an activity.
-        $activity_sql = sprintf("INSERT INTO activities " .
-                                "(actor_id, subject_id, source_id, source_type, activity) " .
-                                "VALUES (%d, %d, %d, 'photo', 'profile_pic_change')",
-                                $_SESSION['user_id'], $_SESSION['user_id'], $photo_id);
-        $this->utility_model->run_query($activity_sql);
     }
 
     /**
