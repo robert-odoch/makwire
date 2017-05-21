@@ -11,7 +11,8 @@
             <div class="main-content">
                 <div class="box">
                     <h4>Change name</h4>
-                    <form action="<?= base_url('account/change-name'); ?>" method="post" accept-charset="utf-8" role="form">
+                    <form action="<?= base_url('account/change-name'); ?>"
+                        method="post" accept-charset="utf-8" role="form">
                         <fieldset>
                             <div class="form-group">
                                 <label for="last-name">Last Name</label>
