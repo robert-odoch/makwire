@@ -13,10 +13,68 @@ class Profile extends CI_Controller
             redirect(base_url('login'));
         }
 
+        // Set up and load the upload library.
+        $config['upload_path'] = 'uploads';
+        $config['allowed_types'] = 'gif|png|jpg|jpeg';
+        $config['file_ext_tolower'] = TRUE;
+        $config['max_size'] = 1024;
+        $this->load->library('upload', $config);
+
+        $this->load->library('image_lib');
+        $this->load->helper(['form']);
         $this->load->model(['user_model', 'profile_model']);
 
         // Check whether the user hasn't been logged out from some where else.
         $this->user_model->confirm_logged_in();
+    }
+
+    public function change_profile_picture()
+    {
+        $data = $this->user_model->initialize_user();
+        $data['title'] = 'Change profile picture';
+        $this->load->view('common/header', $data);
+
+        $data['heading'] = 'Change profile picture';
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!$this->upload->do_upload('userfile')) {
+                $data['error'] = $this->upload->display_errors();
+                $this->load->view('upload-image', $data);
+            }
+            else {
+
+                // Upload the file.
+                $upload_data = $this->upload->data();
+
+                $config['image_library'] = 'gd2';
+                $config['source_image'] = $upload_data['full_path'];
+                $config['create_thumb'] = TRUE;
+                $config['thumb_marker'] = "";
+                $config['maintain_ratio'] = TRUE;
+
+                // Create a 60x60 thumbnail for profile picture.
+                $config['new_image'] = "{$upload_data['file_path']}small";
+                $config['width'] = 60;
+                $config['height'] = 60;
+                $this->image_lib->initialize($config);
+                $this->image_lib->resize();
+
+
+                // Create a 480x300 thumbnail for photo.
+                $config['new_image'] = $upload_data['file_path'];
+                $config['width'] = 480;
+                $config['height'] = 300;
+                $this->image_lib->initialize($config);
+                $this->image_lib->resize();
+
+                // Record it in the database.
+                $this->profile_model->set_profile_picture($upload_data);
+                redirect(base_url("user/{$_SESSION['user_id']}"));
+            }
+        }
+
+        $data['form_action'] = base_url('profile/change-profile-picture');
+        $this->load->view('upload-image', $data);
+        $this->load->view('common/footer');
     }
 
     public function add_college()
