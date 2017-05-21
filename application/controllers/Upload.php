@@ -116,7 +116,7 @@ class Upload extends CI_Controller
 
                 // Record it in the database.
                 $photo_id = $this->photo_model->publish($upload_data);
-                redirect(base_url("photo/add-description/{$photo_id}"));
+                redirect(base_url("user/{$_SESSION['user_id']}"));
             }
         }
 

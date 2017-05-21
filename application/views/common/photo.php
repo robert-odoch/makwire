@@ -45,8 +45,12 @@
         </header>
 
         <?php
-        if (strlen($photo['description']) > 0) {
+        if ($photo['has_description']) {
             print "<p>{$photo['description']}</p>";
+        }
+        elseif ($photo['user_id'] == $_SESSION['user_id']) {
+            print '<a href="' . base_url("photo/add-description/{$photo['photo_id']}") .
+                    '">Say something about this photo</a>';
         }
         ?>
         <img src="<?= $photo['web_path']; ?>" alt="<?= $photo['alt']?>">

@@ -51,6 +51,7 @@ class Photo_model extends CI_Model
         $photo['timespan'] = timespan(mysql_to_unix($photo['date_entered']), now(), 1);
 
         // Add data used by views.
+        $photo['has_description'] = strlen($photo['description']) != 0;
         $photo['shared'] = FALSE;
         $photo['alt'] = format_name($photo['author']) . ' photo';
 
@@ -153,7 +154,7 @@ class Photo_model extends CI_Model
 
         $owner_result = $owner_query->row_array();
         $owner_id = $owner_result['user_id'];
-        
+
         if (!$this->user_model->are_friends($owner_id)) {
             throw new IllegalAccessException();
         }

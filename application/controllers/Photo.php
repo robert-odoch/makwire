@@ -42,8 +42,13 @@ class Photo extends CI_Controller
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $description = trim(strip_tags($this->input->post('description')));
-            $this->photo_model->add_description($description, $photo_id);
-            redirect(base_url("user/{$_SESSION['user_id']}"));
+            if (strlen($description) == 0) {
+                $data['error_message'] = "Please enter a description for this photo.";
+            }
+            else {
+                $this->photo_model->add_description($description, $photo_id);
+                redirect(base_url("user/{$_SESSION['user_id']}"));
+            }
         }
 
         $data['photo'] = $photo;
