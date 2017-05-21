@@ -48,7 +48,7 @@
         if ($photo['has_description']) {
             print "<p>{$photo['description']}</p>";
         }
-        elseif ($photo['user_id'] == $_SESSION['user_id']) {
+        elseif ($photo['user_id'] == $_SESSION['user_id'] && !$photo['is_profile_pic']) {
             print '<a href="' . base_url("photo/add-description/{$photo['photo_id']}") .
                     '">Say something about this photo</a>';
         }
