@@ -16,7 +16,7 @@ if (!$is_visitor) {
                 </a>
             </li>
             <li role="presentation">
-                <a href="<?= base_url('upload/photo'); ?>">
+                <a href="<?= base_url('photo/new'); ?>">
                     <span class="glyphicon glyphicon-picture"></span> Photo
                 </a>
             </li>
