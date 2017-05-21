@@ -2,7 +2,13 @@
 
 <div id="secondary-user" class="box">
     <div>
+        <?php if ($suid == $_SESSION['user_id']) { ?>
+        <a href="<?= base_url('profile/change-profile-picture'); ?>" title="Change profile picture">
+            <img src="<?= $su_profile_pic_path; ?>" alt="<?= $secondary_user; ?>">
+        </a>
+        <?php } else { ?>
         <img src="<?= $su_profile_pic_path; ?>" alt="<?= $secondary_user; ?>">
+        <?php } ?>
         <h4>
             <a href="<?= base_url("user/{$suid}"); ?>"><?= $secondary_user; ?></a>
         </h4>
