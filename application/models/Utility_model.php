@@ -50,8 +50,8 @@ class Utility_model extends CI_Model
         $data['title'] = "Success!";
         $this->load->view("common/header", $data);
 
-        $data['messagesss'] = $message;
-        $this->load->view("show-success", $data);
+        $data['message'] = $message;
+        $this->load->view("show/success", $data);
         $this->load->view("common/footer");
     }
 
