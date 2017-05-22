@@ -185,7 +185,10 @@ class Register extends CI_Controller
             }
 
             $passwd1 = $this->input->post('passwd1');
-            if (strlen($passwd1) < 6) {
+            if (strlen($passwd1) == 0) {
+                $error_messages['passwd1'] = 'Please enter your password.';
+            }
+            elseif (strlen($passwd1) < 6) {
                 $error_messages['passwd1'] = 'Password must be atleast 6 characters long!';
             }
             elseif (!preg_match('/^(\w*(?=\w*\d)(?=\w*[a-z])(?=\w*[A-Z])\w*){6,}$/', $passwd1)) {
@@ -194,7 +197,10 @@ class Register extends CI_Controller
             }
             else {
                 $passwd2 = $this->input->post('passwd2');
-                if ($passwd1 != $passwd2) {
+                if (strlen($passwd2) == 0) {
+                    $error_messages['passwd2'] = 'Please confirm your password.';
+                }
+                elseif ($passwd1 != $passwd2) {
                     $error_messages['passwd2'] = 'The two passwords do not match!';
                 }
                 else {
