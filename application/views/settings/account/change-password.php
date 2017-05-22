@@ -15,15 +15,47 @@
                         <fieldset>
                             <div class="form-group">
                                 <label for="oldpasswd">Old password:</label>
-                                <input type="password" name="oldpasswd" id="oldpasswd">
+                                <input type="password" name="oldpasswd" id="oldpasswd"
+                                    <?php
+                                    if (isset($error_messages) && isset($error_messages['oldpasswd']))
+                                        print ' class="has-error"';
+                                    ?>>
+                                <?php
+                                if (isset($error_messages) && isset($error_messages['oldpasswd']))
+                                    print "<span class='error'>{$error_messages['oldpasswd']}</span>";
+                                ?>
                             </div>
                             <div class="form-group">
-                                <label for="newpasswd1">New password:</label>
-                                <input type="password" name="newpasswd1" id="newpasswd1">
+                                <label for="passwd1">New password:</label>
+                                <span class="help-block">
+                                    Must be atleast 6 characters long.<br>
+                                    Include atleast one uppercase letter, a lowercase letter, and a number.
+                                </span>
+                                <input type="password" name="passwd1" id="passwd1"
+                                <?php
+                                if (isset($error_messages) && isset($error_messages['passwd1'])) {
+                                    print ' class="has-error"';
+                                }
+                                ?>>
+                                <?php
+                                if (isset($error_messages) && isset($error_messages['passwd1'])) {
+                                    print "<span class='error'>{$error_messages['passwd1']}</span>";
+                                }
+                                ?>
                             </div>
                             <div class="form-group">
-                                <label for="newpasswd2">Confirm new password:</label>
-                                <input type="password" name="newpasswd2" id="newpasswd2">
+                                <label for="passwd2">Confirm new password:</label>
+                                <input type="password" name="passwd2" id="passwd2"
+                                <?php
+                                if (isset($error_messages) && isset($error_messages['passwd2'])) {
+                                    print ' class="has-error"';
+                                }
+                                ?>>
+                                <?php
+                                if (isset($error_messages) && isset($error_messages['passwd2'])) {
+                                    print "<span class='error'>{$error_messages['passwd2']}</span>";
+                                }
+                                ?>
                             </div>
                         </fieldset>
 

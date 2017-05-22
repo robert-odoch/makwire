@@ -9,6 +9,20 @@ class Account_model extends CI_Model
         $this->load->model(['utility_model']);
     }
 
+    public function user_exists($password)
+    {
+        $sql = sprintf("SELECT passwd FROM users WHERE user_id = %d", $_SESSION['user_id']);
+        $query = $this->utility_model->run_query($sql);
+        return password_verify($password, $query->row()->passwd);
+    }
+
+    public function change_password($new_password)
+    {
+        $sql = sprintf("UPDATE users SET passwd = '%s' WHERE user_id = %d",
+                        password_hash($new_password, PASSWORD_BCRYPT), $_SESSION['user_id']);
+        $this->utility_model->run_query($sql);
+    }
+
     public function get_name_combinations()
     {
         $sql = sprintf("SELECT lname, other_names FROM users WHERE user_id = %d",
