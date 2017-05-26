@@ -24,7 +24,7 @@ class Account extends CI_Controller
         }
 
         $data = $this->user_model->initialize_user();
-        $data['title'] = 'Change you password';
+        $data['title'] = 'Change your password';
         $this->load->view('common/header', $data);
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
