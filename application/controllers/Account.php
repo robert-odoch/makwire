@@ -34,9 +34,8 @@ class Account extends CI_Controller
             if (strlen($oldpasswd) == 0) {
                 $error_messages['oldpasswd'] = 'Please enter your old password.';
             }
-
             // Check if there exists a user with this password.
-            if (! $this->account_model->user_exists($oldpasswd)) {
+            elseif (! $this->account_model->user_exists($oldpasswd)) {
                 $error_messages['oldpasswd'] = 'Incorrect password, please try again.';
             }
             else {
