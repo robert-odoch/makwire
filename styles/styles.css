@@ -503,8 +503,8 @@ ul.notifications li a {
 }
 
 article.photo > img,
-form#add-description img {
-    margin: 5px auto 0 auto;
+div#add-description > img {
+    margin-bottom: 5px;
     max-width: 100%;
     width: 100%;
     border: 1px solid rgba(143, 188, 143, .2);
