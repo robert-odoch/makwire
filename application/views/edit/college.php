@@ -72,8 +72,6 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
         <fieldset>
             <input type="hidden" name = "user-college-id" value = "<?= $user_college['id']; ?>">
             <input type="hidden" name="college-id" value="<?= $user_college['college_id']; ?>">
-            <input type="hidden" name="old-start-date" value="<?= $user_college['date_from']; ?>">
-            <input type="hidden" name="old-end-date" value="<?= $user_college['date_to']; ?>">
             <input type="hidden" name = "school-id" value = "<?= $user_college['school']['school_id']; ?>">
         </fieldset>
         <?php } ?>

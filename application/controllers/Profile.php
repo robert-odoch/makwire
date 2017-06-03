@@ -161,9 +161,6 @@ class Profile extends CI_Controller
             $data['end_month'] = $this->input->post('end-month');
             $data['end_year'] = $this->input->post('end-year');
 
-            $data['old_start_date'] = $this->input->post('old-start-date');
-            $data['old_end_date'] = $this->input->post('old-end-date');
-
             // Validate the dates.
             if ($data['end_year'] < $data['start_year']) {
                 $data['error_message'] = 'Invalid dates entered! Please check the dates and try again.';
@@ -228,12 +225,13 @@ class Profile extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function add_programme($user_college_id=0)
+    public function add_programme($user_school_id=0)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data['user_college_id']= $this->input->post('user-college-id');
+            $data['user_school_id']= $this->input->post('user-school-id');
             $data['programme_id'] = $this->input->post('programme');
             $data['year_of_study'] = $this->input->post('year-of-study');
+            $data['graduated'] = ($data['year_of_study'] == 0) ? 1 : 0;
 
             $this->profile_model->add_programme($data);
             $this->utility_model->show_success(
@@ -247,14 +245,14 @@ class Profile extends CI_Controller
         $this->load->view('common/header', $data);
 
         try {
-            $user_college = $this->profile_model->get_user_college($user_college_id);
+            $user_school = $this->profile_model->get_user_school($user_school_id);
         }
-        catch (CollegeNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
 
-        $data['user_college'] = $user_college;
-        $data['programmes'] = $this->profile_model->get_programmes($user_college['school']['school_id']);
+        $data['user_school'] = $user_school;
+        $data['programmes'] = $this->profile_model->get_programmes($user_school['school_id']);
 
         $data['heading'] = 'Add Programme';
         $data['form_action'] = base_url('profile/add-programme');
@@ -290,7 +288,7 @@ class Profile extends CI_Controller
         $data['year_of_study'] = $user_programme['year_of_study'];
 
         $data['heading'] = 'Edit Programme Details';
-        $data['form_action'] = base_url('proifle/edit-programme');
+        $data['form_action'] = base_url('profile/edit-programme');
         $this->load->view('edit/programme', $data);
         $this->load->view('common/footer');
     }

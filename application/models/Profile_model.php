@@ -1,6 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+require_once('exceptions/NotFoundException.php');
 require_once('exceptions/CollegeNotFoundException.php');
 require_once('exceptions/ProgrammeNotFoundException.php');
 require_once('exceptions/HostelNotFoundException.php');
@@ -79,8 +80,7 @@ class Profile_model extends CI_Model
     public function get_profile($user_id)
     {
         // Get the country and district.
-        $origin_sql = sprintf("SELECT country_id, district_id " .
-                                "FROM user_profile " .
+        $origin_sql = sprintf("SELECT country_id, district_id FROM user_profile " .
                                 "WHERE (user_id = %d)",
                                 $user_id);
         $origin_query = $this->utility_model->run_query($origin_sql);
@@ -95,8 +95,7 @@ class Profile_model extends CI_Model
 
             // Get the name of the country.
             if ($data['country_id']) {
-                $country_sql = sprintf("SELECT country_name " .
-                                        "FROM countries " .
+                $country_sql = sprintf("SELECT country_name FROM countries " .
                                         "WHERE (country_id = %d)",
                                         $data['country_id']);
                 $country_query = $this->utility_model->run_query($country_sql);
@@ -108,8 +107,7 @@ class Profile_model extends CI_Model
 
             // Get the name of the district.
             if ($data['district_id']) {
-                $district_sql = sprintf("SELECT district_name " .
-                                        "FROM districts " .
+                $district_sql = sprintf("SELECT district_name FROM districts " .
                                         "WHERE (district_id = %d)",
                                         $data['district_id']);
                 $district_query = $this->utility_model->run_query($district_sql);
@@ -132,64 +130,40 @@ class Profile_model extends CI_Model
         $data['colleges'] = array();
         if ($colleges_query->num_rows() > 0) {
             $colleges_results = $colleges_query->result_array();
-            foreach ($colleges_results as $r) {
+            foreach ($colleges_results as $c) {
                 // Get the college name.
                 $college_sql = sprintf("SELECT college_name " .
                                         "FROM colleges " .
                                         "WHERE (college_id = %d)",
-                                        $r['college_id']);
+                                        $c['college_id']);
                 $college_query = $this->utility_model->run_query($college_sql);
-                $r['college_name'] = $college_query->row_array()['college_name'];
+                $c['college_name'] = $college_query->row_array()['college_name'];
 
-                array_push($data['colleges'], $r);
-            }
-        }
+                // Get the school.
+                $school_sql = sprintf("SELECT us.id, us.school_id, sch.school_name " .
+                                        "FROM user_schools AS us " .
+                                        "LEFT JOIN schools sch " .
+                                        "ON (us.school_id = sch.school_id) " .
+                                        "WHERE (us.user_college_id = %d)",
+                                        $c['id']);
+                $school = $this->utility_model->run_query($school_sql)->row_array();
+                $c['school'] = $school;
 
-        // Get the schools.
-        $schools_sql = sprintf("SELECT school_id, date_from, date_to " .
-                                "FROM user_schools " .
-                                "WHERE (user_id = %d) " .
-                                "ORDER BY date_to DESC",
-                                $user_id);
-        $schools_query = $this->utility_model->run_query($schools_sql);
-
-        $data['schools'] = array();
-        if ($schools_query->num_rows() > 0) {
-            $schools_results = $schools_query->result_array();
-            foreach ($schools_results as $r) {
-                // Get the school name.
-                $school_sql = sprintf("SELECT school_name " .
-                                        "FROM schools " .
-                                        "WHERE (school_id = %d)",
-                                        $r['school_id']);
-                $school_query = $this->utility_model->run_query($school_sql);
-                $r['school_name'] = $school_query->row_array()['school_name'];
-
-                array_push($data['schools'], $r);
-            }
-        }
-
-        // Get the programmes.
-        $programmes_sql = sprintf("SELECT id, programme_id, date_from, date_to " .
-                                    "FROM user_programmes " .
-                                    "WHERE (user_id = %d) " .
-                                    "ORDER BY date_to DESC",
-                                    $user_id);
-        $programmes_query = $this->utility_model->run_query($programmes_sql);
-
-        $data['programmes'] = array();
-        if ($programmes_query->num_rows() > 0) {
-            $programmes_results = $programmes_query->result_array();
-            foreach ($programmes_results as $r) {
-                // Get the programme name.
-                $programme_sql = sprintf("SELECT programme_name " .
-                                            "FROM programmes " .
-                                            "WHERE (programme_id = %d)",
-                                            $r['programme_id']);
+                // Get the programme.
+                $programme_sql = sprintf("SELECT up.id, p.programme_name " .
+                                        "FROM user_programmes up " .
+                                        "LEFT JOIN programmes p " .
+                                        "ON (up.programme_id = p.programme_id) " .
+                                        "WHERE (up.user_school_id = %d)",
+                                        $school['id']);
                 $programme_query = $this->utility_model->run_query($programme_sql);
-                $r['programme_name'] = $programme_query->row_array()['programme_name'];
+                $c['has_programme'] = FALSE;
+                if ($programme_query->num_rows() > 0) {
+                    $c['has_programme'] = TRUE;
+                    $c['programme'] = $programme_query->row_array();
+                }
 
-                array_push($data['programmes'], $r);
+                array_push($data['colleges'], $c);
             }
         }
 
@@ -364,12 +338,13 @@ class Profile_model extends CI_Model
      */
     public function get_user_college($user_college_id)
     {
-        $user_college_sql = sprintf("SELECT id, college_id, date_from, date_to, " .
-                                    "DAY(date_from) AS start_day, MONTH(date_from) AS start_month, " .
-                                    "YEAR(date_from) AS start_year, DAY(date_to) AS end_day, " .
-                                    "MONTH(date_to) AS end_month, YEAR(date_to) AS end_year " .
-                                    "FROM user_colleges " .
-                                    "WHERE (id = %d AND user_id = %d)",
+        $user_college_sql = sprintf("SELECT c.college_name, uc.id, uc.college_id, " .
+                                    "DAY(uc.date_from) AS start_day, MONTH(uc.date_from) AS start_month, " .
+                                    "YEAR(uc.date_from) AS start_year, DAY(uc.date_to) AS end_day, " .
+                                    "MONTH(uc.date_to) AS end_month, YEAR(uc.date_to) AS end_year " .
+                                    "FROM user_colleges uc " .
+                                    "LEFT JOIN colleges c ON (uc.college_id = c.college_id) " .
+                                    "WHERE (uc.id = %d AND uc.user_id = %d)",
                                     $user_college_id, $_SESSION['user_id']);
         $user_college_query = $this->utility_model->run_query($user_college_sql);
 
@@ -377,33 +352,39 @@ class Profile_model extends CI_Model
             throw new CollegeNotFoundException();
         }
 
-        // Get the name of the college.
         $user_college = $user_college_query->row_array();
-        $college_name_sql = sprintf("SELECT college_name " .
-                                        "FROM colleges " .
-                                        "WHERE (college_id = %d)",
-                                        $user_college['college_id']);
-        $college_name_query = $this->utility_model->run_query($college_name_sql);
-        $user_college['college_name'] = $college_name_query->row_array()['college_name'];
 
-        // Get the school id.
-        $school_id_sql = sprintf("SELECT school_id " .
-                                    "FROM user_schools " .
-                                    "WHERE (user_id = %d AND date_from = '%s' AND date_to = '%s')",
-                                    $_SESSION['user_id'], $user_college['date_from'],
-                                    $user_college['date_to']);
-        $school_id_query = $this->utility_model->run_query($school_id_sql);
-        $user_college['school']['school_id'] = $school_id_query->row_array()['school_id'];
-
-        // Get the name of the school.
-        $school_name_sql = sprintf("SELECT school_name " .
-                                    "FROM schools " .
-                                    "WHERE (school_id = %d)",
-                                    $user_college['school']['school_id']);
-        $school_name_query = $this->utility_model->run_query($school_name_sql);
-        $user_college['school']['school_name'] = $school_name_query->row_array()['school_name'];
+        // Get the school.
+        $school_sql = sprintf("SELECT us.id, us.school_id, s.school_name FROM user_schools us " .
+                                "LEFT JOIN schools s ON (us.school_id = s.school_id) " .
+                                "WHERE (user_college_id = %d)",
+                                $user_college['id']);
+        $school_query = $this->utility_model->run_query($school_sql);
+        $user_college['school'] = $school_query->row_array();
 
         return $user_college;
+    }
+
+    /**
+     * Gets details for a school attended by a user.
+     *
+     * Throws SchoolNotFoundException if no matching record is found.
+     *
+     * @param $user_school_id the ID of the record in the user_schools table.
+     * @return details for a school attended by a user.
+     */
+    public function get_user_school($user_school_id)
+    {
+        $user_school_sql = sprintf("SELECT id, school_id FROM user_schools " .
+                                    "WHERE (id = %d AND user_id = %d)",
+                                    $user_school_id, $_SESSION['user_id']);
+        $user_school_query = $this->utility_model->run_query($user_school_sql);
+
+        if ($user_school_query->num_rows() == 0) {
+            throw new NotFoundException();
+        }
+
+        return $user_school_query->row_array();
     }
 
     /**
@@ -416,9 +397,10 @@ class Profile_model extends CI_Model
      */
     public function get_user_programme($user_programme_id)
     {
-        $user_programme_sql = sprintf("SELECT id, programme_id, date_from, date_to, year_of_study " .
-                                        "FROM user_programmes " .
-                                        "WHERE (id = %d AND user_id = %d)",
+        $user_programme_sql = sprintf("SELECT up.id, up.programme_id, up.year_of_study, p.programme_name " .
+                                        "FROM user_programmes up " .
+                                        "LEFT JOIN programmes p ON(up.programme_id = p.programme_id) " .
+                                        "WHERE (up.id = %d AND up.user_id = %d)",
                                         $user_programme_id, $_SESSION['user_id']);
         $user_programme_query = $this->utility_model->run_query($user_programme_sql);
 
@@ -426,17 +408,7 @@ class Profile_model extends CI_Model
             throw new ProgrammeNotFoundException();
         }
 
-        $user_programme = $user_programme_query->row_array();
-
-        // Get the name of the programme.
-        $programme_sql = sprintf("SELECT programme_name " .
-                                    "FROM programmes " .
-                                    "WHERE (programme_id = %d)",
-                                    $user_programme['programme_id']);
-        $programme_query = $this->utility_model->run_query($programme_sql);
-        $user_programme['programme_name'] = $programme_query->row_array()['programme_name'];
-
-        return $user_programme;
+        return $user_programme_query->row_array();
     }
 
     /**
@@ -543,12 +515,12 @@ class Profile_model extends CI_Model
         $this->utility_model->run_query($add_college_sql);
 
         // Also add the school.
+        $user_college_id = $this->db->insert_id();
         $add_school_sql = sprintf("INSERT INTO user_schools " .
-                                    "(user_id, school_id, date_from, date_to ) " .
-                                    "VALUES (%d, %d, %s, %s)",
+                                    "(user_id, school_id, user_college_id) " .
+                                    "VALUES (%d, %d, %d)",
                                     $_SESSION['user_id'], $data['school_id'],
-                                    $this->db->escape($data['start_date']),
-                                    $this->db->escape($data['end_date']));
+                                    $user_college_id);
         $this->utility_model->run_query($add_school_sql);
 
         return TRUE;
@@ -561,16 +533,12 @@ class Profile_model extends CI_Model
      */
     public function add_programme($data)
     {
-        $user_college = $this->get_user_college($data['user_college_id']);
-
         // Save the programme.
         $programme_sql = sprintf("INSERT INTO user_programmes " .
-                                "(user_id, programme_id, date_from, date_to, year_of_study) " .
-                                "VALUES(%d, %d, %s, %s, '%d')",
-                                $_SESSION['user_id'], $data['programme_id'],
-                                $this->db->escape($user_college['date_from']),
-                                $this->db->escape($user_college['date_to']),
-                                $data['year_of_study']);
+                                "(user_id, programme_id, user_school_id, year_of_study, graduated) " .
+                                "VALUES(%d, %d, %d, '%d', %d)",
+                                $_SESSION['user_id'], $data['programme_id'], $data['user_school_id'],
+                                $data['year_of_study'], $data['graduated']);
         $this->utility_model->run_query($programme_sql);
     }
 
@@ -770,24 +738,6 @@ class Profile_model extends CI_Model
                                         $this->db->escape($data['end_date']),
                                         $data['user_college_id']);
         $this->utility_model->run_query($update_college_sql);
-
-        // Also update the user_schools table.
-        // Get the id in the user_schools table.
-        $school_id_sql = sprintf("SELECT id FROM user_schools " .
-                                "WHERE (user_id = %d AND school_id = %d AND " .
-                                "date_from = %s AND date_to = %s)",
-                                $_SESSION['user_id'], $data['school_id'],
-                                $this->db->escape($data['old_start_date']),
-                                $this->db->escape($data['old_end_date']));
-        $school_id = $this->utility_model->run_query($school_id_sql)->row_array()['id'];
-
-        $update_school_sql = sprintf("UPDATE user_schools " .
-                                        "SET date_from = %s, date_to = %s " .
-                                        "WHERE (id = %d)",
-                                        $this->db->escape($data['start_date']),
-                                        $this->db->escape($data['end_date']),
-                                        $school_id);
-        $this->utility_model->run_query($update_school_sql);
 
         return TRUE;
     }

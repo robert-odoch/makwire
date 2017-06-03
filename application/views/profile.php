@@ -30,35 +30,22 @@ require_once("common/secondary-user-nav.php");
                     }
                     print "</li>";
 
-                    if ($profile['schools']) {
-                        foreach ($profile['schools'] as $school) {
-                            if (($school['date_from'] == $college['date_from']) &&
-                                ($school['date_to'] == $college['date_to'])) {
-                                print "<li><b>School: </b>{$school['school_name']}</li>";
-                            }
-                        }
-                    }
+                    print "<li><b>School: </b>{$college['school']['school_name']}</li>";
 
-                    $has_programme = FALSE;
-                    if ($profile['programmes']) {
-                        foreach ($profile['programmes'] as $programme) {
-                            if (($programme['date_from'] == $college['date_from']) &&
-                                ($programme['date_to'] == $college['date_to'])) {
-                                $has_programme = TRUE;
-                                print "<li><b>Programme: </b>{$programme['programme_name']}";
-                                if (!$is_visitor) {
-                                    print ' <a href="' . base_url("profile/edit-programme/{$programme['id']}") .
-                                            '"><span class="glyphicon glyphicon-pencil"></span> <em>Edit</em></a>';
-                                }
-                                print "</li>";
-                            }
+                    if ($college['has_programme']) {
+                        print "<li><b>Programme: </b>{$college['programme']['programme_name']}";
+                        if (!$is_visitor) {
+                            print ' <a href="' . base_url("profile/edit-programme/{$college['programme']['id']}") .
+                                    '"><span class="glyphicon glyphicon-pencil"></span> <em>Edit</em></a>';
                         }
+                        print "</li>";
                     }
-
-                    if (!$is_visitor && !$has_programme) {
-                        print '<li><b>Programme: </b><a href="'.
-                                base_url("profile/add-programme/{$college['id']}") .
-                                '"><em>Add programme</em></a></li>';
+                    else {
+                        if (!$is_visitor) {
+                            print '<li><b>Programme: </b><a href="'.
+                                    base_url("profile/add-programme/{$college['school']['id']}") .
+                                    '"><em>Add programme</em></a></li>';
+                        }
                     }
                 }  // End foreach.
 

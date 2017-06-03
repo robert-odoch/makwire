@@ -51,7 +51,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
         <fieldset>
             <?php
             if (isset($programmes)) {
-                print "<input type='hidden' name='user-college-id' value='{$user_college['id']}'>";
+                print "<input type='hidden' name='user-school-id' value='{$user_school['id']}'>";
             }
             else {
                 print "<input type='hidden' name='user-programme-id' value='{$user_programme['id']}'>";
