@@ -25,7 +25,7 @@ class Reply extends CI_Controller
             $this->reply_model->like($reply_id);
             redirect($_SERVER['HTTP_REFERER']);
         }
-        catch (ReplyNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
         catch (IllegalAccessException $e) {
@@ -41,7 +41,7 @@ class Reply extends CI_Controller
         try {
             $reply = $this->reply_model->get_reply($reply_id);
         }
-        catch (ReplyNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
 

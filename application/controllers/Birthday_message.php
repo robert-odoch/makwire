@@ -27,7 +27,7 @@ class Birthday_message extends CI_Controller
             $this->birthday_message_model->like($message_id);
             redirect($_SERVER['HTTP_REFERER']);
         }
-        catch (MessageNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
         catch (IllegalAccessException $e) {
@@ -43,7 +43,7 @@ class Birthday_message extends CI_Controller
         try {
             $message = $this->birthday_message_model->get_message($message_id);
         }
-        catch (MessageNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
 
@@ -82,7 +82,7 @@ class Birthday_message extends CI_Controller
         try {
             $message = $this->birthday_message_model->get_message($message_id);
         }
-        catch (MessageNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
 
@@ -130,7 +130,7 @@ class Birthday_message extends CI_Controller
         try {
             $message = $this->birthday_message_model->get_message($message_id);
         }
-        catch (MessageNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
 

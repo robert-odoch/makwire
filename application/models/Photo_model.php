@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 require_once('classes/SimplePhoto.php');
 require_once('exceptions/IllegalAccessException.php');
-require_once('exceptions/PhotoNotFoundException.php');
+require_once('exceptions/NotFoundException.php');
 
 /**
  * Contains functions related to a photo.
@@ -21,7 +21,7 @@ class Photo_model extends CI_Model
     /**
      * Gets a photo plus other photo metadata.
      *
-     * Throws PhotoNotFoundException if the photo cannot be found.
+     * Throws NotFoundException if the photo cannot be found.
      *
      * @param $photo_id the ID of the photo in the user_photos table.
      * @return the photo with the given ID.
@@ -32,7 +32,7 @@ class Photo_model extends CI_Model
                             $photo_id);
         $photo_query = $this->utility_model->run_query($photo_sql);
         if ($photo_query->num_rows() == 0) {
-            throw new PhotoNotFoundException();
+            throw new NotFoundException();
         }
 
         $photo = $photo_query->row_array();
@@ -136,7 +136,7 @@ class Photo_model extends CI_Model
     /**
      * Records a like of a photo.
      *
-     * Throws PhotoNotFoundException exception if photo is not on record.
+     * Throws NotFoundException exception if photo is not on record.
      * It may also throw IllegalAccessException if a user attempts to like
      * a photo published by a user who is not his friend.
      *
@@ -149,7 +149,7 @@ class Photo_model extends CI_Model
                             $photo_id);
         $owner_query = $this->utility_model->run_query($owner_sql);
         if ($owner_query->num_rows() == 0) {
-            throw new PhotoNotFoundException();
+            throw new NotFoundException();
         }
 
         $owner_result = $owner_query->row_array();
@@ -165,7 +165,7 @@ class Photo_model extends CI_Model
     /**
      * Shares a photo on a user's timeline.
      *
-     * Throws PhotoNotFoundException if a photo is not on record.
+     * Throws NotFoundException if a photo is not on record.
      * It may also throw IllegalAccessException if a user attempts to share
      * a photo that was published by a user who is not his friend.
      *
@@ -177,7 +177,7 @@ class Photo_model extends CI_Model
                             $photo_id);
         $owner_query = $this->utility_model->run_query($owner_sql);
         if ($owner_query->num_rows() == 0) {
-            throw new PhotoNotFoundException();
+            throw new NotFoundException();
 
         }
 

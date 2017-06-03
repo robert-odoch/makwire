@@ -203,7 +203,7 @@ class Profile extends CI_Controller
         try {
             $user_college = $this->profile_model->get_user_college($user_college_id);
         }
-        catch (CollegeNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
 
@@ -280,7 +280,7 @@ class Profile extends CI_Controller
         try {
             $user_programme = $this->profile_model->get_user_programme($user_programme_id);
         }
-        catch (ProgrammeNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
 
@@ -396,7 +396,7 @@ class Profile extends CI_Controller
         try {
             $user_hall = $this->profile_model->get_user_hall($user_hall_id);
         }
-        catch (HallNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
 
@@ -523,7 +523,7 @@ class Profile extends CI_Controller
         try {
             $user_hostel = $this->profile_model->get_user_hostel($user_hostel_id);
         }
-        catch (HostelNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
 

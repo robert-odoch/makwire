@@ -45,7 +45,7 @@ class Post extends CI_Controller
             $this->post_model->like($post_id);
             redirect($_SERVER['HTTP_REFERER']);
         }
-        catch (PostNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
         catch (IllegalAccessException $e) {
@@ -61,7 +61,7 @@ class Post extends CI_Controller
         try {
             $post = $this->post_model->get_post($post_id);
         }
-        catch (PostNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
 
@@ -106,7 +106,7 @@ class Post extends CI_Controller
             $this->post_model->share($post_id);
             redirect(base_url("user/{$_SESSION['user_id']}"));
         }
-        catch (PostNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
         catch (IllegalAccessException $e) {
@@ -122,7 +122,7 @@ class Post extends CI_Controller
         try {
             $post = $this->post_model->get_post($post_id);
         }
-        catch (PostNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
 
@@ -166,7 +166,7 @@ class Post extends CI_Controller
         try {
             $post = $this->post_model->get_post($post_id);
         }
-        catch (PostNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
 
@@ -208,7 +208,7 @@ class Post extends CI_Controller
         try {
             $post = $this->post_model->get_post($post_id);
         }
-        catch (PostNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
 

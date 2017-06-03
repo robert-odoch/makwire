@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-require_once('exceptions/EmailNotFoundException.php');
+require_once('exceptions/NotFoundException.php');
 
 class Register_model extends CI_Model
 {
@@ -69,7 +69,7 @@ class Register_model extends CI_Model
     /**
      * Activates a user's email address by setting it's activation code to NULL.
      *
-     * Throws EmailNotFoundException if no matching record is found.
+     * Throws NotFoundException if no matching record is found.
      *
      * @param $user_email_id ID in the user_emails table.
      * @param $activation_code activation code for this email address.
@@ -82,7 +82,7 @@ class Register_model extends CI_Model
                             $user_email_id, $this->db->escape($activation_code));
         $email_query = $this->utility_model->run_query($email_sql);
         if ($email_query->num_rows() == 0) {
-            throw new EmailNotFoundException();
+            throw new NotFoundException();
         }
 
         // Set activation code to NULL.

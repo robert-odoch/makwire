@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 require_once('classes/SimpleBirthdayMessage.php');
 require_once('exceptions/IllegalAccessException.php');
-require_once('exceptions/MessageNotFoundException.php');
+require_once('exceptions/NotFoundException.php');
 
 /**
  * Contains functions relating to a message sent to a user on his birthday.
@@ -21,7 +21,7 @@ class Birthday_message_model extends CI_Model
     /**
      * Gets a birthday message plus other message metadata.
      *
-     * Throws MessageNotFoundException if the message cannot be found on record.
+     * Throws NotFoundException if the message cannot be found on record.
      *
      * @param $birthday_message_id the id of the message in the birthday_messages table.
      * @return birthday message with the given ID plus other data.
@@ -34,7 +34,7 @@ class Birthday_message_model extends CI_Model
                                 $birthday_message_id);
         $message_query = $this->utility_model->run_query($message_sql);
         if ($message_query->num_rows() == 0) {
-            throw new MessageNotFoundException();
+            throw new NotFoundException();
         }
 
         $message = $message_query->row_array();
@@ -75,7 +75,7 @@ class Birthday_message_model extends CI_Model
     /**
      * Records a like of a birthday message.
      *
-     * Throws MessageNotFoundException if the message cannot be found on record.
+     * Throws NotFoundException if the message cannot be found on record.
      * It may also throw IllegalAccessException if the user attempts to like a
      * message that was not sent for his birthday.
      *
@@ -89,7 +89,7 @@ class Birthday_message_model extends CI_Model
                             $birthday_message_id);
         $owner_query = $this->utility_model->run_query($owner_sql);
         if ($owner_query->num_rows() == 0) {
-            throw new MessageNotFoundException();
+            throw new NotFoundException();
         }
 
         $owner_result = $owner_query->row_array();

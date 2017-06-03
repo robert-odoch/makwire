@@ -57,7 +57,7 @@ class User extends CI_Controller
         try {
             $data['secondary_user'] = $this->user_model->get_profile_name($user_id);
         }
-        catch (UserNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
 
@@ -192,7 +192,7 @@ class User extends CI_Controller
         try {
             $data['secondary_user'] = $this->user_model->get_profile_name($user_id);
         }
-        catch (UserNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
 
@@ -244,7 +244,7 @@ class User extends CI_Controller
         try {
             $post = $this->post_model->get_post($post_id);
         }
-        catch (PostNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
 
@@ -325,7 +325,7 @@ class User extends CI_Controller
         try {
             $photo = $this->photo_model->get_photo($photo_id);
         }
-        catch (PhotoNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
 
@@ -512,7 +512,7 @@ class User extends CI_Controller
         try {
             $data['secondary_user'] = $this->user_model->get_profile_name($user_id);
         }
-        catch (UserNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
 
@@ -549,7 +549,7 @@ class User extends CI_Controller
         try {
             $data['secondary_user'] = $this->user_model->get_profile_name($user_id);
         }
-        catch (UserNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
         $data['su_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
@@ -577,7 +577,7 @@ class User extends CI_Controller
         try {
             $data['secondary_user'] = $this->user_model->get_profile_name($user_id);
         }
-        catch (UserNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
 

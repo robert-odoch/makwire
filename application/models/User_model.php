@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-require_once('exceptions/UserNotFoundException.php');
+require_once('exceptions/NotFoundException.php');
 require_once('exceptions/IllegalAccessException.php');
 
 /**
@@ -183,7 +183,7 @@ class User_model extends CI_Model
                             $user_id);
         $query = $this->utility_model->run_query($name_sql);
         if ($query->num_rows() == 0) {
-            throw new UserNotFoundException();
+            throw new NotFoundException();
         }
 
         return ucfirst($query->row_array()['profile_name']);

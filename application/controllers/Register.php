@@ -96,7 +96,7 @@ class Register extends CI_Controller
             try {
                 $this->register_model->activate_email($user_email_id, $activation_code);
             }
-            catch (EmailNotFoundException $e) {
+            catch (NotFoundException $e) {
                 show_404();
             }
         }

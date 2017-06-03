@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 require_once('classes/SimplePost.php');
 require_once('exceptions/IllegalAccessException.php');
-require_once('exceptions/PostNotFoundException.php');
+require_once('exceptions/NotFoundException.php');
 
 /**
  * Contains functions related to a post.
@@ -19,7 +19,7 @@ class Post_model extends CI_Model
     /**
      * Gets a post plus other post metadata.
      *
-     * Throws PostNotFoundException if the post cannot be found.
+     * Throws NotFoundException if the post cannot be found.
      *
      * @param $post_id the ID of the post in the posts table.
      * @return the post with the given ID.
@@ -30,7 +30,7 @@ class Post_model extends CI_Model
                      $post_id);
         $post_query = $this->utility_model->run_query($post_sql);
         if ($post_query->num_rows() == 0){
-            throw new PostNotFoundException();
+            throw new NotFoundException();
         }
 
         $post = $post_query->row_array();
@@ -94,7 +94,7 @@ class Post_model extends CI_Model
     /**
      * Records a like of a post.
      *
-     * Throws PostNotFoundException exception if the post is not on record.
+     * Throws NotFoundException exception if the post is not on record.
      * It may also throw IllegalAccessException if a user attempts to like
      * a post published by a user who is not his friend.
      *
@@ -107,7 +107,7 @@ class Post_model extends CI_Model
                             $post_id);
         $owner_query = $this->utility_model->run_query($owner_sql);
         if ($owner_query->num_rows() == 0) {  // Post doesn't exist.
-            throw new PostNotFoundException();
+            throw new NotFoundException();
         }
 
         $owner_result = $owner_query->row_array();
@@ -123,7 +123,7 @@ class Post_model extends CI_Model
     /**
      * Shares a post on a user's timeline.
      *
-     * Throws PostNotFoundException if a post is not on record.
+     * Throws NotFoundException if a post is not on record.
      * It may also throw IllegalAccessException if a user attempts to share
      * a post that was published by a user who is not his friend.
      *
@@ -136,7 +136,7 @@ class Post_model extends CI_Model
                             $post_id);
         $owner_query = $this->utility_model->run_query($owner_sql);
         if ($owner_query->num_rows() == 0) {
-            throw new PostNotFoundException();
+            throw new NotFoundException();
         }
 
         $owner_result = $owner_query->row_array();

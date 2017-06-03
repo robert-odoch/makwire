@@ -81,7 +81,7 @@ class Photo extends CI_Controller
         try {
             $photo = $this->photo_model->get_photo($photo_id);
         }
-        catch (PhotoNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
 
@@ -120,7 +120,7 @@ class Photo extends CI_Controller
             $this->photo_model->like($photo_id);
             redirect($_SERVER['HTTP_REFERER']);
         }
-        catch (PhotoNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
         catch (IllegalAccessException $e) {
@@ -136,7 +136,7 @@ class Photo extends CI_Controller
         try {
             $photo = $this->photo_model->get_photo($photo_id);
         }
-        catch (PhotoNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
 
@@ -176,7 +176,7 @@ class Photo extends CI_Controller
             $this->photo_model->share($photo_id);
             redirect(base_url("user/{$_SESSION['user_id']}"));
         }
-        catch (PhotoNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
         catch (IllegalAccessException $e) {
@@ -192,7 +192,7 @@ class Photo extends CI_Controller
         try {
             $photo = $this->photo_model->get_photo($photo_id);
         }
-        catch (PhotoNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
 
@@ -231,7 +231,7 @@ class Photo extends CI_Controller
         try {
             $photo = $this->photo_model->get_photo($photo_id);
         }
-        catch (PhotoNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
 
@@ -268,7 +268,7 @@ class Photo extends CI_Controller
         try {
             $photo = $this->photo_model->get_photo($photo_id);
         }
-        catch (PhotoNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
 

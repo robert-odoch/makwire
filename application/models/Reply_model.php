@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 require_once('classes/SimpleReply.php');
 require_once('exceptions/IllegalAccessException.php');
-require_once('exceptions/ReplyNotFoundException.php');
+require_once('exceptions/NotFoundException.php');
 
 /**
  * Contains functions related to a reply.
@@ -19,7 +19,7 @@ class Reply_model extends CI_Model
     /**
      * Gets a reply plus other reply metadata.
      *
-     * Throws ReplyNotFoundException if the reply is not on record.
+     * Throws NotFoundException if the reply is not on record.
      *
      * @param $reply_id the ID of the reply in the comments table.
      * @return the reply with the given ID.
@@ -32,7 +32,7 @@ class Reply_model extends CI_Model
                                 $reply_id);
         $reply_query = $this->utility_model->run_query($reply_sql);
         if ($reply_query->num_rows() == 0) {
-            throw new ReplyNotFoundException();
+            throw new NotFoundException();
         }
 
         $reply = $reply_query->row_array();
@@ -63,7 +63,7 @@ class Reply_model extends CI_Model
     /**
      * Records a like of a reply.
      *
-     * Throws ReplyNotFoundException exception if the reply is not on record.
+     * Throws NotFoundException exception if the reply is not on record.
      * It may also throw IllegalAccessException if a user attempts to like
      * a reply that was made by a user who is not his friend.
      *
@@ -77,7 +77,7 @@ class Reply_model extends CI_Model
                             $reply_id);
         $owner_query = $this->utility_model->run_query($owner_sql);
         if ($owner_query->num_rows() == 0) {
-            throw new ReplyNotFoundException();
+            throw new NotFoundException();
         }
 
         $owner_result = $owner_query->row_array();

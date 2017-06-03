@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 require_once('classes/SimpleComment.php');
 require_once('exceptions/IllegalAccessException.php');
-require_once('exceptions/CommentNotFoundException.php');
+require_once('exceptions/NotFoundException.php');
 
 /**
  * Contains functions relating to comments on a post, photo.
@@ -21,7 +21,7 @@ class Comment_model extends CI_Model
     /**
      * Gets a comment plus other comment metadata.
      *
-     * Throws CommentNotFoundException if the comment cannot be found.
+     * Throws NotFoundException if the comment cannot be found.
      *
      * @param $comment_id the ID of the comment in the comments table.
      * @return comment with the given ID.
@@ -34,7 +34,7 @@ class Comment_model extends CI_Model
                                 $comment_id);
         $comment_query = $this->utility_model->run_query($comment_sql);
         if ($comment_query->num_rows() == 0) {
-            throw new CommentNotFoundException();
+            throw new NotFoundException();
         }
 
         $comment = $comment_query->row_array();
@@ -69,7 +69,7 @@ class Comment_model extends CI_Model
     /**
      * Records a like of a comment.
      *
-     * Throws CommentNotFoundException exception if the comment can't be found.
+     * Throws NotFoundException exception if the comment can't be found.
      * It may also throw IllegalAccessException if a user attempts to like a comment
      * that was made by a user who is not his friend.
      * A user is not allowed to like his own comment.
@@ -83,7 +83,7 @@ class Comment_model extends CI_Model
                             $comment_id);
         $owner_query = $this->utility_model->run_query($owner_sql);
         if ($owner_query->num_rows() == 0) {
-            throw new CommentNotFoundException();
+            throw new NotFoundException();
         }
 
         $owner_result = $owner_query->row_array();

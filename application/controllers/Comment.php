@@ -25,7 +25,7 @@ class Comment extends CI_Controller
             $this->comment_model->like($comment_id);
             redirect($_SERVER['HTTP_REFERER']);
         }
-        catch (CommentNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
         catch (IllegalAccessException $e) {
@@ -41,7 +41,7 @@ class Comment extends CI_Controller
         try {
             $comment = $this->comment_model->get_comment($comment_id);
         }
-        catch (CommentNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
 
@@ -90,7 +90,7 @@ class Comment extends CI_Controller
         try {
             $comment = $this->comment_model->get_comment($comment_id);
         }
-        catch (CommentNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
 
@@ -128,7 +128,7 @@ class Comment extends CI_Controller
         try {
             $comment = $this->comment_model->get_comment($comment_id);
         }
-        catch (CommentNotFoundException $e) {
+        catch (NotFoundException $e) {
             show_404();
         }
 
