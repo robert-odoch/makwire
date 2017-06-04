@@ -9,7 +9,7 @@ require_once("common/secondary-user-nav.php");
     <?php
     // If there is nothing to show.
     if ($is_visitor && !$profile['colleges'] && !$profile['halls']
-        && !$profile['hostels'] && !$profile['country'] && !$profile['district']) {
+        && !$profile['hostels'] && !$profile['origin']) {
         print "<div class='alert alert-info'>" .
                 "<span class='glyphicon glyphicon-info-sign'></span> Nothing to show.</div>";
     }
@@ -114,13 +114,13 @@ require_once("common/secondary-user-nav.php");
             </ul>
         <?php } // if ($profile['halls'] || $profile['hostels']) ?>
 
-        <?php if (!$is_visitor || ($profile['country'] || $profile['district'])) { ?>
+        <?php if (!$is_visitor || $profile['origin']) { ?>
             <h4>Origin</h4>
             <ul class="profile">
                 <?php
                 if (!$is_visitor) {
-                    if ($profile['district']) {
-                        print "<li><b>District: </b>{$profile['district']}";
+                    if ($profile['origin']['district_name']) {
+                        print "<li><b>District: </b>{$profile['origin']['district_name']}";
                         print ' <a href="' . base_url("profile/edit-district") .
                                 '"><span class="glyphicon glyphicon-pencil"></span> <em>Edit</em></a>';
                         print "</li>";
@@ -130,8 +130,8 @@ require_once("common/secondary-user-nav.php");
                                 '"><em>Add district</em></a></li>';
                     }
 
-                    if ($profile['country']) {
-                        print "<li><b>Country: </b>{$profile['country']}";
+                    if ($profile['origin']['country_name']) {
+                        print "<li><b>Country: </b>{$profile['origin']['country_name']}";
                         print ' <a href="' . base_url("profile/edit-country") .
                                 '"><span class="glyphicon glyphicon-pencil"></span> <em>Edit</em></a>';
                         print "</li>";
@@ -144,17 +144,17 @@ require_once("common/secondary-user-nav.php");
                 ?>
                     <li>From
                     <?php
-                    if ($profile['district']) {
-                        print " {$profile['district']}";
+                    if ($profile['origin']['district_name']) {
+                        print " {$profile['origin']['district_name']}";
                     }
 
-                    if ($profile['country'] && $profile['district']) {
-                        print ", {$profile['country']}.";
+                    if ($profile['origin']['country_name'] && $profile['origin']['district_name']) {
+                        print ", {$profile['origin']['country_name']}.";
                     }
-                    elseif ($profile['country']) {
-                        print " {$profile['country']}.";
+                    elseif ($profile['origin']['country_name']) {
+                        print " {$profile['origin']['country_name']}.";
                     }
-                    elseif ($profile['district']) {
+                    elseif ($profile['origin']['district_name']) {
                         print ".";
                     }
                     print "</li>";
