@@ -54,7 +54,7 @@ if (!$is_visitor) {
         <div class="box">
             <div class="alert alert-info">
                 <p>
-                    <span class="glyphicon glyphicon-info-sign"></span> No previous posts.
+                    <span class="glyphicon glyphicon-info-sign"></span> No posts to show.
                 </p>
             </div>
         </div>
