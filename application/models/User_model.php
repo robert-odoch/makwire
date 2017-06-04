@@ -1375,7 +1375,7 @@ class User_model extends CI_Model
 
         // Query to get IDS of shared posts.
         $shared_posts_ids_sql = sprintf("SELECT DISTINCT subject_id FROM shares " .
-                                        "WHERE (user_id IN(%s) AND subject_type = 'post')",
+                                        "WHERE (sharer_id IN(%s) AND subject_type = 'post')",
                                         $friends_ids);
         $shared_posts_ids_results = $this->utility_model->run_query($shared_posts_ids_sql)->result_array();
         // Add an extra element for safety.
@@ -1388,7 +1388,7 @@ class User_model extends CI_Model
         // Get IDs of shared photos.
 
         $shared_photos_ids_sql = sprintf("SELECT DISTINCT subject_id FROM shares " .
-                                         "WHERE (user_id IN(%s) AND subject_type = 'photo')",
+                                         "WHERE (sharer_id IN(%s) AND subject_type = 'photo')",
                                          $friends_ids);
         $shared_photos_ids_results = $this->utility_model->run_query($shared_photos_ids_sql)->result_array();
         // Add an extra element for safety.
@@ -1442,7 +1442,7 @@ class User_model extends CI_Model
 
         // Query to get IDS of shared posts.
         $shared_posts_ids_sql = sprintf("SELECT DISTINCT subject_id FROM shares " .
-                                        "WHERE (user_id IN(%s) AND subject_type = 'post')",
+                                        "WHERE (sharer_id IN(%s) AND subject_type = 'post')",
                                         $friends_ids);
         $shared_posts_ids_results = $this->utility_model->run_query($shared_posts_ids_sql)->result_array();
         // Add an extra element for safety.
@@ -1454,7 +1454,7 @@ class User_model extends CI_Model
 
         // Get IDs of shared photos.
         $shared_photos_ids_sql = sprintf("SELECT DISTINCT subject_id FROM shares " .
-                                         "WHERE (user_id IN(%s) AND subject_type = 'photo')",
+                                         "WHERE (sharer_id IN(%s) AND subject_type = 'photo')",
                                          $friends_ids);
         $shared_photos_ids_results = $this->utility_model->run_query($shared_photos_ids_sql)->result_array();
         // Add an extra element for safety.
@@ -1471,31 +1471,31 @@ class User_model extends CI_Model
         // then we pick the second last user who shared the same posts or photo.
         $latest_share_date_sql = sprintf("SELECT MAX(date_shared) FROM shares s2 " .
                                         "WHERE (s1.subject_id = s2.subject_id AND " .
-                                                "s1.subject_type = s2.subject_type AND " .
-                                                "s2.user_id != %d)",
+                                        "s1.subject_type = s2.subject_type AND " .
+                                        "s2.sharer_id != %d)",
                                         $_SESSION['user_id']);
 
-        $latest_shared_posts_user_ids_sql = sprintf("SELECT user_id FROM shares s1 " .
-                                                    "WHERE (user_id IN(%s) AND subject_type = 'post' AND " .
+        $latest_shared_posts_user_ids_sql = sprintf("SELECT sharer_id FROM shares s1 " .
+                                                    "WHERE (sharer_id IN(%s) AND subject_type = 'post' AND " .
                                                     "date_shared = (%s))",
                                                     $friends_ids, $latest_share_date_sql);
         $latest_shared_posts_user_ids_results = $this->utility_model->run_query($latest_shared_posts_user_ids_sql)->result_array();
         // Add an extra element for safety.
         $latest_shared_posts_user_ids[] = 0;
         foreach ($latest_shared_posts_user_ids_results as $r) {
-            $latest_shared_posts_user_ids[] = $r['user_id'];
+            $latest_shared_posts_user_ids[] = $r['sharer_id'];
         }
         $latest_shared_posts_user_ids = implode(',', $latest_shared_posts_user_ids);
 
-        $latest_shared_photos_user_ids_sql = sprintf("SELECT user_id FROM shares s1 " .
-                                                    "WHERE (user_id IN(%s) AND subject_type = 'photo' AND " .
+        $latest_shared_photos_user_ids_sql = sprintf("SELECT sharer_id FROM shares s1 " .
+                                                    "WHERE (sharer_id IN(%s) AND subject_type = 'photo' AND " .
                                                     "date_shared = (%s))",
                                                     $friends_ids, $latest_share_date_sql);
         $latest_shared_photos_user_ids_results = $this->utility_model->run_query($latest_shared_photos_user_ids_sql)->result_array();
         // Add an extra element for safety.
         $latest_shared_photos_user_ids[] = 0;
         foreach ($latest_shared_photos_user_ids_results as $r) {
-            $latest_shared_photos_user_ids[] = $r['user_id'];
+            $latest_shared_photos_user_ids[] = $r['sharer_id'];
         }
         $latest_shared_photos_user_ids = implode(',', $latest_shared_photos_user_ids);
 
