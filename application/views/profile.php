@@ -8,8 +8,7 @@ require_once("common/secondary-user-nav.php");
 <div class="box show-profile">
     <?php
     // If there is nothing to show.
-    if ($is_visitor && !$profile['programmes']
-        && !$profile['colleges'] && !$profile['schools'] && !$profile['halls']
+    if ($is_visitor && !$profile['colleges'] && !$profile['halls']
         && !$profile['hostels'] && !$profile['country'] && !$profile['district']) {
         print "<div class='alert alert-info'>" .
                 "<span class='glyphicon glyphicon-info-sign'></span> Nothing to show.</div>";
