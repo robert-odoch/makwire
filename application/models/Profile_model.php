@@ -76,43 +76,13 @@ class Profile_model extends CI_Model
     public function get_profile($user_id)
     {
         // Get the country and district.
-        $origin_sql = sprintf("SELECT country_id, district_id FROM user_profile " .
+        $origin_sql = sprintf("SELECT country_name, district_name FROM user_profile up " .
+                                "LEFT JOIN countries c ON (up.country_id = c.country_id) " .
+                                "LEFT JOIN districts d ON (up.district_id = d.district_id) " .
                                 "WHERE (user_id = %d)",
                                 $user_id);
         $origin_query = $this->utility_model->run_query($origin_sql);
-        if ($origin_query->num_rows() === 0) {
-            $data = array(
-                'country'=>NULL,
-                'district'=>NULL
-            );
-        }
-        else {
-            $data = $origin_query->row_array();
-
-            // Get the name of the country.
-            if ($data['country_id']) {
-                $country_sql = sprintf("SELECT country_name FROM countries " .
-                                        "WHERE (country_id = %d)",
-                                        $data['country_id']);
-                $country_query = $this->utility_model->run_query($country_sql);
-                $data['country'] = $country_query->row_array()['country_name'];
-            }
-            else {
-                $data['country'] = NULL;
-            }
-
-            // Get the name of the district.
-            if ($data['district_id']) {
-                $district_sql = sprintf("SELECT district_name FROM districts " .
-                                        "WHERE (district_id = %d)",
-                                        $data['district_id']);
-                $district_query = $this->utility_model->run_query($district_sql);
-                $data['district'] = $district_query->row_array()['district_name'];
-            }
-            else {
-                $data['district'] = NULL;
-            }
-        }
+        $data['origin'] = $origin_query->row_array();
 
         // Get the colleges.
         $colleges_sql = sprintf("SELECT id, college_id, date_from, date_to, level, " .
@@ -123,95 +93,63 @@ class Profile_model extends CI_Model
                                 $user_id);
         $colleges_query = $this->utility_model->run_query($colleges_sql);
 
-        $data['colleges'] = array();
-        if ($colleges_query->num_rows() > 0) {
-            $colleges_results = $colleges_query->result_array();
-            foreach ($colleges_results as $c) {
-                // Get the college name.
-                $college_sql = sprintf("SELECT college_name " .
-                                        "FROM colleges " .
-                                        "WHERE (college_id = %d)",
-                                        $c['college_id']);
-                $college_query = $this->utility_model->run_query($college_sql);
-                $c['college_name'] = $college_query->row_array()['college_name'];
+        $data['colleges'] = $colleges_query->result_array();
+        foreach ($data['colleges'] as &$c) {
+            // Get the college name.
+            $college_sql = sprintf("SELECT college_name " .
+                                    "FROM colleges " .
+                                    "WHERE (college_id = %d)",
+                                    $c['college_id']);
+            $college_query = $this->utility_model->run_query($college_sql);
+            $c['college_name'] = $college_query->row_array()['college_name'];
 
-                // Get the school.
-                $school_sql = sprintf("SELECT us.id, us.school_id, sch.school_name " .
-                                        "FROM user_schools AS us " .
-                                        "LEFT JOIN schools sch " .
-                                        "ON (us.school_id = sch.school_id) " .
-                                        "WHERE (us.user_college_id = %d)",
-                                        $c['id']);
-                $school = $this->utility_model->run_query($school_sql)->row_array();
-                $c['school'] = $school;
+            // Get the school.
+            $school_sql = sprintf("SELECT us.id, us.school_id, sch.school_name " .
+                                    "FROM user_schools AS us " .
+                                    "LEFT JOIN schools sch " .
+                                    "ON (us.school_id = sch.school_id) " .
+                                    "WHERE (us.user_college_id = %d)",
+                                    $c['id']);
+            $school = $this->utility_model->run_query($school_sql)->row_array();
+            $c['school'] = $school;
 
-                // Get the programme.
-                $programme_sql = sprintf("SELECT up.id, p.programme_name " .
-                                        "FROM user_programmes up " .
-                                        "LEFT JOIN programmes p " .
-                                        "ON (up.programme_id = p.programme_id) " .
-                                        "WHERE (up.user_school_id = %d)",
-                                        $school['id']);
-                $programme_query = $this->utility_model->run_query($programme_sql);
-                $c['has_programme'] = FALSE;
-                if ($programme_query->num_rows() > 0) {
-                    $c['has_programme'] = TRUE;
-                    $c['programme'] = $programme_query->row_array();
-                }
-
-                array_push($data['colleges'], $c);
+            // Get the programme.
+            $programme_sql = sprintf("SELECT up.id, p.programme_name " .
+                                    "FROM user_programmes up " .
+                                    "LEFT JOIN programmes p " .
+                                    "ON (up.programme_id = p.programme_id) " .
+                                    "WHERE (up.user_school_id = %d)",
+                                    $school['id']);
+            $programme_query = $this->utility_model->run_query($programme_sql);
+            $c['has_programme'] = FALSE;
+            if ($programme_query->num_rows() > 0) {
+                $c['has_programme'] = TRUE;
+                $c['programme'] = $programme_query->row_array();
             }
         }
+        unset($c);
 
         // Get the halls.
-        $halls_sql = sprintf("SELECT id, hall_id, date_from, date_to, " .
-                                "YEAR(date_from) AS start_year, YEAR(date_to) AS end_year, resident " .
-                                "FROM user_halls " .
-                                "WHERE (user_id = %d) " .
+        $halls_sql = sprintf("SELECT id, date_from, date_to, YEAR(date_from) AS start_year, " .
+                                "YEAR(date_to) AS end_year, resident, h.hall_name " .
+                                "FROM user_halls uh " .
+                                "LEFT JOIN halls h ON(uh.hall_id = h.hall_id) " .
+                                "WHERE (uh.user_id = %d) " .
                                 "ORDER BY date_to DESC",
                                 $user_id);
         $halls_query = $this->utility_model->run_query($halls_sql);
-
-        $data['halls'] = array();
-        if ($halls_query->num_rows() > 0) {
-            $halls_results = $halls_query->result_array();
-            foreach ($halls_results as $r) {
-                // Get the hall name.
-                $hall_sql = sprintf("SELECT hall_name " .
-                                    "FROM halls " .
-                                    "WHERE (hall_id = %d)",
-                                    $r['hall_id']);
-                $hall_query = $this->utility_model->run_query($hall_sql);
-                $r['hall_name'] = $hall_query->row_array()['hall_name'];
-
-                array_push($data['halls'], $r);
-            }
-        }
+        $data['halls'] = $halls_query->result_array();
 
         // Get the hostels.
-        $hostels_sql = sprintf("SELECT id, hostel_id, date_from, date_to, " .
-                                "YEAR(date_from) AS start_year, YEAR(date_to) AS end_year " .
-                                "FROM user_hostels " .
+        $hostels_sql = sprintf("SELECT id, date_from, date_to, YEAR(date_from) AS start_year, " .
+                                "YEAR(date_to) AS end_year, h.hostel_name " .
+                                "FROM user_hostels uh " .
+                                "LEFT JOIN hostels h ON(uh.hostel_id = h.hostel_id) " .
                                 "WHERE (user_id = %d) " .
                                 "ORDER BY date_to DESC",
                                 $user_id);
         $hostels_query = $this->utility_model->run_query($hostels_sql);
-
-        $data['hostels'] = array();
-        if ($hostels_query->num_rows() > 0) {
-            $hostels_results = $hostels_query->result_array();
-            foreach ($hostels_results as $r) {
-                // Get the hostel name.
-                $hostel_sql = sprintf("SELECT hostel_name " .
-                                        "FROM hostels " .
-                                        "WHERE (hostel_id = %d)",
-                                        $r['hostel_id']);
-                $hostel_query = $this->utility_model->run_query($hostel_sql);
-                $r['hostel_name'] = $hostel_query->row_array()['hostel_name'];
-
-                array_push($data['hostels'], $r);
-            }
-        }
+        $data['hostels'] = $hostels_query->result_array();
 
         return $data;
     }
@@ -417,11 +355,12 @@ class Profile_model extends CI_Model
      */
     public function get_user_hall($user_hall_id)
     {
-        $user_hall_sql = sprintf("SELECT id, hall_id, date_from, date_to, resident, " .
+        $user_hall_sql = sprintf("SELECT id, uh.hall_id,  date_from, date_to, resident, " .
                                     "DAY(date_from) AS start_day, MONTH(date_from) AS start_month, " .
                                     "YEAR(date_from) AS start_year, DAY(date_to) AS end_day, " .
-                                    "MONTH(date_to) AS end_month, YEAR(date_to) AS end_year " .
-                                    "FROM user_halls " .
+                                    "MONTH(date_to) AS end_month, YEAR(date_to) AS end_year, h.hall_name " .
+                                    "FROM user_halls uh " .
+                                    "LEFT JOIN halls h ON(uh.hall_id = h.hall_id) " .
                                     "WHERE (id = %d AND user_id = %d)",
                                     $user_hall_id, $_SESSION['user_id']);
         $user_hall_query = $this->utility_model->run_query($user_hall_sql);
@@ -431,13 +370,6 @@ class Profile_model extends CI_Model
         }
 
         $user_hall = $user_hall_query->row_array();
-        $hall_name_sql = sprintf("SELECT hall_name " .
-                                    "FROM halls " .
-                                    "WHERE (hall_id = %d)",
-                                    $user_hall['hall_id']);
-        $hall_name_query = $this->utility_model->run_query($hall_name_sql);
-        $user_hall['hall_name'] = $hall_name_query->row_array()['hall_name'];
-
         return $user_hall;
     }
 
@@ -451,11 +383,12 @@ class Profile_model extends CI_Model
      */
     public function get_user_hostel($user_hostel_id)
     {
-        $user_hostel_sql = sprintf("SELECT id, hostel_id, date_from, date_to, " .
+        $user_hostel_sql = sprintf("SELECT id, uh.hostel_id, date_from, date_to, " .
                                     "DAY(date_from) AS start_day, MONTH(date_from) AS start_month, " .
                                     "YEAR(date_from) AS start_year, DAY(date_to) AS end_day, " .
-                                    "MONTH(date_to) AS end_month, YEAR(date_to) AS end_year " .
-                                    "FROM user_hostels " .
+                                    "MONTH(date_to) AS end_month, YEAR(date_to) AS end_year, hostel_name " .
+                                    "FROM user_hostels uh " .
+                                    "LEFT JOIN hostels h ON(uh.hostel_id = h.hostel_id) " .
                                     "WHERE (id = %d AND user_id = %d)",
                                     $user_hostel_id, $_SESSION['user_id']);
         $user_hostel_query = $this->utility_model->run_query($user_hostel_sql);
@@ -465,14 +398,6 @@ class Profile_model extends CI_Model
         }
 
         $user_hostel = $user_hostel_query->row_array();
-
-        $hostel_name_sql = sprintf("SELECT hostel_name " .
-                                    "FROM hostels " .
-                                    "WHERE (hostel_id = %d)",
-                                    $user_hostel['hostel_id']);
-        $hostel_name_query = $this->utility_model->run_query($hostel_name_sql);
-        $user_hostel['hostel_name'] = $hostel_name_query->row_array()['hostel_name'];
-
         return $user_hostel;
     }
 
