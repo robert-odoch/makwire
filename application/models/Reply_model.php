@@ -26,8 +26,9 @@ class Reply_model extends CI_Model
      */
     public function get_reply($reply_id)
     {
-        $reply_sql = sprintf("SELECT * " .
-                                "FROM comments " .
+        $reply_sql = sprintf("SELECT c.*, u.profile_name AS commenter " .
+                                "FROM comments c " .
+                                "LEFT JOIN users u ON(c.commenter_id = u.user_id) " .
                                 "WHERE (comment_id = %d AND parent_id != 0)",
                                 $reply_id);
         $reply_query = $this->utility_model->run_query($reply_sql);
@@ -36,9 +37,6 @@ class Reply_model extends CI_Model
         }
 
         $reply = $reply_query->row_array();
-
-        // Get the name of the replier.
-        $reply['commenter'] = $this->user_model->get_profile_name($reply['commenter_id']);
 
         // Add profile picture.
         $reply['profile_pic_path'] = $this->user_model->get_profile_pic_path($reply['commenter_id']);

@@ -28,8 +28,10 @@ class Comment_model extends CI_Model
      */
     public function get_comment($comment_id)
     {
-        $comment_sql = sprintf("SELECT commenter_id, comment, source_id, source_type, date_entered " .
-                                "FROM comments " .
+        $comment_sql = sprintf("SELECT commenter_id, comment, source_id, source_type, " .
+                                "date_entered, u.profile_name AS commenter " .
+                                "FROM comments c " .
+                                "LEFT JOIN users u ON(c.commenter_id = u.user_id) " .
                                 "WHERE (comment_id = %d AND parent_id = 0)",
                                 $comment_id);
         $comment_query = $this->utility_model->run_query($comment_sql);
@@ -38,9 +40,6 @@ class Comment_model extends CI_Model
         }
 
         $comment = $comment_query->row_array();
-
-        // Get the name of the commenter.
-        $comment['commenter'] = $this->user_model->get_profile_name($comment['commenter_id']);
 
         // Get the profile picture of the commenter.
         $comment['profile_pic_path'] = $this->user_model->get_profile_pic_path($comment['commenter_id']);

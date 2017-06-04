@@ -28,7 +28,9 @@ class Photo_model extends CI_Model
      */
     public function get_photo($photo_id)
     {
-        $photo_sql = sprintf("SELECT * FROM user_photos WHERE photo_id = %d",
+        $photo_sql = sprintf("SELECT p.*, u.profile_name AS author FROM user_photos p " .
+                            "LEFT JOIN users u ON(p.user_id = u.user_id) " .
+                            "WHERE photo_id = %d",
                             $photo_id);
         $photo_query = $this->utility_model->run_query($photo_sql);
         if ($photo_query->num_rows() == 0) {
@@ -40,9 +42,6 @@ class Photo_model extends CI_Model
         // Add web path.
         $web_path = str_replace("{$_SERVER['DOCUMENT_ROOT']}makwire", '', $photo['full_path']);
         $photo['web_path'] = base_url($web_path);
-
-        // Add author.
-        $photo['author'] = $this->user_model->get_profile_name($photo['user_id']);
 
         // Add profile picture of the user.
         $photo['profile_pic_path'] = $this->user_model->get_profile_pic_path($photo['user_id']);

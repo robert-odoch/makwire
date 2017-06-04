@@ -40,7 +40,7 @@ class Activity_model extends CI_Model
         }
 
         // Insert it into the shares table.
-        $share_sql = sprintf("INSERT INTO shares (subject_id, user_id, subject_type) " .
+        $share_sql = sprintf("INSERT INTO shares (subject_id, sharer_id, subject_type) " .
                                 "VALUES (%d, %d, '%s')",
                                 $object->getId(), $_SESSION['user_id'], $object->getType());
         $this->utility_model->run_query($share_sql);
@@ -94,7 +94,8 @@ class Activity_model extends CI_Model
 
     public function getLikes(Likeable $object, $offset, $limit)
     {
-        $likes_sql = sprintf("SELECT * FROM likes " .
+        $likes_sql = sprintf("SELECT l.*, u.profile_name AS liker FROM likes l " .
+                            "LEFT JOIN users u ON(liker_id = u.user_id) " .
                             "WHERE (source_type = '%s' AND source_id = %d) " .
                             "LIMIT %d, %d",
                             $object->getType(), $object->getId(), $offset, $limit);
@@ -103,7 +104,6 @@ class Activity_model extends CI_Model
         $likes = $likes_query->result_array();
         foreach ($likes as &$like) {
             $like['profile_pic_path'] = $this->user_model->get_profile_pic_path($like['liker_id']);
-            $like['liker'] = $this->user_model->get_profile_name($like['liker_id']);
             $like['timespan'] = timespan(mysql_to_unix($like['date_liked']), now(), 1);
         }
         unset($like);
@@ -113,7 +113,9 @@ class Activity_model extends CI_Model
 
     public function getShares(Shareable $object, $offset, $limit)
     {
-        $shares_sql = sprintf("SELECT user_id AS sharer_id, date_shared FROM shares " .
+        $shares_sql = sprintf("SELECT sharer_id, date_shared, u.profile_name AS sharer " .
+                            "FROM shares s " .
+                            "LEFT JOIN users u ON(sharer_id = u.user_id) " .
                             "WHERE (subject_id = %d AND subject_type = '%s') " .
                             "LIMIT %d, %d",
                             $object->getId(), $object->getType(), $offset, $limit);
@@ -122,7 +124,6 @@ class Activity_model extends CI_Model
         $shares = $shares_query->result_array();
         foreach ($shares as &$share) {
             $share['profile_pic_path'] = $this->user_model->get_profile_pic_path($share['sharer_id']);
-            $share['sharer'] = $this->user_model->get_profile_name($share['sharer_id']);
             $share['timespan'] = timespan(mysql_to_unix($share['date_shared']), now(), 1);
         }
         unset($share);

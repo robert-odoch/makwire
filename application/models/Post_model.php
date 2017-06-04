@@ -26,17 +26,16 @@ class Post_model extends CI_Model
      */
     public function get_post($post_id)
     {
-        $post_sql = sprintf("SELECT * FROM posts WHERE post_id = %d",
-                     $post_id);
+        $post_sql = sprintf("SELECT p.*, u.profile_name AS author FROM posts p " .
+                            "LEFT JOIN users u ON(p.user_id = u.user_id) " .
+                            "WHERE post_id = %d",
+                            $post_id);
         $post_query = $this->utility_model->run_query($post_sql);
         if ($post_query->num_rows() == 0){
             throw new NotFoundException();
         }
 
         $post = $post_query->row_array();
-
-        // Get the name of the author.
-        $post['author'] = $this->user_model->get_profile_name($post['user_id']);
 
         // Get profile picture of the author.
         $post['profile_pic_path'] = $this->user_model->get_profile_pic_path($post['user_id']);

@@ -28,8 +28,9 @@ class Birthday_message_model extends CI_Model
      */
     public function get_message($birthday_message_id)
     {
-        $message_sql = sprintf("SELECT * " .
-                                "FROM birthday_messages " .
+        $message_sql = sprintf("SELECT b.*, u.profile_name AS sender " .
+                                "FROM birthday_messages b " .
+                                "LEFT JOIN users u ON(b.sender_id = u.user_id) " .
                                 "WHERE (id = %d)",
                                 $birthday_message_id);
         $message_query = $this->utility_model->run_query($message_sql);
@@ -38,9 +39,6 @@ class Birthday_message_model extends CI_Model
         }
 
         $message = $message_query->row_array();
-
-        // Get the name of the sender.
-        $message['sender'] = $this->user_model->get_profile_name($message['sender_id']);
 
         // Get the profile picture of the sender.
         $message['profile_pic_path'] = $this->user_model->get_profile_pic_path($message['sender_id']);
