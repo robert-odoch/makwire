@@ -22,8 +22,7 @@ class Profile_model extends CI_Model
     public function set_profile_picture($data)
     {
         // Record photo data in the photos table.
-        $photo_sql = sprintf("INSERT INTO user_photos " .
-                                "(user_id, image_type, full_path) " .
+        $photo_sql = sprintf("INSERT INTO user_photos (user_id, image_type, full_path) " .
                                 "VALUES (%d, %s, %s)",
                                 $_SESSION['user_id'],
                                 $this->db->escape($data['file_type']),
@@ -33,8 +32,7 @@ class Profile_model extends CI_Model
 
         // Update profile_pic_path in the users table.
         $profile_pic_path = "{$data['file_path']}small/{$data['file_name']}";
-        $update_sql = sprintf("UPDATE users " .
-                                "SET profile_pic_path = %s " .
+        $update_sql = sprintf("UPDATE users SET profile_pic_path = %s " .
                                 "WHERE (user_id = %d) LIMIT 1",
                                 $this->db->escape($profile_pic_path),
                                 $_SESSION['user_id']);
