@@ -36,6 +36,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
                 ?>
             </div>
             <div class="input-group">
+                <p><strong>Status</strong></p>
                 <div class="radio-inline">
                     <label for="resident">
                         <input type="radio" name="resident" id="resident" value="1"
