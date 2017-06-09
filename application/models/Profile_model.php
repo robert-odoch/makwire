@@ -669,9 +669,9 @@ class Profile_model extends CI_Model
     public function update_programme($data)
     {
         $update_sql = sprintf("UPDATE user_programmes " .
-                                "SET year_of_study='%d' " .
-                                "WHERE (id = %d)",
-                                $data['year_of_study'], $data['user_programme_id']);
+                                "SET year_of_study = '%d', graduated = %d " .
+                                "WHERE (id = %d)", $data['year_of_study'],
+                                $data['graduated'], $data['user_programme_id']);
         $this->utility_model->run_query($update_sql);
     }
 
@@ -771,6 +771,33 @@ class Profile_model extends CI_Model
         $this->utility_model->run_query($update_hostel_sql);
 
         return TRUE;
+    }
+
+    public function get_profile_questions()
+    {
+        $profile_questions = [];
+
+        // Check whether the user has'nt graduated from a programme,
+        // and year of study was last updated one year ago.
+        $programmes_sql = sprintf("SELECT id, last_updated " .
+                                    "FROM user_programmes " .
+                                    "WHERE (user_id = %d AND graduated IS FALSE)",
+                                    $_SESSION['user_id']);
+        $programmes_query = $this->utility_model->run_query($programmes_sql);
+        $programmes_result = $programmes_query->result_array();
+        foreach ($programmes_result as $pr) {
+            $last_updated = new DateTime();
+            $last_updated->setTimestamp(mysql_to_unix($pr['last_updated']));
+            $now = new DateTime();
+            $now->setTimestamp(now());
+            if ($now->diff($last_updated)->y >= 1) {
+                $qtn = '<a href="' . base_url("profile/edit-programme/{$pr['id']}") .
+                        '">Which year of study are you in?</a>';
+                array_push($profile_questions, $qtn);
+            }
+        }
+
+        return $profile_questions;
     }
 
     /**

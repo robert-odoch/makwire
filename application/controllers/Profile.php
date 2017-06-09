@@ -275,6 +275,7 @@ class Profile extends CI_Controller
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data['user_programme_id'] = $this->input->post('user-programme-id');
             $data['year_of_study'] = $this->input->post('year-of-study');
+            $data['graduated'] = ($data['year_of_study'] == 0) ? 1 : 0;
 
             $this->profile_model->update_programme($data);
             $this->utility_model->show_success(

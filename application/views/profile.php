@@ -7,6 +7,10 @@ require_once("common/secondary-user-nav.php");
 
 <div class="box show-profile">
     <?php
+    foreach ($profile_questions as $pq) {
+        print $pq;
+    }
+
     // If there is nothing to show.
     if ($is_visitor && !$profile['colleges'] && !$profile['halls']
         && !$profile['hostels'] && !$profile['origin']) {

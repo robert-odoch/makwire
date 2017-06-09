@@ -558,7 +558,9 @@ class User extends CI_Controller
         $data['title'] = "Profile | {$data['secondary_user']}";
 
         $this->load->view('common/header', $data);
-
+        if ($user_id == $_SESSION['user_id']) {
+            $data['profile_questions'] = $this->profile_model->get_profile_questions();
+        }
         $data['profile'] = $this->profile_model->get_profile($user_id);
         $this->load->view('profile', $data);
         $this->load->view('common/footer');
