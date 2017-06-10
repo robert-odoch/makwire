@@ -117,7 +117,7 @@ class User_model extends CI_Model
      *
      * @return Array for friends IDs.
      */
-    private function get_friends_ids()
+    public function get_friends_ids()
     {
         $friends_sql = sprintf("SELECT user_id, friend_id " .
                                 "FROM friends " .
@@ -623,16 +623,17 @@ class User_model extends CI_Model
         $friends_ids = implode(',', $friends_ids);
 
         if (filter_var($query, FILTER_VALIDATE_EMAIL)) {
-            $sql = sprintf("SELECT user_id, profile_name FROM users " .
-                            "WHERE email = %s AND user_id NOT IN(%s)",
-                            $this->db->escape($query), $friends_ids);
+            $sql = sprintf("SELECT ue.user_id, u.profile_name FROM user_emails ue " .
+                            "LEFT JOIN users u ON(ue.user_id = u.user_id) " .
+                            "WHERE (ue.email = '%s' AND ue.user_id NOT IN(%s))",
+                            $query, $friends_ids);
         }
         else {
             $keywords = preg_split("/[\s,]+/", $query);
             foreach ($keywords as &$keyword) {
                 $keyword = strtolower("+{$keyword}");
 
-                // The @ sign breaks this query.
+                // The @ sign breaks this query if it is used in an invalid email address.
                 $keyword = str_replace('@', '', $keyword);
             }
             unset($keyword);
@@ -641,8 +642,7 @@ class User_model extends CI_Model
             $sql = sprintf("SELECT user_id, profile_name FROM users " .
                             "WHERE MATCH(profile_name) AGAINST (%s IN BOOLEAN MODE) AND " .
                                     "user_id NOT IN(%s)" .
-                            "LIMIT %d, %d",
-                            $this->db->escape($key), $friends_ids,
+                            "LIMIT %d, %d", $this->db->escape($key), $friends_ids,
                             $offset, $limit);
         }
 
