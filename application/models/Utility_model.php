@@ -70,4 +70,38 @@ class Utility_model extends CI_Model
         $this->load->view("show/error", $data);
         $this->load->view("common/footer");
     }
+
+    public function send_email($email, $subject, $message)
+    {
+        $this->load->library('email');
+
+        // Get full html:
+        $body = '<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=' .
+            strtolower(config_item('charset')) . '" />
+            <title>' . html_escape($subject) . '</title>
+            <style type="text/css">
+                body {
+                    background-color: green;
+                    font-family: Arial, Verdana, Helvetica, sans-serif;
+                    font-size: 16px;
+                }
+            </style>
+        </head>
+        <body>
+        ' . $message . '
+        </body>
+        </html>';
+
+        $result = $this->email
+                ->from('robertelvisodoch@gmail.com')
+                ->to($email)
+                ->subject($subject)
+                ->message($body)
+                ->send();
+
+        return $result;
+    }
 }

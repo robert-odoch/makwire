@@ -58,16 +58,21 @@ class Register extends CI_Controller
                         $data['info_message'] = "Please use the link in the email sent to " .
                                                 "<strong>{$email}</strong> to continue with " .
                                                 "the registration process.<br>" .
-                                                "If you deleted the email, then we can " .
+                                                "If you cant' find the email, then we can " .
                                                 "<a href='" . base_url("register/resend_email/{$email}") .
                                                 "'>resend the email.</a>";
                     }
                 }
                 else {
-                    $id = $this->settings_model->add_email($email);
-                    if (!$this->send_register_email($id, $email)) {
-                        $data['info_message'] = "Sorry, we couldn't send an email to your " .
-                                                "email address.<br>" .
+                    $user_email_id = $this->settings_model->add_email($email);
+                    $activation_code = sha1($email);
+                    $subject = 'Makwire: Account creation.';
+                    $message = '<p>Hi, thanks for your interest in makwire!</p>' .
+                                '<p>Please use <a href="' .
+                                base_url("register/step-two/{$user_email_id}/{$activation_code}") .
+                                '">this link</a> to verify your email adress and continue with the registration.</p>';
+                    if ( ! $this->utility_model->send_email($emal, $subject, $message)) {
+                        $data['info_message'] = "Sorry, we couldn't send your activation email.<br>" .
                                                 "The admin has been notified about the issue " .
                                                 "and will fix it as soon as possible.<br>" .
                                                 "Please try again later.";
@@ -228,47 +233,6 @@ class Register extends CI_Controller
 
         $this->load->view('register/step-three', $data);
         $this->load->view('common/external-page-footer');
-    }
-
-    private function send_register_email($user_email_id, $email)
-    {
-        $this->load->library('email');
-
-        $subject = 'Makwire account creation.';
-        $activation_code = sha1($email);
-        $message = '<p>Hi, thanks for your interest in makwire!</p>' .
-                    '<p>Please use <a href="' .
-                    base_url("register/step-two/{$user_email_id}/{$activation_code}") .
-                    '">this link</a> to verify your email adress.</p>';
-
-        // Get full html:
-        $body = '<!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta http-equiv="Content-Type" content="text/html; charset=' .
-            strtolower(config_item('charset')) . '" />
-            <title>' . html_escape($subject) . '</title>
-            <style type="text/css">
-                body {
-                    background-color: green;
-                    font-family: Arial, Verdana, Helvetica, sans-serif;
-                    font-size: 16px;
-                }
-            </style>
-        </head>
-        <body>
-        ' . $message . '
-        </body>
-        </html>';
-
-        $result = $this->email
-                ->from('robertelvisodoch@gmail.com')
-                ->to($email)
-                ->subject($subject)
-                ->message($body)
-                ->send();
-
-        return $result;
     }
 }
 ?>
