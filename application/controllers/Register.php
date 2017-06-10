@@ -12,7 +12,7 @@ class Register extends CI_Controller
             redirect(base_url("user/{$_SESSION['user_id']}"));
         }
 
-        $this->load->model('register_model');
+        $this->load->model(['register_model', 'settings_model']);
     }
 
     public function step_one()
@@ -64,7 +64,7 @@ class Register extends CI_Controller
                     }
                 }
                 else {
-                    $id = $this->register_model->add_email($email);
+                    $id = $this->settings_model->add_email($email);
                     if (!$this->send_register_email($id, $email)) {
                         $data['info_message'] = "Sorry, we couldn't send an email to your " .
                                                 "email address.<br>" .
@@ -94,7 +94,7 @@ class Register extends CI_Controller
     {
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
             try {
-                $this->register_model->activate_email($user_email_id, $activation_code);
+                $this->settings_model->activate_email($user_email_id, $activation_code);
             }
             catch (NotFoundException $e) {
                 show_404();

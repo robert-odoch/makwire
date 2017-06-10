@@ -51,48 +51,6 @@ class Register_model extends CI_Model
     }
 
     /**
-     * Adds an email address for a user at registration.
-     *
-     * @param $email the email to be added.
-     * @return ID of the newly added email.
-     */
-    public function add_email($email)
-    {
-        $sql = sprintf("INSERT INTO user_emails (email, activation_code) " .
-                        "VALUES (%s, SHA1(%s))",
-                        $this->db->escape($email), $this->db->escape($email));
-        $this->utility_model->run_query($sql);
-
-        return $this->db->insert_id();
-    }
-
-    /**
-     * Activates a user's email address by setting it's activation code to NULL.
-     *
-     * Throws NotFoundException if no matching record is found.
-     *
-     * @param $user_email_id ID in the user_emails table.
-     * @param $activation_code activation code for this email address.
-     */
-    public function activate_email($user_email_id, $activation_code)
-    {
-        // Check whether the record exists.
-        $email_sql = sprintf("SELECT id FROM user_emails " .
-                            "WHERE (id = %d AND activation_code = %s)",
-                            $user_email_id, $this->db->escape($activation_code));
-        $email_query = $this->utility_model->run_query($email_sql);
-        if ($email_query->num_rows() == 0) {
-            throw new NotFoundException();
-        }
-
-        // Set activation code to NULL.
-        $update_sql = sprintf("UPDATE user_emails SET activation_code = NULL " .
-                                "WHERE id = %d",
-                                $user_email_id);
-        $this->utility_model->run_query($update_sql);
-    }
-
-    /**
      * Adds a new user record to the user's table and also updates user_emails
      * table by adding user_id to the email used for registration.
      *
