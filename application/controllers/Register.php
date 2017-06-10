@@ -48,20 +48,16 @@ class Register extends CI_Controller
                 if (!$is_valid_mak_email) {
                     $data['error_message'] = 'Please enter a Mak email address!';
                 }
-                elseif ($this->register_model->is_registered_email($email)) {
-
-                    // Check if the user completed the registration process.
-                    if ($this->register_model->email_user_id_exists($email)) {
+                elseif ($this->settings_model->is_activated_email($email)) {
                         $data['error_message'] = 'This email address is already registered.';
-                    }
-                    else {
-                        $data['info_message'] = "Please use the link in the email sent to " .
-                                                "<strong>{$email}</strong> to continue with " .
-                                                "the registration process.<br>" .
-                                                "If you cant' find the email, then we can " .
-                                                "<a href='" . base_url("register/resend_email/{$email}") .
-                                                "'>resend the email.</a>";
-                    }
+                }
+                elseif ($this->settings_model->is_registered_email($email)) {
+                    $data['info_message'] = "Please use the link in the email sent to " .
+                                            "<strong>{$email}</strong> to continue with " .
+                                            "the registration process.<br>" .
+                                            "If you cant' find the email, then we can " .
+                                            "<a href='" . base_url("register/resend_email/{$email}") .
+                                            "'>resend the email.</a>";
                 }
                 else {
                     $user_email_id = $this->settings_model->add_email($email);

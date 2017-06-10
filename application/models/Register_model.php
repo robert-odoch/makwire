@@ -10,45 +10,6 @@ class Register_model extends CI_Model
     }
 
     /**
-     * Checks whether an email address has already been used by another user
-     * for registration.
-     *
-     * @param $email the email to check.
-     * @return TRUE if email is already being used; FALSE otherwise.
-     */
-    public function is_registered_email($email)
-    {
-        $email_sql = sprintf("SELECT id FROM  user_emails " .
-                                "WHERE (email = %s) LIMIT 1",
-                                $this->db->escape($email));
-        $email_query = $this->utility_model->run_query($email_sql);
-
-        return ($email_query->num_rows() === 1);
-    }
-
-    /**
-     * Checks whether a registered email address is associated with a user id.
-     *
-     * When a user first requests for registration by submitting an email address,
-     * the user_id field is left blank as the user account wouldn't have been
-     * created yet.
-     * If an email is registered but no user_id exists, it implies that the user
-     * hasn't completed the registration process.
-     *
-     * @param $email the email whose associated user_id is required.
-     * @return TRUE if the user completed registration.
-     */
-    public function email_user_id_exists($email)
-    {
-        $sql = sprintf("SELECT user_id FROM user_emails " .
-                        "WHERE email = %s AND user_id IS NOT NULL",
-                        $this->db->escape($email));
-        $query = $this->utility_model->run_query($sql);
-
-        return ($query->num_rows() == 1);
-    }
-
-    /**
      * Adds a new user record to the user's table and also updates user_emails
      * table by adding user_id to the email used for registration.
      *
