@@ -7,7 +7,7 @@ class Settings_model extends CI_Model
 
     public function __construct() {
         parent::__construct();
-        $this->load->model(['utility_model']);
+        $this->load->model(['utility_model', 'user_model']);
     }
 
     public function get_emails()
@@ -123,6 +123,96 @@ class Settings_model extends CI_Model
                                 "WHERE id = %d",
                                 $user_email_id);
         $this->utility_model->run_query($update_sql);
+    }
+
+    public function block_user($user_id)
+    {
+        // Block a user only once.
+        if (in_array($user_id, $this->get_blocked_users_ids())) {
+            return;
+        }
+
+        $sql = sprintf("INSERT INTO blocked_friends (user_id, friend_id) " .
+                        "VALUES (%d, %d)", $_SESSION['user_id'], $user_id);
+        $this->utility_model->run_query($sql);
+    }
+
+    public function unblock_user($user_id)
+    {
+        $sql = sprintf("DELETE FROM blocked_friends WHERE (user_id = %d AND friend_id = %d)",
+                        $_SESSION['user_id'], $user_id);
+        $this->utility_model->run_query($sql);
+    }
+
+    public function get_blocked_users()
+    {
+        $sql = sprintf("SELECT DISTINCT(bf.friend_id) AS user_id, u.profile_name  FROM blocked_friends bf " .
+                        "LEFT JOIN users u ON (bf.friend_id = u.user_id) " .
+                        "WHERE (bf.user_id = %d)", $_SESSION['user_id']);
+        $query = $this->utility_model->run_query($sql);
+        $blocked_users = $query->result_array();
+        foreach ($blocked_users as &$bu) {
+            $bu['profile_pic_path'] = $this->user_model->get_profile_pic_path($bu['user_id']);
+        }
+        unset($bu);
+
+        return $blocked_users;
+    }
+
+    public function get_searched_user($query)
+    {
+        $friends_ids = $this->user_model->get_friends_ids($_SESSION['user_id']);
+        $friends_ids[] = 0;
+        $friends_ids = implode(',', $friends_ids);
+
+        $blocked_users_ids = $this->get_blocked_users_ids();
+        $blocked_users_ids[] = 0;
+        $blocked_users_ids = implode(',', $blocked_users_ids);
+
+        if (filter_var($query, FILTER_VALIDATE_EMAIL)) {
+            $sql = sprintf("SELECT ue.user_id, u.profile_name FROM user_emails ue " .
+                            "LEFT JOIN users u ON(ue.user_id = u.user_id) " .
+                            "WHERE (ue.email = '%s' AND ue.user_id IN(%s) AND ue.user_id NOT IN(%s))",
+                            $query, $friends_ids, $blocked_users_ids);
+        }
+        else {
+            $keywords = preg_split("/[\s,]+/", $query);
+            foreach ($keywords as &$keyword) {
+                $keyword = strtolower("+{$keyword}");
+
+                // The @ sign breaks this query if it is used as part of an invalid email address.
+                $keyword = str_replace('@', '', $keyword);
+            }
+            unset($keyword);
+
+            $key = implode(' ', $keywords);
+            $sql = sprintf("SELECT user_id, profile_name FROM users " .
+                            "WHERE MATCH(profile_name) AGAINST (%s IN BOOLEAN MODE) AND " .
+                            "user_id IN(%s) AND user_id NOT IN(%s)",
+                            $this->db->escape($key), $friends_ids, $blocked_users_ids);
+        }
+
+        $results = $this->utility_model->run_query($sql)->result_array();
+        foreach ($results as &$r) {
+            $r['profile_pic_path'] = $this->user_model->get_profile_pic_path($r['user_id']);
+        }
+        unset($r);
+
+        return $results;
+    }
+
+    private function get_blocked_users_ids() {
+        $sql = sprintf("SELECT DISTINCT(friend_id) FROM blocked_friends " .
+                        "WHERE (user_id = %d)", $_SESSION['user_id']);
+        $query = $this->utility_model->run_query($sql);
+        $results = $query->result_array();
+
+        $blocked_users_ids = [];
+        foreach ($results as $r) {
+            $blocked_users_ids[] = $r['friend_id'];
+        }
+
+        return $blocked_users_ids;
     }
 
 }
