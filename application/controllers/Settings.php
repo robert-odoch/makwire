@@ -24,8 +24,6 @@ class Settings extends CI_Controller
         $data = $this->user_model->initialize_user();
         $data['title'] = 'Account settings';
         $this->load->view('common/header', $data);
-
-
         $this->load->view("settings/account/index");
         $this->load->view('common/footer');
     }
@@ -48,13 +46,11 @@ class Settings extends CI_Controller
 
             $backup_email = $this->input->post('backup-email');
             if ($backup_email !== NULL) {
-                if ($backup_email !== 'all' && $backup_email !== 'none') {
-                    $this->settings_model->set_backup_email($backup_email);
-                    $this->utility_model->show_success(
-                        'You backup email address has been successfully saved.'
-                    );
-                    return;
-                }
+                $this->settings_model->set_backup_email($backup_email);
+                $this->utility_model->show_success(
+                    'You backup email address has been successfully saved.'
+                );
+                return;
             }
 
             $email = $this->input->post('email');

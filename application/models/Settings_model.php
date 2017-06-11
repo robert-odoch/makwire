@@ -38,15 +38,24 @@ class Settings_model extends CI_Model
     public function set_backup_email($email_address)
     {
         // Make all emails for this user non-backup.
+        // This also carters for 'allow only primary email address' i.e., 'none'.
         $sql = sprintf("UPDATE user_emails SET is_backup = FALSE " .
                         "WHERE (user_id = %d AND is_primary IS FALSE)",
                         $_SESSION['user_id']);
         $this->utility_model->run_query($sql);
 
-        // Set the backup email address.
-        $sql = sprintf("UPDATE user_emails SET is_backup = TRUE " .
-                        "WHERE (user_id = %d AND email = '%s')",
-                        $_SESSION['user_id'], $email_address);
+        // Set backup email address(es).
+        if ($email_address == 'all') {
+            $sql = sprintf("UPDATE user_emails SET is_backup = TRUE " .
+                            "WHERE (user_id = %d AND is_primary IS FALSE)",
+                            $_SESSION['user_id']);
+        }
+        else {
+            $sql = sprintf("UPDATE user_emails SET is_backup = TRUE " .
+                            "WHERE (user_id = %d AND email = '%s')",
+                            $_SESSION['user_id'], $email_address);
+        }
+
         $this->utility_model->run_query($sql);
     }
 
