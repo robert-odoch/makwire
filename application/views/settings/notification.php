@@ -18,8 +18,9 @@
                                 Participating
                             </label>
                             <span class="help-block">
-                                You will be notified if your friends comment on posts
-                                of your friends that you commented on or shared.
+                                You will be notified when your friends reply to a comment you also
+                                replied to, or comment on posts of your friends that you commented
+                                on or shared.
                             </span>
                         </div>
 
