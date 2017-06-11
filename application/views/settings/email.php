@@ -68,7 +68,7 @@
                     <form action="<?= base_url('settings/emails'); ?>" method="post" accept-charset="utf-8" role="form">
                         <div class="form-group">
                             <label for="email" class="sr-only">Email address</label>
-                            <p class="help-block">Other emails like Gmail, Yahoo!, Outlook, etc are allowed.</p>
+                            <p class="help-block">Any email address is allowed.</p>
                             <input type="email" name="email" id="email"
                             <?php if (isset($error_message)) print ' class="has-error"'; ?>>
                             <?php if (isset($error_message)) print "<span class='error'>{$error_message}"; ?>
