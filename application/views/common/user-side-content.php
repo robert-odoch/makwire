@@ -29,7 +29,12 @@ defined('PAGE') OR define('PAGE', '')
                         if (PAGE == 'profile' && $suid == $_SESSION['user_id'])
                             print ' class="active"';
                         ?>
-                        >Edit Profile</a>
+                        >Edit profile</a>
+                </li>
+                <li>
+                    <a href="<?= base_url('user/find-friends'); ?>"
+                        <?php if (PAGE == 'find-friends') print ' class="active"'; ?>
+                        >Find friends</a>
                 </li>
                 <li><a href="<?= base_url('settings/account'); ?>">Settings</a></li>
             </ul>

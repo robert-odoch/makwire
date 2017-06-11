@@ -1,5 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+define('PAGE', 'find-friends');
 require_once('common/user-page-start.php');
 ?>
 
