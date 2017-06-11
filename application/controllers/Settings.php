@@ -38,19 +38,13 @@ class Settings extends CI_Controller
             $primary_email = $this->input->post('primary-email');
             if ($primary_email !== NULL) {
                 $this->settings_model->set_primary_email($primary_email);
-                $this->utility_model->show_success(
-                    'You primary email address has been successfully saved.'
-                );
-                return;
+                $data['primary_email_success_message'] = 'You primary email address has been successfully saved.';
             }
 
             $backup_email = $this->input->post('backup-email');
             if ($backup_email !== NULL) {
                 $this->settings_model->set_backup_email($backup_email);
-                $this->utility_model->show_success(
-                    'You backup email address has been successfully saved.'
-                );
-                return;
+                $data['backup_email_success_message'] = 'You backup email address has been successfully saved.';
             }
 
             $email = $this->input->post('email');
