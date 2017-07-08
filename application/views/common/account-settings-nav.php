@@ -32,11 +32,6 @@
                     <?php if (PAGE == 'emails') print ' class="active"'; ?>
                     >Emails</a>
             </li>
-            <li>
-                <a href="<?= base_url('settings/blocked-users'); ?>"
-                    <?php if (PAGE == 'blocked-users') print ' class="active"'; ?>
-                    >Blocked users</a>
-            </li>
         </ul>
     </nav>
 </div>
