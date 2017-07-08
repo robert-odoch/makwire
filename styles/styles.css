@@ -29,9 +29,14 @@ h5 {
     color: #000 !important;
 }
 
+ /* Override bootstrap's styles.*/
 .nav-tabs > li.active > a, .nav-tabs > li.active > a:focus, .nav-tabs > li.active > a:hover {
-	border: 1px solid #8FBC8F;  /* Override bootstrap's border style.*/
+	border: 1px solid #8FBC8F;
 }
+.panel {
+    margin-bottom: 0;
+}
+/* End override */
 
 .table {
     margin-bottom: 5px;
