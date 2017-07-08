@@ -31,11 +31,6 @@ defined('PAGE') OR define('PAGE', '')
                         ?>
                         >Edit profile</a>
                 </li>
-                <li>
-                    <a href="<?= base_url('user/find-friends'); ?>"
-                        <?php if (PAGE == 'find-friends') print ' class="active"'; ?>
-                        >Find friends</a>
-                </li>
                 <li><a href="<?= base_url('settings/account'); ?>">Settings</a></li>
             </ul>
         </nav>
@@ -46,6 +41,10 @@ defined('PAGE') OR define('PAGE', '')
         <ul>
             <li<?php if (PAGE == 'news-feed') print ' class="active"'; ?>>
                 <a href="<?= base_url('user/news-feed'); ?>">News Feed</a>
+            </li>
+            <li<?php if (PAGE == 'find-friends') print ' class="active"'; ?>>
+                <a href="<?= base_url('user/find-friends'); ?>"
+                    >Find friends</a>
             </li>
         </ul>
         <h5><span class="glyphicon glyphicon-bookmark"></span> Quick Access</h5>

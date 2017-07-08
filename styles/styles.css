@@ -212,13 +212,11 @@ nav#short-cuts h5 {
     padding-bottom: 4px;
     border-bottom: 1px solid #EFEEE5;
 }
+
 nav#short-cuts ul li {
-    border-bottom: 1px solid #8FBC8F;
+    margin-bottom: 1px;
 }
 
-nav#short-cuts ul li:last-child {
-    border-bottom: none;
-}
 nav#short-cuts ul li a {
     display: block;
     padding: 5px 0;
