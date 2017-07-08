@@ -11,11 +11,6 @@ class Account extends CI_Controller
         $this->load->model(['user_model', 'account_model']);
     }
 
-    public function forgot_password()
-    {
-
-    }
-
     public function change_password()
     {
         if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
