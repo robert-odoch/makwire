@@ -108,16 +108,6 @@ class Settings extends CI_Controller
         }
     }
 
-    public function notifications()
-    {
-        $data = $this->user_model->initialize_user();
-        $data['title'] = 'Notification settings';
-        $this->load->view('common/header', $data);
-
-        $this->load->view('settings/notification');
-        $this->load->view('common/footer');
-    }
-
     public function block_user($user_id)
     {
         if ( ! $this->user_model->are_friends($user_id)) {

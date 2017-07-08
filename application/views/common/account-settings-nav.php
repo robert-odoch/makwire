@@ -33,11 +33,6 @@
                     >Emails</a>
             </li>
             <li>
-                <a href="<?= base_url('settings/notifications'); ?>"
-                    <?php if (PAGE == 'notifications') print ' class="active"'; ?>
-                    >Notifications</a>
-            </li>
-            <li>
                 <a href="<?= base_url('settings/blocked-users'); ?>"
                     <?php if (PAGE == 'blocked-users') print ' class="active"'; ?>
                     >Blocked users</a>
