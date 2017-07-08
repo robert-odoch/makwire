@@ -18,7 +18,7 @@
                     "<span class='glyphicon glyphicon-ok'></span> Friends" .
                     "</button>" .
                     "<a href='" . base_url("user/unfriend/{$suid}") .
-                    "' class='btn btn-xs'>Unfriend</a>";
+                    "' class='btn btn-default btn-xs'>Unfriend</a>";
         }
         elseif ($friendship_status['fr_sent'] &&
                 $friendship_status['target_id'] == $_SESSION['user_id']) {

@@ -285,10 +285,10 @@ div.active-users img.media-object {
     border-radius: 50%;
 }
 
-.btn,
-.btn:hover,
-.btn:active,
-.btn:focus {
+.btn:not(.btn-default),
+.btn:not(.btn-default):hover,
+.btn:not(.btn-default):active,
+.btn:not(.btn-default):focus {
     background-color: #2E8B57;
     border-color: #2E8B57;
     color: #fff;
