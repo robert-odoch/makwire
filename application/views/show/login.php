@@ -59,7 +59,7 @@
                         }
                         ?>
                         <span class="help-block">
-                            <a href="<?= base_url('account/forgot-password'); ?>" title="Recover password">Forgot password?</a>
+                            <a href="<?= base_url('support/forgot-password'); ?>" title="Recover password">Forgot password?</a>
                         </span>
                     </div>
                 </fieldset>
