@@ -14,9 +14,11 @@
         </h4>
         <?php
         if ($friendship_status['are_friends']) {
-            print "<button class='btn btn-sm'>" .
+            print "<button class='btn btn-xs'>" .
                     "<span class='glyphicon glyphicon-ok'></span> Friends" .
-                    "</button>";
+                    "</button>" .
+                    "<a href='" . base_url("user/unfriend/{$suid}") .
+                    "' class='btn btn-xs'>Unfriend</a>";
         }
         elseif ($friendship_status['fr_sent'] &&
                 $friendship_status['target_id'] == $_SESSION['user_id']) {
