@@ -7,17 +7,17 @@ class Account extends CI_Controller
     {
         parent::__construct();
 
+        if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
+            $_SESSION['return_uri'] = $_SERVER['REQUEST_URI'];
+            redirect(base_url('login'));
+        }
+
         session_start();
         $this->load->model(['user_model', 'account_model']);
     }
 
     public function change_password()
     {
-        if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
-            $_SESSION['return_uri'] = $_SERVER['REQUEST_URI'];
-            redirect(base_url('login'));
-        }
-
         $data = $this->user_model->initialize_user();
         $data['title'] = 'Change your password';
         $this->load->view('common/header', $data);
@@ -75,11 +75,6 @@ class Account extends CI_Controller
 
     public function set_prefered_name()
     {
-        if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
-            $_SESSION['return_uri'] = $_SERVER['REQUEST_URI'];
-            redirect(base_url('login'));
-        }
-
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $prefered_name = trim(strip_tags($this->input->post('prefered_name')));
             if (strlen($prefered_name) != 0) {
@@ -102,11 +97,6 @@ class Account extends CI_Controller
 
     public function change_name()
     {
-        if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
-            $_SESSION['return_uri'] = $_SERVER['REQUEST_URI'];
-            redirect(base_url('login'));
-        }
-
         $data = $this->user_model->initialize_user();
         $data['title'] = 'Change your name';
         $this->load->view('common/header', $data);
@@ -141,11 +131,6 @@ class Account extends CI_Controller
 
     public function delete()
     {
-        if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
-            $_SESSION['return_uri'] = $_SERVER['REQUEST_URI'];
-            redirect(base_url('login'));
-        }
-
         $data = $this->user_model->initialize_user();
         $data['title'] = 'Delete your account';
         $this->load->view('common/header', $data);
