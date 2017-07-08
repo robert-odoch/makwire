@@ -13,7 +13,7 @@
         <link rel="stylesheet" href="<?= base_url('styles/ie10-viewport-bug-workaround.css'); ?>">
 
         <!-- Custom styles for this site -->
-        <link href="https://fonts.googleapis.com/css?family=Ubuntu:300" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Ubuntu:400,400i,700,700i" rel="stylesheet">
         <link href="<?= base_url('styles/styles.css'); ?>" rel="stylesheet">
 
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
