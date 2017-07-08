@@ -44,8 +44,8 @@ ul {
 }
 
 ul.bullet {
-    list-style-type: square;
-    margin-left: 40px;
+    list-style-type: circle;
+    margin-left: 30px;
 }
 
 a {
