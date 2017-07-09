@@ -7,7 +7,8 @@ defined('PAGE') OR define('PAGE', '')
     <div>
         <div id="primary-user" class="media">
             <div class="media-left media-middle">
-                <a href="<?= base_url("profile/change-profile-picture"); ?>" title="Change profile picture">
+                <a href="<?= base_url("profile/change-profile-picture"); ?>"
+                    title="Change profile picture">
                 <img src="<?= $profile_pic_path; ?>" alt="<?= $primary_user; ?>"
                     class="profile-pic">
                 </a>
@@ -39,7 +40,7 @@ defined('PAGE') OR define('PAGE', '')
     </div>
 
     <nav role="navigation" id="short-cuts" class="hidden-xs">
-        <h5><span class="glyphicon glyphicon-star"></span> Favorites</h5>
+        <h5><span class="glyphicon glyphicon-star" aria-hidden="true"></span> Favorites</h5>
         <ul>
             <li<?php if (PAGE == 'news-feed') print ' class="active"'; ?>>
                 <a href="<?= base_url('user/news-feed'); ?>">News Feed</a>
@@ -49,6 +50,6 @@ defined('PAGE') OR define('PAGE', '')
                     >Find friends</a>
             </li>
         </ul>
-        <h5><span class="glyphicon glyphicon-bookmark"></span> Quick Access</h5>
+        <h5><span class="glyphicon glyphicon-bookmark" aria-hidden="true"></span> Quick Access</h5>
     </nav>
 </div>

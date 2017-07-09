@@ -23,7 +23,8 @@
                     ?>
                     </h4>
                     <small class="time">
-                        <span class="glyphicon glyphicon-time"></span> <?= $post['timespan']; ?> ago
+                        <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+                        <?= $post['timespan']; ?> ago
                     </small>
                 </div>
             </div>

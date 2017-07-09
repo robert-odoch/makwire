@@ -60,9 +60,9 @@ require_once('common/user-page-start.php');
 <?php } elseif (isset($search_results)) { ?>
     <div class="box">
         <h4>Search results</h4>
-        <div class="alert alert-info">
+        <div class="alert alert-info" role="alert">
             <p>
-                <span class="glyphicon glyphicon-info-sign"></span>
+                <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
                 You search query returned no results.
             </p>
         </div>

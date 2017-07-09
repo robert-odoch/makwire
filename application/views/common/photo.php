@@ -38,7 +38,8 @@
                     ?>
                     </h4>
                     <small class="time">
-                        <span class='glyphicon glyphicon-time'></span> <?= $photo['timespan']; ?> ago
+                        <span class='glyphicon glyphicon-time' aria-hidden="true"></span>
+                        <?= $photo['timespan']; ?> ago
                     </small>
                 </div>
             </div>

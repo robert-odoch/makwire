@@ -16,8 +16,9 @@ require_once("common/secondary-user-nav.php");
     // If there is nothing to show.
     if ($is_visitor && !$profile['colleges'] && !$profile['halls']
         && !$profile['hostels'] && !$profile['origin']) {
-        print "<div class='alert alert-info'>" .
-                "<span class='glyphicon glyphicon-info-sign'></span> Nothing to show.</div>";
+        print "<div class='alert alert-info' role='alert'>" .
+                "<span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span> " .
+                "Nothing to show.</div>";
     }
     else {
     ?>
@@ -31,7 +32,7 @@ require_once("common/secondary-user-nav.php");
                     print "<li><b>College: </b>{$college['college_name']}";
                     if (!$is_visitor) {
                         print ' <a href="' . base_url("profile/edit-college/{$college['id']}") .
-                            '"><span class="glyphicon glyphicon-pencil"></span> Edit</a>';
+                            '"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit</a>';
                     }
                     print "</li>";
 
@@ -41,7 +42,7 @@ require_once("common/secondary-user-nav.php");
                         print "<li><b>Programme: </b>{$college['programme']['programme_name']}";
                         if (!$is_visitor) {
                             print ' <a href="' . base_url("profile/edit-programme/{$college['programme']['id']}") .
-                                    '"><span class="glyphicon glyphicon-pencil"></span> Edit</a>';
+                                    '"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit</a>';
                         }
                         print "</li>";
                     }
@@ -76,7 +77,7 @@ require_once("common/secondary-user-nav.php");
                                     "Resident of {$hall['hall_name']}";
                             if (!$is_visitor) {
                                 print' <a href="' . base_url("profile/edit-hall/{$hall['id']}") .
-                                        '"><span class="glyphicon glyphicon-pencil"></span> Edit</a>';
+                                        '"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit</a>';
                             }
                             print "</li>";
                         }
@@ -85,7 +86,7 @@ require_once("common/secondary-user-nav.php");
                                     "Attached to {$hall['hall_name']}";
                             if (!$is_visitor) {
                                 print ' <a href="' . base_url("profile/edit-hall/{$hall['id']}") .
-                                        '"><span class="glyphicon glyphicon-pencil"></span> Edit</a>';
+                                        '"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit</a>';
                             }
                             print "</li>";
                         }
@@ -105,7 +106,7 @@ require_once("common/secondary-user-nav.php");
                                 "{$hostel['hostel_name']}";
                         if (!$is_visitor) {
                             print ' <a href="' . base_url("profile/edit-hostel/{$hostel['id']}") .
-                                    '"><span class="glyphicon glyphicon-pencil"></span> Edit</a>';
+                                    '"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit</a>';
                         }
                         print "</li>";
                     }
@@ -128,7 +129,7 @@ require_once("common/secondary-user-nav.php");
                     if ($profile['origin']['district_name']) {
                         print "<li><b>District: </b>{$profile['origin']['district_name']}";
                         print ' <a href="' . base_url("profile/edit-district") .
-                                '"><span class="glyphicon glyphicon-pencil"></span> Edit</a>';
+                                '"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit</a>';
                         print "</li>";
                     }
                     else {
@@ -139,7 +140,7 @@ require_once("common/secondary-user-nav.php");
                     if ($profile['origin']['country_name']) {
                         print "<li><b>Country: </b>{$profile['origin']['country_name']}";
                         print ' <a href="' . base_url("profile/edit-country") .
-                                '"><span class="glyphicon glyphicon-pencil"></span> Edit</a>';
+                                '"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit</a>';
                         print "</li>";
                     }
                     else {

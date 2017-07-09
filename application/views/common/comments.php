@@ -3,9 +3,9 @@
 <div class="box">
     <h4>Comments</h4>
     <?php if (count($comments) == 0) { ?>
-        <div class="alert alert-info">
+        <div class="alert alert-info" role="alert">
             <p>
-                <span class="glyphicon glyphicon-info-sign"></span> No comments to show.
+                <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> No comments to show.
             </p>
         </div>
     <?php } else { ?>
@@ -33,7 +33,7 @@
                         <p class="comment"><?= htmlspecialchars($comment['comment']); ?></p>
                         <span>
                             <small class="time">
-                                <span class="glyphicon glyphicon-time"></span>
+                                <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
                                 <?= $comment['timespan']; ?> ago
                             </small>
 

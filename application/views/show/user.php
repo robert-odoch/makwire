@@ -12,17 +12,17 @@ if (!$is_visitor) {
         <ul class="nav nav-tabs">
             <li role="presentation" class="active">
                 <a href="#">
-                    <span class="glyphicon glyphicon-edit"></span> Status
+                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Status
                 </a>
             </li>
             <li role="presentation">
                 <a href="<?= base_url('photo/new'); ?>">
-                    <span class="glyphicon glyphicon-picture"></span> Photo
+                    <span class="glyphicon glyphicon-picture" aria-hidden="true"></span> Photo
                 </a>
             </li>
             <li role="presentation">
                 <a href="#">
-                    <span class="glyphicon glyphicon-film"></span> Video
+                    <span class="glyphicon glyphicon-film" aria-hidden="true"></span> Video
                 </a>
             </li>
         </ul>
@@ -52,9 +52,10 @@ if (!$is_visitor) {
     <?php
     if (empty($posts_and_photos) && $is_visitor) { ?>
         <div class="box">
-            <div class="alert alert-info">
+            <div class="alert alert-info" role="alert">
                 <p>
-                    <span class="glyphicon glyphicon-info-sign"></span> No posts to show.
+                    <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                    No posts to show.
                 </p>
             </div>
         </div>

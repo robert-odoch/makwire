@@ -25,8 +25,11 @@ switch ($object) {
 <div class="box">
     <h4>Likes</h4>
     <?php if (count($likes) == 0) { ?>
-    <div class="alert alert-info">
-        <p><span class="glyphicon glyphicon-info-sign"></span> No likes to show.</p>
+    <div class="alert alert-info" role="alert">
+        <p>
+            <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+            No likes to show.
+        </p>
     </div>
     <?php } else {
         if (isset($has_prev)) {
@@ -48,7 +51,8 @@ switch ($object) {
                     </a>
                 </h4>
                 <small class="time">
-                    <span class="glyphicon glyphicon-time"></span> <?= $like['timespan']; ?> ago
+                    <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+                    <?= $like['timespan']; ?> ago
                 </small>
             </div>
         </div>

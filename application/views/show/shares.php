@@ -18,9 +18,10 @@ switch ($object) {
 <div class="box">
     <h4>Shares</h4>
     <?php if (count($shares) == 0) { ?>
-    <div class="alert alert-info">
+    <div class="alert alert-info" role="alert">
         <p>
-            <span class="glyphicon glyphicon-info-sign"></span> No shares to show.
+            <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+            No shares to show.
         </p>
     </div>
     <?php } else {
@@ -43,7 +44,8 @@ switch ($object) {
                     </a>
                 </h4>
                 <small class="time">
-                    <span class="glyphicon glyphicon-time"></span> <?= $share['timespan']; ?> ago
+                    <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+                    <?= $share['timespan']; ?> ago
                 </small>
             </div>
         </div>

@@ -20,7 +20,10 @@
     </div>
 
     <nav class="user-nav" role="navigation">
-        <p><span class="glyphicon glyphicon-cog btn btn-sm"></span> <b>Settings</b></p>
+        <p>
+            <span class="glyphicon glyphicon-cog btn btn-sm" aria-hidden="true"></span>
+            <b>Settings</b>
+        </p>
         <ul>
             <li>
                 <a href="<?= base_url('settings/account'); ?>"

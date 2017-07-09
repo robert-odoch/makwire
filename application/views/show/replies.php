@@ -12,8 +12,11 @@ else if ($object == 'birthday-message') {
 <div class="box">
     <h4>Replies</h4>
     <?php if (count($replies) == 0) { ?>
-    <div class="alert alert-info">
-        <p><span class="glyphicon glyphicon-info-sign"></span> No replies to show.</p>
+    <div class="alert alert-info" role="alert">
+        <p>
+            <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+            No replies to show.
+        </p>
     </div>
     <?php } else {
         $ID = ($object == 'birthday-message') ? $message['id'] : $comment['comment_id'];
@@ -40,7 +43,8 @@ else if ($object == 'birthday-message') {
 
                 <span>
                     <small class="time">
-                        <span class="glyphicon glyphicon-time"></span> <?= $reply['timespan']; ?> ago
+                        <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+                        <?= $reply['timespan']; ?> ago
                     </small>
 
                     <?php

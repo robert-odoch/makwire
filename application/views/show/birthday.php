@@ -85,7 +85,8 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
 
                     <span>
                         <small class="time">
-                            <span class="glyphicon glyphicon-time"></span> <?= $msg['timespan']; ?> ago
+                            <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+                            <?= $msg['timespan']; ?> ago
                         </small>
                         <?php
                         if ($msg['num_likes'] > 0) {

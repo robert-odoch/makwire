@@ -16,7 +16,7 @@
         <?php
         if ($friendship_status['are_friends']) {
             print "<button class='btn btn-xs'>" .
-                    "<span class='glyphicon glyphicon-ok'></span> Friends" .
+                    "<span class='glyphicon glyphicon-ok' aria-hidden='true'></span> Friends" .
                     "</button>" .
                     "<a href='" . base_url("user/unfriend/{$suid}") .
                     "' class='btn btn-default btn-xs'>Unfriend</a>";
@@ -29,7 +29,7 @@
         elseif ($friendship_status['fr_sent'] &&
                 $friendship_status['user_id'] == $_SESSION['user_id']) {
             print "<span class='btn btn-default'>" .
-                    "<span class='glyphicon glyphicon-ok-circle'></span> " .
+                    "<span class='glyphicon glyphicon-ok-circle' aria-hidden='true'></span> " .
                     "Friend Request Sent</span>";
         }
         elseif ($suid != $_SESSION['user_id']) {

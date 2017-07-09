@@ -19,7 +19,7 @@
 
             <span>
                 <small class="time">
-                    <span class="glyphicon glyphicon-time"></span>
+                    <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
                     <?= $$object['timespan']; ?> ago
                 </small>
 

@@ -11,13 +11,13 @@
 
             <?php
             if (isset($login_errors) && array_key_exists('login', $login_errors)) {
-                print "<div class='alert alert-danger'>" .
-                        "<span class='glyphicon glyphicon-exclamation-sign'></span> " .
+                print "<div class='alert alert-danger' role='alert'>" .
+                        "<span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span> " .
                         "{$login_errors['login']}</div>";
             }
             elseif (isset($message)) {
-                print "<div class='alert alert-info'>" .
-                        "<span class='glyphicon glyphicon-info-sign'></span> " .
+                print "<div class='alert alert-info' role='alert'>" .
+                        "<span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span> " .
                         "{$message}</div>";
                 unset($message);
             }

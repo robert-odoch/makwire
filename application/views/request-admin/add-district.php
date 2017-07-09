@@ -13,7 +13,8 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
         <?php if (isset($error_message)) { ?>
         <div class="alert alert-danger">
             <p>
-                <span class="glyphicon glyphicon-exclamation-sign"></span>
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Error: </span>
                 <?= "{$error_message}"; ?>
             </p>
         </div>

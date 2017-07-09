@@ -6,9 +6,10 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
 <div class="box">
     <h4>Messages</h4>
     <?php if (count($messages) == 0) { ?>
-    <div class="alert alert-info">
+    <div class="alert alert-info" role="alert">
         <p>
-            <span class="glyphicon glyphicon-info-sign"></span> No messages to show.
+            <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+            No messages to show.
         </p>
     </div>
     <?php } else {
@@ -32,7 +33,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
                 <p><?= htmlspecialchars($m['message']); ?></p>
                 <footer>
                     <small class="time">
-                        <span class="glyphicon glyphicon-time"></span>
+                        <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
                         <?= $m['timespan']; ?> ago
                     </small>
                     <span> &middot; </span>
