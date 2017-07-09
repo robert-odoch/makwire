@@ -81,17 +81,17 @@
                                     ?>
                                 </a>
                             </li>
-                            <li class="hidden-sm">
+                            <li class="hidden-sm hidden-md hidden-lg">
                                 <a href="<?= base_url('user/find-friends'); ?>">
                                     <span class="glyphicon glyphicon-user"></span> Find Friends
                                 </a>
                             </li>
-                            <li class="hidden-sm">
+                            <li class="hidden-sm hidden-md hidden-lg">
                                 <a href="<?= base_url('user/news-feed'); ?>">
                                     <span class="glyphicon glyphicon-bullhorn"></span> News Feed
                                 </a>
                             </li>
-                            <li class="hidden-sm">
+                            <li class="hidden-sm hidden-md hidden-lg">
                                 <a href="<?= base_url('settings/account'); ?>">
                                     <span class="glyphicon glyphicon-cog"></span> Settings
                                 </a>

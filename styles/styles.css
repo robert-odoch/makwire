@@ -234,22 +234,13 @@ nav#short-cuts ul li.active {
     background-color: #EFEEE5;
 }
 
-ul.about li,
-ul.profile li,
-ul.notifications li,
-ul.account-settings li {
+ul.about li:not(:last-child),
+ul.profile li:not(:last-child),
+ul.notifications li:not(:last-child),
+ul.account-settings li:not(:last-child) {
     border-bottom: 1px dotted #8FBC8F;
     padding-bottom: 2px;
     margin-bottom: 3px;
-}
-
-ul.about li:last-child,
-ul.profile li:last-child,
-ul.notifications li:last-child,
-ul.account-settings li:last-child {
-    padding-bottom: 0;
-    margin-bottom: 0;
-    border-bottom: none;
 }
 
 div.active-users div.media {
@@ -305,10 +296,7 @@ div.active-users h4.media-heading {
 
 div.likes h4.media-heading,
 div.shares h4.media-heading,
-div.replies h4.media-heading,
-div.comments h4.media-heading,
-article h4.media-heading,
-div.birthday-messages h4.media-heading {
+article h4.media-heading {
     margin-bottom: -2px;
 }
 
@@ -398,6 +386,7 @@ footer.footer p.copyright {
 
 footer.footer a {
     text-decoration: underline;
+    display: inline-block;
     color: #fff;
 }
 
@@ -672,6 +661,25 @@ div#comment {
     margin-bottom: 2.5px;
 }
 
+div#reply h4.media-heading,
+div.replies h4.media-heading,
+div#comment h4.media-heading,
+div.comments h4.media-heading,
+div#birthday-message h4.media-heading,
+div.birthday-messages h4.media-heading {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+div#reply div.media-body > span,
+div.replies div.media-body > span,
+div#comment div.media-body > span,
+div.comments div.media-body > span,
+div#birthday-message div.media-body > span,
+div.birthday-messages div.media-body > span {
+    display: block;
+}
+
 div#reply img.media-object,
 div#comment img.media-object,
 div#birthday-message img.media-object {
@@ -767,6 +775,10 @@ div#birthday-message img.media-object {
         margin-left: 0;
     }
 
+    div#secondary-user nav ul li a:first-child {
+        padding-left: 3px;
+    }
+
     footer.footer {
         height: auto;
     }
@@ -793,11 +805,14 @@ div#birthday-message img.media-object {
 
 @media (min-width: 481px) and (max-width: 767px) {
     body {
-        margin-bottom: 80px;
+        margin-bottom: 65px;
     }
 
-    ul.navbar-right li:nth-child(1),
-    ul.navbar-right li:nth-child(2) {
+    .hidden-xs {
+        display: block !important;
+    }
+
+    li.hidden-sm {
         display: none;
     }
 
@@ -823,6 +838,36 @@ div#birthday-message img.media-object {
         margin: auto;
     }
 
+    div#secondary-user > div:first-child {
+        position: static;
+        margin-bottom: 5px;
+    }
+
+    div#secondary-user img {
+        position: static;
+        display: block;
+        float: left;
+    }
+
+    div#secondary-user h4 {
+        margin-left: 85px;
+        margin-top: auto;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    div#secondary-user .btn {
+        margin-left: 10px;
+    }
+
+    div#secondary-user nav ul {
+        margin-left: 0;
+    }
+
+    div#secondary-user nav ul li a:first-child {
+        padding-left: 3px;
+    }
+
     article footer > ul > li > a {
         width: auto;
     }
@@ -839,11 +884,6 @@ div#birthday-message img.media-object {
 }
 
 @media (min-width: 768px) and (max-width: 971px) {
-    ul.navbar-right li:nth-child(1),
-    ul.navbar-right li:nth-child(2) {
-        display: none;
-    }
-
     div.suggestions h4 {
         margin-top: 5px;
         padding-bottom: 5px;

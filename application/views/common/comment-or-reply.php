@@ -16,30 +16,33 @@
             </h4>
 
             <p class="comment"><?= htmlspecialchars($$object['comment']); ?></p>
-            <small class="time">
-                <span class="glyphicon glyphicon-time"></span>
-                <?= $$object['timespan']; ?> ago
-            </small>
 
-            <?php
-            if ($$object['num_likes'] > 0) {
-                print "<span> &middot; </span>" .
-                        "<a href='" . base_url("{$object}/likes/{$$object['comment_id']}") .
-                        "'>{$$object['num_likes']}";
-                print ($$object['num_likes'] == 1) ? " like" : " likes";
-                print "</a>";
-            }
+            <span>
+                <small class="time">
+                    <span class="glyphicon glyphicon-time"></span>
+                    <?= $$object['timespan']; ?> ago
+                </small>
 
-            if ($object == 'comment') {
-                if ($comment['num_replies'] > 0) {
+                <?php
+                if ($$object['num_likes'] > 0) {
                     print "<span> &middot; </span>" .
-                            "<a href='". base_url("comment/replies/{$comment['comment_id']}") .
-                            "'>{$comment['num_replies']}";
-                    print ($comment['num_replies'] == 1) ? " reply" : " replies";
+                            "<a href='" . base_url("{$object}/likes/{$$object['comment_id']}") .
+                            "'>{$$object['num_likes']}";
+                    print ($$object['num_likes'] == 1) ? " like" : " likes";
                     print "</a>";
                 }
-            }
-            ?>
+
+                if ($object == 'comment') {
+                    if ($comment['num_replies'] > 0) {
+                        print "<span> &middot; </span>" .
+                                "<a href='". base_url("comment/replies/{$comment['comment_id']}") .
+                                "'>{$comment['num_replies']}";
+                        print ($comment['num_replies'] == 1) ? " reply" : " replies";
+                        print "</a>";
+                    }
+                }
+                ?>
+            </span>
         </div>
     </div>
 

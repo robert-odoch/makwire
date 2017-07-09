@@ -37,25 +37,28 @@ else if ($object == 'birthday-message') {
                 </h4>
 
                 <p class="reply"><?= htmlspecialchars($reply['comment']); ?></p>
-                <small class="time">
-                    <span class="glyphicon glyphicon-time"></span> <?= $reply['timespan']; ?> ago
-                </small>
 
-                <?php
-                if ($reply['viewer_is_friend_to_owner'] && !$reply['liked']) {
-                    print '<span> &middot; </span>' .
-                            '<a href="' . base_url("reply/like/{$reply['comment_id']}") . '">Like</a>';
-                }
-                if ($reply['num_likes'] > 0) {
-                    if (!$reply['liked']) {
-                        print "<span> &middot; </span>";
+                <span>
+                    <small class="time">
+                        <span class="glyphicon glyphicon-time"></span> <?= $reply['timespan']; ?> ago
+                    </small>
+
+                    <?php
+                    if ($reply['viewer_is_friend_to_owner'] && !$reply['liked']) {
+                        print '<span> &middot; </span>' .
+                                '<a href="' . base_url("reply/like/{$reply['comment_id']}") . '">Like</a>';
                     }
+                    if ($reply['num_likes'] > 0) {
+                        if (!$reply['liked']) {
+                            print "<span> &middot; </span>";
+                        }
 
-                    print "<a href='" . base_url("reply/likes/{$reply['comment_id']}") . "'>{$reply['num_likes']}";
-                    print ($reply['num_likes'] == 1) ? " like" : " likes";
-                    print "</a>";
-                }
-                ?>
+                        print "<a href='" . base_url("reply/likes/{$reply['comment_id']}") . "'>{$reply['num_likes']}";
+                        print ($reply['num_likes'] == 1) ? " like" : " likes";
+                        print "</a>";
+                    }
+                    ?>
+                </span>
             </div>
         </div>
         <?php } ?>

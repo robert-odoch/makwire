@@ -31,43 +31,45 @@
                         </h4>
 
                         <p class="comment"><?= htmlspecialchars($comment['comment']); ?></p>
-                        <small class="time">
-                            <span class="glyphicon glyphicon-time"></span>
-                            <?= $comment['timespan']; ?> ago
-                        </small>
+                        <span>
+                            <small class="time">
+                                <span class="glyphicon glyphicon-time"></span>
+                                <?= $comment['timespan']; ?> ago
+                            </small>
 
-                        <?php
-                        if ($comment['viewer_is_friend_to_owner']) {
-                            if (!$comment['liked']) {
-                                print '<span> &middot; </span>' .
-                                        '<a href="' . base_url("comment/like/{$comment['comment_id']}") .
-                                        '">Like</a>' .
-                                        '<span> &middot; </span>';
+                            <?php
+                            if ($comment['viewer_is_friend_to_owner']) {
+                                if (!$comment['liked']) {
+                                    print '<span> &middot; </span>' .
+                                            '<a href="' . base_url("comment/like/{$comment['comment_id']}") .
+                                            '">Like</a>' .
+                                            '<span> &middot; </span>';
+                                }
+
+                                // Only allow a user to reply to his comment if there is atleast one reply.
+                                if ($comment['commenter_id'] != $_SESSION['user_id'] ||
+                                    $comment['num_replies'] > 0) {
+                                    print '<a href="' . base_url("comment/reply/{$comment['comment_id']}") .
+                                            '">Reply</a>';
+                                }
                             }
 
-                            // Only allow a user to reply to his comment if there is atleast one reply.
-                            if ($comment['commenter_id'] != $_SESSION['user_id'] ||
-                                $comment['num_replies'] > 0) {
-                                print '<a href="' . base_url("comment/reply/{$comment['comment_id']}") .
-                                        '">Reply</a>';
+                            if ($comment['num_likes'] > 0) {
+                                print "<span> &middot; </span>" .
+                                      "<a href='" . base_url("comment/likes/{$comment['comment_id']}") .
+                                      "'>{$comment['num_likes']}";
+                                print ($comment['num_likes'] == 1) ? " like" : " likes";
+                                print "</a>";
                             }
-                        }
-
-                        if ($comment['num_likes'] > 0) {
-                            print "<span> &middot; </span>" .
-                                  "<a href='" . base_url("comment/likes/{$comment['comment_id']}") .
-                                  "'>{$comment['num_likes']}";
-                            print ($comment['num_likes'] == 1) ? " like" : " likes";
-                            print "</a>";
-                        }
-                        if ($object != 'comment' && $comment['num_replies'] > 0) {
-                            print "<span> &middot; </span>" .
-                                  "<a href='" . base_url("comment/replies/{$comment['comment_id']}") .
-                                  "'>{$comment['num_replies']}";
-                            print ($comment['num_replies'] == 1) ? " reply" : " replies";
-                            print "</a>";
-                        }
-                        ?>
+                            if ($object != 'comment' && $comment['num_replies'] > 0) {
+                                print "<span> &middot; </span>" .
+                                      "<a href='" . base_url("comment/replies/{$comment['comment_id']}") .
+                                      "'>{$comment['num_replies']}";
+                                print ($comment['num_replies'] == 1) ? " reply" : " replies";
+                                print "</a>";
+                            }
+                            ?>
+                        </span>
                     </div>
                 </div>
             <?php } ?>

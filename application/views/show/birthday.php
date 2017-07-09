@@ -22,7 +22,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
                         }
                         else {
                             $birthday = date_create(($dob_array[0] + $age) . "-{$dob_array[1]}-{$dob_array[2]}");
-                            $birthday = $birthday->format('F j, Y');
+                            $birthday = $birthday->format('F jS, Y');
                             print "<a href='" . base_url("user/{$user_id}") .
                                     "'><strong class='object'>" .
                                     format_name($user, '</strong></a>') . " birthday was on {$birthday}";
@@ -82,35 +82,38 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
                         </a>
                     </h4>
                     <p class="message"><?= $msg['message']; ?></p>
-                    <small class="time">
-                        <span class="glyphicon glyphicon-time"></span> <?= $msg['timespan']; ?> ago
-                    </small>
-                    <?php
-                    if ($msg['num_likes'] > 0) {
-                        print "<span> &middot; </span>" .
-                                "<a href='" . base_url("birthday-message/likes/{$msg['id']}") .
-                                "'>{$msg['num_likes']}";
-                        print ($msg['num_likes'] == 1) ? " like" : " likes";
-                        print "</a>";
-                    }
-                    if ($msg['num_replies'] > 0) {
-                        print "<span> &middot; </span>" .
-                                "<a href='" . base_url("birthday-message/replies/{$msg['id']}") .
-                                "'>{$msg['num_replies']}";
-                        print ($msg['num_replies'] == 1) ? ' reply' : ' replies';
-                        print "</a>";
-                    }
-                    if ($msg['viewer_is_friend_to_owner']) {
-                        print "<span> &middot; </span>" .
-                                "<a href='" . base_url("birthday-message/like/{$msg['id']}") .
-                                "'>Like</a>";
-                    }
-                    if ($msg['user_can_reply']) {
-                        print "<span> &middot; </span>" .
-                                "<a href='" . base_url("birthday-message/reply/{$msg['id']}") .
-                                "'>Reply</a>";
-                    }
-                    ?>
+
+                    <span>
+                        <small class="time">
+                            <span class="glyphicon glyphicon-time"></span> <?= $msg['timespan']; ?> ago
+                        </small>
+                        <?php
+                        if ($msg['num_likes'] > 0) {
+                            print "<span> &middot; </span>" .
+                                    "<a href='" . base_url("birthday-message/likes/{$msg['id']}") .
+                                    "'>{$msg['num_likes']}";
+                            print ($msg['num_likes'] == 1) ? " like" : " likes";
+                            print "</a>";
+                        }
+                        if ($msg['num_replies'] > 0) {
+                            print "<span> &middot; </span>" .
+                                    "<a href='" . base_url("birthday-message/replies/{$msg['id']}") .
+                                    "'>{$msg['num_replies']}";
+                            print ($msg['num_replies'] == 1) ? ' reply' : ' replies';
+                            print "</a>";
+                        }
+                        if ($msg['viewer_is_friend_to_owner']) {
+                            print "<span> &middot; </span>" .
+                                    "<a href='" . base_url("birthday-message/like/{$msg['id']}") .
+                                    "'>Like</a>";
+                        }
+                        if ($msg['user_can_reply']) {
+                            print "<span> &middot; </span>" .
+                                    "<a href='" . base_url("birthday-message/reply/{$msg['id']}") .
+                                    "'>Reply</a>";
+                        }
+                        ?>
+                    </span>
                 </div>
             </div>
         <?php } ?>

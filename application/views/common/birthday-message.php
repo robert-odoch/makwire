@@ -16,28 +16,30 @@
             </h4>
 
             <p class="message"><?= htmlspecialchars($message['message']); ?></p>
-            <small class="time">
-                <span class="glyphicon glyphicon-time"></span>
-                <?= $message['timespan']; ?> ago
-            </small>
 
-            <?php
-            if ($message['num_likes'] > 0) {
-                print "<span> &middot; </span>" .
-                        "<a href='" . base_url("birthday-message/likes/{$message['id']}") .
-                        "'>{$message['num_likes']}";
-                print ($message['num_likes'] == 1) ? " like" : " likes";
-                print "</a>";
-            }
-            if ($message['num_replies'] > 0) {
-                print "<span> &middot; </span>" .
-                        "<a href='" . base_url("birthday-message/replies/{$message['id']}") .
-                        "'>{$message['num_replies']}";
-                print ($message['num_replies'] == 1) ? ' reply' : ' replies';
-                print "</a>";
-            }
-            ?>
+            <span>
+                <small class="time">
+                    <span class="glyphicon glyphicon-time"></span>
+                    <?= $message['timespan']; ?> ago
+                </small>
 
+                <?php
+                if ($message['num_likes'] > 0) {
+                    print "<span> &middot; </span>" .
+                            "<a href='" . base_url("birthday-message/likes/{$message['id']}") .
+                            "'>{$message['num_likes']}";
+                    print ($message['num_likes'] == 1) ? " like" : " likes";
+                    print "</a>";
+                }
+                if ($message['num_replies'] > 0) {
+                    print "<span> &middot; </span>" .
+                            "<a href='" . base_url("birthday-message/replies/{$message['id']}") .
+                            "'>{$message['num_replies']}";
+                    print ($message['num_replies'] == 1) ? ' reply' : ' replies';
+                    print "</a>";
+                }
+                ?>
+            </span>
         </div>
     </div>
 
