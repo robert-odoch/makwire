@@ -1285,7 +1285,7 @@ class User_model extends CI_Model
         if ( ! $this->are_friends($user_id)) {
             throw new IllegalAccessException();
         }
-        
+
         $fr_sql = sprintf("DELETE from friend_requests " .
                             "WHERE (user_id = %d AND target_id = %d) OR " .
                             "(user_id = %d AND target_id = %d) LIMIT 1",
