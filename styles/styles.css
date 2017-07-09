@@ -265,11 +265,15 @@ div.friends img.media-object,
 div.comments img.media-object,
 div.followers img.media-object,
 div.following img.media-object,
-div.active-users img.media-object,
 div.chat-friends img.media-object,
 div.birthday-messages img.media-object {
+    height: 50px;  /* Always match height for div.media-body */
+    width: 50px;
+}
+
+div.active-users img.media-object {
     height: 42.9px;  /* Always match height for div.media-body */
-    width: 40px;
+    width: 42.9px;
 }
 
 div.active-users img.media-object {
@@ -680,6 +684,15 @@ div.birthday-messages div.media-body > span {
     display: block;
 }
 
+div#reply div.media-body > span a,
+div.replies div.media-body > span a,
+div#comment div.media-body > span a,
+div.comments div.media-body > span a,
+div#birthday-message div.media-body > span a,
+div.birthday-messages div.media-body > span a {
+    display: inline-block;
+}
+
 div#reply img.media-object,
 div#comment img.media-object,
 div#birthday-message img.media-object {
@@ -777,6 +790,20 @@ div#birthday-message img.media-object {
 
     div#secondary-user nav ul li a:first-child {
         padding-left: 3px;
+    }
+
+    div.likes img.media-object,
+    div.shares img.media-object,
+    div.replies img.media-object,
+    div.members img.media-object,
+    div.friends img.media-object,
+    div.comments img.media-object,
+    div.followers img.media-object,
+    div.following img.media-object,
+    div.chat-friends img.media-object,
+    div.birthday-messages img.media-object {
+        height: 40px;  /* Always match height for div.media-body */
+        width: 38px;
     }
 
     footer.footer {
