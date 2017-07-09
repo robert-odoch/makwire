@@ -448,6 +448,20 @@ class User extends CI_Controller
         }
     }
 
+    public function unfriend($user_id = 0)
+    {
+        try {
+            $this->user_model->unfriend_user($user_id);
+            redirect(base_url("user/{$user_id}"));
+        }
+        catch (IllegalAccessException $e) {
+            $this->utility_model->show_error(
+                "Permission Denied!",
+                "This user is not your friends."
+            );
+        }
+    }
+
     public function messages($offset=0)
     {
         $data = $this->user_model->initialize_user();

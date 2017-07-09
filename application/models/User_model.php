@@ -1280,6 +1280,24 @@ class User_model extends CI_Model
         $this->utility_model->run_query($activity_sql);
     }
 
+    public function unfriend_user($user_id)
+    {
+        if ( ! $this->are_friends($user_id)) {
+            throw new IllegalAccessException();
+        }
+        
+        $fr_sql = sprintf("DELETE from friend_requests " .
+                            "WHERE (user_id = %d AND target_id = %d) OR " .
+                            "(user_id = %d AND target_id = %d) LIMIT 1",
+                            $_SESSION['user_id'], $user_id,
+                            $user_id, $_SESSION['user_id']);
+        $this->utility_model->run_query($fr_sql);
+
+        $unfr_sql = sprintf("DELETE FROM friends WHERE (user_id = %d AND friend_id = %d) " .
+                            "LIMIT 1", $_SESSION['user_id'], $user_id);
+        $this->utility_model->run_query($unfr_sql);
+    }
+
     /**
      * Sends a chat message to a user.
      *
