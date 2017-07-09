@@ -87,13 +87,13 @@
                                 </a>
                             </li>
                             <li class="hidden-sm hidden-md hidden-lg">
-                                <a href="<?= base_url('user/news-feed'); ?>">
-                                    <span class="glyphicon glyphicon-equalizer"></span> News Feed
+                                <a href="<?= base_url('settings/account'); ?>">
+                                    <span class="glyphicon glyphicon-cog"></span> Settings
                                 </a>
                             </li>
                             <li class="hidden-sm hidden-md hidden-lg">
-                                <a href="<?= base_url('settings/account'); ?>">
-                                    <span class="glyphicon glyphicon-cog"></span> Settings
+                                <a href="<?= base_url('user/news-feed'); ?>">
+                                    <span class="glyphicon glyphicon-equalizer"></span> News Feed
                                 </a>
                             </li>
                             <li>
