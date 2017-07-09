@@ -21,7 +21,7 @@ class Birthday_message extends CI_Controller
         $this->user_model->confirm_logged_in();
     }
 
-    public function like($message_id=0)
+    public function like($message_id = 0)
     {
         try {
             $this->birthday_message_model->like($message_id);
@@ -38,7 +38,7 @@ class Birthday_message extends CI_Controller
         }
     }
 
-    public function likes($message_id=0, $offset=0)
+    public function likes($message_id = 0, $offset = 0)
     {
         try {
             $message = $this->birthday_message_model->get_message($message_id);
@@ -125,7 +125,7 @@ class Birthday_message extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function replies($message_id=0, $offset=0)
+    public function replies($message_id = 0, $offset = 0)
     {
         try {
             $message = $this->birthday_message_model->get_message($message_id);

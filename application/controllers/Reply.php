@@ -19,7 +19,7 @@ class Reply extends CI_Controller
         $this->user_model->confirm_logged_in();
     }
 
-    public function like($reply_id=0)
+    public function like($reply_id = 0)
     {
         try {
             $this->reply_model->like($reply_id);
@@ -36,7 +36,7 @@ class Reply extends CI_Controller
         }
     }
 
-    public function likes($reply_id=0, $offset=0)
+    public function likes($reply_id = 0, $offset = 0)
     {
         try {
             $reply = $this->reply_model->get_reply($reply_id);

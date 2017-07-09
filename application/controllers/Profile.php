@@ -148,7 +148,7 @@ class Profile extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function edit_college($user_college_id=0)
+    public function edit_college($user_college_id = 0)
     {
         $data = $this->user_model->initialize_user();
         $data['title'] = 'Edit your college';
@@ -231,7 +231,7 @@ class Profile extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function add_programme($user_school_id=0)
+    public function add_programme($user_school_id = 0)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data['user_school_id']= $this->input->post('user-school-id');
@@ -266,7 +266,7 @@ class Profile extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function edit_programme($user_programme_id=0)
+    public function edit_programme($user_programme_id = 0)
     {
         $data = $this->user_model->initialize_user();
         $data['title'] = 'Edit your programme';
@@ -352,7 +352,7 @@ class Profile extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function edit_hall($user_hall_id=0)
+    public function edit_hall($user_hall_id = 0)
     {
         $data = $this->user_model->initialize_user();
         $data['title'] = 'Edit hall of attachment/residence';
@@ -479,7 +479,7 @@ class Profile extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function edit_hostel($user_hostel_id=0)
+    public function edit_hostel($user_hostel_id = 0)
     {
         $data = $this->user_model->initialize_user();
         $data['title'] = 'Edit hostel';
@@ -579,7 +579,7 @@ class Profile extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function add_district($district_id=0)
+    public function add_district($district_id = 0)
     {
         $data = $this->user_model->initialize_user();
         $data['title'] = 'Add your district';

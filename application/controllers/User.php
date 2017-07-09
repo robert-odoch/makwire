@@ -48,7 +48,7 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function index($user_id=0, $offset=0)
+    public function index($user_id = 0, $offset = 0)
     {
         $data = $this->user_model->initialize_user();
         $data['title'] = format_name($data['primary_user']) . ' posts';
@@ -88,7 +88,7 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function birthday($user_id=0, $age=0, $offset=0)
+    public function birthday($user_id = 0, $age = 0, $offset = 0)
     {
         if (!$this->user_model->can_view_birthday($user_id, $age)) {
             show_404();
@@ -131,7 +131,7 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function send_birthday_message($user_id=0, $age=0)
+    public function send_birthday_message($user_id = 0, $age = 0)
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->utility_model->show_error(
@@ -152,7 +152,7 @@ class User extends CI_Controller
         redirect($_SERVER['HTTP_REFERER']);
     }
 
-    public function chat($offset=0)
+    public function chat($offset = 0)
     {
         $data = $this->user_model->initialize_user();
         $data['title'] = 'Chat With Friends';
@@ -177,7 +177,7 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function send_message($user_id=0, $offset=0)
+    public function send_message($user_id = 0, $offset = 0)
     {
         // Prevent a user from sending a message to himself.
         if ($user_id === $_SESSION['user_id']) {
@@ -239,7 +239,7 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function post($post_id=0, $offset=0)
+    public function post($post_id = 0, $offset = 0)
     {
         try {
             $post = $this->post_model->get_post($post_id);
@@ -269,7 +269,7 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function notifications($offset=0)
+    public function notifications($offset = 0)
     {
         $data = $this->user_model->initialize_user();
         $data['title'] = 'Notifications';
@@ -320,7 +320,7 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function photo($photo_id=0, $offset=0)
+    public function photo($photo_id = 0, $offset = 0)
     {
         try {
             $photo = $this->photo_model->get_photo($photo_id);
@@ -350,7 +350,7 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function find_friends($offset=0)
+    public function find_friends($offset = 0)
     {
         $data = $this->user_model->initialize_user();
         $data['title'] = 'Find Friends';
@@ -400,7 +400,7 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function friend_requests($offset=0)
+    public function friend_requests($offset = 0)
     {
         $data = $this->user_model->initialize_user();
         $data['title'] = 'Friend Requests';
@@ -419,7 +419,7 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function add_friend($user_id=0)
+    public function add_friend($user_id = 0)
     {
         try {
             $this->user_model->send_friend_request($user_id);
@@ -434,7 +434,7 @@ class User extends CI_Controller
         }
     }
 
-    public function accept_friend($user_id=0)
+    public function accept_friend($user_id = 0)
     {
         try {
             $this->user_model->confirm_friend_request($user_id);
@@ -462,7 +462,7 @@ class User extends CI_Controller
         }
     }
 
-    public function messages($offset=0)
+    public function messages($offset = 0)
     {
         $data = $this->user_model->initialize_user();
         $data['title'] = 'Messages';
@@ -513,7 +513,7 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function friends($user_id=NULL, $offset=0)
+    public function friends($user_id = NULL, $offset = 0)
     {
         if ($user_id === NULL) {
             $user_id = $_SESSION['user_id'];
@@ -550,7 +550,7 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function profile($user_id=NULL)
+    public function profile($user_id = NULL)
     {
         if ($user_id === NULL) {
             $user_id = $_SESSION['user_id'];
@@ -580,7 +580,7 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function photos($user_id=NULL, $offset=0)
+    public function photos($user_id = NULL, $offset = 0)
     {
         if ($user_id === NULL) {
             $user_id = $_SESSION['user_id'];

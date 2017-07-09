@@ -76,7 +76,7 @@ class Photo extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function add_description($photo_id=0)
+    public function add_description($photo_id = 0)
     {
         try {
             $photo = $this->photo_model->get_photo($photo_id);
@@ -114,7 +114,7 @@ class Photo extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function like($photo_id=0)
+    public function like($photo_id = 0)
     {
         try {
             $this->photo_model->like($photo_id);
@@ -131,7 +131,7 @@ class Photo extends CI_Controller
         }
     }
 
-    public function comment($photo_id=0)
+    public function comment($photo_id = 0)
     {
         try {
             $photo = $this->photo_model->get_photo($photo_id);
@@ -170,7 +170,7 @@ class Photo extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function share($photo_id=0)
+    public function share($photo_id = 0)
     {
         try {
             $this->photo_model->share($photo_id);
@@ -187,7 +187,7 @@ class Photo extends CI_Controller
         }
     }
 
-    public function likes($photo_id=0, $offset=0)
+    public function likes($photo_id = 0, $offset = 0)
     {
         try {
             $photo = $this->photo_model->get_photo($photo_id);
@@ -226,7 +226,7 @@ class Photo extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function comments($photo_id=0, $offset=0)
+    public function comments($photo_id = 0, $offset = 0)
     {
         try {
             $photo = $this->photo_model->get_photo($photo_id);
@@ -263,7 +263,7 @@ class Photo extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function shares($photo_id=0, $offset=0)
+    public function shares($photo_id = 0, $offset = 0)
     {
         try {
             $photo = $this->photo_model->get_photo($photo_id);

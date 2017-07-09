@@ -91,7 +91,7 @@ class Register extends CI_Controller
         $this->load->view('common/external-page-footer');
     }
 
-    public function step_two($user_email_id=0, $activation_code=0)
+    public function step_two($user_email_id = 0, $activation_code = 0)
     {
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
             try {
