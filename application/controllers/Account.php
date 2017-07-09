@@ -7,12 +7,11 @@ class Account extends CI_Controller
     {
         parent::__construct();
 
-        if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
+        session_start();
+        if (empty($_SESSION['user_id'])) {
             $_SESSION['return_uri'] = $_SERVER['REQUEST_URI'];
             redirect(base_url('login'));
         }
-
-        session_start();
         $this->load->model(['user_model', 'account_model']);
     }
 

@@ -4,6 +4,7 @@ defined('PAGE') OR define('PAGE', '')
 ?>
 
 <div class="side-content">
+    <?php if ( ! in_array(PAGE, ['timeline', 'profile', 'photos', 'friends', 'groups']) || $is_visitor): ?>
     <div>
         <div id="primary-user" class="media">
             <div class="media-left media-middle">
@@ -31,12 +32,15 @@ defined('PAGE') OR define('PAGE', '')
                         ?>
                         >Edit profile</a>
                 </li>
-                <li><a href="<?= base_url('settings/account'); ?>">Settings</a></li>
+                <li class="hidden-xs">
+                    <a href="<?= base_url('settings/account'); ?>">Settings</a>
+                </li>
             </ul>
         </nav>
     </div>
+    <?php endif; ?>
 
-    <nav role="navigation" id="short-cuts">
+    <nav role="navigation" id="short-cuts" class="hidden-xs">
         <h5><span class="glyphicon glyphicon-star"></span> Favorites</h5>
         <ul>
             <li<?php if (PAGE == 'news-feed') print ' class="active"'; ?>>

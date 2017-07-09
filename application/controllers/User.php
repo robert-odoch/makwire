@@ -8,7 +8,7 @@ class User extends CI_Controller
         parent::__construct();
 
         session_start();
-        if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
+        if (empty($_SESSION['user_id'])) {
             $_SESSION['return_uri'] = $_SERVER['REQUEST_URI'];
             redirect(base_url('login'));
         }
@@ -423,7 +423,7 @@ class User extends CI_Controller
     {
         try {
             $this->user_model->send_friend_request($user_id);
-            $this->utility_model->show_success("Friend request sent.");
+            redirect(base_url("user/{$user_id}"));
         }
         catch (IllegalAccessException $e) {
             $this->utility_model->show_error(

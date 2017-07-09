@@ -15,15 +15,13 @@
         </div> <!-- #wrapper -->
 
         <footer role="contentinfo" class="footer">
-            <div class="wrapper">
-                <a href="#" class="pull-right">Back to top</a>
-                <span>Copyright &copy; <?php echo date('Y'); ?>, Makwire</span><span> &middot; </span>
+                <p class="copyright">Copyright &copy; <?php echo date('Y'); ?>, Makwire</p>
                 <a href="">Terms of Use</a><span> &middot; </span>
                 <a href="">Privacy Policy</a><span> &middot; </span>
                 <a href="">Advertising</a><span> &middot; </span>
                 <a href="">About Us</a><span> &middot; </span>
-                <a href="">Contact Us</a>
-            </div>
+                <a href="">Contact Us</a><span> &middot; </span>
+                <a href="#" class="pull-right">Back to top</a>
         </footer>
 
         <!-- Need JQuery to support Bootstrap JQuery plugins -->

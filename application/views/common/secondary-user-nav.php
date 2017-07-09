@@ -12,6 +12,7 @@
         <h4>
             <a href="<?= base_url("user/{$suid}"); ?>"><?= $secondary_user; ?></a>
         </h4>
+
         <?php
         if ($friendship_status['are_friends']) {
             print "<button class='btn btn-xs'>" .
@@ -36,6 +37,7 @@
                     "' class='btn btn-xs'>Add Friend</a>";
         }
         ?>
+        <span class="clearfix"></span>
     </div>
     <nav>
         <ul>

@@ -8,7 +8,7 @@ class Register extends CI_Controller
         parent::__construct();
 
         session_start();
-        if (isset($_SESSION['user_id'])) {
+        if ( ! empty($_SESSION['user_id'])) {
             redirect(base_url("user/{$_SESSION['user_id']}"));
         }
 

@@ -9,7 +9,7 @@ class Request_admin extends CI_Controller
         parent::__construct();
 
         session_start();
-        if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
+        if (empty($_SESSION['user_id'])) {
             $_SESSION['return_uri'] = $_SERVER['REQUEST_URI'];
             redirect(base_url('login'));
         }

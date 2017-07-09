@@ -321,7 +321,7 @@ div#primary-user img.media-object {
     border-radius: 3px;
 }
 
-div#secondary-user div {
+div#secondary-user > div:first-child {
     position: relative;
     margin-bottom: 10px;
 }
@@ -355,8 +355,8 @@ div#secondary-user a.btn {
 }
 
 div#secondary-user nav {
-        background-color: #8FBC8F;
-        border-radius: 0 3px 0 3px;
+    background-color: #8FBC8F;
+    border-radius: 0 3px 0 3px;
 }
 div#secondary-user nav ul {
     margin-left: 85px;
@@ -383,32 +383,22 @@ div.suggestions > h4 {
 footer.footer {
     border-top: 2px solid #f00;
     background-color: #2E8B57;
-    padding: 2px 0 5px 0;
+    padding: 5px 2%;
     position: absolute;
     height: 30px;
     width: 100%;
     bottom: 0;
 }
 
+footer.footer p.copyright {
+    display: inline-block;
+    margin-right: 5px;
+    margin-bottom: 0;
+}
+
 footer.footer a {
     text-decoration: underline;
     color: #fff;
-}
-
-nav#user-nav-mobile {
-    display: none;
-}
-
-nav#user-nav-mobile {
-    background-color: #fff;
-    margin-bottom: 5px;
-    border-radius: 3px;
-    padding: 5px 0;
-}
-
-nav#user-nav-mobile ul li {
-    display: inline;
-    width: auto;
 }
 
 div.main-content {
@@ -697,6 +687,12 @@ div#birthday-message img.media-object {
         margin-bottom: 80px;
     }
 
+    form input[type="text"],
+    form input[type="email"],
+    form input[type="password"] {
+        width: 100% !important;
+    }
+
     .wrapper .col-large {
         float: none;
         width: 100% !important;
@@ -730,10 +726,6 @@ div#birthday-message img.media-object {
         margin: 0 2%;
     }
 
-    nav#user-nav-mobile {
-        display: block;
-    }
-
     .gallery img {
         height: auto;
         max-height: 200px;
@@ -747,13 +739,45 @@ div#birthday-message img.media-object {
         width: 100%;
     }
 
+    div#secondary-user > div:first-child {
+        position: static;
+        margin-bottom: 5px;
+    }
+
+    div#secondary-user img {
+        position: static;
+        display: block;
+        height: 50px;
+        width: 50px;
+        float: left;
+    }
+
+    div#secondary-user h4 {
+        margin-left: 55px;
+        margin-top: auto;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    div#secondary-user .btn {
+        margin-left: 5px;
+    }
+
+    div#secondary-user nav ul {
+        margin-left: 0;
+    }
+
     footer.footer {
         height: auto;
     }
 
-    footer.footer a.pull-right {
+    footer.footer p.copyright {
         display: block;
-        margin-bottom: 5px;
+        text-align: center;
+        margin-bottom: 3px;
+    }
+
+    footer.footer a.pull-right {
         float: none !important;
     }
 
@@ -799,10 +823,6 @@ div#birthday-message img.media-object {
         margin: auto;
     }
 
-    nav#user-nav-mobile {
-        display: block;
-    }
-
     article footer > ul > li > a {
         width: auto;
     }
@@ -822,10 +842,6 @@ div#birthday-message img.media-object {
     ul.navbar-right li:nth-child(1),
     ul.navbar-right li:nth-child(2) {
         display: none;
-    }
-
-    nav#user-nav-mobile {
-        display: block;
     }
 
     div.suggestions h4 {

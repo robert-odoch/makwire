@@ -8,17 +8,15 @@ class Login extends CI_Controller
         parent::__construct();
 
         session_start();
+        if ( ! empty($_SESSION['user_id'])) {
+            redirect(base_url('user/news-feed'));  // Already logged in user.
+        }
+
         $this->load->model('login_model');
     }
 
     public function index()
     {
-        if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
-
-            // Already logged in user.
-            redirect(base_url('user/news-feed'));
-        }
-
         $data['title'] = 'Log in to your account';
         $this->load->view('common/header', $data);
 
