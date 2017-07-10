@@ -42,7 +42,8 @@
                             if (isset($_SESSION['user_id'])) { ?>
                             <li class="hidden-lg">
                                 <a href="<?= base_url('user/chat'); ?>">
-                                    <span class="glyphicon glyphicon-signal" aria-hidden="true"></span> Chat
+                                    <span class="glyphicon glyphicon-signal" aria-hidden="true"></span>
+                                    Chat
                                     <?php
                                     if ($num_active_friends > 0) {
                                         print "<span class='badge'>{$num_active_friends}</span>";
@@ -74,7 +75,8 @@
                             </li>
                             <li>
                                 <a href="<?= base_url('user/friend-requests'); ?>">
-                                    <span class="glyphicon glyphicon-user" aria-hidden="true"></span> Friends Requests
+                                    <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                                    Friends Requests
                                     <?php
                                     if ($num_friend_requests > 0) {
                                         print " <span class='badge'>{$num_friend_requests}</span>";
@@ -84,28 +86,39 @@
                             </li>
                             <li class="hidden-sm hidden-md hidden-lg">
                                 <a href="<?= base_url('user/find-friends'); ?>">
-                                    <span class="glyphicon glyphicon-user" aria-hidden="true"></span> Find Friends
+                                    <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                                    Find Friends
+                                </a>
+                            </li>
+                            <li class="hidden-sm hidden-md hidden-lg">
+                                <a href="<?= base_url('user/profile'); ?>">
+                                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                                    Edit profile
                                 </a>
                             </li>
                             <li class="hidden-sm hidden-md hidden-lg">
                                 <a href="<?= base_url('settings/account'); ?>">
-                                    <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Settings
+                                    <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                                    Settings
                                 </a>
                             </li>
                             <li class="hidden-sm hidden-md hidden-lg">
                                 <a href="<?= base_url('user/news-feed'); ?>">
-                                    <span class="glyphicon glyphicon-equalizer" aria-hidden="true"></span> News Feed
+                                    <span class="glyphicon glyphicon-equalizer" aria-hidden="true"></span>
+                                    News Feed
                                 </a>
                             </li>
                             <li>
                                 <a href="<?= base_url('logout'); ?>">
-                                    <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> Log out
+                                    <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
+                                    Log out
                                 </a>
                             </li>
                             <?php } else { ?>
                             <li>
                                 <a href="<?= base_url('login'); ?>">
-                                    <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> Log In
+                                    <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
+                                    Log In
                                 </a>
                             </li>
                             <?php } ?>

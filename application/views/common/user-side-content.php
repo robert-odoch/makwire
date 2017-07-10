@@ -30,12 +30,10 @@ defined('PAGE') OR define('PAGE', '')
         <nav role="navigation" class="user-nav">
             <ul>
                 <li>
-                    <a href="<?= base_url('user/profile'); ?>"
-                        <?php
+                    <a href="<?= base_url('user/profile'); ?>" class="hidden-xs<?php
                         if (PAGE == 'profile' && $suid == $_SESSION['user_id'])
-                            print ' class="active"';
-                        ?>
-                        >Edit profile</a>
+                            print ' active';
+                        ?>">Edit profile</a>
                 </li>
                 <li class="hidden-xs">
                     <a href="<?= base_url('settings/account'); ?>">Settings</a>
