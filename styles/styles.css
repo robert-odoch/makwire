@@ -147,12 +147,15 @@ div#secondary-user ul li a.active {
     padding-bottom: 0px;
 }
 
+nav.user-nav {
+    margin-top: 5px;
+}
 nav.user-nav ul li a.active {
     background-color: #2E8B57;
 }
 
-div#primary-user {
-    margin-bottom: 5px;
+div#primary-user.media {
+    margin: 0;
 }
 
 div#primary-user h4.media-heading a {
