@@ -3,7 +3,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 defined('PAGE') OR define('PAGE', '')
 ?>
 
-<div class="side-content">
+<div class="side-content<?php
+    if (in_array(PAGE, ['timeline', 'profile', 'photos', 'friends']) &&
+        $suid == $_SESSION['user_id']) {
+        print ' hidden-xs';
+    }
+?>">
     <div>
         <div id="primary-user" class="media">
             <div class="media-left media-middle">
