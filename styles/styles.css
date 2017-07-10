@@ -751,6 +751,10 @@ div#birthday-message img.media-object {
         margin: 0 2%;
     }
 
+    div.box {
+        padding: 5px;
+    }
+
     .gallery img {
         height: auto;
         max-height: 200px;
