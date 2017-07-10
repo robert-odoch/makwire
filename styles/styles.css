@@ -685,6 +685,7 @@ div.comments div.media-body > span,
 div#birthday-message div.media-body > span,
 div.birthday-messages div.media-body > span {
     display: block;
+    margin: -5px 0;
 }
 
 div#reply div.media-body > span a,
