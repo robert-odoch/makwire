@@ -7,6 +7,10 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title><?= $title; ?></title>
+
+        <link rel="shortcut icon" href="<?= base_url('images/favicon.ico'); ?>" type="image/x-icon">
+        <link rel="icon" href="<?= base_url('images/favicon.ico'); ?>" type="image/x-icon">
+
         <link rel="stylesheet" href="<?= base_url('styles/bootstrap.min.css'); ?>">
 
         <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
