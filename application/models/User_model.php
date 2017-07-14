@@ -1275,10 +1275,11 @@ class User_model extends CI_Model
         $this->utility_model->run_query($fr_sql);
 
         // Dispatch an activity.
+        $request_id = $this->db->insert_id();
         $activity_sql = sprintf("INSERT INTO activities " .
                                 "(actor_id, subject_id, source_id, source_type, activity) " .
-                                "VALUES (%d, %d, %d, 'user', 'friend_request')",
-                                $_SESSION['user_id'], $target_id, $target_id);
+                                "VALUES (%d, %d, %d, 'friend_request', 'friend_request')",
+                                $_SESSION['user_id'], $target_id, $request_id);
         $this->utility_model->run_query($activity_sql);
     }
 
