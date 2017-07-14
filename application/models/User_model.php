@@ -1285,6 +1285,22 @@ class User_model extends CI_Model
         $this->utility_model->run_query($activity_sql);
     }
 
+    public function get_friend_request($request_id)
+    {
+        $sql = sprintf("SELECT fr.*, u.profile_name FROM friend_requests fr " .
+                        "LEFT JOIN users u ON (fr.user_id = u.user_id) " .
+                        "WHERE request_id = %d AND target_id = %d",
+                        $request_id, $_SESSION['user_id']);
+        $query = $this->utility_model->run_query($sql);
+        if ($query->num_rows() == 0) {
+            throw new NotFoundException();
+        }
+
+        $request = $query->row_array();
+        $request['profile_pic_path'] = $this->get_profile_pic_path($request['user_id']);
+        return $request;
+    }
+
     /**
      * Confirms a friend request sent to a user.
      *

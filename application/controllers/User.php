@@ -400,7 +400,7 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function friend_requests($offset = 0)
+    public function friend_requests($offset = 0, $request_id = 0)
     {
         $data = $this->user_model->initialize_user();
         $data['title'] = 'Friend Requests';
@@ -409,12 +409,21 @@ class User extends CI_Controller
         $limit = 10;
         $data['has_next'] = FALSE;
         $num_friend_requests = $this->user_model->get_num_friend_requests(FALSE);
-        if (($num_friend_requests - $offset) > $limit) {
-            $data['has_next'] = TRUE;
-            $data['next_offset'] = ($limit + $offset);
+        if ($num_friend_requests == 0 && $request_id != 0) {
+            try {
+                $data['friend_request'] = $this->user_model->get_friend_request($request_id);
+            } catch (NotFoundException $e) {
+                $data['friend_requests'] = [];
+            }
+        }
+        else {
+            if (($num_friend_requests - $offset) > $limit) {
+                $data['has_next'] = TRUE;
+                $data['next_offset'] = ($limit + $offset);
+            }
+            $data['friend_requests'] = $this->user_model->get_friend_requests($offset, $limit);
         }
 
-        $data['friend_requests'] = $this->user_model->get_friend_requests($offset, $limit);
         $this->load->view('friend-requests', $data);
         $this->load->view('common/footer');
     }

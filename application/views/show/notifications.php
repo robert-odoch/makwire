@@ -23,7 +23,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
             foreach ($notifications as $notif) {
                 switch ($notif['activity']) {
                 case 'friend_request':
-                    print "<li><a href='" . base_url("user/friend-requests/") .
+                    print "<li><a href='" . base_url("user/friend-requests/0/{$notif['source_id']}") .
                             "'><strong class='object'>{$notif['actor']}</strong> sent you a friend request.</a> " .
                             " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
                     break;
