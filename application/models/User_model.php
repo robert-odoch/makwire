@@ -1186,8 +1186,7 @@ class User_model extends CI_Model
                             "ON (u.user_id = f.user_id OR u.user_id = f.friend_id) ".
                         "WHERE u.user_id NOT IN (%s) AND u.user_id NOT IN(%s) AND u.user_id != %d AND " .
                             "(f.friend_id IN(%s) OR f.user_id IN (%s)) " .
-                        "GROUP BY u.user_id " .
-                        "ORDER BY COUNT(*) DESC",
+                        "GROUP BY u.user_id ORDER BY COUNT(*) DESC LIMIT %d, %d",
                         $friends_ids, $pending_fr_user_ids, $_SESSION['user_id'],
                         $friends_ids, $friends_ids,
                         $offset, $limit);
