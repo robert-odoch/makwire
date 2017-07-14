@@ -1331,6 +1331,23 @@ class User_model extends CI_Model
             throw new IllegalAccessException();
         }
 
+        // Get friend request ID for deleting this activity from activities table.
+        $request_id_sql = sprintf("SELECT request_id FROM friend_requests " .
+                                    "WHERE (user_id = %d AND target_id = %d) OR " .
+                                    "(user_id = %d AND target_id = %d) LIMIT 1",
+                                    $_SESSION['user_id'], $user_id,
+                                    $user_id, $_SESSION['user_id']);
+        $request_id_query = $this->utility_model->run_query($request_id_sql);
+        $request_id = $request_id_query->row_array()['request_id'];
+
+        // Delete the activity.
+        $activity_sql = sprintf("DELETE FROM activities " .
+                                "WHERE source_type = 'friend_request' AND source_id = %d " .
+                                "LIMIT 1",
+                                $request_id);
+        $this->utility_model->run_query($activity_sql);
+
+        // Delete the friend request.
         $fr_sql = sprintf("DELETE from friend_requests " .
                             "WHERE (user_id = %d AND target_id = %d) OR " .
                             "(user_id = %d AND target_id = %d) LIMIT 1",
@@ -1338,6 +1355,7 @@ class User_model extends CI_Model
                             $user_id, $_SESSION['user_id']);
         $this->utility_model->run_query($fr_sql);
 
+        // Un-friend the user.
         $unfr_sql = sprintf("DELETE FROM friends WHERE (user_id = %d AND friend_id = %d) OR " .
                             "(user_id = %d AND friend_id = %d) LIMIT 1",
                             $_SESSION['user_id'], $user_id,
