@@ -666,9 +666,10 @@ class User_model extends CI_Model
     {
         // Notifications that can/can't be combined together if the are performed on
         // the same object.
-        $combined_notifs_array = ['message', 'like', 'comment', 'reply', 'share', 'friend_request', 'join_group_request'];
-        $combined_notifs = "'message', 'like', 'comment', 'reply', 'share', 'friend_request', 'join_group_request'";
-        $atomic_notifs = "'birthday', 'profile_pic_change', 'confirmed_friend_request', 'confirmed_join_group_request', 'added_photo'";
+        $combined_notifs_array = ['message', 'like', 'comment', 'reply', 'share'];
+        $combined_notifs = "'message', 'like', 'comment', 'reply', 'share'";
+        $atomic_notifs = "'birthday', 'profile_pic_change', 'friend_request', 'join_group_request', " .
+                         "'confirmed_friend_request', 'confirmed_join_group_request', 'added_photo'";
 
         // Get the ID's of all this user's friends.
         $friends_ids = $this->get_friends_ids();
@@ -810,9 +811,10 @@ class User_model extends CI_Model
     {
         // Notifications that can/can't be combined together if the are performed on
         // the same object.
-        $combined_notifs_array = ['message', 'like', 'comment', 'reply', 'share', 'friend_request', 'join_group_request'];
-        $combined_notifs = "'message', 'like', 'comment', 'reply', 'share', 'friend_request', 'join_group_request'";
-        $atomic_notifs = "'birthday', 'profile_pic_change', 'confirmed_friend_request', 'confirmed_join_group_request', 'added_photo'";
+        $combined_notifs_array = ['message', 'like', 'comment', 'reply', 'share'];
+        $combined_notifs = "'message', 'like', 'comment', 'reply', 'share'";
+        $atomic_notifs = "'birthday', 'profile_pic_change', 'friend_request', 'join_group_request', " .
+                         "'confirmed_friend_request', 'confirmed_join_group_request', 'added_photo'";
 
         // Get the ID's of all this user's friends.
         $friends_ids = $this->get_friends_ids();

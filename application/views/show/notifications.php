@@ -24,7 +24,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
                 switch ($notif['activity']) {
                 case 'friend_request':
                     print "<li><a href='" . base_url("user/friend-requests/") .
-                            "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} sent you a friend request.</a> " .
+                            "'><strong class='object'>{$notif['actor']}</strong> sent you a friend request.</a> " .
                             " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
                     break;
                 case 'confirmed_friend_request':
