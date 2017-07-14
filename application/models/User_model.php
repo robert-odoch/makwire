@@ -768,20 +768,23 @@ class User_model extends CI_Model
         $notifs_query = $this->utility_model->run_query($notifs_sql);
         $notifs_results = $notifs_query->result_array();
 
-        // Don't count friend_requests that have already been seen.
-        for ($i = 0; $i < count($notifs_results); ++$i) {
-            if ($notifs_results[$i]['activity'] == 'friend_request') {
-                $source_sql = sprintf("SELECT source_id FROM  activities " .
-                                        "WHERE activity_id = %d",
-                                        $notifs_results[$i]['activity_id']);
-                $source_result = $this->utility_model->run_query($source_sql)->row_array();
+        if ($filter) {
+            // Don't count friend_requests that have already been seen.
+            $num_results = count($notifs_results);
+            for ($i = 0; $i < $num_results; ++$i) {
+                if ($notifs_results[$i]['activity'] == 'friend_request') {
+                    $source_sql = sprintf("SELECT source_id FROM  activities " .
+                                            "WHERE activity_id = %d",
+                                            $notifs_results[$i]['activity_id']);
+                    $source_result = $this->utility_model->run_query($source_sql)->row_array();
 
-                $fr_seen_sql = sprintf("SELECT seen FROM friend_requests " .
-                                        "WHERE request_id = %d",
-                                        $source_result['source_id']);
-                $fr_seen_result = $this->utility_model->run_query($fr_seen_sql)->row_array();
-                if ($fr_seen_result['seen']) {
-                    unset($notifs_results[$i]);
+                    $fr_seen_sql = sprintf("SELECT seen FROM friend_requests " .
+                                            "WHERE request_id = %d",
+                                            $source_result['source_id']);
+                    $fr_seen_result = $this->utility_model->run_query($fr_seen_sql)->row_array();
+                    if ($fr_seen_result['seen']) {
+                        unset($notifs_results[$i]);
+                    }
                 }
             }
         }
