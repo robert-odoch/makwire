@@ -1104,8 +1104,7 @@ class User_model extends CI_Model
         }
         else {
             // Check to see if a friend request has already been sent.
-            $req_sql = sprintf("SELECT request_id, user_id, target_id " .
-                                "FROM friend_requests " .
+            $req_sql = sprintf("SELECT user_id, target_id FROM friend_requests " .
                                 "WHERE (user_id = %d AND target_id = %d) OR " .
                                         "(user_id = %d AND target_id = %d) " .
                                 "LIMIT 1",
