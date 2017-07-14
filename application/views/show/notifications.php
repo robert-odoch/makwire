@@ -23,7 +23,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
             foreach ($notifications as $notif) {
                 switch ($notif['activity']) {
                 case 'friend_request':
-                    print "<li><a href='" . base_url("user/friend_requests/") .
+                    print "<li><a href='" . base_url("user/friend-requests/") .
                             "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} sent you a friend request.</a> " .
                             " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
                     break;
@@ -165,12 +165,12 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
                     break;
                 case 'share':
                     if ($notif['source_type'] == 'post') {
-                        print "<li><a href='" . base_url("/user/post/{$notif['source_id']}") .
+                        print "<li><a href='" . base_url("user/post/{$notif['source_id']}") .
                                 "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} shared your post \"{$notif['post']}\"</a> " .
                                 " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
                     }
                     elseif ($notif['source_type'] == 'photo') {
-                        print "<li><a href='" . base_url("/user/photo/{$notif['source_id']}") .
+                        print "<li><a href='" . base_url("user/photo/{$notif['source_id']}") .
                                 "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} shared your photo.</a> " .
                                 " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
                     }
@@ -179,14 +179,14 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
                     $dob_array = explode('-', $notif['dob']);
                     if (date_create(date('Y-m-d')) ==
                         date_create(($dob_array[0]+$notif['age']) . "-{$dob_array[1]}-{$dob_array[2]}")) {
-                        print("<li><a href='" . base_url("/user/birthday/{$notif['actor_id']}/{$notif['age']}") .
+                        print("<li><a href='" . base_url("user/birthday/{$notif['actor_id']}/{$notif['age']}") .
                                 "'>Today is <strong class='object'>" .
                                 format_name($notif['actor'], '</strong>') . " birthday.</a></li>");
                     }
                     else {
                         $birthday = date_create(($dob_array[0] + $notif['age']) . "-{$dob_array[1]}-{$dob_array[2]}");
                         $birthday = $birthday->format('F jS, Y');
-                        print("<li><a href='" . base_url("/user/birthday/{$notif['actor_id']}/{$notif['age']}") .
+                        print("<li><a href='" . base_url("user/birthday/{$notif['actor_id']}/{$notif['age']}") .
                                 "'><strong class='object'>" .
                                 format_name($notif['actor'], '</strong>') . " birthday was on {$birthday}.</a></li>");
                     }
