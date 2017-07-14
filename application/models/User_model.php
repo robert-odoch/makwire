@@ -1293,8 +1293,10 @@ class User_model extends CI_Model
                             $user_id, $_SESSION['user_id']);
         $this->utility_model->run_query($fr_sql);
 
-        $unfr_sql = sprintf("DELETE FROM friends WHERE (user_id = %d AND friend_id = %d) " .
-                            "LIMIT 1", $_SESSION['user_id'], $user_id);
+        $unfr_sql = sprintf("DELETE FROM friends WHERE (user_id = %d AND friend_id = %d) OR " .
+                            "(user_id = %d AND friend_id = %d) LIMIT 1",
+                            $_SESSION['user_id'], $user_id,
+                            $user_id, $_SESSION['user_id']);
         $this->utility_model->run_query($unfr_sql);
     }
 
