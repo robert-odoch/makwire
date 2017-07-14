@@ -676,7 +676,7 @@ class User_model extends CI_Model
         $friends_ids[] = 0;
         $friends_ids = implode(',', $friends_ids);
 
-        // WHERE clause for notifications having this user as a direct targert.
+        // WHERE clause for notifications having this user as a direct target.
         $primary_notifs_clause = sprintf("subject_id = %d AND actor_id != %d",
                                          $_SESSION['user_id'], $_SESSION['user_id']);
 
@@ -820,7 +820,7 @@ class User_model extends CI_Model
         $friends_ids[] = 0;
         $friends_ids = implode(',', $friends_ids);
 
-        // WHERE clause for notifications having this user as a direct targert.
+        // WHERE clause for notifications having this user as a direct target.
         $primary_notifs_clause = sprintf("subject_id = %d AND actor_id != %d",
                                          $_SESSION['user_id'], $_SESSION['user_id']);
 
@@ -1137,14 +1137,33 @@ class User_model extends CI_Model
         $friends_ids[] = 0;
         $friends_ids = implode(',', $friends_ids);
 
+        // Get users IDs from pending friend requests.
+        $pending_fr_sql = sprintf("SELECT user_id, target_id FROM friend_requests " .
+                                    "WHERE (user_id = %d OR target_id = %d) AND " .
+                                        "confirmed IS FALSE " .
+                                    "LIMIT 1",
+                                    $_SESSION['user_id'], $_SESSION['user_id']);
+        $pending_fr_query = $this->utility_model->run_query($pending_fr_sql);
+        $pending_fr_results = $pending_fr_query->result_array();
+
+        $pending_fr_user_ids =  [];
+        foreach ($pending_fr_results as $pr) {
+            if ($pr['user_id'] == $_SESSION['user_id'])
+                $pending_fr_user_ids[] = $pr['target_id'];
+            else
+                $pending_fr_user_ids[] = $pr['user_id'];
+        }
+        unset($pending_fr_sql, $pending_fr_query, $pending_fr_results);
+        $pending_fr_user_ids = implode(',', $pending_fr_user_ids);
+
         $sql = sprintf("SELECT u.user_id, COUNT(*) FROM users AS u " .
                         "LEFT JOIN friends AS f " .
                             "ON (u.user_id = f.user_id OR u.user_id = f.friend_id) ".
-                        "WHERE u.user_id NOT IN (%s) AND u.user_id != %d AND " .
+                        "WHERE u.user_id NOT IN (%s) AND u.user_id NOT IN(%s) AND u.user_id != %d AND " .
                             "(f.friend_id IN(%s) OR f.user_id IN (%s)) " .
                         "GROUP BY u.user_id " .
                         "ORDER BY COUNT(*) DESC",
-                        $friends_ids, $_SESSION['user_id'],
+                        $friends_ids, $pending_fr_user_ids, $_SESSION['user_id'],
                         $friends_ids, $friends_ids,
                         $offset, $limit);
 
