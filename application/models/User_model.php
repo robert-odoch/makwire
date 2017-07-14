@@ -1145,7 +1145,7 @@ class User_model extends CI_Model
         $pending_fr_query = $this->utility_model->run_query($pending_fr_sql);
         $pending_fr_results = $pending_fr_query->result_array();
 
-        $pending_fr_user_ids =  [];
+        $pending_fr_user_ids =  [0];
         foreach ($pending_fr_results as $pr) {
             if ($pr['user_id'] == $_SESSION['user_id'])
                 $pending_fr_user_ids[] = $pr['target_id'];
