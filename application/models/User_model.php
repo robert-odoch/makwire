@@ -381,7 +381,7 @@ class User_model extends CI_Model
      * @param $filter whether to return only unread messages.
      * @return number of messages.
      */
-    public function get_num_messages($filter=TRUE)
+    public function get_num_messages($filter = TRUE)
     {
         if ($filter) {
             $sql = sprintf("SELECT COUNT(message_id) " .
@@ -407,7 +407,7 @@ class User_model extends CI_Model
      * @param $limit
      * @param $filter whether to return only unread messages.
      */
-    public function get_messages($offset, $limit, $filter=TRUE)
+    public function get_messages($offset, $limit, $filter = TRUE)
     {
         if ($filter) {
             $sql = sprintf("SELECT DISTINCT sender_id " .
@@ -571,7 +571,7 @@ class User_model extends CI_Model
      * @param $filter whether to count only logged in users.
      * @return number friends who are currently logged in.
      */
-    public function get_num_chat_users($filter=TRUE)
+    public function get_num_chat_users($filter = TRUE)
     {
         return count($this->get_chat_users(TRUE));
     }
@@ -582,7 +582,7 @@ class User_model extends CI_Model
      * @param $filter whether to strictly return only logged in users.
      * @return friends who are currently logged in.
      */
-    public function get_chat_users($filter=TRUE)
+    public function get_chat_users($filter = TRUE)
     {
         $chat_users = array();
 
@@ -662,7 +662,7 @@ class User_model extends CI_Model
      * counted.
      * @return number of notifications for this user.
      */
-    public function get_num_notifications($filter=TRUE)
+    public function get_num_notifications($filter = TRUE)
     {
         // Notifications that can/can't be combined together if the are performed on
         // the same object.
@@ -831,7 +831,7 @@ class User_model extends CI_Model
      * returned.
      * @return notifications for this user.
      */
-    public function get_notifications($offset, $limit, $filter=TRUE)
+    public function get_notifications($offset, $limit, $filter = TRUE)
     {
         // Notifications that can/can't be combined together if the are performed on
         // the same object.
@@ -1208,7 +1208,7 @@ class User_model extends CI_Model
      * seen.
      * @return number of friend requests for the current logged in user.
      */
-    public function get_num_friend_requests($filter=TRUE)
+    public function get_num_friend_requests($filter = TRUE)
     {
         if ($filter) {
             $req_sql = sprintf("SELECT COUNT(user_id) FROM friend_requests " .
