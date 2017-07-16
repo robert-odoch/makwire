@@ -36,6 +36,10 @@ h5 {
 .panel {
     margin-bottom: 0;
 }
+.panel-heading,
+.panel-body {
+    padding: 5px;
+}
 /* End override */
 
 .table {
