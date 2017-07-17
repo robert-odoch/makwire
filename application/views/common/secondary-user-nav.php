@@ -28,7 +28,7 @@
         }
         elseif ($friendship_status['fr_sent'] &&
                 $friendship_status['user_id'] == $_SESSION['user_id']) {
-            print "<span class='btn btn-default'>" .
+            print "<span class='btn btn-xs btn-default'>" .
                     "<span class='glyphicon glyphicon-ok-circle' aria-hidden='true'></span> " .
                     "Friend Request Sent</span>";
         }
