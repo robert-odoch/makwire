@@ -427,7 +427,7 @@ div.box {
     border-radius: 2px;
     margin-bottom: 5px;
     line-height: 2em;
-    padding: 10px;
+    padding: 8px;
 }
 
 div.box:last-child {
