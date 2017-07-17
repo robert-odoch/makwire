@@ -457,6 +457,17 @@ class User extends CI_Controller
         }
     }
 
+    public function delete_friend_request($user_id = 0)
+    {
+        try {
+            $this->user_model->delete_friend_request($user_id);
+            redirect(base_url('user/friend-requests'));
+        }
+        catch (NotFoundException $e) {
+            show_404();
+        }
+    }
+
     public function unfriend($user_id = 0)
     {
         try {

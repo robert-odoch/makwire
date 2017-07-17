@@ -45,6 +45,10 @@ require_once('common/user-page-start.php');
                         </h4>
                         <a href="<?= base_url("user/accept-friend/{$fr['user_id']}"); ?>"
                             class="btn btn-xs">Confirm</a>
+                        <a href='<?= base_url("user/delete-friend-request/{$fr['user_id']}"); ?>'
+                            class='btn btn-xs btn-default'>
+                            <span class='glyphicon glyphicon-trash'></span> Delete request
+                        </a>
                     </div>
                 </div>
                 <?php } ?>

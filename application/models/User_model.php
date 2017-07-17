@@ -1340,6 +1340,36 @@ class User_model extends CI_Model
         $this->utility_model->run_query($activity_sql);
     }
 
+    public function delete_friend_request($user_id)
+    {
+        // Get friend request ID for deleting this activity from activities table.
+        $request_id_sql = sprintf("SELECT request_id FROM friend_requests " .
+                                    "WHERE (user_id = %d AND target_id = %d) OR " .
+                                    "(user_id = %d AND target_id = %d) LIMIT 1",
+                                    $_SESSION['user_id'], $user_id,
+                                    $user_id, $_SESSION['user_id']);
+        $request_id_query = $this->utility_model->run_query($request_id_sql);
+        if ($request_id_query->num_rows() == 0) {
+            throw new NotFoundException();
+        }
+        $request_id = $request_id_query->row_array()['request_id'];
+
+        // Delete the activity.
+        $activity_sql = sprintf("DELETE FROM activities " .
+                                "WHERE source_type = 'friend_request' AND source_id = %d " .
+                                "LIMIT 1",
+                                $request_id);
+        $this->utility_model->run_query($activity_sql);
+
+        // Delete the friend request.
+        $fr_sql = sprintf("DELETE from friend_requests " .
+                            "WHERE (user_id = %d AND target_id = %d) OR " .
+                            "(user_id = %d AND target_id = %d) LIMIT 1",
+                            $_SESSION['user_id'], $user_id,
+                            $user_id, $_SESSION['user_id']);
+        $this->utility_model->run_query($fr_sql);
+    }
+
     public function unfriend_user($user_id)
     {
         if ( ! $this->are_friends($user_id)) {
