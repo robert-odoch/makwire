@@ -9,8 +9,6 @@ require_once('common/user-page-start.php');
         <div class="panel-body">
             <?php if (isset($error)) { ?>
             <div class="alert alert-danger" role="alert">
-                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                <span class="sr-only">Error: </span>
                 <?= $error; ?>
             </div>
             <?php } ?>
