@@ -44,16 +44,16 @@ defined('PAGE') OR define('PAGE', '')
     </div>
 
     <nav role="navigation" id="short-cuts" class="hidden-xs">
-        <h5><span class="glyphicon glyphicon-console" aria-hidden="true"></span> Quick access</h5>
+        <h5><span class="glyphicon glyphicon-console" aria-hidden="true"></span> QUICK ACCESS</h5>
         <ul>
             <li<?php if (PAGE == 'news-feed') print ' class="active"'; ?>>
                 <a href="<?= base_url('user/news-feed'); ?>">News Feed</a>
             </li>
             <li<?php if (PAGE == 'find-friends') print ' class="active"'; ?>>
                 <a href="<?= base_url('user/find-friends'); ?>"
-                    >Find friends</a>
+                    >Find Friends</a>
             </li>
         </ul>
-        <h5><span class="glyphicon glyphicon-bookmark" aria-hidden="true"></span> Short cuts</h5>
+        <h5><span class="glyphicon glyphicon-bookmark" aria-hidden="true"></span> SHORTCUTS</h5>
     </nav>
 </div>
