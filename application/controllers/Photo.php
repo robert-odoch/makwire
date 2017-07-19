@@ -40,7 +40,6 @@ class Photo extends CI_Controller
             // Upload the file.
             if (!$this->upload->do_upload('userfile')) {
                 $data['error'] = $this->upload->display_errors();
-                $this->load->view('upload-image', $data);
             }
             else {
                 $upload_data = $this->upload->data();

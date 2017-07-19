@@ -38,7 +38,6 @@ class Profile extends CI_Controller
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!$this->upload->do_upload('userfile')) {
                 $data['error'] = $this->upload->display_errors();
-                $this->load->view('upload-image', $data);
             }
             else {
 
