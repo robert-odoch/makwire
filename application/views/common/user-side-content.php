@@ -44,7 +44,7 @@ defined('PAGE') OR define('PAGE', '')
     </div>
 
     <nav role="navigation" id="short-cuts" class="hidden-xs">
-        <h5><span class="glyphicon glyphicon-console" aria-hidden="true"></span> QUICK ACCESS</h5>
+        <h5><span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span> QUICK ACCESS</h5>
         <ul>
             <li<?php if (PAGE == 'news-feed') print ' class="active"'; ?>>
                 <a href="<?= base_url('user/news-feed'); ?>">News Feed</a>
@@ -54,6 +54,6 @@ defined('PAGE') OR define('PAGE', '')
                     >Find Friends</a>
             </li>
         </ul>
-        <h5><span class="glyphicon glyphicon-bookmark" aria-hidden="true"></span> SHORTCUTS</h5>
+        <h5><span class="glyphicon glyphicon-link" aria-hidden="true"></span> SHORTCUTS</h5>
     </nav>
 </div>
