@@ -19,7 +19,7 @@
                         if (isset($fname)) {
                             print " value='{$fname}'";
                         }
-                        ?>>
+                        ?> required>
                         <?php
                         if (isset($error_messages) && isset($error_messages['fname'])) {
                             print "<span class='error'>{$error_messages['fname']}</span>";
@@ -38,7 +38,7 @@
                         if (isset($lname)) {
                             print " value='{$lname}'";
                         }
-                        ?>>
+                        ?> required>
                         <?php
                         if (isset($error_messages) && isset($error_messages['lname'])) {
                             print "<span class='error'>{$error_messages['lname']}</span>";

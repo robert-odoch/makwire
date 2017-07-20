@@ -47,7 +47,7 @@ require_once('common/user-page-start.php');
                     if (isset($message_error)) {
                         print ' has-error';
                     }
-                    ?>">
+                    ?>" required>
                     <?php
                     if (isset($message_error)) {
                         print "<span class='error'>{$message_error}</span>";

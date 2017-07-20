@@ -33,7 +33,7 @@
                                 if (isset($email)) {
                                     print " value = '{$email}' ";
                                 }
-                                ?>>
+                                ?> required>
                             <?php
                             if (isset($error_message)) {
                                 print "<span class='error'>{$error_message}</span>";

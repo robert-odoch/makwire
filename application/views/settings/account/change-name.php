@@ -24,7 +24,7 @@
                                 if (isset($error_messages) && isset($error_messages['lname'])) {
                                     print ' class="has-error"';
                                 }
-                                ?>>
+                                ?> required>
                                 <?php
                                 if (isset($error_messages) && isset($error_messages['lname'])) {
                                     print "<span class='error'>{$error_messages['lname']}</span>";
@@ -41,7 +41,7 @@
                                 if (isset($error_messages) && isset($error_messages['other_names'])) {
                                     print ' class="has-error"';
                                 }
-                                ?>>
+                                ?> required>
                                 <?php
                                 if (isset($error_messages) && isset($error_messages['other_names'])) {
                                     print "<span class='error'>{$error_messages['other_names']}</span>";

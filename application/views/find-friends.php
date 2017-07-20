@@ -15,7 +15,7 @@ require_once('common/user-page-start.php');
                 if (isset($error)) {
                     print ' has-error';
                 }
-                ?>">
+                ?>" required>
 
                 <?php
                 if (isset($error)) {

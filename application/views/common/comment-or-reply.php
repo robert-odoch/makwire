@@ -54,7 +54,7 @@
             if (isset($reply_error)) {
                 print " has-error";
             }
-            ?>">
+            ?>" required>
             <?php
             if (isset($reply_error)) {
                 print "<span class='error'>{$reply_error}</span>";

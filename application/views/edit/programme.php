@@ -10,7 +10,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
             <div class="form-group">
                 <label for="programme">Programme</label>
                 <?php if (isset($programmes)) { ?>
-                <select name="programme" id="programme" class="form-control">
+                <select name="programme" id="programme" class="form-control" required>
                     <optgroup>
                     <?php
                     foreach ($programmes as $p) {
@@ -30,7 +30,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
         <fieldset>
             <div class="form-group">
                 <label for="year-of-study">Year of Study</label>
-                <select name="year-of-study" id="year-of-study">
+                <select name="year-of-study" id="year-of-study" required>
                     <optgroup>
                         <?php
                         $years = array(1=>'one', 2=>'two', 3=>'three',

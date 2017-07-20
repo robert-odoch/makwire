@@ -23,7 +23,7 @@
                                     You primary makwire email address will be used for
                                     communications related to your account.
                                 </p>
-                                <select name="primary-email" class="form-control">
+                                <select name="primary-email" class="form-control" required>
                                     <?php foreach ($emails as $e): ?>
                                         <option value="<?= $e['email']; ?>"><?= $e['email']; ?></option>
                                     <?php endforeach; ?>
@@ -47,7 +47,7 @@
                                     Your backup makwire email address can be used if you no
                                     longer have access to your primary email address.
                                 </p>
-                                <select name="backup-email" class="form-control">
+                                <select name="backup-email" class="form-control" required>
                                     <?php
                                     foreach ($emails as $e) {
                                         if ( ! $e['is_primary']) {
@@ -80,7 +80,7 @@
                                 <label for="email" class="sr-only">Email address</label>
                                 <p class="help-block">Any email address is allowed.</p>
                                 <input type="email" name="email" id="email"
-                                <?php if (isset($error_message)) print ' class="has-error"'; ?>>
+                                <?php if (isset($error_message)) print ' class="has-error"'; ?> required>
                                 <?php if (isset($error_message)) print "<span class='error'>{$error_message}"; ?>
                             </div>
 

@@ -62,7 +62,7 @@
             if (isset($comment_error)) {
                 print(" has-error");
             }
-            ?>">
+            ?>" required>
             <?php
             if (isset($comment_error)) {
                 print("<span class='error'>{$comment_error}</span>");

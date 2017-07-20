@@ -16,7 +16,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
             <div class="form-group">
                 <label for="hostel">Hostel</label>
                 <?php if (isset($hostels)) { ?>
-                    <select name="hostel" id="hostel" class="form-control">
+                    <select name="hostel" id="hostel" class="form-control" required>
                         <optgroup>
                             <?php
                             foreach ($hostels as $hostel) {

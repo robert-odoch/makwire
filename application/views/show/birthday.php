@@ -53,7 +53,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
                     if (isset($error_message)) {
                         print " has-error";
                     }
-                    ?>">
+                    ?>" required>
                     <?php
                     if (isset($error_message)) {
                         print "<span class='error'>{$error_message}</span>";

@@ -27,7 +27,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
             <fieldset>
                 <div class="form-group">
                     <label for="district">District</label>
-                    <input type="text" name="district" id="district" size="30">
+                    <input type="text" name="district" id="district" size="30" required>
                 </div>
             </fieldset>
             <input type="submit" value="Submit" class="btn btn-sm">

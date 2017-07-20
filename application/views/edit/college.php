@@ -20,7 +20,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
             <div class="form-group">
                 <label for="college">College</label>
                 <?php if (isset($colleges)) { ?>
-                    <select name="college" id="college" class="form-control">
+                    <select name="college" id="college" class="form-control" required>
                         <optgroup>
                         <?php
                         foreach ($colleges as $c) {
@@ -43,7 +43,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
             <div class="form-group">
                 <label for="school">School</label>
                 <?php if (isset($schools)) { ?>
-                    <select name="school" id="school" class="form-control">
+                    <select name="school" id="school" class="form-control" required>
                         <optgroup>
                         <?php
                         foreach ($schools as $s) {

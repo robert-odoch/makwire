@@ -15,7 +15,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
             <fieldset>
                 <div class="form-group">
                     <label for="country">Select Country</label>
-                    <select name="country" id="country" class="form-control">
+                    <select name="country" id="country" class="form-control" required>
                         <optgroup>
                             <?php foreach ($countries as $country) { ?>
                                 <option value="<?= $country['country_id']; ?>">

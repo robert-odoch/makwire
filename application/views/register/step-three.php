@@ -23,7 +23,7 @@
                         if (isset($uname)) {
                             print " value='{$uname}'";
                         }
-                        ?>>
+                        ?> required>
                         <?php
                         if (isset($error_messages) && isset($error_messages['uname'])) {
                             print "<span class='error'>{$error_messages['uname']}</span>";
@@ -41,7 +41,7 @@
                         if (isset($error_messages) && isset($error_messages['passwd1'])) {
                             print ' has-error';
                         }
-                        ?>">
+                        ?>" required>
                         <?php
                         if (isset($error_messages) && isset($error_messages['passwd1'])) {
                             print "<span class='error'>{$error_messages['passwd1']}</span>";
@@ -55,7 +55,7 @@
                         if (isset($error_messages) && isset($error_messages['passwd2'])) {
                             print ' has-error';
                         }
-                        ?>">
+                        ?>" required>
                         <?php
                         if (isset($error_messages) && isset($error_messages['passwd2'])) {
                             print "<span class='error'>{$error_messages['passwd2']}</span>";

@@ -37,7 +37,7 @@
                         if (isset($username)) {
                             print " value='{$username}'";
                         }
-                        ?>>
+                        ?> required>
                         <?php
                         if (isset($login_errors) && array_key_exists('username', $login_errors)) {
                             print "<span class='error'>{$login_errors['username']}</span>\n";
@@ -52,7 +52,7 @@
                             array_key_exists('password', $login_errors)) {
                             print " has-error";
                         }
-                        ?>">
+                        ?>" required>
                         <?php
                         if (isset($login_errors) && array_key_exists('password', $login_errors)) {
                             print "<span class='error'>{$login_errors['password']}</span>\n";

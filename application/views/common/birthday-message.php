@@ -47,7 +47,7 @@
         <form action='<?= base_url("birthday-message/reply/{$message['id']}"); ?>'
               method="post" accept-charset="utf-8" role="form">
             <label for="reply" class="sr-only">Reply</label>
-            <input type="text" name="reply" id="reply" class="fluid" placeholder="Leave a reply...">
+            <input type="text" name="reply" id="reply" class="fluid" placeholder="Leave a reply..." required>
         </form>
     <?php } ?>
 </div><!-- box -->

@@ -19,7 +19,7 @@
                                     <?php
                                     if (isset($error_messages) && isset($error_messages['oldpasswd']))
                                         print ' class="has-error"';
-                                    ?>>
+                                    ?> required>
                                 <?php
                                 if (isset($error_messages) && isset($error_messages['oldpasswd']))
                                     print "<span class='error'>{$error_messages['oldpasswd']}</span>";
@@ -36,7 +36,7 @@
                                 if (isset($error_messages) && isset($error_messages['passwd1'])) {
                                     print ' class="has-error"';
                                 }
-                                ?>>
+                                ?> required>
                                 <?php
                                 if (isset($error_messages) && isset($error_messages['passwd1'])) {
                                     print "<span class='error'>{$error_messages['passwd1']}</span>";
@@ -50,7 +50,7 @@
                                 if (isset($error_messages) && isset($error_messages['passwd2'])) {
                                     print ' class="has-error"';
                                 }
-                                ?>>
+                                ?> required>
                                 <?php
                                 if (isset($error_messages) && isset($error_messages['passwd2'])) {
                                     print "<span class='error'>{$error_messages['passwd2']}</span>";

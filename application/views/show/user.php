@@ -36,7 +36,7 @@ if (!$is_visitor) {
                     print ' has-error';
                 }
                 ?>
-                "></textarea>
+                " required></textarea>
                 <?php
                 if (isset($post_error)) {
                     print "<span class='error'>{$post_error}</span>";
