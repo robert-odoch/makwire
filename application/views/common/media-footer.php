@@ -54,6 +54,24 @@
                     <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span> Share
                 </a>
             </li>
+
+            <?php
+            if (
+                ($$object['user_id'] == $_SESSION['user_id']) ||
+                ($$object['shared'] && ($$object['sharer_id'] == $_SESSION['user_id']))
+            ): ?>
+            <li class="dropdown pull-right">
+                <button class="btn btn-xs btn-default dropdown-toggle" type="button"
+                    id="options-menu" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="true" style="margin-bottom: 2px;">
+                    Options <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="options-menu">
+                    <li><a href="#">Edit</a></li>
+                    <li><a href="#">Delete</a></li>
+                </ul>
+            </li>
+            <?php endif; ?>
         </ul>
         <form action="<?= base_url("$object/comment/{$$object[$object . '_id']}"); ?>"
             method="post" accept-charset="utf-8" role="form">
