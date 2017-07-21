@@ -104,4 +104,23 @@ class Utility_model extends CI_Model
 
         return $result;
     }
+
+    /**
+     * For posts, photos, videos, and links.
+     *
+     * Adds the details of the sharer and also updates the timespan to match
+     * when the item was shared.
+     */
+    public function update_shared_item_data($item, $data) {
+        $data[$item]['sharer_id'] = $data['actor_id'];
+        $data[$item]['sharer'] = $this->user_model->get_profile_name($data['actor_id']);
+
+        // Change timespan to match the date it was shared on.
+        $data[$item]['timespan'] = timespan(mysql_to_unix($data['date_entered']), now(), 1);
+
+        // Replace author's profile_pic with the one for sharer.
+        $data[$item]['profile_pic_path'] = $this->user_model->get_profile_pic_path($data['actor_id']);
+
+        return $data;
+    }
 }

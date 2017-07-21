@@ -47,7 +47,7 @@ defined('PAGE') OR define('PAGE', '')
         <h5><span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span> QUICK ACCESS</h5>
         <ul>
             <li<?php if (PAGE == 'news-feed') print ' class="active"'; ?>>
-                <a href="<?= base_url('user/news-feed'); ?>">News Feed</a>
+                <a href="<?= base_url('news-feed'); ?>">News Feed</a>
             </li>
             <li<?php if (PAGE == 'find-friends') print ' class="active"'; ?>>
                 <a href="<?= base_url('user/find-friends'); ?>"
