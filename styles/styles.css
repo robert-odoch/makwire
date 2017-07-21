@@ -759,6 +759,10 @@ div#birthday-message img.media-object {
         padding: 5px;
     }
 
+    .nav.nav-tabs > li > a {
+        padding: 5px 10px;
+    }
+
     .gallery img {
         height: auto;
         max-height: 200px;
