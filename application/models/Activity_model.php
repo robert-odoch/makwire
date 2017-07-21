@@ -237,7 +237,7 @@ class Activity_model extends CI_Model
 
         // Check whether this user has already shared the object.
         $share_sql = sprintf("SELECT share_id FROM shares " .
-                                "WHERE (subject_id = %d AND user_id = %d AND subject_type='%s') " .
+                                "WHERE (subject_id = %d AND sharer_id = %d AND subject_type='%s') " .
                                 "LIMIT %d",
                                 $object->getId(), $_SESSION['user_id'], $object->getType(), 1);
         $share_query = $this->utility_model->run_query($share_sql);
