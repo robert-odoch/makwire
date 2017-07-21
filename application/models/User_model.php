@@ -14,7 +14,7 @@ class User_model extends CI_Model
         parent::__construct();
         $this->load->model([
             'utility_model', 'post_model',
-            'birthday_message_model'
+            'video', 'birthday_message_model'
         ]);
     }
 
@@ -30,6 +30,23 @@ class User_model extends CI_Model
             $interval = $interval->format("%R%s");
             return $interval;
         };
+    }
+
+    /**
+     * Adds the details of the sharer and also updates the timespan to match
+     * when the item was shared.
+     */
+    private function update_shared_item_data($item, $data, $user_id) {
+        $data[$item]['sharer_id'] = $user_id;
+        $data[$item]['sharer'] = $this->user_model->get_profile_name($user_id);
+
+        // Change timespan to match the date it was shared on.
+        $data[$item]['timespan'] = timespan(mysql_to_unix($data['date_entered']), now(), 1);
+
+        // Replace author's profile_pic with the one for sharer.
+        $data[$item]['profile_pic_path'] = $this->get_profile_pic_path($user_id);
+
+        return $data;
     }
 
     /**
@@ -227,16 +244,15 @@ class User_model extends CI_Model
      */
     public function get_num_timeline_items($user_id)
     {
-        // Get number of posts and photos posted by this user.
-        // and posts and photos shared by this user that are by friends
+        // Get number of posts, photos, videos, and links posted by this user
+        // and those shared by this user that are by friends
         // to the user viewing the page.
-        $num_posts_and_photos_sql = sprintf("SELECT COUNT(activity_id) " .
-                                            "FROM activities " .
-                                            "WHERE ((actor_id = %d AND " .
-                                                     "activity IN('post','photo','profile_pic_change')) OR " .
-                                                     "(actor_id = %d AND activity = 'share'))",
-                                            $user_id, $user_id);
-        $query = $this->utility_model->run_query($num_posts_and_photos_sql);
+        $num_timeline_items_sql = sprintf("SELECT COUNT(activity_id) FROM activities " .
+                                        "WHERE ((actor_id = %d AND " .
+                                        "activity IN('post','photo','video','link','profile_pic_change')) OR " .
+                                        "(actor_id = %d AND activity = 'share'))",
+                                        $user_id, $user_id);
+        $query = $this->utility_model->run_query($num_timeline_items_sql);
 
         return $query->row_array()['COUNT(activity_id)'];
     }
@@ -249,16 +265,16 @@ class User_model extends CI_Model
      */
     public function get_timeline_items($user_id, $offset, $limit)
     {
-        // Get posts and photos posted/shared by this user.
-        $posts_and_photos_sql = sprintf("SELECT * FROM activities " .
+        // Get posts, photos, videos, and links posted/shared by this user.
+        $timeline_items_sql = sprintf("SELECT * FROM activities " .
                                         "WHERE ((actor_id = %d AND " .
-                                                "activity IN('post','photo','profile_pic_change')) OR " .
+                                                "activity IN('post','photo','video','link','profile_pic_change')) OR " .
                                                 "(actor_id = %d AND activity = 'share')) " .
                                         "ORDER BY date_entered DESC LIMIT %d, %d",
                                         $user_id, $user_id, $offset, $limit);
-        $posts_and_photos = $this->utility_model->run_query($posts_and_photos_sql)->result_array();
+        $timeline_items = $this->utility_model->run_query($timeline_items_sql)->result_array();
 
-        foreach ($posts_and_photos as &$r) {
+        foreach ($timeline_items as &$r) {
             switch ($r['source_type']) {
                 case 'post':
                     $r['post'] = $this->post_model->get_post($r['source_id']);
@@ -271,14 +287,7 @@ class User_model extends CI_Model
                     $r['post']['shared'] = FALSE;
                     if ($r['activity'] == 'share') {
                         $r['post']['shared'] = TRUE;
-                        $r['post']['sharer_id'] = $user_id;
-                        $r['post']['sharer'] = $this->user_model->get_profile_name($user_id);
-
-                        // Change timespan to match the date it was shared on.
-                        $r['post']['timespan'] = timespan(mysql_to_unix($r['date_entered']), now(), 1);
-
-                        // Replace author's profile_pic with the one for sharer.
-                        $r['post']['profile_pic_path'] = $this->get_profile_pic_path($user_id);
+                        $r = $this->update_shared_item_data('post', $r, $user_id);
                     }
                     break;
                 case 'photo':
@@ -288,14 +297,27 @@ class User_model extends CI_Model
                     $r['photo']['shared'] = FALSE;
                     if($r['activity'] == 'share') {
                         $r['photo']['shared'] = TRUE;
-                        $r['photo']['sharer_id'] = $user_id;
-                        $r['photo']['sharer'] = $this->user_model->get_profile_name($user_id);
+                        $r = $this->update_shared_item_data('photo', $r, $user_id);
+                    }
+                    break;
+                case 'video':
+                    $r['video'] = $this->video_model->get_video($r['source_id']);
 
-                        // Change timespan to match the date it was shared on.
-                        $r['photo']['timespan'] = timespan(mysql_to_unix($r['date_entered']), now(), 1);
+                    // Was it shared from another user?
+                    $r['video']['shared'] = FALSE;
+                    if ($r['activity'] == 'share') {
+                        $r['video']['shared'] = TRUE;
+                        $r = $this->update_shared_item_data('video', $r, $user_id);
+                    }
+                    break;
+                case 'link':
+                    $r['link'] = $this->link_model->get_link($r['source_id']);
 
-                        // Replace author's profile_pic with the one for sharer.
-                        $r['photo']['profile_pic_path'] = $this->get_profile_pic_path($user_id);
+                    // Was it shared from another user?
+                    $r['link']['shared'] = FALSE;
+                    if($r['activity'] == 'share') {
+                        $r['link']['shared'] = TRUE;
+                        $r = $this->update_shared_item_data('link', $r, $user_id);
                     }
                     break;
                 default:
@@ -305,7 +327,7 @@ class User_model extends CI_Model
         }
         unset($r);
 
-        return $posts_and_photos;
+        return $timeline_items;
     }
 
     /**
