@@ -244,6 +244,66 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
+    public function photo($photo_id = 0, $offset = 0)
+    {
+        try {
+            $photo = $this->photo_model->get_photo($photo_id);
+        }
+        catch (NotFoundException $e) {
+            show_404();
+        }
+
+        $data = $this->user_model->initialize_user();
+        $data['title'] = format_name($photo['author']) . ' photo';
+
+        $this->load->view('common/header', $data);
+
+        $data['photo'] = $photo;
+
+        $limit = 10;  // Maximum number of comments to display.
+        $data['has_next'] = FALSE;
+        if (($data['photo']['num_comments'] - $offset) > $limit) {
+            $data['has_next'] = TRUE;
+            $data['next_offset'] = ($offset + $limit);
+        }
+
+        $data['num_prev'] = $offset;
+        $data['comments'] = $this->photo_model->get_comments($photo, $offset, $limit);
+
+        $this->load->view('show/photo', $data);
+        $this->load->view('common/footer');
+    }
+
+    public function video($video_id = 0, $offset = 0)
+    {
+        try {
+            $video = $this->video_model->get_video($video_id);
+        }
+        catch (NotFoundException $e) {
+            show_404();
+        }
+
+        $data = $this->user_model->initialize_user();
+        $data['title'] = format_name($video['author']) . ' video';
+
+        $this->load->view('common/header', $data);
+
+        $data['video'] = $video;
+
+        $limit = 10;  // Maximum number of comments to show.
+        $data['has_next'] = FALSE;
+        if (($data['video']['num_comments'] - $offset) > $limit) {
+            $data['has_next'] = TRUE;
+            $data['next_offset'] = ($offset + $limit);
+        }
+
+        $data['num_prev'] = $offset;
+        $data['comments'] = $this->video_model->get_comments($video, $offset, $limit);
+
+        $this->load->view('show/video', $data);
+        $this->load->view('common/footer');
+    }
+
     public function notifications($offset = 0)
     {
         $data = $this->user_model->initialize_user();
@@ -292,36 +352,6 @@ class User extends CI_Controller
 		}
 
         $this->load->view('show/notifications', $data);
-        $this->load->view('common/footer');
-    }
-
-    public function photo($photo_id = 0, $offset = 0)
-    {
-        try {
-            $photo = $this->photo_model->get_photo($photo_id);
-        }
-        catch (NotFoundException $e) {
-            show_404();
-        }
-
-        $data = $this->user_model->initialize_user();
-        $data['title'] = format_name($photo['author']) . ' photo';
-
-        $this->load->view('common/header', $data);
-
-        $data['photo'] = $photo;
-
-        $limit = 10;  // Maximum number of comments to display.
-        $data['has_next'] = FALSE;
-        if (($data['photo']['num_comments'] - $offset) > $limit) {
-            $data['has_next'] = TRUE;
-            $data['next_offset'] = ($offset + $limit);
-        }
-
-        $data['num_prev'] = $offset;
-        $data['comments'] = $this->photo_model->get_comments($photo, $offset, $limit);
-
-        $this->load->view('show/photo', $data);
         $this->load->view('common/footer');
     }
 
