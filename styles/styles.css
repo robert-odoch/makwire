@@ -577,6 +577,7 @@ form div.input-group div {
 }
 
 form textarea,
+form input[type="url"],
 form input[type="text"],
 form input[type="email"],
 form input[type="search"],
