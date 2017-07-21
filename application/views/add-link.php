@@ -4,7 +4,7 @@ require_once('common/user-page-start.php');
 ?>
 
 <div class='box'>
-    <div class='panel panel-success'>
+    <div class='panel panel-default'>
         <div class='panel-heading'>Add link to a resource (news, post, etc) from another website</div>
         <div class='panel-body'>
             <?php if (isset($error)) { ?>
