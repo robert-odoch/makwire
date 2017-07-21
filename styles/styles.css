@@ -479,6 +479,10 @@ article.video header {
     padding-bottom: 2px;
 }
 
+article.video .embed-responsive {
+    background-color: #000;
+}
+
 article.media.message {
     margin-top: 5px;
 }
