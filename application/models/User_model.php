@@ -14,7 +14,7 @@ class User_model extends CI_Model
         parent::__construct();
         $this->load->model([
             'utility_model', 'post_model',
-            'video', 'birthday_message_model'
+            'video_model', 'birthday_message_model'
         ]);
     }
 
