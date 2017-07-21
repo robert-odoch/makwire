@@ -112,8 +112,6 @@ class Photo_model extends CI_Model
                                 "VALUES (%d, %d, %d, 'photo', 'photo')",
                                 $_SESSION['user_id'], $_SESSION['user_id'], $photo_id);
         $this->utility_model->run_query($activity_sql);
-
-        return $photo_id;
     }
 
     /**
