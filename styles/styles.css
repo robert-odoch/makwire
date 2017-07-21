@@ -223,6 +223,7 @@ nav#short-cuts h5 {
     margin-bottom: 3px;
     padding-bottom: 4px;
     border-bottom: 1px solid #EFEEE5;
+    font-variant: small-caps;
 }
 
 nav#short-cuts ul li {
