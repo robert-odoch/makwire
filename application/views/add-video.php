@@ -4,8 +4,14 @@ require_once('common/user-page-start.php');
 ?>
 
 <div class='box'>
+
+    <?php
+    define('STATUS', 'video');
+    require_once(dirname(__FILE__) . '/common/status-nav.php');
+    ?>
+
     <div class='panel panel-default'>
-        <div class='panel-heading'>Add YouTube video</div>
+        <div class='panel-heading sr-only'>Add YouTube video</div>
         <div class='panel-body'>
             <form action='<?= base_url('video/new'); ?>' method='post' role='form'>
                 <div class='form-group'>
