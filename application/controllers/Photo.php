@@ -34,7 +34,6 @@ class Photo extends CI_Controller
         $data['title'] = 'Add new photo';
         $this->load->view('common/header', $data);
 
-        $data['heading'] = 'Add new photo';
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
             // Upload the file.
@@ -70,8 +69,7 @@ class Photo extends CI_Controller
             }
         }
 
-        $data['form_action'] = base_url('photo/new');
-        $this->load->view('upload-image', $data);
+        $this->load->view('add-photo', $data);
         $this->load->view('common/footer');
     }
 

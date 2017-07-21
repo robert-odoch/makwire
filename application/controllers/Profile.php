@@ -34,7 +34,6 @@ class Profile extends CI_Controller
         $data['title'] = 'Change profile picture';
         $this->load->view('common/header', $data);
 
-        $data['heading'] = 'Change profile picture';
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!$this->upload->do_upload('userfile')) {
                 $data['error'] = $this->upload->display_errors();
@@ -77,8 +76,7 @@ class Profile extends CI_Controller
             }
         }
 
-        $data['form_action'] = base_url('profile/change-profile-picture');
-        $this->load->view('upload-image', $data);
+        $this->load->view('add-profile-picture', $data);
         $this->load->view('common/footer');
     }
 
