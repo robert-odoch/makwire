@@ -20,8 +20,13 @@ if (!$is_visitor) {
                     <span class="glyphicon glyphicon-picture" aria-hidden="true"></span> Photo
                 </a>
             </li>
+            <li role='presentation'>
+                <a href='<?= base_url('link/new'); ?>'>
+                    <span class='glyphicon glyphicon-link' aria-hidden='true'></span> Link
+                </a>
+            </li>
             <li role="presentation">
-                <a href="#">
+                <a href='<?= base_url('video/new'); ?>'>
                     <span class="glyphicon glyphicon-film" aria-hidden="true"></span> Video
                 </a>
             </li>
