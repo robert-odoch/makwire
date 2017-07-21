@@ -33,6 +33,10 @@ h5 {
 .nav-tabs > li.active > a, .nav-tabs > li.active > a:focus, .nav-tabs > li.active > a:hover {
 	border: 1px solid #8FBC8F;
 }
+
+.nav-tabs + .panel {
+    border-radius: 0 0 4px;
+}
 .panel {
     margin-bottom: 0;
 }
