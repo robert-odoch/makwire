@@ -466,8 +466,10 @@ div.show-profile ul:last-child {
     margin-bottom: 0;
 }
 
+article.link header,
 article.post header,
-article.photo header {
+article.photo header,
+article.video header {
     border-bottom: 1px solid #8FBC8F;
     padding-bottom: 2px;
 }
@@ -500,7 +502,8 @@ div#add-description > img {
     width: 100%;
     border: 1px solid rgba(143, 188, 143, .2);
 }
-div#add-description img {
+div#add-description img,
+div#add-description .embed-responsive {
     margin-bottom: 5px;
 }
 
