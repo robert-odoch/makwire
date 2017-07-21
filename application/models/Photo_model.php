@@ -126,7 +126,7 @@ class Photo_model extends CI_Model
     {
         $sql = sprintf("UPDATE user_photos SET description = %s " .
                         "WHERE (photo_id = %d)",
-                        $this->db->escape($description, $photo_id), $photo_id);
+                        $this->db->escape($description), $photo_id);
         $this->utility_model->run_query($sql);
     }
 
