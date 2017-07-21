@@ -131,22 +131,22 @@ class News_feed_model extends CI_Model
         /// as they are stored in different tables.
 
         /// IDS of shared posts.
-        $shared_posts_ids = $this->get_shared_posts_ids($friends_ids);
+        $shared_posts_ids = $this->get_shared_items_ids('post', $friends_ids);
         $shared_posts_ids[] = 0;  // Add an extra element for safety.
         $shared_posts_ids_str = implode(',', $shared_posts_ids);
 
         /// IDs of shared photos.
-        $shared_photos_ids = $this->get_shared_photos_ids($friends_ids);
+        $shared_photos_ids = $this->get_shared_items_ids('photo', $friends_ids);
         $shared_photos_ids[] = 0;  // Add an extra element for safety.
         $shared_photos_ids_str = implode(',', $shared_photos_ids);
 
         /// IDs of shared videos.
-        $shared_videos_ids = $this->get_shared_videos_ids($friends_ids);
+        $shared_videos_ids = $this->get_shared_items_ids('video', $friends_ids);
         $shared_videos_ids[] = 0;  // Add an extra element for safety.
         $shared_videos_ids_str = implode(',', $shared_videos_ids);
 
         /// IDs of shared links.
-        $shared_links_ids = $this->get_shared_links_ids($friends_ids);
+        $shared_links_ids = $this->get_shared_items_ids('link', $friends_ids);
         $shared_links_ids[] = 0;  // Add an extra element for safety.
         $shared_links_ids_str = implode(',', $shared_links_ids);
 
