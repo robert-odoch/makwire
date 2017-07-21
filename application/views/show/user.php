@@ -10,7 +10,10 @@ if (!$is_visitor) {
 ?>
     <div class="box">
 
-        <?php require_once(dirname(__FILE__) . '/../common/status-nav.php'); ?>
+        <?php
+        define('STATUS', 'post');
+        require_once(dirname(__FILE__) . '/../common/status-nav.php');
+        ?>
 
         <form action="<?= base_url('post/new'); ?>" method="post"
             accept-charset="utf-8" role="form">
