@@ -218,14 +218,14 @@ class User_model extends CI_Model
     }
 
     /**
-     * Gets the number of posts and photos that can be displayed on a user's
-     * timeline.
+     * Gets the number of posts, photos, videos, and links
+     * to be displayed on a user's timeline.
      *
      * @param $user_id ID of the user to be shown.
-     * @return number of posts and photos that can be displayed on this user's
-     * timeline.
+     * @return number of posts, photos, videos, and links to be displayed
+     * on this user's timeline.
      */
-    public function get_num_timeline_posts_and_photos($user_id)
+    public function get_num_timeline_items($user_id)
     {
         // Get number of posts and photos posted by this user.
         // and posts and photos shared by this user that are by friends
@@ -242,12 +242,12 @@ class User_model extends CI_Model
     }
 
     /**
-     * Gets the posts and photos to be displayed on a user's timeline.
+     * Gets the posts, photos, videos, and links to be displayed on a user's timeline.
      *
      * @param $user_id ID of the user to be displayed.
-     * @return posts and photos to be displayed.
+     * @return posts, photos, videos, and links to be displayed.
      */
-    public function get_timeline_posts_and_photos($user_id, $offset, $limit)
+    public function get_timeline_items($user_id, $offset, $limit)
     {
         // Get posts and photos posted/shared by this user.
         $posts_and_photos_sql = sprintf("SELECT * FROM activities " .
@@ -1488,11 +1488,11 @@ class User_model extends CI_Model
     }
 
     /**
-     * Gets number of posts and photos on a user's news feed.
+     * Gets number of posts, photos, videos, and links on a user's news feed.
      *
-     * @return number of posts and photos on this user's news feed.
+     * @return number of posts, photos, videos, and links on this user's news feed.
      */
-    public function get_num_news_feed_posts_and_photos()
+    public function get_num_news_feed_items()
     {
         $friends_ids = $this->get_friends_ids();
         // Add a zero element; so if network is empty the IN part of the query won't fail
@@ -1548,13 +1548,13 @@ class User_model extends CI_Model
     }
 
     /**
-     * Gets posts and photos to be shown on a user's news feed.
+     * Gets posts, photos, videos, and links to be shown on a user's news feed.
      *
      * @param $offset
      * @param $limit
-     * @return number of posts and photos to be shown on this user's news feed.
+     * @return number of posts, photos, videos, and links to be shown on this user's news feed.
      */
-    public function get_news_feed_posts_and_photos($offset, $limit)
+    public function get_news_feed_items($offset, $limit)
     {
         $friends_ids = $this->get_friends_ids();
 

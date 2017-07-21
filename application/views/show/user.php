@@ -55,7 +55,7 @@ if (!$is_visitor) {
 <?php } // (!$is_visitor) ?>
 
     <?php
-    if (empty($posts_and_photos) && $is_visitor) { ?>
+    if (empty($items) && $is_visitor) { ?>
         <div class="box">
             <div class="alert alert-info" role="alert">
                 <p>
@@ -66,12 +66,12 @@ if (!$is_visitor) {
         </div>
     <?php
     } else {
-        foreach($posts_and_photos as $p) {
-            if ($p['source_type'] == 'post') {
-                $post = $p['post'];
+        foreach($items as $item) {
+            if ($item['source_type'] == 'post') {
+                $post = $item['post'];
                 require(dirname(__FILE__) . '/../common/post.php');
-            } elseif ($p['source_type'] == 'photo') {
-                $photo = $p['photo'];
+            } elseif ($item['source_type'] == 'photo') {
+                $photo = $item['photo'];
                 require(dirname(__FILE__) . '/../common/photo.php');
             }
         }

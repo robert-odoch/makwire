@@ -33,15 +33,16 @@ class User extends CI_Controller
             unset($_SESSION['post_error']);
         }
 
-        $limit = 10;  // Maximum number of posts to show.
+        $limit = 10;  // Maximum number of items to show.
         $data['has_next'] = FALSE;
-        $num_posts_and_photos = $this->user_model->get_num_news_feed_posts_and_photos();
-        if (($num_posts_and_photos - $offset) > $limit) {
+        $num_news_feed_items = $this->user_model->get_num_news_feed_items();
+        if (($num_news_feed_items - $offset) > $limit) {
             $data['has_next'] = TRUE;
             $data['next_offset'] = ($offset + $limit);
         }
 
-        $data['posts_and_photos'] = $this->user_model->get_news_feed_posts_and_photos($offset, $limit);
+        $news_feed_items = $this->user_model->get_news_feed_items($offset, $limit);
+        $data['items'] = $news_feed_items;
         $data['is_visitor'] = FALSE;
         $data['page'] = 'news-feed';
         $this->load->view('show/user', $data);
@@ -73,15 +74,16 @@ class User extends CI_Controller
             unset($_SESSION['post_error']);
         }
 
-        $limit = 10;  // Maximum number of posts to show.
+        $limit = 10;  // Maximum number of items to show.
         $data['has_next'] = FALSE;
-        $num_posts_and_photos = $this->user_model->get_num_timeline_posts_and_photos($user_id);
-        if (($num_posts_and_photos - $offset) > $limit) {
+        $num_timeline_items = $this->user_model->get_num_timeline_items($user_id);
+        if (($num_timeline_items - $offset) > $limit) {
             $data['has_next'] = TRUE;
             $data['next_offset'] = ($offset + $limit);
         }
 
-        $data['posts_and_photos'] = $this->user_model->get_timeline_posts_and_photos($user_id, $offset, $limit);
+        $timeline_items = $this->user_model->get_timeline_items($user_id, $offset, $limit);
+        $data['items'] = $timeline_items;
         $data['page'] = 'timeline';
         $data['user_id'] = $user_id;
         $this->load->view('show/user', $data);
