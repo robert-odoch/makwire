@@ -9,6 +9,12 @@ switch ($object) {
     case 'photo':
         require_once(dirname(__FILE__) . '/../common/photo.php');
         break;
+    case 'video':
+        require_once(dirname(__FILE__) . '/../common/video.php');
+        break;
+    case 'link':
+        require_once(dirname(__FILE__) . '/../common/link.php');
+        break;
     case 'comment':
     case 'reply':
         require_once(dirname(__FILE__) . '/../common/comment-or-reply.php');

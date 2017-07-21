@@ -67,23 +67,37 @@ if (!$is_visitor) {
     <?php
     } else {
         foreach($items as $item) {
-            if ($item['source_type'] == 'post') {
+            switch ($item['source_type']) {
+            case 'post':
                 $post = $item['post'];
                 require(dirname(__FILE__) . '/../common/post.php');
-            } elseif ($item['source_type'] == 'photo') {
+                break;
+            case 'photo':
                 $photo = $item['photo'];
                 require(dirname(__FILE__) . '/../common/photo.php');
+                break;
+            case 'video':
+                $video = $item['video'];
+                require(dirname(__FILE__) . '/../common/video.php');
+                break;
+            case 'link':
+                $link = $item['link'];
+                require(dirname(__FILE__) . '/../common/link.php');
+                break;
+            default:
+                # do nothing...
+                break;
             }
         }
         if ($has_next) {
             print '<div class="box more">';
             if ($page == 'news-feed') {
                 print '<a href="' . base_url("user/news-feed/{$next_offset}") .
-                        '">View more stories</a>';
+                        '">Show more</a>';
             }
             else if ($page == 'timeline') {
                 print '<a href="' . base_url("user/{$user_id}/{$next_offset}") .
-                        '">View more posts</a>';
+                        '">Show more</a>';
             }
             print '</div>';
         }
