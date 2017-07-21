@@ -9,7 +9,7 @@ class Login extends CI_Controller
 
         session_start();
         if ( ! empty($_SESSION['user_id'])) {
-            redirect(base_url('user/news-feed'));  // Already logged in user.
+            redirect(base_url('news-feed'));  // Already logged in user.
         }
 
         $this->load->model('login_model');
@@ -46,7 +46,7 @@ class Login extends CI_Controller
                         redirect($return_url);
                     }
                     else {
-                        redirect(base_url('user/news-feed'));
+                        redirect(base_url('news-feed'));
                     }
                 }
                 else {
