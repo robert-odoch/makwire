@@ -3,20 +3,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require_once(dirname(__FILE__) . '/../common/user-page-start.php');
 ?>
 
-<div class="box">
+<div class='box'>
     <h4><?= $heading; ?></h4>
     <?php if (isset($error_message)) { ?>
-        <div class="alert alert-danger">
+        <div class='alert alert-danger'>
             <p><?= "{$error_message}"; ?></p>
         </div>
     <?php } ?>
 
-    <form action="<?= $form_action; ?>" method="post" accept-charset="utf-8" role="form">
+    <form action='<?= $form_action; ?>' method='post' accept-charset='utf-8' role='form'>
         <fieldset>
-            <div class="form-group">
-                <label for="hall">Hall</label>
+            <div class='form-group'>
+                <label for='hall'>Hall</label>
                 <?php if (isset($halls)) { ?>
-                    <select name="hall" id="hall" class="form-control" required>
+                    <select name='hall' id='hall' class='form-control' required>
                         <optgroup>
                             <?php
                             foreach ($halls as $hall) {
@@ -35,11 +35,11 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
                 }
                 ?>
             </div>
-            <div class="input-group">
+            <div class='input-group'>
                 <p><strong>Status</strong></p>
-                <div class="radio-inline">
-                    <label for="resident">
-                        <input type="radio" name="resident" id="resident" value="1"
+                <div class='radio-inline'>
+                    <label for='resident'>
+                        <input type='radio' name='resident' id='resident' value='1'
                         <?php
                         if (isset($resident) && ($resident == 1)) {
                             print(" checked");
@@ -48,9 +48,9 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
                         > Resident
                     </label>
                 </div>
-                <div class="radio-inline">
-                    <label for="non-resident">
-                        <input type="radio" name="resident" id="non-resident" value="0"
+                <div class='radio-inline'>
+                    <label for='non-resident'>
+                        <input type='radio' name='resident' id='non-resident' value='0'
                         <?php
                         if (!isset($resident) || (isset($resident) && ($resident == 0))) {
                             print(" checked");
@@ -64,11 +64,11 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
         <?php require_once(dirname(__FILE__) . '/../common/show-date-input.php'); ?>
         <?php if (isset($user_hall)) { ?>
             <fieldset>
-                <input type="hidden" name="user-hall-id" value="<?= $user_hall['id']; ?>">
-                <input type="hidden" name="hall-id" value="<?= $user_hall['hall_id']; ?>">
+                <input type='hidden' name='user-hall-id' value='<?= $user_hall['id']; ?>'>
+                <input type='hidden' name='hall-id' value='<?= $user_hall['hall_id']; ?>'>
             </fieldset>
         <?php } ?>
 
-        <input type="submit" value="Save" class="btn btn-sm">
+        <input type='submit' value='Save' class='btn btn-sm'>
     </form>
 </div><!-- box -->

@@ -1,11 +1,11 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
-<div class="box">
+<div class='box'>
     <h4>Comments</h4>
     <?php if (count($comments) == 0) { ?>
-        <div class="alert alert-info" role="alert">
+        <div class='alert alert-info' role='alert'>
             <p>
-                <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> No comments to show.
+                <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span> No comments to show.
             </p>
         </div>
     <?php } else { ?>
@@ -16,24 +16,24 @@
         }
         ?>
 
-        <div class="comments">
+        <div class='comments'>
             <?php foreach($comments as $comment) { ?>
-                <div class="media">
-                    <div class="media-left">
-                        <img class="media-object" src="<?= $comment['profile_pic_path']; ?>"
-                        alt="<?= $comment['commenter']; ?>">
+                <div class='media'>
+                    <div class='media-left'>
+                        <img class='media-object' src='<?= $comment['profile_pic_path']; ?>'
+                                alt="<?= $comment['commenter']; ?>">
                     </div>
-                    <div class="media-body">
-                        <h4 class="media-heading">
-                            <a href="<?= base_url("user/{$comment['commenter_id']}"); ?>">
+                    <div class='media-body'>
+                        <h4 class='media-heading'>
+                            <a href='<?= base_url("user/{$comment['commenter_id']}"); ?>'>
                                 <strong><?= $comment['commenter']; ?></strong>
                             </a>
                         </h4>
 
-                        <p class="comment"><?= htmlspecialchars($comment['comment']); ?></p>
+                        <p class='comment'><?= htmlspecialchars($comment['comment']); ?></p>
                         <span>
-                            <small class="time">
-                                <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+                            <small class='time'>
+                                <span class='glyphicon glyphicon-time' aria-hidden='true'></span>
                                 <?= $comment['timespan']; ?> ago
                             </small>
 
@@ -78,8 +78,8 @@
 </div><!-- box -->
 
 <?php if ($has_next) { ?>
-    <div class="box more">
-        <a href="<?= base_url("{$object}/comments/{$$object[$object . '_id']}/{$next_offset}"); ?>">
+    <div class='box more'>
+        <a href='<?= base_url("{$object}/comments/{$$object[$object . '_id']}/{$next_offset}"); ?>'>
             View more comments
         </a>
     </div>

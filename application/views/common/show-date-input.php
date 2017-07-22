@@ -1,14 +1,14 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
 <fieldset>
-    <div class="input-group">
+    <div class='input-group'>
         <p>From</p>
         <div>
-            <label for="start-day">Day</label>
-            <select name="start-day" id="start-day">
+            <label for='start-day'>Day</label>
+            <select name='start-day' id='start-day'>
                 <optgroup>
                     <?php
-                    for ($i=1; $i < 32; $i++) {
+                    for ($i = 1; $i < 32; $i++) {
                         print "<option value='{$i}'";
                         if (isset($start_day) && ($start_day == $i)) {
                             print " selected";
@@ -20,8 +20,8 @@
             </select>
         </div>
         <div>
-            <label for="start-month">Month</label>
-            <select name="start-month" id="start-month">
+            <label for='start-month'>Month</label>
+            <select name='start-month' id='start-month'>
                 <optgroup>
                 <?php
                 $months = array(1=>'Jan',2=>'Feb',3=>'Mar',
@@ -40,8 +40,8 @@
             </select>
         </div>
         <div>
-            <label for="start-year">Year</label>
-            <select name="start-year" id="start-year">
+            <label for='start-year'>Year</label>
+            <select name='start-year' id='start-year'>
                 <optgroup>
                 <?php
                 $starting_year = date('Y');
@@ -59,14 +59,14 @@
         </div>
     </div>
 
-    <div class="input-group">
+    <div class='input-group'>
         <p>To</p>
         <div>
-            <label for="end-day">Day</label>
-            <select name="end-day" id="end-day">
+            <label for='end-day'>Day</label>
+            <select name='end-day' id='end-day'>
                 <optgroup>
                     <?php
-                    for ($i=1; $i < 32; $i++) {
+                    for ($i = 1; $i < 32; $i++) {
                         print "<option value='{$i}'";
                         if (isset($end_day) && ($end_day == $i)) {
                             print " selected";
@@ -78,8 +78,8 @@
             </select>
         </div>
         <div>
-            <label for="end-month">Month</label>
-            <select name="end-month" id="end-month">
+            <label for='end-month'>Month</label>
+            <select name='end-month' id='end-month'>
                 <optgroup>
                 <?php
                 foreach ($months as $k => $v) {
@@ -94,8 +94,8 @@
             </select>
         </div>
         <div>
-            <label for="end-year">Year</label>
-            <select name="end-year" id="end-year">
+            <label for='end-year'>Year</label>
+            <select name='end-year' id='end-year'>
                 <optgroup>
                 <?php
                 $starting_year = date('Y') + 6;
