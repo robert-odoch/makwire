@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 14, 2017 at 11:18 AM
+-- Generation Time: Jul 22, 2017 at 10:39 AM
 -- Server version: 10.1.10-MariaDB
 -- PHP Version: 7.0.2
 
@@ -31,8 +31,8 @@ CREATE TABLE `activities` (
   `actor_id` int(11) UNSIGNED NOT NULL,
   `subject_id` int(11) UNSIGNED NOT NULL,
   `source_id` bigint(20) UNSIGNED NOT NULL,
-  `source_type` enum('post','comment','reply','photo','user','birthday_message','friend_request') NOT NULL,
-  `activity` enum('like','comment','share','reply','post','photo','profile_pic_change','friend_request','confirmed_friend_request','birthday','message') NOT NULL,
+  `source_type` enum('post','comment','reply','photo','user','birthday_message','friend_request','video','link') NOT NULL,
+  `activity` enum('like','comment','share','reply','post','photo','profile_pic_change','friend_request','confirmed_friend_request','birthday','message','video','link') NOT NULL,
   `date_entered` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -73,7 +73,7 @@ CREATE TABLE `comments` (
   `commenter_id` int(11) UNSIGNED NOT NULL,
   `parent_id` int(11) UNSIGNED NOT NULL DEFAULT '0',
   `source_id` bigint(20) UNSIGNED NOT NULL,
-  `source_type` enum('post','comment','photo','birthday_message') NOT NULL,
+  `source_type` enum('post','photo','video','link','comment','birthday_message') NOT NULL,
   `comment` tinytext NOT NULL,
   `date_entered` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -160,9 +160,23 @@ CREATE TABLE `hostels` (
 CREATE TABLE `likes` (
   `like_id` bigint(20) UNSIGNED NOT NULL,
   `source_id` bigint(20) UNSIGNED NOT NULL,
-  `source_type` enum('post','photo','comment','reply','birthday_message') NOT NULL,
+  `source_type` enum('post','photo','video','link','comment','reply','birthday_message') NOT NULL,
   `liker_id` int(11) UNSIGNED NOT NULL,
   `date_liked` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `links`
+--
+
+CREATE TABLE `links` (
+  `id` bigint(20) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `url` int(11) NOT NULL,
+  `description` text NOT NULL,
+  `date_entered` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -242,7 +256,7 @@ CREATE TABLE `shares` (
   `share_id` bigint(20) UNSIGNED NOT NULL,
   `subject_id` bigint(20) UNSIGNED NOT NULL,
   `sharer_id` int(11) UNSIGNED NOT NULL,
-  `subject_type` enum('post','photo') NOT NULL,
+  `subject_type` enum('post','photo','video','linke') NOT NULL,
   `date_shared` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -382,6 +396,20 @@ CREATE TABLE `user_schools` (
   `user_college_id` bigint(20) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `videos`
+--
+
+CREATE TABLE `videos` (
+  `video_id` bigint(20) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `url` varchar(200) NOT NULL,
+  `description` text NOT NULL,
+  `date_entered` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 --
 -- Indexes for dumped tables
 --
@@ -453,6 +481,12 @@ ALTER TABLE `hostels`
 --
 ALTER TABLE `likes`
   ADD PRIMARY KEY (`like_id`);
+
+--
+-- Indexes for table `links`
+--
+ALTER TABLE `links`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `messages`
@@ -549,6 +583,12 @@ ALTER TABLE `user_schools`
   ADD KEY `user_college_id` (`user_college_id`);
 
 --
+-- Indexes for table `videos`
+--
+ALTER TABLE `videos`
+  ADD PRIMARY KEY (`video_id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -607,6 +647,11 @@ ALTER TABLE `hostels`
 --
 ALTER TABLE `likes`
   MODIFY `like_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `links`
+--
+ALTER TABLE `links`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `messages`
 --
@@ -682,6 +727,11 @@ ALTER TABLE `user_programmes`
 --
 ALTER TABLE `user_schools`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `videos`
+--
+ALTER TABLE `videos`
+  MODIFY `video_id` bigint(20) NOT NULL AUTO_INCREMENT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
