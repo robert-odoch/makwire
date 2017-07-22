@@ -671,16 +671,16 @@ class User_model extends CI_Model
     {
         // Notifications that can/can't be combined together if the are performed on
         // the same object.
-        $combined_notifs_array = ['message', 'like', 'comment', 'reply', 'share'];
-        $combined_notifs = "'message', 'like', 'comment', 'reply', 'share'";
-        $atomic_notifs = "'birthday', 'profile_pic_change', 'friend_request', 'join_group_request', " .
-                         "'confirmed_friend_request', 'confirmed_join_group_request', 'added_photo'";
+        $combined_notifs = ['message', 'like', 'comment', 'reply', 'share'];
+        $combined_notifs_str = "'message', 'like', 'comment', 'reply', 'share'";
+        $atomic_notifs_str = "'birthday', 'profile_pic_change', 'friend_request', " .
+                                "'join_group_request', 'confirmed_friend_request', " .
+                                "'confirmed_join_group_request', 'added_photo'";
 
         // Get the ID's of all this user's friends.
         $friends_ids = $this->get_friends_ids();
-        // Add an extra lement for safety.
-        $friends_ids[] = 0;
-        $friends_ids = implode(',', $friends_ids);
+        $friends_ids[] = 0;  // Add an extra lement for query-safety.
+        $friends_ids_str = implode(',', $friends_ids);
 
         // WHERE clause for notifications having this user as a direct target.
         $primary_notifs_clause = sprintf("subject_id = %d AND actor_id != %d",
@@ -713,7 +713,7 @@ class User_model extends CI_Model
             $other_notifs_clause = sprintf("subject_id IN(%s) AND actor_id IN(%s) AND " .
                                             "((source_id IN(%s) AND activity IN('comment', 'reply')) OR " .
                                             "activity = 'profile_pic_change')",
-                                            $friends_ids, $friends_ids, $acted_on_sql);
+                                            $friends_ids_str, $friends_ids_str, $acted_on_sql);
 
             // Query to get the latest notification from a group of activities
             // performed on the same object.
@@ -723,7 +723,7 @@ class User_model extends CI_Model
                                                 "a1.source_id = a2.source_id AND " .
                                                 "a1.source_type = a2.source_type AND " .
                                                 "a1.activity = a2.activity AND date_entered > (%s))",
-                                      $primary_notifs_clause, $other_notifs_clause, $combined_notifs,
+                                      $primary_notifs_clause, $other_notifs_clause, $combined_notifs_str,
                                       $last_read_date_sql);
 
             // Query to get all notifications from activities.
@@ -731,12 +731,12 @@ class User_model extends CI_Model
                                     "WHERE (date_entered = (%s) OR (((%s) OR (%s)) AND " .
                                     "activity IN(%s) AND date_entered > (%s)))",
                 				    $latest_notif_sql, $primary_notifs_clause, $other_notifs_clause,
-                                    $atomic_notifs, $last_read_date_sql);
+                                    $atomic_notifs_str, $last_read_date_sql);
 
             // Get Birthday notifications.
             $birthdays_sql = sprintf("SELECT user_id FROM users " .
                                         "WHERE user_id IN(%s) AND DAY(dob) = %d AND MONTH(dob) = %d",
-                                        $friends_ids, date('d'), date('m'));
+                                        $friends_ids_str, date('d'), date('m'));
         }
         else {
             // Query to get activities that were performed by this user..
@@ -750,7 +750,7 @@ class User_model extends CI_Model
             $other_notifs_clause = sprintf("subject_id IN(%s) AND actor_id IN(%s) AND " .
                                             "((source_id IN(%s) AND activity IN('comment', 'reply')) OR " .
                                             "activity IN('profile_pic_change','birthday'))",
-                                            $friends_ids, $friends_ids, $acted_on_sql);
+                                            $friends_ids_str, $friends_ids_str, $acted_on_sql);
 
             // Query to get the latest notification from a group of activities
             // performed on the same object.
@@ -761,13 +761,13 @@ class User_model extends CI_Model
                                         "a1.source_type = a2.source_type AND " .
                                         "a1.activity = a2.activity)",
                                         $primary_notifs_clause, $other_notifs_clause,
-                                        $combined_notifs);
+                                        $combined_notifs_str);
 
             // Query to get all notifications from activities.
             $notifs_sql = sprintf("SELECT activity_id, subject_id, activity FROM activities a1 " .
                                     "WHERE (date_entered = (%s) OR (((%s) OR (%s)) AND activity IN(%s)))",
                                     $latest_notif_sql, $primary_notifs_clause, $other_notifs_clause,
-                                    $atomic_notifs);
+                                    $atomic_notifs_str);
         }
 
         $notifs_query = $this->utility_model->run_query($notifs_sql);
@@ -840,16 +840,16 @@ class User_model extends CI_Model
     {
         // Notifications that can/can't be combined together if the are performed on
         // the same object.
-        $combined_notifs_array = ['message', 'like', 'comment', 'reply', 'share'];
-        $combined_notifs = "'message', 'like', 'comment', 'reply', 'share'";
-        $atomic_notifs = "'birthday', 'profile_pic_change', 'friend_request', 'join_group_request', " .
-                         "'confirmed_friend_request', 'confirmed_join_group_request', 'added_photo'";
+        $combined_notifs = ['message', 'like', 'comment', 'reply', 'share'];
+        $combined_notifs_str = "'message', 'like', 'comment', 'reply', 'share'";
+        $atomic_notifs_str = "'birthday', 'profile_pic_change', 'friend_request', " .
+                                "'join_group_request', 'confirmed_friend_request', " .
+                                "'confirmed_join_group_request', 'added_photo'";
 
         // Get the ID's of all this user's friends.
         $friends_ids = $this->get_friends_ids();
-        // Add an extra element for safety.
-        $friends_ids[] = 0;
-        $friends_ids = implode(',', $friends_ids);
+        $friends_ids[] = 0;  // Add an extra element for query-safety.
+        $friends_ids_str = implode(',', $friends_ids);
 
         // WHERE clause for notifications having this user as a direct target.
         $primary_notifs_clause = sprintf("subject_id = %d AND actor_id != %d",
@@ -880,7 +880,7 @@ class User_model extends CI_Model
             $other_notifs_clause = sprintf("subject_id IN(%s) AND actor_id IN(%s) AND " .
                                             "((source_id IN(%s) AND activity IN('comment', 'reply'))  OR " .
                                             "activity = 'profile_pic_change')",
-                                            $friends_ids, $friends_ids, $acted_on_sql);
+                                            $friends_ids_str, $friends_ids_str, $acted_on_sql);
 
             // Query to get the latest notification from a group of activities
             // performed on the same object.
@@ -891,7 +891,7 @@ class User_model extends CI_Model
                                         "a1.source_type = a2.source_type AND " .
                                         "a1.activity = a2.activity AND date_entered > (%s))",
                                       $primary_notifs_clause, $other_notifs_clause,
-                                      $combined_notifs, $last_read_date_sql);
+                                      $combined_notifs_str, $last_read_date_sql);
 
             // Query to get all notifications from activities.
     		$notifs_sql = sprintf("SELECT * FROM activities a1 " .
@@ -899,14 +899,14 @@ class User_model extends CI_Model
                                     "activity IN(%s) AND date_entered > (%s))) " .
                                     "ORDER BY date_entered DESC LIMIT %d, %d",
                 				    $latest_notif_sql, $primary_notifs_clause,
-                                    $other_notifs_clause, $atomic_notifs, $last_read_date_sql,
+                                    $other_notifs_clause, $atomic_notifs_str, $last_read_date_sql,
                                     $offset, $limit);
 
             // Get Birthday notifications.
             $birthdays_sql = sprintf("SELECT user_id, dob, CONCAT(dob, ' 00:00:00') as date_entered " .
                                         "FROM users " .
                                         "WHERE (user_id IN (%s) AND DAY(dob) = %d and MONTH(dob) = %d)",
-                                        $friends_ids, date('d'), date('m'));
+                                        $friends_ids_str, date('d'), date('m'));
         }
         else {
             // Query to get activities that were performed by this user..
@@ -921,7 +921,7 @@ class User_model extends CI_Model
             $other_notifs_clause = sprintf("subject_id IN(%s) AND actor_id IN(%s) AND " .
                                             "((source_id IN(%s) AND activity IN('comment', 'reply')) OR " .
                                             "activity IN('profile_pic_change','birthday'))",
-                                            $friends_ids, $friends_ids, $acted_on_sql);
+                                            $friends_ids_str, $friends_ids_str, $acted_on_sql);
 
             // Query to get the latest notification from a group of activities
             // performed on the same object.
@@ -932,7 +932,7 @@ class User_model extends CI_Model
                                       "a1.source_type = a2.source_type AND " .
                                       "a1.activity = a2.activity)",
                                       $primary_notifs_clause, $other_notifs_clause,
-                                      $combined_notifs);
+                                      $combined_notifs_str);
 
             // Query to get all notifications from activities.
             $notifs_sql = sprintf("SELECT * FROM activities a1 " .
@@ -940,7 +940,7 @@ class User_model extends CI_Model
                                 "activity IN(%s))) ORDER BY date_entered DESC " .
                                 "LIMIT %d, %d",
                                 $latest_notif_sql, $primary_notifs_clause,
-                                $other_notifs_clause, $atomic_notifs,
+                                $other_notifs_clause, $atomic_notifs_str,
                                 $offset, $limit);
         }
 
@@ -993,7 +993,7 @@ class User_model extends CI_Model
                 }
             }
 
-            if (in_array($n['activity'], $combined_notifs_array)) {
+            if (in_array($n['activity'], $combined_notifs)) {
                 // Get the number of times an activity was performed on the same object.
                 if ($filter) {
                     $num_actors_sql = sprintf("SELECT DISTINCT actor_id FROM activities " .
@@ -1123,7 +1123,7 @@ class User_model extends CI_Model
             }
 
             // Add other actors.
-            if (in_array($notif['activity'], $combined_notifs_array)) {
+            if (in_array($notif['activity'], $combined_notifs)) {
                 if ($notif['num_actors'] > 0) {
                     $notif['others'] = " and {$notif['num_actors']}";
                     $notif['others'] .= ($notif['num_actors'] == 1)? " other ": " others";
