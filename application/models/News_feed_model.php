@@ -15,24 +15,6 @@ class News_feed_model extends CI_Model
         ]);
     }
 
-    private function get_shared_items_ids($item, $friends_ids)
-    {
-        $friends_ids[] = 0;  // Add extra element for query-safety.
-        $friends_ids_str = implode(',', $friends_ids);
-
-        $ids_sql = sprintf('SELECT DISTINCT subject_id FROM shares ' .
-                            'WHERE (sharer_id IN(%s) AND subject_type = \'%s\')',
-                            $friends_ids_str, $item);
-        $ids_results = $this->utility_model->run_query($ids_sql)->result_array();
-
-        $ids = [];
-        foreach ($ids_results as $r) {
-            $ids[] = $r['subject_id'];
-        }
-
-        return $ids;
-    }
-
     private function get_latest_shared_items_user_ids($item, $friends_ids, $latest_share_date_sql)
     {
         $friends_ids[] = 0;  // Add extra element for query-safety.
@@ -62,22 +44,22 @@ class News_feed_model extends CI_Model
 
         /* Get IDs of shared posts, photos, videos, and links. */
         /// IDS of shared posts.
-        $shared_posts_ids = $this->get_shared_items_ids('post', $friends_ids);
+        $shared_posts_ids = $this->utility_model->get_shared_items_ids('post', $friends_ids);
         $shared_posts_ids[] = 0;  // Add an extra element for safety.
         $shared_posts_ids_str = implode(',', $shared_posts_ids);
 
         /// IDs of shared photos.
-        $shared_photos_ids = $this->get_shared_items_ids('photo', $friends_ids);
+        $shared_photos_ids = $this->utility_model->get_shared_items_ids('photo', $friends_ids);
         $shared_photos_ids[] = 0;  // Add an extra element for safety.
         $shared_photos_ids_str = implode(',', $shared_photos_ids);
 
         /// IDs of shared videos.
-        $shared_videos_ids = $this->get_shared_items_ids('video', $friends_ids);
+        $shared_videos_ids = $this->utility_model->get_shared_items_ids('video', $friends_ids);
         $shared_videos_ids[] = 0;  // Add an extra element for safety.
         $shared_videos_ids_str = implode(',', $shared_videos_ids);
 
         /// IDs of shared links.
-        $shared_links_ids = $this->get_shared_items_ids('link', $friends_ids);
+        $shared_links_ids = $this->utility_model->get_shared_items_ids('link', $friends_ids);
         $shared_links_ids[] = 0;  // Add an extra element for safety.
         $shared_links_ids_str = implode(',', $shared_links_ids);
 
@@ -131,22 +113,22 @@ class News_feed_model extends CI_Model
         /// as they are stored in different tables.
 
         /// IDS of shared posts.
-        $shared_posts_ids = $this->get_shared_items_ids('post', $friends_ids);
+        $shared_posts_ids = $this->utility_model->get_shared_items_ids('post', $friends_ids);
         $shared_posts_ids[] = 0;  // Add an extra element for safety.
         $shared_posts_ids_str = implode(',', $shared_posts_ids);
 
         /// IDs of shared photos.
-        $shared_photos_ids = $this->get_shared_items_ids('photo', $friends_ids);
+        $shared_photos_ids = $this->utility_model->get_shared_items_ids('photo', $friends_ids);
         $shared_photos_ids[] = 0;  // Add an extra element for safety.
         $shared_photos_ids_str = implode(',', $shared_photos_ids);
 
         /// IDs of shared videos.
-        $shared_videos_ids = $this->get_shared_items_ids('video', $friends_ids);
+        $shared_videos_ids = $this->utility_model->get_shared_items_ids('video', $friends_ids);
         $shared_videos_ids[] = 0;  // Add an extra element for safety.
         $shared_videos_ids_str = implode(',', $shared_videos_ids);
 
         /// IDs of shared links.
-        $shared_links_ids = $this->get_shared_items_ids('link', $friends_ids);
+        $shared_links_ids = $this->utility_model->get_shared_items_ids('link', $friends_ids);
         $shared_links_ids[] = 0;  // Add an extra element for safety.
         $shared_links_ids_str = implode(',', $shared_links_ids);
 

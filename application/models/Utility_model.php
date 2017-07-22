@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
- * Contians utility functions shared among models.
+ * Contians functions that are used by two or more models.
  */
 class Utility_model extends CI_Model
 {
@@ -111,7 +111,8 @@ class Utility_model extends CI_Model
      * Adds the details of the sharer and also updates the timespan to match
      * when the item was shared.
      */
-    public function update_shared_item_data($item, $data) {
+    public function update_shared_item_data($item, $data)
+    {
         $data[$item]['sharer_id'] = $data['actor_id'];
         $data[$item]['sharer'] = $this->user_model->get_profile_name($data['actor_id']);
 
@@ -122,5 +123,23 @@ class Utility_model extends CI_Model
         $data[$item]['profile_pic_path'] = $this->user_model->get_profile_pic_path($data['actor_id']);
 
         return $data;
+    }
+
+    public function get_shared_items_ids($item, $friends_ids)
+    {
+        $friends_ids[] = 0;  // Add extra element for query-safety.
+        $friends_ids_str = implode(',', $friends_ids);
+
+        $ids_sql = sprintf('SELECT DISTINCT subject_id FROM shares ' .
+                            'WHERE (sharer_id IN(%s) AND subject_type = \'%s\')',
+                            $friends_ids_str, $item);
+        $ids_results = $this->utility_model->run_query($ids_sql)->result_array();
+
+        $ids = [];
+        foreach ($ids_results as $r) {
+            $ids[] = $r['subject_id'];
+        }
+
+        return $ids;
     }
 }
