@@ -41,48 +41,26 @@
     </div>
     <nav>
         <ul>
-            <?php
-            switch (PAGE) {
-                case 'timeline':
-                    print '<li><a href="' . base_url("user/{$suid}") . '" class="active">Timeline</a></li>' .
-                            '<li><a href="' . base_url("user/profile/{$suid}") . '">Profile</a></li>' .
-                            '<li><a href="' . base_url("user/photos/{$suid}") . '">Photos</a></li>' .
-                            '<li><a href="' . base_url("user/friends/{$suid}") . '">Friends</a></li>' .
-                            '<li><a href="' . base_url("user/groups/{$suid}") . '">Groups</a></li>';
-                    break;
-                case 'profile':
-                    print '<li><a href="' . base_url("user/{$suid}") . '">Timeline</a></li>' .
-                            '<li><a href="' . base_url("user/profile/{$suid}") . '" class="active">Profile</a></li>' .
-                            '<li><a href="' . base_url("user/photos/{$suid}") . '">Photos</a></li>' .
-                            '<li><a href="' . base_url("user/friends/{$suid}") . '">Friends</a></li>' .
-                            '<li><a href="' . base_url("user/groups/{$suid}") . '">Groups</a></li>';
-                    break;
-                case 'photos':
-                    print '<li><a href="' . base_url("user/{$suid}") . '">Timeline</a></li>' .
-                            '<li><a href="' . base_url("user/profile/{$suid}") . '">Profile</a></li>' .
-                            '<li><a href="' . base_url("user/photos/{$suid}") . '" class="active">Photos</a></li>' .
-                            '<li><a href="' . base_url("user/friends/{$suid}") . '">Friends</a></li>' .
-                            '<li><a href="' . base_url("user/groups/{$suid}") . '">Groups</a></li>';
-                    break;
-                case 'friends':
-                    print '<li><a href="' . base_url("user/{$suid}") . '">Timeline</a></li>' .
-                            '<li><a href="' . base_url("user/profile/{$suid}") . '">Profile</a></li>' .
-                            '<li><a href="' . base_url("user/photos/{$suid}") . '">Photos</a></li>' .
-                            '<li><a href="' . base_url("user/friends/{$suid}") . '" class="active">Friends</a></li>' .
-                            '<li><a href="' . base_url("user/groups/{$suid}") . '">Groups</a></li>';
-                    break;
-                case 'groups':
-                    print '<li><a href="' . base_url("user/{$suid}") . '">Timeline</a></li>' .
-                            '<li><a href="' . base_url("user/profile/{$suid}") . '">Profile</a></li>' .
-                            '<li><a href="' . base_url("user/photos/{$suid}") . '">Photos</a></li>' .
-                            '<li><a href="' . base_url("user/friends/{$suid}") . '">Friends</a></li>' .
-                            '<li><a href="' . base_url("user/groups/{$suid}") . '" class="active">Groups</a></li>';
-                    break;
-                default:
-                    # do nothing.
-                    break;
-            }
-            ?>
+            <li>
+                <a href='<?= base_url("user/{$suid}"); ?>'
+                    <?php if (PAGE == 'timeline') print " class='active'"; ?>>Timeline</a>
+            </li>
+            <li>
+                <a href='<?= base_url("user/profile/{$suid}"); ?>'
+                    <?php if (PAGE == 'profile') print " class='active'"; ?>>Profile</a>
+            </li>
+            <li>
+                <a href='<?= base_url("user/photos/{$suid}"); ?>'
+                    <?php if (PAGE == 'photos') print " class='active'"; ?>>Photos</a>
+            </li>
+            <li>
+                <a href='<?= base_url("user/friends/{$suid}"); ?>'
+                    <?php if (PAGE == 'friends') print " class='active'"; ?>>Friends</a>
+            </li>
+            <li>
+                <a href='<?= base_url("user/groups/{$suid}"); ?>'
+                    <?php if (PAGE == 'groups') print " class='active'"; ?>>Groups</a>
+            </li>
         </ul>
     </nav>
     <span class='clearfix'></span>
