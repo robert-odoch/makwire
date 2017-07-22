@@ -1,0 +1,271 @@
+#Personal note
+- Check for php code being ouput near search box on mubali
+- purple background color [#830396]
+- Visual Studio Code website:: body {
+	font-family: wf_segoe-ui_normal,HelveticaNeue-Light,Helvetica Neue Light,Helvetica Neue,Helvetica,Arial,sans-serif;
+	color: #444;
+	text-rendering: optimizeLegibility;
+  }
+- Facebook post time ._5pat {
+	word-wrap: break-word;
+}
+- Research on ads by yahoo
+- Useful shortcut: pressing spacebar for pgDown and pgUP.
+
+# Dev feature tracker.
+- System that might be help full in software development {
+    Feature, status(accepted|rejected), if (rejected) { reason }, comments, modified version.
+}
+
+#Ajax candidates.
+- news feed, timeline.
+- like, comment, share, reply.
+- likes, comments, shares, replies.
+- add friend, confirm friend, delete request.
+- status, photo, video.
+- show more links(long post, notifications, messages, friend requests, find friends).
+- message, birthday message.
+- chat(view older messages).
+- settings.
+
+#TODO
+- Code for adding a link.
+- edit/delete post, photo, video, link.
+- Viewing friendship status.
+- Minimize memory consumption by unsetting no longer required variables.
+- Style the HTML email sent.
+- Invite friends by email.
+- Make access to register/step-three more secure.
+- Test registration.
+- Improve on the security of parameters passed in the link for email confirmation.
+- Secure resend email.
+- Use bootstrap's error classes for form inputs.
+- Go through the code and remove duplicate code.
+- Document the code.
+- Enhance the user interface (consider revising Bootstrap).
+- Read through the stylesheet and remove duplicate code.
+- Consider calling show_(success/error) with redirects.
+- Add code for deleting an account.
+- Optimize get_num_* functions so that they select just on more than $limit.
+- edit/delete comment, reply.
+- Don't show offset 0 in URLs.
+
+#IMPROVEMENTS
+- Show birthday.
+- chat sidebar.
+- get[_num]_notifications.
+- Profile questions.
+- Add separators for logical groupings(hint {
+        border-bottom: 1px solid #e2e2e2;
+        margin: 0 5px 15px;
+})
+- For conditionals that have no else or default clause, log a warning/error message.
+
+================================================================================
+- Hunt for bugs.
+
+--------------------------------------------------------------------------------
+- Add airplane mode.
+- Add favorite quote (only one).
+- Add work experience.
+- flag post.
+- Add options for marking a group as favorite.
+- Group posts should not be shared.
+- consider creating table events to store upcoming events.
+- If you allow users to delete posts and photos, then also delete the 
+    corresponding values in activities, notification_read, shares, likes and comments.
+    (This can be automated by putting foreign key constraints)
+- Integrate news from external sources.
+________________________________________________________________________________
+
+#DONE
+- Guard against unauthorized users liking, commenting on (photo, comment, post) 
+    or sending message to a user.
+- Guard against a user liking or sharing a (photo, post, comment) twice.
+- If a visitor is not a friend to a particular user, only allow him to see 
+    the about page*.
+- Nofity friends about profile pic change.
+- Notify user about friends' birthdays.
+- Add reply link on messages so that sender's name links to index instead.
+- Check how the last date a user read a notification is being got
+    (especially for users having no entry in activities and notifications_read table).
+- Notify user about other comments and replies.
+- Improve the notifications for comments on a shared post.
+- If a user shares a post, his friends that are not friends of 
+    the original author of the post should not see the post, also comments, 
+    likes and shares of the post should be recorded against the original post,
+    but the user who shared the post should also be notified about a comment on the post.
+- Consider creating a table post shares for shared posts.
+- Change variable names in models that index and array to use the name of the 
+    argument directly since it safe.
+- If many people triggered the same notification, show one name and only 
+    the number of the others.
+    same notification = comment on a post, comment on a post and comment on a post shared by this user.
+- Notifications for birthdays, profile_pic_change, confirmed_friend_request, confirmed_join_group_request should not be combined.
+- Notifications that can be combined are likes, comments, shares, friend_requests, join_group_requests.
+- Test and make sure all notifications are working correctly.
+- Change all foreach loop to pass loop variable by reference and remember to unset the variable.
+- Improve notification for birthday so that if the birthday has passed, then the date it was on is shown instead.
+- Read the PHP manual about looping constructs and when to free loop variables.
+- Improve notificatioins for when a user commented on his post/ replied to his comment.
+- Remove <i> tags from time and apply in style sheet.
+- Add LIMIT clause to all queries that should return only 1 result (Not so releveant)
+- Move common sections in views into another file and require them.
+- Make links for liking, commenting on, and sharing a photo functional.
+- Show shared/uploaded photos among posts on a user's timeline.
+- If a photo was set as a profile picture show it in the header.
+- Also add contraints on add hall so that if a user is already in a hostel, he cannot say
+    that he is a resident of a hall within those same years.
+- Check how the view more link for notifications and messages are determined.
+- Add timespan for likes and shares.
+- Edit display and styling of show-comment* and show-reply*
+- Check on where a user is taken after liking a comment on a post or photo.
+- Link notification for birthday so that users can wish the subject a 
+    happy birthday.
+- Check that all methods that shouldn't be accessed via GET request are requested only via post.
+- Add functionality for liking a birthday message.
+- Create thumbnails of profile picture.
+- Move show_permission_denied, show_error, run_query, handle_error into
+    utility_model.
+- Check how a 's is added on names.
+- Make timespan the last element displayed after links for reply, like etc.
+- Design the 404 page.
+- Add exception classes for IllegalAccessException, NotFoundException (
+    PostNotFoundException, PhotoNotFoundException, CommentNotFoundException,
+- Add exception handling into user_model/user_controller.
+    ReplyNotFoundException, MessageNotFoundException)
+- change user_exists function in Login_model to is_valid_login.
+- move set_profile_picture method from Upload_model to to User_model.
+- Allow users to add photos to their photo album.
+- Notify friends about new photos.
+- Make images display at apropriate width and height depending on it's 
+    dimensions.
+- Add description for photo uploaded by a user.
+- Check the purpose of are_friends variable in show(friends,timeline,photos,about)
+- Create view for showing user's photos. 150x100
+- Search for friends by name or email address.
+- Determine a user's closest friends.*
+- Suggest friends for a user.
+- fix loading of extension classes.
+- fix the pattern matching for passwords.
+- fix a bug in getting _num_suggested_users.
+- Make text boxes uniform across browsers e.g login form on opera.
+- Create account settings page where a user can
+    > change password, 
+    > select prefered profile name (permutations of other_names and last_name),
+    > change name,
+    > add back-up email address,
+    > select prefered email address,
+    > delete account.
+- Allow all users to like a birthday message.
+- Fix birthday notification bug.
+- Consider creating a profile controller and moving some functions in User controller
+  into it.
+- Consider removing the has_photo column from posts table.
+- Make registration form to have the fields [last-name, other-names] to carter
+    for those with a middle name.
+- Allow user with birthday and sender of a birthday message to reply to
+    a particular birthday message.
+- Review workflow for adding a description for a photo.
+- Consider linking user_colleges, user_schools, and user_programmes with IDs
+    rather than start_year and end_year.
+- Remove all SomethingNotFoundException and replace with a single NotFoundException.
+- Optimize SQL queries using JOINS.
+- Check to make sure that data types for foreign keys match.
+- If a user hasn't graduated from a program, ask him every new year to 
+    update his year of study.
+- Work on the server side code for settings.
+- Ensure blocked users can't intefere with users who blocked them. *
+- Add code for unfriending a user.
+- Add contraints on foreign keys.
+- When a user views a friend request, the friend request should no longer be counted as a new notification.
+- Fix un-used arguments "offset" and "limit" in get_suggested_users() method.
+- If there are no friend_request to show, check if an ID was passed and show the status of that request.
+- Make the site responsive to various device widths.
+- Add HTML5's required attribute to form fields that shouldn't be blank.
+- Move news-feed to its own controller.
+- Fix makwire link.
+- Code for adding a video.
+- Make background colors for youtube videos black.
+- Refactor News_feed_model.
+- Consider changing activity for photo, video, and link to post. *
+- Revise code for showing comment notifications.
+
+            ^^^^^^ The ones marked with * were foregone. ^^^^^^
+
+activities {
+    activity_id,
+    actor_id,
+    subject_id,
+    source_id,
+    source_type,
+    activity,
+    date_entered
+}
+
+nofication_read {
+    id,
+    activity_id,
+    user_id,
+    date_read
+}
+events {
+    event_id,
+    event,
+    user_id,
+    date_scheduled,
+    date_entered
+}
+
+shares
+{
+    share_id,
+    subject_id,
+    user_id,
+    subject_type ('post', 'photo'),
+    audience ('timeline', 'group'),
+    date_entered
+}
+
+same notifications.
+    same subject_id,
+    same activity,
+
+// account for when a user performs an activity twice.
+$notif = array('subject_id'=>
+                'source_id'=>
+                'source_type'=>
+                'activity'=>
+                'activity_id'=>,
+                'actor_id'=>,
+                'date_entered'=>
+                'count'=>
+)
+
+notifications to show
+-like, comment, share of a post/photo.
+-profile-pic-change.
+-comment on a post/photo this user shared.
+-birthdays.
+-friend_req, confirmed_friend_req,
+-join_group_req, confirmed_join_group_req.
+
+comments on
+    - post
+    - photo
+likes on
+    - post
+    - photo
+shares of
+    -post
+    -photo
+    
+schools {
+    full_name,
+    short_name,
+    district
+}
+
+TABLE_videos {
+    id, user_id, url, description, date_entered
+}
