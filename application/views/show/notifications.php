@@ -3,6 +3,144 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require_once(dirname(__FILE__) . '/../common/user-page-start.php');
 ?>
 
+<?php
+function build_item_comment_notif(array $notif)
+{
+    $comment = '';
+    if ($notif['subject_id'] == $_SESSION['user_id']) {
+        $comment = "<a href='" . base_url("{$notif['source_type']}/comments/{$notif['source_id']}") .
+                    "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} " .
+                    "commented on your {$notif['source_type']}";
+
+        if ($notif['source_type'] == 'post') {
+            $comment .= " \"{$notif['post']}\"";
+        }
+    }
+    else {
+        if ($notif['from_shared']) {
+            if ($notif['subject_id'] == $notif['actor_id']) {
+                $comment = "<a href='" . base_url("{$notif['source_type']}/comments/{$notif['source_id']}") .
+                            "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} " .
+                            "commented on {$notif['subject_gender']} {$notif['source_type']} you shared";
+
+                if ($notif['source_type'] == 'post') {
+                    $comment .= " \"{$notif['post']}\"";
+                }
+            }
+            else {
+                $comment = "<a href='" . base_url("{$notif['source_type']}/comments/{$notif['source_id']}") .
+                            "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} " .
+                            "commented on a {$notif['source_type']} you shared";
+
+                if ($notif['source_type'] == 'post') {
+                    $comment .= " \"{$notif['post']}\"";
+                }
+            }
+        }
+        else {
+            if ($notif['subject_id'] == $notif['actor_id']) {
+                $comment = "<a href='" . base_url("{$notif['source_type']}/comments/{$notif['source_id']}") .
+                            "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} " .
+                            "also commented on {$notif['subject_gender']} {$notif['source_type']}";
+                if ($notif['source_type'] == 'post') {
+                    $comment .= " \"{$notif['post']}\"";
+                }
+            }
+            else {
+                $comment = "<a href='" . base_url("{$notif['source_type']}/comments/{$notif['source_id']}") .
+                            "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} " .
+                            "also commented on <strong class='object'>{$notif['subject']}</strong>'s {$notif['source_type']}";
+
+                if ($notif['source_type'] == 'post') {
+                    $comment .= " \"{$notif['post']}\"";
+                }
+            }
+        }
+    }
+
+    $comment .= "</a> " .
+                "<small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> " .
+                "{$notif['timespan']} ago</small>";
+
+    return $comment;
+}
+
+function build_item_like_notif(array $notif)
+{
+    $notif_str = "<a href='" . base_url("user/{$notif['source_type']}/{$notif['source_id']}") .
+                    "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} " .
+                    "liked your {$notif['source_type']}";
+
+    if ($notif['source_type'] == 'post') {
+        $notif_str .= " \"{$notif['post']}\"";
+    }
+
+    $notif_str .= "</a> " .
+                    "<small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> " .
+                    "{$notif['timespan']} ago</small>";
+
+    return $notif_str;
+}
+
+function build_item_share_notif(array $notif)
+{
+    $notif_str = "<a href='" . base_url("user/{$notif['source_type']}/{$notif['source_id']}") .
+                    "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} " .
+                    "shared your {$notif['source_type']}";
+    if ($notif['source_type'] == 'post') {
+        $notif_str .= " \"{$notif['post']}\"";
+    }
+
+    $notif_str .= "</a> " .
+                    "<small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> " .
+                    "{$notif['timespan']} ago</small>";
+
+    return $notif_str;
+}
+
+function build_reply_notif(array $notif)
+{
+    $notif_str = '';
+    if ($notif['subject_id'] == $_SESSION['user_id']) {
+        $notif_str =  "<a href='" . base_url("{$notif['source_type']}/replies/{$notif['source_id']}") .
+                        "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} " .
+                        "replied to your {$notif['source_type']}";
+
+        if ($notif['source_type'] == 'comment') {
+            $notif_str .= " \"{$notif['comment']}\"";
+        }
+
+        $notif_str .= "</a> " .
+                        "<small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> " .
+                        "{$notif['timespan']} ago</small>";
+    }
+    else {
+        if ($notif['subject_id'] == $notif['actor_id']) {
+            $notif_str = "<a href='" . base_url("{$notif['source_type']}/replies/{$notif['source_id']}") .
+                            "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} " .
+                            "also replied to {$notif['subject_gender']} {$notif['source_type']}";
+
+            if ($notif['source_type'] == 'comment') {
+                $notif_str .= " \"{$notif['comment']}\"";
+            }
+
+            $notif_str .= "</a> " .
+                            "<small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> " .
+                            "{$notif['timespan']} ago</small>";
+        }
+        else {
+            $notif_str = "<a href='" . base_url("comment/replies/{$notif['source_id']}") .
+                            "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} " .
+                            "also replied to <strong class='object'>{$notif['subject']}</strong>'s comment" .
+                            " \"{$notif['comment']}\"</a> " .
+                            "<small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> " .
+                            "{$notif['timespan']} ago</small>";
+        }
+    }
+
+    return $notif_str;
+}
+?>
 <div class="box">
     <h4>Notifications</h4>
     <?php if (count($notifications) == 0) { ?>
@@ -33,25 +171,8 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
                             " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
                     break;
                 case 'like':
-                    if ($notif['source_type'] == 'post') {
-                        print "<li><a href='" . base_url("user/post/{$notif['source_id']}") .
-                                "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} liked your post \"{$notif['post']}\"</a> " .
-                                " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
-                    }
-                    elseif ($notif['source_type'] == 'photo') {
-                        print "<li><a href='" . base_url("user/photo/{$notif['source_id']}") .
-                                "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} liked your photo.</a> " .
-                                " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
-                    }
-                    elseif ($notif['source_type'] == 'video') {
-                        print "<li><a href='" . base_url("user/video/{$notif['source_id']}") .
-                                "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} liked your video.</a> " .
-                                " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
-                    }
-                    elseif ($notif['source_type'] == 'link') {
-                        print "<li><a href='" . base_url("user/link/{$notif['source_id']}") .
-                                "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} liked your link.</a> " .
-                                " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
+                    if (in_array($notif['source_type'], ['post', 'photo', 'video', 'link'])) {
+                        print '<li>' . build_item_like_notif($notif) . '</li>';
                     }
                     elseif ($notif['source_type'] == "comment") {
                         print "<li><a href='" . base_url("comment/likes/{$notif['source_id']}") .
@@ -70,139 +191,23 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
                     }
                     break;
                 case 'comment':
-                    if ($notif['subject_id'] == $_SESSION['user_id']) {
-                        if ($notif['source_type'] == 'post') {
-                            print "<li><a href='" . base_url("post/comments/{$notif['source_id']}") .
-                                    "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} commented on your post \"{$notif['post']}\"</a> " .
-                                    " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
-                        }
-                        elseif ($notif['source_type'] == 'photo') {
-                            print "<li><a href='" . base_url("photo/comments/{$notif['source_id']}") .
-                                    "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} commented on your photo.</a> " .
-                                    " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
-                        }
-                        elseif ($notif['source_type'] == 'video') {
-                            print "<li><a href='" . base_url("video/comments/{$notif['source_id']}") .
-                                    "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} commented on your video.</a> " .
-                                    " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
-                        }
-                        elseif ($notif['source_type'] == 'link') {
-                            print "<li><a href='" . base_url("link/comments/{$notif['source_id']}") .
-                                    "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} commented on your link.</a> " .
-                                    " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
-                        }
-                        elseif ($notif['source_type'] == 'birthday_message') {
-                            print "<li><a href='" . base_url("birthday-message/replies/{$notif['source_id']}") .
-                                    "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} replied to your birthday message.</a> " .
-                                    " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
-                        }
+                    if (in_array($notif['source_type'], ['post', 'photo', 'video', 'link'])) {
+                        print '<li>' . build_item_comment_notif($notif) . '</li>';
                     }
-                    elseif($notif['subject_id'] != $_SESSION['user_id']) {
-                        if ($notif['source_type'] == 'post') {
-                            if ($notif['subject_id'] == $notif['actor_id']) {
-                                print "<li><a href='" . base_url("post/comments/{$notif['source_id']}") .
-                                        "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} commented on {$notif['subject_gender']} post you shared \"{$notif['post']}\"</a> " .
-                                        " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
-                            }
-                            else {
-                                print "<li><a href='" . base_url("post/comments/{$notif['source_id']}") .
-                                        "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} commented on a post you shared \"{$notif['post']}\"</a> " .
-                                        " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
-                            }
-                        }
-                        elseif ($notif['source_type'] == 'photo') {
-                            if ($notif['subject_id'] == $notif['actor_id']) {
-                                print "<li><a href='" . base_url("photo/comments/{$notif['source_id']}") .
-                                        "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} commented on {$notif['subject_gender']} photo you shared.</a> " .
-                                        " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
-                            }
-                            else {
-                                print "<li><a href='" . base_url("photo/comments/{$notif['source_id']}") .
-                                        "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} commented on a photo you shared.</a> " .
-                                        " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
-                            }
-                        }
-                    }
-                    else {
-                        if ($notif['source_type'] == 'post') {
-                            if ($notif['subject_id'] == $notif['actor_id']) {
-                                print "<li><a href='" . base_url("post/comments/{$notif['source_id']}") .
-                                        "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} also commented on {$notif['subject_gender']} post \"{$notif['post']}\"</a> " .
-                                        " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
-                            }
-                            else {
-                                print "<li><a href='" . base_url("post/comments/{$notif['source_id']}") .
-                                        "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} also commented on <strong class='object'>{$notif['subject']}</strong>'s post \"{$notif['post']}\"</a> " .
-                                        " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
-                            }
-                        }
-                        elseif ($notif['source_type'] == 'photo') {
-                            if ($notif['subject_id'] == $notif['actor_id']) {
-                                print "<li><a href='" . base_url("photo/comments/{$notif['source_id']}") .
-                                        "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} also commented on {$notif['subject_gender']} photo.</a> " .
-                                        " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
-                            }
-                            else {
-                                print "<li><a href='" . base_url("photo/comments/{$notif['source_id']}") .
-                                        "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} also commented on <strong class='object'>{$notif['subject']}</strong>'s photo.</a> " .
-                                        " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
-                            }
-                        }
+                    elseif ($notif['source_type'] == 'birthday_message') {
+                        print "<li><a href='" . base_url("birthday-message/replies/{$notif['source_id']}") .
+                                "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} " .
+                                "replied to your birthday message.</a> " .
+                                " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> " .
+                                "{$notif['timespan']} ago</small></li>";
                     }
                     break;
                 case 'reply':
-                    if ($notif['subject_id'] == $_SESSION['user_id']) {
-                        if ($notif['source_type'] == 'comment') {
-                            print "<li><a href='" . base_url("comment/replies/{$notif['source_id']}") .
-                                    "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} replied to your comment \"{$notif['comment']}\"</a>" .
-                                    " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
-                        }
-                        elseif ($notif['source_type'] == 'birthday_message') {
-                            print "<li><a href='" . base_url("birthday-message/replies/{$notif['source_id']}") .
-                                    "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} replied to your birthday message</a>" .
-                                    " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
-                        }
-                    }
-                    else {
-                        if ($notif['subject_id'] == $notif['actor_id']) {
-                            if ($notif['source_type'] == 'comment') {
-                                print "<li><a href='" . base_url("comment/replies/{$notif['source_id']}") .
-                                        "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} also replied to {$notif['subject_gender']} comment \"{$notif['comment']}\"</a>" .
-                                        " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
-                            }
-                            elseif ($notif['source_type'] == 'birthday_message') {
-                                print "<li><a href='" . base_url("birthday-message/replies/{$notif['source_id']}") .
-                                        "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} also replied to {$notif['subject_gender']} birthday message</a>" .
-                                        " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
-                            }
-                        }
-                        else {
-                            print "<li><a href='" . base_url("comment/replies/{$notif['source_id']}") .
-                                    "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} also replied to <strong class='object'>{$notif['subject']}</strong>'s comment \"{$notif['comment']}\"</a>" .
-                                    " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
-                        }
-                    }
+                    print '<li>' . build_reply_notif($notif) . '</li>';
                     break;
                 case 'share':
-                    if ($notif['source_type'] == 'post') {
-                        print "<li><a href='" . base_url("user/post/{$notif['source_id']}") .
-                                "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} shared your post \"{$notif['post']}\"</a> " .
-                                " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
-                    }
-                    elseif ($notif['source_type'] == 'photo') {
-                        print "<li><a href='" . base_url("user/photo/{$notif['source_id']}") .
-                                "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} shared your photo.</a> " .
-                                " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
-                    }
-                    elseif ($notif['source_type'] == 'video') {
-                        print "<li><a href='" . base_url("user/video/{$notif['source_id']}") .
-                                "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} shared your video.</a> " .
-                                " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
-                    }
-                    elseif ($notif['source_type'] == 'link') {
-                        print "<li><a href='" . base_url("user/link/{$notif['source_id']}") .
-                                "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} shared your link.</a> " .
-                                " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
+                    if (in_array($notif['source_type'], ['post', 'photo', 'video', 'link'])) {
+                        print '<li>' . build_item_share_notif($notif) . '</li>';
                     }
                     break;
                 case 'birthday':
