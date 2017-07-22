@@ -9,12 +9,12 @@ else if ($object == 'birthday-message') {
 }
 ?>
 
-<div class="box">
+<div class='box'>
     <h4>Replies</h4>
     <?php if (count($replies) == 0) { ?>
-    <div class="alert alert-info" role="alert">
+    <div class='alert alert-info' role='alert'>
         <p>
-            <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+            <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
             No replies to show.
         </p>
     </div>
@@ -25,25 +25,25 @@ else if ($object == 'birthday-message') {
                     "View previous replies.</a>";
         }
     ?>
-    <div class="replies">
+    <div class='replies'>
         <?php foreach($replies as $reply) { ?>
-        <div class="media">
-            <div class="media-left">
-                <img class="media-object" src="<?= $reply['profile_pic_path']; ?>"
-                    alt="<?= format_name($reply['commenter']); ?> photo">
+        <div class='media'>
+            <div class='media-left'>
+                <img class='media-object' src='<?= $reply['profile_pic_path']; ?>'
+                        alt="<?= format_name($reply['commenter']); ?> photo">
             </div>
-            <div class="media-body">
-                <h4 class="media-heading">
-                    <a href="<?= base_url("user/{$reply['commenter_id']}"); ?>">
+            <div class='media-body'>
+                <h4 class='media-heading'>
+                    <a href='<?= base_url("user/{$reply['commenter_id']}"); ?>'>
                         <strong><?= $reply['commenter']; ?></strong>
                     </a>
                 </h4>
 
-                <p class="reply"><?= htmlspecialchars($reply['comment']); ?></p>
+                <p class='reply'><?= htmlspecialchars($reply['comment']); ?></p>
 
                 <span>
-                    <small class="time">
-                        <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+                    <small class='time'>
+                        <span class='glyphicon glyphicon-time' aria-hidden='true'></span>
                         <?= $reply['timespan']; ?> ago
                     </small>
 
@@ -71,8 +71,8 @@ else if ($object == 'birthday-message') {
 </div><!-- box -->
 
 <?php if ($has_next) { ?>
-    <div class="box more">
-        <a href="<?= base_url("{$object}/replies/{$ID}/{$next_offset}"); ?>">
+    <div class='box more'>
+        <a href='<?= base_url("{$object}/replies/{$ID}/{$next_offset}"); ?>'>
             View more replies
         </a>
     </div>

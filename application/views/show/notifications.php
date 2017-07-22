@@ -4,22 +4,22 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
 require_once(dirname(__FILE__) . '/helper functions/show_notifications_functions.php');
 ?>
 
-<div class="box">
+<div class='box'>
     <h4>Notifications</h4>
     <?php if (count($notifications) == 0) { ?>
-    <div class="alert alert-info" role="alert">
+    <div class='alert alert-info' role='alert'>
         <p>
-            <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+            <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
             No notifications to show.
         </p>
     </div>
     <?php } else {
         if (isset($has_prev)) { ?>
-            <i><a href="<?= base_url("user/notifications/{$prev_offset}"); ?>">
+            <i><a href='<?= base_url("user/notifications/{$prev_offset}"); ?>'>
                 View previous notifications.
             </a></i>
         <?php } ?>
-        <ul class="notifications">
+        <ul class='notifications'>
             <?php
             foreach ($notifications as $notif) {
                 switch ($notif['activity']) {
@@ -107,8 +107,8 @@ require_once(dirname(__FILE__) . '/helper functions/show_notifications_functions
 </div><!-- box -->
 
 <?php if ($has_next) { ?>
-    <div class="box more">
-        <a href="<?= base_url("user/notifications/{$next_offset}/"); ?>">
+    <div class='box more'>
+        <a href='<?= base_url("user/notifications/{$next_offset}/"); ?>'>
             View
             <?php
             if (isset($older)) {

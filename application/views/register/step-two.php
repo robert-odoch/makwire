@@ -1,20 +1,20 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
-<div class="wrap-single">
-    <div role="main" class="main">
-        <div class="box">
+<div class='wrap-single'>
+    <div role='main' class='main'>
+        <div class='box'>
             <h4>Sign Up: step 2 of 3</h4>
-            <form action="<?= base_url('register/step-two'); ?>" method="post"
-                accept-charset="utf-8" role="form">
+            <form action='<?= base_url('register/step-two'); ?>' method='post'
+                    accept-charset='utf-8' role='form'>
                 <fieldset>
-                    <div class="form-group">
-                        <label for="last-name">Last Name</label>
-                        <input type="text" name="lname" id="last-name" class="fluid
+                    <div class='form-group'>
+                        <label for='last-name'>Last Name</label>
+                        <input type='text' name='lname' id='last-name' class='fluid
                         <?php
                         if (isset($error_messages) && isset($error_messages['lname'])) {
                             print ' has-error';
                         }
-                        ?>"
+                        ?>'
                         <?php
                         if (isset($lname)) {
                             print " value='{$lname}'";
@@ -26,14 +26,14 @@
                         }
                         ?>
                     </div>
-                    <div class="form-group">
-                        <label for="other-names">Other names</label>
-                        <input type="text" name="other_names" id="other-names" class="fluid
+                    <div class='form-group'>
+                        <label for='other-names'>Other names</label>
+                        <input type='text' name='other_names' id='other-names' class='fluid
                         <?php
                         if (isset($error_messages) && isset($error_messages['other_names'])) {
                             print ' has-error';
                         }
-                        ?>"
+                        ?>'
                         <?php
                         if (isset($other_names)) {
                             print " value='{$other_names}'";
@@ -45,11 +45,11 @@
                         }
                         ?>
                     </div>
-                    <div class="input-group">
+                    <div class='input-group'>
                         <p>Gender</p>
-                        <div class="radio-inline">
-                            <label for="male">
-                                <input type="radio" name="gender" id="male" value="male"
+                        <div class='radio-inline'>
+                            <label for='male'>
+                                <input type='radio' name='gender' id='male' value='male'
                                 <?php
                                 if(isset($gender) && $gender == 'male') {
                                     print ' checked';
@@ -57,9 +57,9 @@
                                 ?>> Male
                             </label>
                         </div>
-                        <div class="radio-inline">
-                            <label for="female">
-                                <input type="radio" name="gender" id="female" value="female"
+                        <div class='radio-inline'>
+                            <label for='female'>
+                                <input type='radio' name='gender' id='female' value='female'
                                 <?php
                                 if (isset($gender) && $gender == 'female') {
                                     print ' checked';
@@ -69,11 +69,11 @@
                         </div>
                     </div>
 
-                    <div class="input-group">
+                    <div class='input-group'>
                         <p>Date of Birth</p>
                         <div>
-                            <label for="day">Day</label>
-                            <select name="day" id="day">
+                            <label for='day'>Day</label>
+                            <select name='day' id='day'>
                                 <optgroup>
                                     <?php
                                     for ($i = 1; $i < 32; ++$i) {
@@ -88,8 +88,8 @@
                             </select>
                         </div>
                         <div>
-                            <label for="month">Month</label>
-                            <select name="month" id="month">
+                            <label for='month'>Month</label>
+                            <select name='month' id='month'>
                                 <optgroup>
                                 <?php
                                 $months = array(1=>'Jan',2=>'Feb',3=>'Mar',
@@ -108,8 +108,8 @@
                             </select>
                         </div>
                         <div>
-                            <label for="year">Year</label>
-                            <select name="year" id="year">
+                            <label for='year'>Year</label>
+                            <select name='year' id='year'>
                                 <optgroup>
                                     <?php
                                     $current_year = date('Y');
@@ -130,6 +130,6 @@
                         </div>
                     </div>
                 </fieldset>
-                <input type="submit" value="Next &rarr;" class="btn btn-sm">
+                <input type='submit' value='Next &rarr;' class='btn btn-sm'>
             </form>
         </div><!-- box -->

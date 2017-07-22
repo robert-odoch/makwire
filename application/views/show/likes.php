@@ -28,12 +28,12 @@ switch ($object) {
 }
 ?>
 
-<div class="box">
+<div class='box'>
     <h4>Likes</h4>
     <?php if (count($likes) == 0) { ?>
-    <div class="alert alert-info" role="alert">
+    <div class='alert alert-info' role='alert'>
         <p>
-            <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+            <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
             No likes to show.
         </p>
     </div>
@@ -43,21 +43,21 @@ switch ($object) {
                     "'>View previous likes.</a>";
         }
     ?>
-    <div class="likes">
+    <div class='likes'>
         <?php foreach($likes as $like) { ?>
-        <div class="media">
-            <div class="media-left">
-                <img class="media-object" src="<?= $like['profile_pic_path']; ?>"
+        <div class='media'>
+            <div class='media-left'>
+                <img class='media-object' src='<?= $like['profile_pic_path']; ?>'
                     alt="<?= $like['liker']; ?>">
             </div>
-            <div class="media-body">
-                <h4 class="media-heading">
-                    <a href="<?= base_url("user/{$like['liker_id']}"); ?>">
+            <div class='media-body'>
+                <h4 class='media-heading'>
+                    <a href='<?= base_url("user/{$like['liker_id']}"); ?>'>
                         <strong><?= $like['liker']; ?></strong>
                     </a>
                 </h4>
-                <small class="time">
-                    <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+                <small class='time'>
+                    <span class='glyphicon glyphicon-time' aria-hidden='true'></span>
                     <?= $like['timespan']; ?> ago
                 </small>
             </div>
@@ -68,8 +68,8 @@ switch ($object) {
 </div><!-- box -->
 
 <?php if ($has_next) { ?>
-    <div class="box more">
-        <a href="<?= base_url("{$object}/likes/{$$object[$object . '_id']}/{$next_offset}"); ?>">
+    <div class='box more'>
+        <a href='<?= base_url("{$object}/likes/{$$object[$object . '_id']}/{$next_offset}"); ?>'>
             View more likes
         </a>
     </div>

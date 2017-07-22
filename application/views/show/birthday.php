@@ -3,14 +3,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require_once(dirname(__FILE__) . '/../common/user-page-start.php');
 ?>
 
-<div class="box">
+<div class='box'>
     <h4>
-        <div class="media">
-            <div class="media-left">
-                <img src="<?= $user_profile_pic_path; ?>" class="media-object" alt="<?= $user; ?>">
+        <div class='media'>
+            <div class='media-left'>
+                <img src='<?= $user_profile_pic_path; ?>' class='media-object' alt="<?= $user; ?>">
             </div>
-            <div class="media-body">
-                <h4 class="media-heading">
+            <div class='media-body'>
+                <h4 class='media-heading'>
                     <?php
                     if ($is_visitor) {
                         $dob_array = explode('-', $dob);
@@ -40,20 +40,20 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
         </div>
     </h4>
     <?php if ($is_visitor) { ?>
-    <form action="<?= base_url("user/send-birthday-message/{$user_id}/{$age}") ?>"
-        method="post" accept-charset="utf-8" role="form">
+    <form action='<?= base_url("user/send-birthday-message/{$user_id}/{$age}") ?>'
+            method='post' accept-charset='utf-8' role='form'>
         <fieldset>
-            <div class="form-group">
-                <label for="birthday-message">
+            <div class='form-group'>
+                <label for='birthday-message'>
                     Leave a birthday message.
                 </label>
-                <input type="text" name="birthday-message" id="birthday-message"
-                    placeholder="your message..." class="fluid
+                <input type='text' name='birthday-message' id='birthday-message'
+                    placeholder='your message...' class='fluid
                     <?php
                     if (isset($error_message)) {
                         print " has-error";
                     }
-                    ?>" required>
+                    ?>' required>
                     <?php
                     if (isset($error_message)) {
                         print "<span class='error'>{$error_message}</span>";
@@ -61,31 +61,31 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
                     ?>
             </div>
         </fieldset>
-        <input type="submit" name="submit" value="Send" class="btn btn-sm">
+        <input type='submit' name='submit' value='Send' class='btn btn-sm'>
     </form>
     <?php } ?>
 </div>
 
 <?php if (count($birthday_messages) > 0) { ?>
-    <div class="box birthday-messages">
+    <div class='box birthday-messages'>
         <h4>Birthday Messages</h4>
         <?php foreach ($birthday_messages as $msg) { ?>
-            <div class="media">
-                <div class="media-left">
-                    <img src="<?= $msg['profile_pic_path']; ?>" alt="<?= $msg['sender']; ?>"
-                        class="media-object">
+            <div class='media'>
+                <div class='media-left'>
+                    <img src='<?= $msg['profile_pic_path']; ?>' alt="<?= $msg['sender']; ?>"
+                            class='media-object'>
                 </div>
-                <div class="media-body">
-                    <h4 class="media-heading">
-                        <a href="<?= base_url("user/{$msg['sender_id']}"); ?>">
+                <div class='media-body'>
+                    <h4 class='media-heading'>
+                        <a href='<?= base_url("user/{$msg['sender_id']}"); ?>'>
                             <strong><?= $msg['sender']; ?></strong>
                         </a>
                     </h4>
-                    <p class="message"><?= $msg['message']; ?></p>
+                    <p class='message'><?= $msg['message']; ?></p>
 
                     <span>
-                        <small class="time">
-                            <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+                        <small class='time'>
+                            <span class='glyphicon glyphicon-time' aria-hidden='true'></span>
                             <?= $msg['timespan']; ?> ago
                         </small>
                         <?php
@@ -123,8 +123,8 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
 
 
 <?php if ($has_next) { ?>
-    <div class="box more">
-        <a href="<?= base_url("user/birthday/{$user_id}/{$age}/{$next_offset}"); ?>">
+    <div class='box more'>
+        <a href='<?= base_url("user/birthday/{$user_id}/{$age}/{$next_offset}"); ?>'>
             View more messages.
         </a>
     </div>

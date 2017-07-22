@@ -13,7 +13,7 @@ require_once('common/user-page-start.php');
             </div>
             <?php } ?>
             <form action='<?= base_url('profile/change-profile-picture'); ?>' method='post'
-                enctype='multipart/form-data' role='form'>
+                    enctype='multipart/form-data' role='form'>
                 <div class='form-group'>
                     <label for='userfile'>Choose a photo:</label>
                     <input type='file' name='userfile' id='userfile' required>

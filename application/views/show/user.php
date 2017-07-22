@@ -8,24 +8,23 @@ if ($page !== 'news-feed') {
 
 if (!$is_visitor) {
 ?>
-    <div class="box">
+    <div class='box'>
 
         <?php
         define('STATUS', 'post');
         require_once(dirname(__FILE__) . '/../common/status-nav.php');
         ?>
 
-        <form action="<?= base_url('post/new'); ?>" method="post"
-            accept-charset="utf-8" role="form">
-            <div class="form-group">
-                <label for="post" class="sr-only">New Post</label>
-                <textarea name="post" placeholder="What's new?" class="fluid
+        <form action='<?= base_url('post/new'); ?>' method='post'
+                accept-charset='utf-8' role='form'>
+            <div class='form-group'>
+                <label for='post' class='sr-only'>New Post</label>
+                <textarea name='post' placeholder='Write something...' class='fluid
                 <?php
                 if (isset($post_error)) {
                     print ' has-error';
                 }
-                ?>
-                " required></textarea>
+                ?>' required></textarea>
                 <?php
                 if (isset($post_error)) {
                     print "<span class='error'>{$post_error}</span>";
@@ -33,17 +32,17 @@ if (!$is_visitor) {
                 ?>
             </div>
 
-            <input type="submit" value="Post" class="btn btn-sm">
+            <input type='submit' value='Post' class='btn btn-sm'>
         </form>
     </div>
 <?php } // (!$is_visitor) ?>
 
     <?php
     if (empty($items) && $is_visitor) { ?>
-        <div class="box">
-            <div class="alert alert-info" role="alert">
+        <div class='box'>
+            <div class='alert alert-info' role='alert'>
                 <p>
-                    <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                    <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
                     No posts to show.
                 </p>
             </div>
@@ -74,7 +73,7 @@ if (!$is_visitor) {
             }
         }
         if ($has_next) {
-            print '<div class="box more">';
+            print "<div class='box more'>";
             if ($page == 'news-feed') {
                 print '<a href="' . base_url("user/news-feed/{$next_offset}") .
                         '">Show more</a>';

@@ -5,7 +5,7 @@ require_once('common/user-page-start.php');
 require_once("common/secondary-user-nav.php");
 ?>
 
-<div class="box show-profile">
+<div class='box show-profile'>
     <?php
     if ( ! empty($profile_questions)) {
         foreach ($profile_questions as $pq) {
@@ -24,15 +24,15 @@ require_once("common/secondary-user-nav.php");
     ?>
         <?php if (!$is_visitor || $profile['colleges']) { ?>
             <h4>Education</h4>
-            <ul class="profile">
+            <ul class='profile'>
             <?php
             if ($profile['colleges']) {
                 foreach ($profile['colleges'] as $college) {
                     print "<span><b>{$college['start_year']} - {$college['end_year']}</b></span>";
                     print "<li><b>College: </b>{$college['college_name']}";
                     if (!$is_visitor) {
-                        print ' <a href="' . base_url("profile/edit-college/{$college['id']}") .
-                            '"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit</a>';
+                        print " <a href='" . base_url("profile/edit-college/{$college['id']}") .
+                            "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Edit</a>";
                     }
                     print "</li>";
 
@@ -41,26 +41,26 @@ require_once("common/secondary-user-nav.php");
                     if ($college['has_programme']) {
                         print "<li><b>Programme: </b>{$college['programme']['programme_name']}";
                         if (!$is_visitor) {
-                            print ' <a href="' . base_url("profile/edit-programme/{$college['programme']['id']}") .
-                                    '"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit</a>';
+                            print " <a href='" . base_url("profile/edit-programme/{$college['programme']['id']}") .
+                                "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Edit</a>";
                         }
                         print "</li>";
                     }
                     else {
                         if (!$is_visitor) {
-                            print '<li><b>Programme: </b><a href="'.
+                            print "<li><b>Programme: </b> <a href='".
                                     base_url("profile/add-programme/{$college['school']['id']}") .
-                                    '">Add programme</a></li>';
+                                    "'>Add programme</a></li>";
                         }
                     }
                 }  // End foreach.
 
                 if (!$is_visitor) {
-                    print '<a href="'. base_url("profile/add-college") . '">Add college</a>';
+                    print "<a href='". base_url("profile/add-college") . "'>Add college</a>";
                 }
             }
             elseif (!$is_visitor) {
-                print '<a href="'. base_url("profile/add-college") . '">Add college</a>';
+                print "<a href='". base_url("profile/add-college") . "'>Add college</a>";
             } // ($profile['colleges']).
 
             print "</ul>";
@@ -68,7 +68,7 @@ require_once("common/secondary-user-nav.php");
 
         <?php if (!$is_visitor || ($profile['hostels'] || $profile['halls'])) { ?>
             <h4>Residence</h4>
-            <ul class="profile">
+            <ul class='profile'>
                 <?php
                 if ($profile['halls']) {
                     foreach ($profile['halls'] as $hall) {
@@ -76,8 +76,8 @@ require_once("common/secondary-user-nav.php");
                             print "<li><b>{$hall['start_year']} - {$hall['end_year']}: </b>" .
                                     "Resident of {$hall['hall_name']}";
                             if (!$is_visitor) {
-                                print' <a href="' . base_url("profile/edit-hall/{$hall['id']}") .
-                                        '"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit</a>';
+                                print " <a href='" . base_url("profile/edit-hall/{$hall['id']}") .
+                                        "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Edit</a>";
                             }
                             print "</li>";
                         }
@@ -85,19 +85,19 @@ require_once("common/secondary-user-nav.php");
                             print "<li><b>{$hall['start_year']} - {$hall['end_year']}: </b>" .
                                     "Attached to {$hall['hall_name']}";
                             if (!$is_visitor) {
-                                print ' <a href="' . base_url("profile/edit-hall/{$hall['id']}") .
-                                        '"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit</a>';
+                                print " <a href='" . base_url("profile/edit-hall/{$hall['id']}") .
+                                        "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Edit</a>";
                             }
                             print "</li>";
                         }
                     }
 
                     if (!$is_visitor) {
-                        print '<a href="'. base_url("profile/add-hall") . '">Add hall</a>';
+                        print "<a href='" . base_url("profile/add-hall") . "'>Add hall</a>";
                     }
                 }
                 else {
-                    print '<a href="'. base_url("profile/add-hall") . '">Add hall</a>';
+                    print "<a href='" . base_url("profile/add-hall") . "'>Add hall</a>";
                 }
 
                 if ($profile['hostels']) {
@@ -105,8 +105,8 @@ require_once("common/secondary-user-nav.php");
                         print "<li><b>{$hostel['start_year']} - {$hostel['end_year']}: </b>" .
                                 "{$hostel['hostel_name']}";
                         if (!$is_visitor) {
-                            print ' <a href="' . base_url("profile/edit-hostel/{$hostel['id']}") .
-                                    '"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit</a>';
+                            print " <a href='" . base_url("profile/edit-hostel/{$hostel['id']}") .
+                                    "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Edit</a>";
                         }
                         print "</li>";
                     }
@@ -115,7 +115,7 @@ require_once("common/secondary-user-nav.php");
                     if (!$profile['hostels']) {
                         print ' &middot; ';
                     }
-                    print '<a href="'. base_url("profile/add-hostel") . '">Add hostel</a>';
+                    print "<a href='" . base_url("profile/add-hostel") . "'>Add hostel</a>";
                 }
                 ?>
             </ul>
@@ -123,29 +123,29 @@ require_once("common/secondary-user-nav.php");
 
         <?php if (!$is_visitor || $profile['origin']) { ?>
             <h4>Origin</h4>
-            <ul class="profile">
+            <ul class='profile'>
                 <?php
                 if (!$is_visitor) {
                     if ($profile['origin']['district_name']) {
                         print "<li><b>District: </b>{$profile['origin']['district_name']}";
-                        print ' <a href="' . base_url("profile/edit-district") .
-                                '"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit</a>';
+                        print " <a href='" . base_url("profile/edit-district") .
+                                "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Edit</a>";
                         print "</li>";
                     }
                     else {
-                        print '<li><b>District: </b><a href="' . base_url("profile/add-district") .
-                                '">Add district</a></li>';
+                        print "<li><b>District: </b><a href='" . base_url("profile/add-district") .
+                                "'>Add district</a></li>";
                     }
 
                     if ($profile['origin']['country_name']) {
                         print "<li><b>Country: </b>{$profile['origin']['country_name']}";
-                        print ' <a href="' . base_url("profile/edit-country") .
-                                '"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit</a>';
+                        print " <a href='" . base_url("profile/edit-country") .
+                                "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Edit</a>";
                         print "</li>";
                     }
                     else {
-                        print '<li><b>Country: </b><a href="' . base_url("profile/add-country") .
-                                '">Add country</a></li>';
+                        print "<li><b>Country: </b><a href='" . base_url("profile/add-country") .
+                                "'>Add country</a></li>";
                     }
                 } else {
                 ?>

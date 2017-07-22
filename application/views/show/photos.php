@@ -5,21 +5,21 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
 require_once(dirname(__FILE__) . '/../common/secondary-user-nav.php');
 ?>
 
-<div class="box">
+<div class='box'>
     <?php if (count($photos) == 0) { ?>
-        <div class="alert alert-info" role="alert">
-            <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+        <div class='alert alert-info' role='alert'>
+            <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
             No photos to show.
         </div>
     <?php } else { ?>
 
-    <div class="container-fluid">
-        <div class="row gallery">
+    <div class='container-fluid'>
+        <div class='row gallery'>
             <?php foreach ($photos as $photo) { ?>
-            <div class="col-xs-6 col-md-3">
-                <a href="<?= base_url("user/photo/{$photo['photo_id']}"); ?>" title="view photo">
-                    <img src="<?= $photo['web_path']; ?>" alt="<?= $photo['alt']; ?>"
-                        class="img-responsive">
+            <div class='col-xs-6 col-md-3'>
+                <a href='<?= base_url("user/photo/{$photo['photo_id']}"); ?>' title='view photo'>
+                    <img src='<?= $photo['web_path']; ?>' alt="<?= $photo['alt']; ?>"
+                            class='img-responsive'>
                 </a>
             </div>
             <?php } ?>
@@ -29,7 +29,7 @@ require_once(dirname(__FILE__) . '/../common/secondary-user-nav.php');
 </div><!-- box -->
 
 <?php if ($has_next) { ?>
-    <div class="box more">
-        <a href="<?= base_url("user/photos/{$user_id}/{$next_offset}"); ?>">View more photos</a>
+    <div class='box more'>
+        <a href='<?= base_url("user/photos/{$user_id}/{$next_offset}"); ?>'>View more photos</a>
     </div>
 <?php } ?>

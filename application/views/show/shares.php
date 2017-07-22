@@ -21,12 +21,12 @@ switch ($object) {
 }
 ?>
 
-<div class="box">
+<div class='box'>
     <h4>Shares</h4>
     <?php if (count($shares) == 0) { ?>
-    <div class="alert alert-info" role="alert">
+    <div class='alert alert-info' role='alert'>
         <p>
-            <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+            <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
             No shares to show.
         </p>
     </div>
@@ -36,21 +36,21 @@ switch ($object) {
                   "View previous shares.</a>";
         }
     ?>
-    <div class="shares">
+    <div class='shares'>
         <?php foreach($shares as $share) { ?>
-        <div class="media">
-            <div class="media-left">
-                <img class="media-object" src="<?= $share['profile_pic_path']; ?>"
-                alt="<?= $share['sharer']; ?>">
+        <div class='media'>
+            <div class='media-left'>
+                <img class='media-object' src='<?= $share['profile_pic_path']; ?>'
+                        alt="<?= $share['sharer']; ?>">
             </div>
-            <div class="media-body">
-                <h4 class="media-heading">
-                    <a href="<?= base_url("user/{$share['sharer_id']}"); ?>">
+            <div class='media-body'>
+                <h4 class='media-heading'>
+                    <a href='<?= base_url("user/{$share['sharer_id']}"); ?>'>
                         <strong><?= $share['sharer']; ?></strong>
                     </a>
                 </h4>
-                <small class="time">
-                    <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+                <small class='time'>
+                    <span class='glyphicon glyphicon-time' aria-hidden='true'></span>
                     <?= $share['timespan']; ?> ago
                 </small>
             </div>
@@ -61,8 +61,8 @@ switch ($object) {
 </div><!-- box -->
 
 <?php if ($has_next) { ?>
-    <div class="box more">
-        <a href="<?= base_url("{$object}/shares/{$$object[$object . '_id']}/{$next_offset}"); ?>">
+    <div class='box more'>
+        <a href='<?= base_url("{$object}/shares/{$$object[$object . '_id']}/{$next_offset}"); ?>'>
             View more shares
         </a>
     </div>
