@@ -3,24 +3,24 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require_once(dirname(__FILE__) . '/../common/user-page-start.php');
 ?>
 
-<div class="box">
+<div class='box'>
     <h4><?= $heading; ?></h4>
     <?php if (isset($error_message)) { ?>
-        <div class="alert alert-danger" role="alert">
+        <div class='alert alert-danger' role='alert'>
             <p>
-                <span class"glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                <span class="sr-only">Error: </span>
+                <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
+                <span class='sr-only'>Error: </span>
                 <?= $error_message; ?>
             </p>
         </div>
     <?php } ?>
 
-    <form action="<?= $form_action ?>" method="post" accept-charset="utf-8" role="form">
+    <form action='<?= $form_action ?>' method='post' accept-charset='utf-8' role='form'>
         <fieldset>
-            <div class="form-group">
-                <label for="college">College</label>
+            <div class='form-group'>
+                <label for='college'>College</label>
                 <?php if (isset($colleges)) { ?>
-                    <select name="college" id="college" class="form-control" required>
+                    <select name='college' id='college' class='form-control' required>
                         <optgroup>
                         <?php
                         foreach ($colleges as $c) {
@@ -40,10 +40,10 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
                 ?>
             </div>
 
-            <div class="form-group">
-                <label for="school">School</label>
+            <div class='form-group'>
+                <label for='school'>School</label>
                 <?php if (isset($schools)) { ?>
-                    <select name="school" id="school" class="form-control" required>
+                    <select name='school' id='school' class='form-control' required>
                         <optgroup>
                         <?php
                         foreach ($schools as $s) {
@@ -71,11 +71,11 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
         if (isset($user_college)) {
         ?>
         <fieldset>
-            <input type="hidden" name = "user-college-id" value = "<?= $user_college['id']; ?>">
-            <input type="hidden" name="college-id" value="<?= $user_college['college_id']; ?>">
-            <input type="hidden" name = "school-id" value = "<?= $user_college['school']['school_id']; ?>">
+            <input type='hidden' name='user-college-id' value='<?= $user_college['id']; ?>'>
+            <input type='hidden' name='college-id' value='<?= $user_college['college_id']; ?>'>
+            <input type='hidden' name='school-id' value='<?= $user_college['school']['school_id']; ?>'>
         </fieldset>
         <?php } ?>
-        <input type="submit" value="Save" class="btn btn-sm">
+        <input type='submit' value='Save' class='btn btn-sm'>
     </form>
 </div><!-- box -->

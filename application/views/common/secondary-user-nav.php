@@ -1,16 +1,16 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
-<div id="secondary-user" class="box">
+<div id='secondary-user' class='box'>
     <div>
         <?php if ($suid == $_SESSION['user_id']) { ?>
-        <a href="<?= base_url('profile/change-profile-picture'); ?>" title="Change profile picture">
-            <img src="<?= $su_profile_pic_path; ?>" alt="<?= $secondary_user; ?>">
+        <a href='<?= base_url('profile/change-profile-picture'); ?>' title='Change profile picture'>
+            <img src='<?= $su_profile_pic_path; ?>' alt="<?= $secondary_user; ?>">
         </a>
         <?php } else { ?>
-        <img src="<?= $su_profile_pic_path; ?>" alt="<?= $secondary_user; ?>">
+        <img src='<?= $su_profile_pic_path; ?>' alt="<?= $secondary_user; ?>">
         <?php } ?>
         <h4>
-            <a href="<?= base_url("user/{$suid}"); ?>"><?= $secondary_user; ?></a>
+            <a href='<?= base_url("user/{$suid}"); ?>'><?= $secondary_user; ?></a>
         </h4>
 
         <?php
@@ -37,7 +37,7 @@
                     "' class='btn btn-xs'>Add Friend</a>";
         }
         ?>
-        <span class="clearfix"></span>
+        <span class='clearfix'></span>
     </div>
     <nav>
         <ul>
@@ -85,5 +85,5 @@
             ?>
         </ul>
     </nav>
-    <span class="clearfix"></span>
+    <span class='clearfix'></span>
 </div>

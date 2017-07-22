@@ -35,23 +35,23 @@
     <?php if ($$object['viewer_is_friend_to_owner']) { ?>
         <ul>
             <li>
-                <a href="<?= base_url("$object/like/{$$object[$object . '_id']}"); ?>"
-                    title="Like this <?= $object; ?>">
-                    <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> Like
+                <a href='<?= base_url("$object/like/{$$object[$object . '_id']}"); ?>'
+                    title='Like this <?= $object; ?>'>
+                    <span class='glyphicon glyphicon-thumbs-up' aria-hidden='true'></span> Like
                 </a>
                 <span> &middot; </span>
             </li>
             <li>
-                <a href="<?= base_url("$object/comment/{$$object[$object . '_id']}"); ?>"
-                    title="Comment on this <?= $object; ?>">
-                    <span class="glyphicon glyphicon-comment" aria-hidden="true"></span> Comment
+                <a href='<?= base_url("$object/comment/{$$object[$object . '_id']}"); ?>'
+                    title='Comment on this <?= $object; ?>'>
+                    <span class='glyphicon glyphicon-comment' aria-hidden='true'></span> Comment
                 </a>
                 <span> &middot; </span>
             </li>
             <li>
-                <a href="<?= base_url("$object/share/{$$object[$object . '_id']}"); ?>"
-                    title="Share this <?= $object; ?>">
-                    <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span> Share
+                <a href='<?= base_url("$object/share/{$$object[$object . '_id']}"); ?>'
+                    title='Share this <?= $object; ?>'>
+                    <span class='glyphicon glyphicon-share-alt' aria-hidden='true'></span> Share
                 </a>
             </li>
 
@@ -60,27 +60,27 @@
                 ($$object['user_id'] == $_SESSION['user_id']) ||
                 ($$object['shared'] && ($$object['sharer_id'] == $_SESSION['user_id']))
             ): ?>
-            <li class="dropdown pull-right">
-                <button class="btn btn-xs btn-default dropdown-toggle" type="button"
-                    id="options-menu" data-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="true" style="margin-bottom: 2px;">
-                    Options <span class="caret"></span>
+            <li class='dropdown pull-right'>
+                <button class='btn btn-xs btn-default dropdown-toggle' type='button'
+                    id='options-menu' data-toggle='dropdown' aria-haspopup='true'
+                    aria-expanded='true' style='margin-bottom: 2px;'>
+                    Options <span class='caret'></span>
                 </button>
-                <ul class="dropdown-menu" aria-labelledby="options-menu">
-                    <li><a href="#">Edit</a></li>
-                    <li><a href="#">Delete</a></li>
+                <ul class='dropdown-menu' aria-labelledby='options-menu'>
+                    <li><a href='#'>Edit</a></li>
+                    <li><a href='#'>Delete</a></li>
                 </ul>
             </li>
             <?php endif; ?>
         </ul>
-        <form action="<?= base_url("$object/comment/{$$object[$object . '_id']}"); ?>"
-            method="post" accept-charset="utf-8" role="form">
-            <input type="text" name="comment" placeholder="Write a comment..." class="fluid
+        <form action='<?= base_url("$object/comment/{$$object[$object . '_id']}"); ?>'
+                method='post' accept-charset='utf-8' role='form'>
+            <input type='text' name='comment' placeholder='Write a comment...' class='fluid
             <?php
             if (isset($comment_error)) {
                 print(" has-error");
             }
-            ?>" required>
+            ?>' required>
             <?php
             if (isset($comment_error)) {
                 print("<span class='error'>{$comment_error}</span>");

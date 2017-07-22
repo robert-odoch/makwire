@@ -3,20 +3,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require_once(dirname(__FILE__) . '/../common/user-page-start.php');
 ?>
 
-<div class="box">
+<div class='box'>
     <h4><?= $heading; ?></h4>
     <?php if (isset($error_message)) { ?>
-        <div class="alert alert-danger">
+        <div class='alert alert-danger'>
             <p><?= "{$error_message}"; ?></p>
         </div>
     <?php } ?>
 
-    <form action="<?= $form_action; ?>" method="post" accept-charset="utf-8" role="form">
+    <form action='<?= $form_action; ?>' method='post' accept-charset='utf-8' role='form'>
         <fieldset>
-            <div class="form-group">
-                <label for="hostel">Hostel</label>
+            <div class='form-group'>
+                <label for='hostel'>Hostel</label>
                 <?php if (isset($hostels)) { ?>
-                    <select name="hostel" id="hostel" class="form-control" required>
+                    <select name='hostel' id='hostel' class='form-control' required>
                         <optgroup>
                             <?php
                             foreach ($hostels as $hostel) {
@@ -41,11 +41,11 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
 
         <?php if (isset($user_hostel)) { ?>
             <fieldset>
-                <input type="hidden" name="hostel-id" value="<?= $user_hostel['hostel_id']; ?>">
-                <input type="hidden" name="user-hostel-id" value="<?= $user_hostel['id']; ?>">
+                <input type='hidden' name='hostel-id' value='<?= $user_hostel['hostel_id']; ?>'>
+                <input type='hidden' name='user-hostel-id' value='<?= $user_hostel['id']; ?>'>
             </fieldset>
         <?php } ?>
 
-        <input type="submit" value="Save" class="btn btn-sm">
+        <input type='submit' value='Save' class='btn btn-sm'>
     </form>
 </div><!-- box -->

@@ -1,25 +1,25 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
-<div class="box">
-    <div id="birthday-message" class="media">
-        <div class="media-left">
-            <img class="media-object" src="<?= $message['profile_pic_path']; ?>"
+<div class='box'>
+    <div id='birthday-message' class='media'>
+        <div class='media-left'>
+            <img class='media-object' src='<?= $message['profile_pic_path']; ?>'
                 alt="<?= $message['sender']; ?>">
         </div>
-        <div class="media-body">
-            <h4 class="media-heading">
+        <div class='media-body'>
+            <h4 class='media-heading'>
                 <strong>
-                    <a href="<?= base_url("user/{$message['sender_id']}"); ?>">
+                    <a href='<?= base_url("user/{$message['sender_id']}"); ?>'>
                         <?= $message['sender']; ?>
                     </a>
                 </strong>
             </h4>
 
-            <p class="message"><?= htmlspecialchars($message['message']); ?></p>
+            <p class='message'><?= htmlspecialchars($message['message']); ?></p>
 
             <span>
-                <small class="time">
-                    <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+                <small class='time'>
+                    <span class='glyphicon glyphicon-time' aria-hidden='true'></span>
                     <?= $message['timespan']; ?> ago
                 </small>
 
@@ -45,9 +45,9 @@
 
     <?php if ($message['user_can_reply']) { ?>
         <form action='<?= base_url("birthday-message/reply/{$message['id']}"); ?>'
-              method="post" accept-charset="utf-8" role="form">
-            <label for="reply" class="sr-only">Reply</label>
-            <input type="text" name="reply" id="reply" class="fluid" placeholder="Leave a reply..." required>
+              method='post' accept-charset='utf-8' role='form'>
+            <label for='reply' class='sr-only'>Reply</label>
+            <input type='text' name='reply' id='reply' class='fluid' placeholder='Leave a reply...' required>
         </form>
     <?php } ?>
 </div><!-- box -->

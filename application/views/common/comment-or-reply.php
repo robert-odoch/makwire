@@ -1,25 +1,25 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
-<div class="box">
-    <div id="<?= $object; ?>" class="media">
-        <div class="media-left">
-            <img class="media-object" src="<?= $$object['profile_pic_path']; ?>"
+<div class='box'>
+    <div id='<?= $object; ?>' class='media'>
+        <div class='media-left'>
+            <img class='media-object' src='<?= $$object['profile_pic_path']; ?>'
                 alt="<?= $$object['commenter']; ?>">
         </div>
-        <div class="media-body">
-            <h4 class="media-heading">
+        <div class='media-body'>
+            <h4 class='media-heading'>
                 <strong>
-                    <a href="<?= base_url("user/{$$object['commenter_id']}"); ?>">
+                    <a href='<?= base_url("user/{$$object['commenter_id']}"); ?>'>
                         <?= $$object['commenter']; ?>
                     </a>
                 </strong>
             </h4>
 
-            <p class="comment"><?= htmlspecialchars($$object['comment']); ?></p>
+            <p class='comment'><?= htmlspecialchars($$object['comment']); ?></p>
 
             <span>
-                <small class="time">
-                    <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+                <small class='time'>
+                    <span class='glyphicon glyphicon-time' aria-hidden='true'></span>
                     <?= $$object['timespan']; ?> ago
                 </small>
 
@@ -47,14 +47,14 @@
     </div>
 
     <?php if ($object == 'comment') { ?>
-        <form action="<?= base_url("comment/reply/{$comment['comment_id']}"); ?>"
-            method="post" accept-charset="utf-8" role="form">
-            <input type="text" name="reply" placeholder="Write a reply..." class="fluid
+        <form action='<?= base_url("comment/reply/{$comment['comment_id']}"); ?>'
+            method='post' accept-charset='utf-8' role='form'>
+            <input type='text' name='reply' placeholder='Write a reply...' class='fluid
             <?php
             if (isset($reply_error)) {
                 print " has-error";
             }
-            ?>" required>
+            ?>' required>
             <?php
             if (isset($reply_error)) {
                 print "<span class='error'>{$reply_error}</span>";

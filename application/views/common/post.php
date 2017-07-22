@@ -1,14 +1,14 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
-<div class="box">
-    <article class="post">
+<div class='box'>
+    <article class='post'>
         <header>
-            <div class="media">
-                <div class="media-left">
-                    <img src="<?= $post['profile_pic_path']; ?>" alt="" class="media-object">
+            <div class='media'>
+                <div class='media-left'>
+                    <img src='<?= $post['profile_pic_path']; ?>' alt="" class='media-object'>
                 </div>
-                <div class="media-body">
-                    <h4 class="media-heading">
+                <div class='media-body'>
+                    <h4 class='media-heading'>
                     <?php
                     if ($post['shared']) {
                         print "<a href='" . base_url("user/{$post['sharer_id']}") . "'>" .
@@ -22,17 +22,17 @@
                     }
                     ?>
                     </h4>
-                    <small class="time">
-                        <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+                    <small class='time'>
+                        <span class='glyphicon glyphicon-time' aria-hidden='true'></span>
                         <?= $post['timespan']; ?> ago
                     </small>
                 </div>
             </div>
         </header>
-        <p class="post"><?= $post['post']; ?></p>
+        <p class='post'><?= $post['post']; ?></p>
         <?php
         $object = 'post';
-        require("media-footer.php");
+        require('media-footer.php');
         ?>
     </article>
 </div>

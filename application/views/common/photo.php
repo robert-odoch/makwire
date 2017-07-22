@@ -1,14 +1,14 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
-<div class="box">
-    <article class="photo">
+<div class='box'>
+    <article class='photo'>
         <header>
-            <div class="media">
-                <div class="media-left">
-                    <img src="<?= $photo['profile_pic_path']; ?>" alt="" class="media-object">
+            <div class='media'>
+                <div class='media-left'>
+                    <img src='<?= $photo['profile_pic_path']; ?>' alt="" class='media-object'>
                 </div>
-                <div class="media-body">
-                    <h4 class="media-heading">
+                <div class='media-body'>
+                    <h4 class='media-heading'>
                     <?php
                     if ($photo['shared']) {
                         if ($photo['is_profile_pic']) {
@@ -37,8 +37,8 @@
                     }
                     ?>
                     </h4>
-                    <small class="time">
-                        <span class='glyphicon glyphicon-time' aria-hidden="true"></span>
+                    <small class='time'>
+                        <span class='glyphicon glyphicon-time' aria-hidden='true'></span>
                         <?= $photo['timespan']; ?> ago
                     </small>
                 </div>
@@ -54,10 +54,10 @@
                     '">Say something about this photo</a>';
         }
         ?>
-        <img src="<?= $photo['web_path']; ?>" alt="<?= $photo['alt']?>">
+        <img src='<?= $photo['web_path']; ?>' alt="<?= $photo['alt']; ?>">
         <?php
         $object = 'photo';
-        require("media-footer.php");
+        require('media-footer.php');
         ?>
     </article>
 </div>

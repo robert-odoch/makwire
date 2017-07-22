@@ -5,7 +5,7 @@
         <header>
             <div class='media'>
                 <div class='media-left'>
-                    <img src="<?= $video['profile_pic_path']; ?>" alt='' class='media-object'>
+                    <img src='<?= $video['profile_pic_path']; ?>' alt="" class='media-object'>
                 </div>
                 <div class='media-body'>
                     <h4 class='media-heading'>
@@ -36,8 +36,8 @@
             print "<p>{$video['description']}</p>";
         }
         elseif ($video['user_id'] == $_SESSION['user_id']) {
-            print '<a href="' . base_url("video/add-description/{$video['video_id']}") .
-                    '">Say something about this video</a>';
+            print "<a href='" . base_url("video/add-description/{$video['video_id']}") .
+                    "'>Say something about this video</a>";
         }
         ?>
 
