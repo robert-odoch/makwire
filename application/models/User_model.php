@@ -705,7 +705,7 @@ class User_model extends CI_Model
             // Query to get activities that were performed by this user..
             $acted_on_sql = sprintf("SELECT DISTINCT source_id FROM activities " .
                                     "WHERE (actor_id = %d AND subject_id != %d AND " .
-                                            "activity IN('comment', 'reply'))",
+                                            "activity IN('share', 'comment', 'reply'))",
                                     $_SESSION['user_id'], $_SESSION['user_id']);
 
             // WHERE clause for notifications from other sources like profile_pic_change, comment and reply.
@@ -742,7 +742,7 @@ class User_model extends CI_Model
             // Query to get activities that were performed by this user..
             $acted_on_sql = sprintf("SELECT DISTINCT source_id FROM activities " .
                                     "WHERE (actor_id = %d AND subject_id != %d AND " .
-                                    "activity IN('comment', 'reply'))",
+                                    "activity IN('share', 'comment', 'reply'))",
                                     $_SESSION['user_id'], $_SESSION['user_id']);
 
             // WHERE clause for notifications from other sources like profile_pic_change, comment, reply and birthday.
@@ -872,7 +872,7 @@ class User_model extends CI_Model
             // Query to get activities that were performed by this user..
             $acted_on_sql = sprintf("SELECT DISTINCT source_id FROM activities " .
                                     "WHERE (actor_id = %d AND subject_id != %d AND " .
-                                            "activity IN('comment', 'reply'))",
+                                            "activity IN('share', 'comment', 'reply'))",
                                     $_SESSION['user_id'], $_SESSION['user_id']);
 
             // WHERE clause for notifications from other sources like profile_pic_change, comment and reply.
@@ -912,7 +912,7 @@ class User_model extends CI_Model
             // Query to get activities that were performed by this user..
             $acted_on_sql = sprintf("SELECT DISTINCT source_id FROM activities " .
                                     "WHERE (actor_id = %d AND subject_id != %d AND " .
-                                            "activity IN('comment', 'reply'))",
+                                            "activity IN('share', 'comment', 'reply'))",
                                     $_SESSION['user_id'], $_SESSION['user_id']);
 
             // WHERE clause for notifications from other sources
@@ -944,8 +944,55 @@ class User_model extends CI_Model
                                 $offset, $limit);
         }
 
+        /* Get IDs of items shared by this user (used for comments on items that this user shared) */
+        /// Note: Although this looks similar to what's done in News_feed_model, they are quite different.
+        ///       The difference lies in the IDs passed for `sharers_ids' parameter of `get_shared_items_ids()' method.
+        /// IDs are got seperately b'se many items may share the same ID
+        /// as they are stored in different tables.
+
+        /// IDS of shared posts.
+        $shared_posts_ids = $this->utility_model->get_shared_items_ids('post', [$_SESSION['user_id']]);
+
+        /// IDs of shared photos.
+        $shared_photos_ids = $this->utility_model->get_shared_items_ids('photo', [$_SESSION['user_id']]);
+
+        /// IDs of shared videos.
+        $shared_videos_ids = $this->utility_model->get_shared_items_ids('video', [$_SESSION['user_id']]);
+
+        /// IDs of shared links.
+        $shared_links_ids = $this->utility_model->get_shared_items_ids('link', [$_SESSION['user_id']]);
+
         $notifications = $this->utility_model->run_query($notifs_sql)->result_array();
         foreach ($notifications as &$n) {
+            if ($n['activity'] == 'comment') {
+                $n['from_shared'] = FALSE;
+                switch ($n['source_type']) {
+                case 'post':
+                    if (in_array($n['source_id'], $shared_posts_ids)) {
+                        $n['from_shared'] = TRUE;
+                    }
+                    break;
+                case 'photo':
+                    if (in_array($n['source_id'], $shared_photos_ids)) {
+                        $n['from_shared'] = TRUE;
+                    }
+                    break;
+                case 'video':
+                    if (in_array($n['source_id'], $shared_videos_ids)) {
+                        $n['from_shared'] = TRUE;
+                    }
+                    break;
+                case 'link':
+                    if (in_array($n['source_id'], $shared_links_ids)) {
+                        $n['from_shared'] = TRUE;
+                    }
+                    break;
+                default:
+                    // do nothing...
+                    break;
+                }
+            }
+
             if (in_array($n['activity'], $combined_notifs_array)) {
                 // Get the number of times an activity was performed on the same object.
                 if ($filter) {
