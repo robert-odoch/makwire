@@ -125,14 +125,14 @@ class Utility_model extends CI_Model
         return $data;
     }
 
-    public function get_shared_items_ids($item, $friends_ids)
+    public function get_shared_items_ids($item, $sharers_ids)
     {
-        $friends_ids[] = 0;  // Add extra element for query-safety.
-        $friends_ids_str = implode(',', $friends_ids);
+        $sharers_ids[] = 0;  // Add extra element for query-safety.
+        $sharers_ids_str = implode(',', $sharers_ids);
 
         $ids_sql = sprintf('SELECT DISTINCT subject_id FROM shares ' .
                             'WHERE (sharer_id IN(%s) AND subject_type = \'%s\')',
-                            $friends_ids_str, $item);
+                            $sharers_ids_str, $item);
         $ids_results = $this->utility_model->run_query($ids_sql)->result_array();
 
         $ids = [];
