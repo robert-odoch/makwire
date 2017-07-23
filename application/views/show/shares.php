@@ -32,8 +32,9 @@ switch ($object) {
     </div>
     <?php } else {
         if (isset($has_prev)) {
-            print "<a href='" . base_url("{$object}/shares/{$$object[$object . '_id']}/{$prev_offset}") . "'>" .
-                  "View previous shares.</a>";
+            print "<a href='" .
+                    base_url("{$object}/shares/{$$object[$object . '_id']}/{$prev_offset}") .
+                    "' class='previous'>Show previous shares</a>";
         }
     ?>
     <div class='shares'>
@@ -63,7 +64,7 @@ switch ($object) {
 <?php if ($has_next) { ?>
     <div class='box more'>
         <a href='<?= base_url("{$object}/shares/{$$object[$object . '_id']}/{$next_offset}"); ?>'>
-            View more shares
+            Show more shares
         </a>
     </div>
 <?php } ?>

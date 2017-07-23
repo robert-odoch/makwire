@@ -38,10 +38,10 @@ require_once(dirname(__FILE__) . '/../common/secondary-user-nav.php');
     <div class='box more'>
         <?php
         if ($is_visitor) {
-            print "<a href='" . base_url("user/friends/{$suid}") . "'>View more friends</a>";
+            print "<a href='" . base_url("user/friends/{$suid}") . "'>Show more friends</a>";
         }
         else {
-            print "<a href='" . base_url("user/friends/{$_SESSION['user_id']}") . "'>View more friends</a>";
+            print "<a href='" . base_url("user/friends/{$_SESSION['user_id']}") . "'>Show more friends</a>";
         }
         ?>
     </div>

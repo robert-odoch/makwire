@@ -21,8 +21,8 @@ else if ($object == 'birthday-message') {
     <?php } else {
         $ID = ($object == 'birthday-message') ? $message['id'] : $comment['comment_id'];
         if (isset($has_prev)) {
-            print "<a href='" . base_url("{$object}/replies/{$ID}/{$prev_offset}") . "'>" .
-                    "View previous replies.</a>";
+            print "<a href='" . base_url("{$object}/replies/{$ID}/{$prev_offset}") .
+                    "' class='previous'>Show previous replies</a>";
         }
     ?>
     <div class='replies'>
@@ -73,7 +73,7 @@ else if ($object == 'birthday-message') {
 <?php if ($has_next) { ?>
     <div class='box more'>
         <a href='<?= base_url("{$object}/replies/{$ID}/{$next_offset}"); ?>'>
-            View more replies
+            Show more replies
         </a>
     </div>
 <?php } ?>

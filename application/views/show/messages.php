@@ -14,8 +14,8 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
     </div>
     <?php } else {
         if (isset($has_prev)) { ?>
-            <a href='<?= base_url("user/messages/{$prev_offset}"); ?>'>
-                View previous messages.
+            <a href='<?= base_url("user/messages/{$prev_offset}"); ?>' class='previous'>
+                Show previous messages
             </a>
         <?php } ?>
     <div class='messages'>
@@ -47,18 +47,9 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
 </div><!-- box -->
 
 <?php if ($has_next) { ?>
-    <div class='box more previous'>
+    <div class='box more'>
         <a href='<?= base_url("user/messages/{$next_offset}"); ?>'>
-            View
-            <?php
-            if (isset($older)) {
-                print ' older ';
-            }
-            else {
-                print 'more ';
-            }
-            ?>
-            messages
+            Show <?php if (isset($older)) { print 'older'; } else { print 'more'; } ?> messages
         </a>
     </div>
 <?php } ?>

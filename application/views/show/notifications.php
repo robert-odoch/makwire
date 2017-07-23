@@ -15,9 +15,9 @@ require_once(dirname(__FILE__) . '/helper functions/show_notifications_functions
     </div>
     <?php } else {
         if (isset($has_prev)) { ?>
-            <i><a href='<?= base_url("user/notifications/{$prev_offset}"); ?>'>
-                View previous notifications.
-            </a></i>
+            <a href='<?= base_url("user/notifications/{$prev_offset}"); ?>' class='previous'>
+                Show previous notifications
+            </a>
         <?php } ?>
         <ul class='notifications'>
             <?php
@@ -90,16 +90,7 @@ require_once(dirname(__FILE__) . '/helper functions/show_notifications_functions
 <?php if ($has_next) { ?>
     <div class='box more'>
         <a href='<?= base_url("user/notifications/{$next_offset}/"); ?>'>
-            View
-            <?php
-            if (isset($older)) {
-                // Showing new notifications, but we also have to give a link to older notifications.
-                print ' older ';
-            }
-            else {
-                print ' more ';
-            }
-            ?>
-            notifications</a>
+            Show <?php if (isset($older)) { print 'older'; } else { print 'more'; } ?> notifications
+        </a>
     </div>
 <?php } ?>

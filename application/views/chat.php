@@ -34,6 +34,6 @@ require_once('common/user-page-start.php');
 
 <?php if ($has_next) { ?>
     <div class='box more'>
-        <a href='<?= base_url("user/chat/{$next_offset}"); ?>'>View more friends</a>
+        <a href='<?= base_url("user/chat/{$next_offset}"); ?>'>Show more friends</a>
     </div>
 <?php } ?>

@@ -125,7 +125,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
 <?php if ($has_next) { ?>
     <div class='box more'>
         <a href='<?= base_url("user/birthday/{$user_id}/{$age}/{$next_offset}"); ?>'>
-            View more messages.
+            Show more messages
         </a>
     </div>
 <?php } ?>

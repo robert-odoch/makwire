@@ -11,17 +11,8 @@ require_once('common/user-page-start.php');
             <div class='form-group'>
                 <label for='query'>Search by full name or email address</label>
                 <input type='search' name='query' id='query' class='fluid
-                <?php
-                if (isset($error)) {
-                    print ' has-error';
-                }
-                ?>' required>
-
-                <?php
-                if (isset($error)) {
-                    print "<span class='error'>{$error}</span>";
-                }
-                ?>
+                <?php if (isset($error)) { print ' has-error'; } ?>' required>
+                <?php if (isset($error)) { print "<span class='error'>{$error}</span>"; } ?>
             </div>
         </fieldset>
         <input type='submit' value='Search' class='btn btn-sm'>
@@ -54,7 +45,7 @@ require_once('common/user-page-start.php');
 
     <?php if ($has_next) { ?>
         <div class='box more'>
-            <a href='<?= base_url("user/find-friends/{$next_offset}"); ?>'>View more results</a>
+            <a href='<?= base_url("user/find-friends/{$next_offset}"); ?>'>Show more results</a>
         </div>
     <?php } ?>
 <?php } elseif (isset($search_results)) { ?>
@@ -95,7 +86,7 @@ require_once('common/user-page-start.php');
 
     <?php if ($has_next) { ?>
     <div class='box more'>
-        <a href='<?= base_url("user/find-friends/{$next_offset}"); ?>'>View more suggestions</a>
+        <a href='<?= base_url("user/find-friends/{$next_offset}"); ?>'>Show more suggestions</a>
     </div>
     <?php } ?>
 <?php } ?>

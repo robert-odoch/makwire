@@ -676,8 +676,15 @@ p.post a.more {
 }
 
 div.more a,
-div.previous a {
+a.previous {
     display: block;
+    font-variant: small-caps;
+}
+
+a.previous {
+    padding: 2px;
+    margin: -5px 0 2px 0;
+    border-bottom: 1px solid #e2e2e2;
 }
 
 div#comment {

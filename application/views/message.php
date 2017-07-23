@@ -8,7 +8,7 @@ require_once('common/user-page-start.php');
     if (count($messages) > 0) {
         if (isset($has_prev)) {
             print "<a href='" . base_url("user/send-message/{$suid}/{$prev_offset}") .
-                    "'>View previous messages</a>";
+                    "' class='previous'>Show previous messages</a>";
         }
     ?>
         <div class='messages'>
@@ -42,17 +42,8 @@ require_once('common/user-page-start.php');
                 <div class='form-group'>
                     <label for='message' class='sr-only'>New Message</label>
                     <input type='text' name='message' id='message' placeholder='Your message...'
-                        class='fluid
-                    <?php
-                    if (isset($message_error)) {
-                        print ' has-error';
-                    }
-                    ?>' required>
-                    <?php
-                    if (isset($message_error)) {
-                        print "<span class='error'>{$message_error}</span>";
-                    }
-                    ?>
+                        class='fluid <?php if (isset($message_error)) { print 'has-error'; } ?>' required>
+                    <?php if (isset($message_error)) { print "<span class='error'>{$message_error}</span>"; } ?>
                 </div>
             </fieldset>
 
@@ -61,9 +52,9 @@ require_once('common/user-page-start.php');
 </div><!-- box -->
 
 <?php if ($has_next) { ?>
-    <div class='box previous'>
+    <div class='box more'>
         <a href='<?= base_url("user/send-message/{$suid}/{$next_offset}"); ?>'>
-            View more messages
+            Show more messages
         </a>
     </div>
 <?php } ?>

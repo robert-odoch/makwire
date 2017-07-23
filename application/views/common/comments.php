@@ -11,8 +11,9 @@
     <?php } else { ?>
         <?php
         if (isset($has_prev)) {
-            print "<a href='" . base_url("{$object}/comments/{$$object[$object . '_id']}/{$prev_offset}") . "'>" .
-                    "View previous comments.</a>";
+            print "<a href='" .
+                    base_url("{$object}/comments/{$$object[$object . '_id']}/{$prev_offset}") .
+                    "' class='previous'>Show previous comments</a>";
         }
         ?>
 
@@ -80,7 +81,7 @@
 <?php if ($has_next) { ?>
     <div class='box more'>
         <a href='<?= base_url("{$object}/comments/{$$object[$object . '_id']}/{$next_offset}"); ?>'>
-            View more comments
+            Show more comments
         </a>
     </div>
 <?php } ?>
