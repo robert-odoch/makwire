@@ -44,7 +44,6 @@ class Video_model extends CI_Model
         // Add data used by views.
         $video['has_description'] = strlen($video['description']) != 0;
         $video['shared'] = FALSE;
-        $video['alt'] = format_name($video['author']) . ' video';
 
         // Check whether the user currently viewing the page is a friend to the
         // owner of the video. This will allow us to only show the like, comment
