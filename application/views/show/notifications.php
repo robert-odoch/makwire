@@ -37,22 +37,9 @@ require_once(dirname(__FILE__) . '/helper functions/show_notifications_functions
                     if (in_array($notif['source_type'], ['post', 'photo', 'video', 'link'])) {
                         print '<li>' . build_item_like_notif($notif) . '</li>';
                     }
-                    elseif ($notif['source_type'] == "comment") {
-                        print "<li><a href='" . base_url("comment/likes/{$notif['source_id']}") .
-                                "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} liked your comment \"{$notif['comment']}\"</a>" .
-                                " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
+                    elseif (in_array($notif['source_type'], ['comment', 'reply', 'birthday_message'])) {
+                        print '<li>' . build_like_notif($notif) . '</li>';
                     }
-                    elseif ($notif['source_type'] == "reply") {
-                        print "<li><a href='" . base_url("reply/likes/{$notif['source_id']}") .
-                                "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} liked your reply \"{$notif['comment']}\"</a>" .
-                                " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
-                    }
-                    elseif ($notif['source_type'] == 'birthday_message') {
-                        print "<li><a href='" . base_url("birthday-message/likes/{$notif['source_id']}") .
-                                "'><strong class='object'>{$notif['actor']}</strong> liked your birthday message.</a> " .
-                                "<small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
-                    }
-                    break;
                 case 'comment':
                     if (in_array($notif['source_type'], ['post', 'photo', 'video', 'link'])) {
                         print '<li>' . build_item_comment_notif($notif) . '</li>';
