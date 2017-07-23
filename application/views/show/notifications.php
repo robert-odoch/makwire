@@ -57,13 +57,6 @@ require_once(dirname(__FILE__) . '/helper functions/show_notifications_functions
                     if (in_array($notif['source_type'], ['post', 'photo', 'video', 'link'])) {
                         print '<li>' . build_item_comment_notif($notif) . '</li>';
                     }
-                    elseif ($notif['source_type'] == 'birthday_message') {
-                        print "<li><a href='" . base_url("birthday-message/replies/{$notif['source_id']}") .
-                                "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} " .
-                                "replied to your birthday message.</a> " .
-                                " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> " .
-                                "{$notif['timespan']} ago</small></li>";
-                    }
                     break;
                 case 'reply':
                     print '<li>' . build_reply_notif($notif) . '</li>';
