@@ -40,6 +40,7 @@ require_once(dirname(__FILE__) . '/helper functions/show_notifications_functions
                     elseif (in_array($notif['source_type'], ['comment', 'reply', 'birthday_message'])) {
                         print '<li>' . build_like_notif($notif) . '</li>';
                     }
+                    break;
                 case 'comment':
                     if (in_array($notif['source_type'], ['post', 'photo', 'video', 'link'])) {
                         print '<li>' . build_item_comment_notif($notif) . '</li>';
