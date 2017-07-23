@@ -48,7 +48,7 @@ require_once(dirname(__FILE__) . '/helper functions/show_notifications_functions
                                 " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
                     }
                     elseif ($notif['source_type'] == 'birthday_message') {
-                        print "<li><a href='" . base_url("user/birthday/{$notif['actor_id']}/{$notif['age']}") .
+                        print "<li><a href='" . base_url("birthday-message/likes/{$notif['source_id']}") .
                                 "'><strong class='object'>{$notif['actor']}</strong> liked your birthday message.</a> " .
                                 "<small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
                     }
