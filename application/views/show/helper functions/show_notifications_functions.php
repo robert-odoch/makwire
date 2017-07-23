@@ -55,8 +55,8 @@ function build_item_comment_notif(array $notif)
         }
     }
 
-    $comment .= "</a> " .
-                "<small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> " .
+    $comment .= "</a> <small class='time'>" .
+                "<span class='glyphicon glyphicon-time' aria-hidden='true'></span> " .
                 "{$notif['timespan']} ago</small>";
 
     return $comment;
@@ -72,8 +72,8 @@ function build_item_like_notif(array $notif)
         $notif_str .= " \"{$notif['post']}\"";
     }
 
-    $notif_str .= "</a> " .
-                    "<small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> " .
+    $notif_str .= "</a> <small class='time'>" .
+                    "<span class='glyphicon glyphicon-time' aria-hidden='true'></span> " .
                     "{$notif['timespan']} ago</small>";
 
     return $notif_str;
@@ -88,13 +88,12 @@ function build_item_share_notif(array $notif)
         $notif_str .= " \"{$notif['post']}\"";
     }
 
-    $notif_str .= "</a> " .
-                    "<small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> " .
+    $notif_str .= "</a> <small class='time'>" .
+                    "<span class='glyphicon glyphicon-time' aria-hidden='true'></span> " .
                     "{$notif['timespan']} ago</small>";
 
     return $notif_str;
 }
-
 
 function build_like_notif(array $notif)
 {
@@ -108,7 +107,7 @@ function build_like_notif(array $notif)
 
     $notif_str .= "</a> <small class='time'>" .
                     "<span class='glyphicon glyphicon-time' aria-hidden='true'></span> " .
-                    "{$notif['timespan']} ago</small></li>";
+                    "{$notif['timespan']} ago</small>";
 
     return $notif_str;
 }
@@ -125,8 +124,8 @@ function build_reply_notif(array $notif)
             $notif_str .= " \"{$notif['comment']}\"";
         }
 
-        $notif_str .= "</a> " .
-                        "<small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> " .
+        $notif_str .= "</a> <small class='time'>" .
+                        "<span class='glyphicon glyphicon-time' aria-hidden='true'></span> " .
                         "{$notif['timespan']} ago</small>";
     }
     else {
@@ -140,8 +139,8 @@ function build_reply_notif(array $notif)
                 $notif_str .= " \"{$notif['comment']}\"";
             }
 
-            $notif_str .= "</a> " .
-                            "<small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> " .
+            $notif_str .= "</a> <small class='time'>" .
+                            "<span class='glyphicon glyphicon-time' aria-hidden='true'></span> " .
                             "{$notif['timespan']} ago</small>";
         }
         else {
