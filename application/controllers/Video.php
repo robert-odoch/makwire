@@ -21,9 +21,7 @@ class Video extends CI_Controller
 
     public function new()
     {
-        $data = $this->user_model->initialize_user();
-        $data['title'] = 'Add YouTube video';
-        $this->load->view('common/header', $data);
+        $data = [];
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $youtube_video_url = $this->input->post('video_url');
@@ -47,12 +45,29 @@ class Video extends CI_Controller
             }
         }
 
+        $data = array_merge($data, $this->user_model->initialize_user());
+        $data['title'] = 'Add YouTube video';
+        $this->load->view('common/header', $data);
+
         $this->load->view('add-video', $data);
         $this->load->view('common/footer');
     }
 
     public function add_description($video_id = 0)
     {
+        $data = [];
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $description = trim(strip_tags($this->input->post('description')));
+            if (strlen($description) == 0) {
+                $data['error_message'] = 'Please enter a description for this video.';
+            }
+            else {
+                $this->video_model->add_description($description, $video_id);
+                redirect(base_url("user/{$_SESSION['user_id']}"));
+            }
+        }
+
         try {
             $video = $this->video_model->get_video($video_id);
         }
@@ -67,20 +82,9 @@ class Video extends CI_Controller
             redirect(base_url('user/error'));
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = array_merge($data, $this->user_model->initialize_user());
         $data['title'] = 'Say something about this video';
         $this->load->view('common/header', $data);
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $description = trim(strip_tags($this->input->post('description')));
-            if (strlen($description) == 0) {
-                $data['error_message'] = 'Please enter a description for this video.';
-            }
-            else {
-                $this->video_model->add_description($description, $video_id);
-                redirect(base_url("user/{$_SESSION['user_id']}"));
-            }
-        }
 
         $data['video'] = $video;
         $data['item'] = 'video';
@@ -108,6 +112,19 @@ class Video extends CI_Controller
 
     public function comment($video_id = 0)
     {
+        $data = [];
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $comment = trim(strip_tags($this->input->post('comment')));
+            if (!$comment) {
+                $data['comment_error'] = 'Please enter a comment.';
+            }
+            else {
+                $this->video_model->comment($video_id, $comment);
+                redirect(base_url("video/comments/{$video_id}"));
+            }
+        }
+
         try {
             $video = $this->video_model->get_video($video_id);
         }
@@ -122,21 +139,9 @@ class Video extends CI_Controller
             redirect(base_url('user/error'));
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = array_merge($data, $this->user_model->initialize_user());
         $data['title'] = 'Comment on this video';
         $this->load->view('common/header', $data);
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $comment = trim(strip_tags($this->input->post('comment')));
-            if (!$comment) {
-                $data['comment_error'] = 'Please enter a comment.';
-            }
-            else {
-                $this->video_model->comment($video_id, $comment);
-                $this->comments($video_id);
-                return;
-            }
-        }
 
         $data['video'] = $video;
         $data['object'] = 'video';

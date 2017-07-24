@@ -5,11 +5,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
 
 <div class='box'>
     <h4><?= $heading; ?></h4>
-    <?php if (isset($success_message)) { ?>
-        <div class='alert alert-success'>
-            <p><?= "{$success_message}"; ?></p>
-        </div>
-    <?php } elseif (isset($districts)) { ?>
+    <?php if (isset($districts)) { ?>
         <?php if (count($districts) > 0) { ?>
             <p>Districts that matched</p>
             <ul>
@@ -30,12 +26,8 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
                 </a>.
             </p>
         <?php } // count($districts) > 0). ?>
+
     <?php } else { ?>
-        <?php if (isset($error_message)) { ?>
-        <div class='alert alert-danger'>
-            <p><?= "{$error_message}"; ?></p>
-        </div>
-        <?php } ?>
 
         <form action='<?= base_url('profile/add-district'); ?>' method='post'
                 accept-charset='utf-8' role='form'>
@@ -47,5 +39,5 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
             </fieldset>
             <input type='submit' value='Submit' class='btn btn-sm'>
         </form>
-    <?php } // isset($success_message). ?>
+    <?php } // isset($districts). ?>
 </div><!-- box -->

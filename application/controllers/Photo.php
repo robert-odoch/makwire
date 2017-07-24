@@ -30,11 +30,9 @@ class Photo extends CI_Controller
 
     public function new()
     {
-        $data = $this->user_model->initialize_user();
-        $data['title'] = 'Add new photo';
-        $this->load->view('common/header', $data);
+        $data = [];
 
-        if ($_SERVER['REQUEST_METHOD'] === "POST") {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // Upload the file.
             if (!$this->upload->do_upload('userfile')) {
@@ -69,12 +67,29 @@ class Photo extends CI_Controller
             }
         }
 
+        $data = array_merge($data, $this->user_model->initialize_user());
+        $data['title'] = 'Add new photo';
+        $this->load->view('common/header', $data);
+
         $this->load->view('add-photo', $data);
         $this->load->view('common/footer');
     }
 
     public function add_description($photo_id = 0)
     {
+        $data = [];
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $description = trim(strip_tags($this->input->post('description')));
+            if (strlen($description) == 0) {
+                $data['error_message'] = "Please enter a description for this photo.";
+            }
+            else {
+                $this->photo_model->add_description($description, $photo_id);
+                redirect(base_url("user/{$_SESSION['user_id']}"));
+            }
+        }
+
         try {
             $photo = $this->photo_model->get_photo($photo_id);
         }
@@ -89,20 +104,9 @@ class Photo extends CI_Controller
             redirect(base_url('user/error'));
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = array_merge($data, $this->user_model->initialize_user());
         $data['title'] = 'Say something about this photo';
         $this->load->view('common/header', $data);
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $description = trim(strip_tags($this->input->post('description')));
-            if (strlen($description) == 0) {
-                $data['error_message'] = "Please enter a description for this photo.";
-            }
-            else {
-                $this->photo_model->add_description($description, $photo_id);
-                redirect(base_url("user/{$_SESSION['user_id']}"));
-            }
-        }
 
         $data['photo'] = $photo;
         $data['item'] = 'photo';
@@ -130,6 +134,19 @@ class Photo extends CI_Controller
 
     public function comment($photo_id = 0)
     {
+        $data = [];
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $comment = trim(strip_tags($this->input->post('comment')));
+            if (!$comment) {
+                $data['comment_error'] = "Comment can't be empty";
+            }
+            else {
+                $this->photo_model->comment($photo_id, $comment);
+                redirect(base_url("photo/comments/{$photo_id}"));
+            }
+        }
+
         try {
             $photo = $this->photo_model->get_photo($photo_id);
         }
@@ -144,21 +161,9 @@ class Photo extends CI_Controller
             redirect(base_url('user/error'));
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = array_merge($data, $this->user_model->initialize_user());
         $data['title'] = 'Comment on this photo';
         $this->load->view('common/header', $data);
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $comment = trim(strip_tags($this->input->post('comment')));
-            if (!$comment) {
-                $data['comment_error'] = "Comment can't be empty";
-            }
-            else {
-                $this->photo_model->comment($photo_id, $comment);
-                $this->comments($photo_id);
-                return;
-            }
-        }
 
         $data['photo'] = $photo;
         $data['object'] = 'photo';

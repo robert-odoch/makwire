@@ -24,15 +24,13 @@ class Settings extends CI_Controller
         $data = $this->user_model->initialize_user();
         $data['title'] = 'Account settings';
         $this->load->view('common/header', $data);
-        $this->load->view("settings/account/index");
+        $this->load->view('settings/account/index');
         $this->load->view('common/footer');
     }
 
     public function emails()
     {
-        $data = $this->user_model->initialize_user();
-        $data['title'] = 'Email settings';
-        $this->load->view('common/header', $data);
+        $data = [];
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $primary_email = $this->input->post('primary-email');
@@ -88,6 +86,10 @@ class Settings extends CI_Controller
                 }
             }
         }
+
+        $data = array_merge($data, $this->user_model->initialize_user());
+        $data['title'] = 'Email settings';
+        $this->load->view('common/header', $data);
 
         $data['emails'] = $this->settings_model->get_emails();
         $this->load->view('settings/email', $data);

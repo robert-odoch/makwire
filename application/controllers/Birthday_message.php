@@ -79,6 +79,19 @@ class Birthday_message extends CI_Controller
 
     public function reply($message_id)
     {
+        $data = [];
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $reply = trim(strip_tags($this->input->post('reply')));
+            if (strlen($reply) == 0) {
+                $data['reply_error'] = "Reply can't be empty!";
+            }
+            else {
+                $this->birthday_message_model->reply($message_id, $reply);
+                redirect(base_url("birthday-message/replies/{$message_id}"));
+            }
+        }
+
         try {
             $message = $this->birthday_message_model->get_message($message_id);
         }
@@ -102,21 +115,9 @@ class Birthday_message extends CI_Controller
             redirect(base_url('user/error'));
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = array_merge($data, $this->user_model->initialize_user());
         $data['title'] = 'Reply to birthday message';
         $this->load->view('common/header', $data);
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $reply = trim(strip_tags($this->input->post('reply')));
-            if (strlen($reply) == 0) {
-                $data['reply_error'] = "Reply can't be empty!";
-            }
-            else {
-                $this->birthday_message_model->reply($message_id, $reply);
-                $this->replies($message_id);
-                return;
-            }
-        }
 
         $data['message'] = $message;
         $this->load->view('reply-birthday-message', $data);

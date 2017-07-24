@@ -21,7 +21,7 @@ class Post extends CI_Controller
 
     public function new()
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = "I won't allow you to do that, baby.";
@@ -40,17 +40,6 @@ class Post extends CI_Controller
 
     public function delete($post_id)
     {
-        try {
-            $post = $this->post_model->get_post($post_id);
-        }
-        catch (NotFoundException $e) {
-            show_404();
-        }
-
-        $data = $this->user_model->initialize_user();
-        $data['title'] = 'Delete post - Makwire';
-        $this->load->view('common/header', $data);
-
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             try {
                 $this->post_model->delete_post($post);
@@ -64,6 +53,17 @@ class Post extends CI_Controller
                 redirect(base_url('user/error'));
             }
         }
+
+        try {
+            $post = $this->post_model->get_post($post_id);
+        }
+        catch (NotFoundException $e) {
+            show_404();
+        }
+
+        $data = $this->user_model->initialize_user();
+        $data['title'] = 'Delete post - Makwire';
+        $this->load->view('common/header', $data);
 
         $data['post'] = $post;
         $this->load->view('delete-post', $data);
@@ -89,6 +89,19 @@ class Post extends CI_Controller
 
     public function comment($post_id = 0)
     {
+        $data = [];
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $comment = trim(strip_tags($this->input->post('comment')));
+            if (!$comment) {
+                $data['comment_error'] = "Comment can't be empty";
+            }
+            else {
+                $this->post_model->comment($post_id, $comment);
+                redirect(base_url("post/comments/{$post_id}"));
+            }
+        }
+
         try {
             $post = $this->post_model->get_post($post_id);
         }
@@ -103,21 +116,9 @@ class Post extends CI_Controller
             redirect(base_url('user/error'));
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = array_merge($data, $this->user_model->initialize_user());
         $data['title'] = 'Comment on this post';
         $this->load->view('common/header', $data);
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $comment = trim(strip_tags($this->input->post('comment')));
-            if (!$comment) {
-                $data['comment_error'] = "Comment can't be empty";
-            }
-            else {
-                $this->post_model->comment($post_id, $comment);
-                $this->comments($post_id);
-                return;
-            }
-        }
 
         $post_url = base_url("user/post/{$post_id}");
         $post['post'] = character_limiter(

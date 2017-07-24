@@ -30,11 +30,9 @@ class Profile extends CI_Controller
 
     public function change_profile_picture()
     {
-        $data = $this->user_model->initialize_user();
-        $data['title'] = 'Change profile picture';
-        $this->load->view('common/header', $data);
+        $data = [];
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (!$this->upload->do_upload('userfile')) {
                 $data['error'] = $this->upload->display_errors();
             }
@@ -76,17 +74,19 @@ class Profile extends CI_Controller
             }
         }
 
+        $data = array_merge($data, $this->user_model->initialize_user());
+        $data['title'] = 'Change profile picture';
+        $this->load->view('common/header', $data);
+
         $this->load->view('add-profile-picture', $data);
         $this->load->view('common/footer');
     }
 
     public function add_college()
     {
-        $data = $this->user_model->initialize_user();
-        $data['title'] = 'Add your college';
-        $this->load->view('common/header', $data);
+        $data = [];
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $data['start_day'] = $this->input->post('start-day');
             $data['start_month'] = $this->input->post('start-month');
             $data['start_year'] = $this->input->post('start-year');
@@ -132,6 +132,10 @@ class Profile extends CI_Controller
             }
         }
 
+        $data = array_merge($data, $this->user_model->initialize_user());
+        $data['title'] = 'Add your college';
+        $this->load->view('common/header', $data);
+
         // User reaches here if he has just opened this page, or
         // there is an error in submitted form data.
         $data['colleges'] = $this->profile_model->get_colleges();
@@ -145,11 +149,9 @@ class Profile extends CI_Controller
 
     public function edit_college($user_college_id = 0)
     {
-        $data = $this->user_model->initialize_user();
-        $data['title'] = 'Edit your college';
-        $this->load->view('common/header', $data);
+        $data = [];
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // DON'T try to remove this line,
             // $user_college_id useful when re-displaying the form.
             $user_college_id = $this->input->post('user-college-id');
@@ -199,6 +201,10 @@ class Profile extends CI_Controller
             }
         }
 
+        $data = array_merge($data, $this->user_model->initialize_user());
+        $data['title'] = 'Edit your college';
+        $this->load->view('common/header', $data);
+
         try {
             $user_college = $this->profile_model->get_user_college($user_college_id);
         }
@@ -208,7 +214,9 @@ class Profile extends CI_Controller
 
         $data['user_college'] = $user_college;
 
-        if (!isset($data['error_message'])) {  // So that we can retain the dates entered in the form.
+        if (!isset($data['error_message'])) {
+            // Use values from the database if visitor is viewing this page
+            // for the first time.
             $data['start_year'] = $user_college['start_year'];
             $data['start_month'] = $user_college['start_month'];
             $data['start_day'] = $user_college['start_day'];
@@ -226,8 +234,10 @@ class Profile extends CI_Controller
 
     public function add_programme($user_school_id = 0)
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data['user_school_id']= $this->input->post('user-school-id');
+        $data = [];
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $data['user_school_id'] = $this->input->post('user-school-id');
             $data['programme_id'] = $this->input->post('programme');
             $data['year_of_study'] = $this->input->post('year-of-study');
             $data['graduated'] = ($data['year_of_study'] == 0) ? 1 : 0;
@@ -237,7 +247,7 @@ class Profile extends CI_Controller
             redirect(base_url('user/success'));
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = array_merge($data, $this->user_model->initialize_user());
         $data['title'] = 'Add your programme';
         $this->load->view('common/header', $data);
 
@@ -259,11 +269,9 @@ class Profile extends CI_Controller
 
     public function edit_programme($user_programme_id = 0)
     {
-        $data = $this->user_model->initialize_user();
-        $data['title'] = 'Edit your programme';
-        $this->load->view('common/header', $data);
+        $data = [];
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $data['user_programme_id'] = $this->input->post('user-programme-id');
             $data['year_of_study'] = $this->input->post('year-of-study');
             $data['graduated'] = ($data['year_of_study'] == 0) ? 1 : 0;
@@ -272,6 +280,10 @@ class Profile extends CI_Controller
             $_SESSION['message'] = 'Your edits have been successfully saved.';
             redirect(base_url('user/success'));
         }
+
+        $data = array_merge($data, $this->user_model->initialize_user());
+        $data['title'] = 'Edit your programme';
+        $this->load->view('common/header', $data);
 
         try {
             $user_programme = $this->profile_model->get_user_programme($user_programme_id);
@@ -291,11 +303,9 @@ class Profile extends CI_Controller
 
     public function add_hall()
     {
-        $data = $this->user_model->initialize_user();
-        $data['title'] = 'Add hall of attachment/residence';
-        $this->load->view('common/header', $data);
+        $data = [];
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $data['hall_id'] = $this->input->post('hall');
             $data['resident'] = $this->input->post('resident');
 
@@ -331,6 +341,10 @@ class Profile extends CI_Controller
             }
         }
 
+        $data = array_merge($data, $this->user_model->initialize_user());
+        $data['title'] = 'Add hall of attachment/residence';
+        $this->load->view('common/header', $data);
+
         $data['halls'] = $this->profile_model->get_halls();
 
         $data['heading'] = 'Add Hall';
@@ -341,11 +355,9 @@ class Profile extends CI_Controller
 
     public function edit_hall($user_hall_id = 0)
     {
-        $data = $this->user_model->initialize_user();
-        $data['title'] = 'Edit hall of attachment/residence';
-        $this->load->view('common/header', $data);
+        $data = [];
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // DON'T join these two lines into 1,
             // $user_hall_id is usefull for re-displaying the form incase of any error.
             $user_hall_id = $this->input->post('user-hall-id');
@@ -385,6 +397,10 @@ class Profile extends CI_Controller
             }
         }
 
+        $data = array_merge($data, $this->user_model->initialize_user());
+        $data['title'] = 'Edit hall of attachment/residence';
+        $this->load->view('common/header', $data);
+
         try {
             $user_hall = $this->profile_model->get_user_hall($user_hall_id);
         }
@@ -393,7 +409,9 @@ class Profile extends CI_Controller
         }
 
         $data['user_hall'] = $user_hall;
-        if (!isset($data['error_message'])) {  // So that we may retain the dates entered in the form.
+        if (!isset($data['error_message'])) {
+            // Use values from the database if the visitor is viewing
+            // this page for the first time.
             $data['resident'] = $user_hall['resident'];
 
             $data['start_day'] = $user_hall['start_day'];
@@ -416,11 +434,9 @@ class Profile extends CI_Controller
 
     public function add_hostel()
     {
-        $data = $this->user_model->initialize_user();
-        $data['title'] = 'Add hostel';
-        $this->load->view('common/header', $data);
+        $data = [];
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $data['hostel_id'] = $this->input->post('hostel');
 
             $data['start_day'] = $this->input->post('start-day');
@@ -455,6 +471,10 @@ class Profile extends CI_Controller
             }
         }
 
+        $data = array_merge($data, $this->user_model->initialize_user());
+        $data['title'] = 'Add hostel';
+        $this->load->view('common/header', $data);
+
         $data['heading'] = 'Add Hostel';
         $data['form_action'] = base_url('profile/add-hostel');
         $data['hostels'] = $this->profile_model->get_hostels();
@@ -464,11 +484,9 @@ class Profile extends CI_Controller
 
     public function edit_hostel($user_hostel_id = 0)
     {
-        $data = $this->user_model->initialize_user();
-        $data['title'] = 'Edit hostel';
-        $this->load->view('common/header', $data);
+        $data = [];
 
-        if ($_SERVER['REQUEST_METHOD'] === "POST") {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // DON'T join these two lines into 1,
             // $user_hall_id is usefull for re-displaying the form incase of any error.
             $user_hostel_id = $this->input->post('user-hostel-id');
@@ -508,6 +526,10 @@ class Profile extends CI_Controller
             }
         }
 
+        $data = array_merge($data, $this->user_model->initialize_user());
+        $data['title'] = 'Edit hostel';
+        $this->load->view('common/header', $data);
+
         try {
             $user_hostel = $this->profile_model->get_user_hostel($user_hostel_id);
         }
@@ -537,11 +559,9 @@ class Profile extends CI_Controller
 
     public function add_country()
     {
-        $data = $this->user_model->initialize_user();
-        $data['title'] = 'Add your country of origin';
-        $this->load->view('common/header', $data);
+        $data = [];
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $country_id = trim(strip_tags($this->input->post('country')));
             if ($country_id == 'none') {
                 // Display a form allowing the user to enter his/her country
@@ -550,23 +570,25 @@ class Profile extends CI_Controller
             }
             else {
                 $this->profile_model->add_country($country_id);
-                $data['success_message'] = 'Your country details have been successfully saved.';
+                $_SESSION['message'] = 'Your country details have been successfully saved.';
+                redirect(base_url('user/success'));
             }
         }
-        else {
-            $data['countries'] = $this->profile_model->get_countries();
-        }
+
+        $data = array_merge($data, $this->user_model->initialize_user());
+        $data['title'] = 'Add your country of origin';
+        $this->load->view('common/header', $data);
+
+        $data['countries'] = $this->profile_model->get_countries();
         $this->load->view('edit/country', $data);
         $this->load->view('common/footer');
     }
 
     public function add_district($district_id = 0)
     {
-        $data = $this->user_model->initialize_user();
-        $data['title'] = 'Add your district';
-        $this->load->view('common/header', $data);
+        $data = [];
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $data['district'] = trim(strip_tags($this->input->post('district')));
             if (empty($data['district'])) {
                 $data['error_message'] = 'Please enter the name of your district or state and try again.';
@@ -577,12 +599,17 @@ class Profile extends CI_Controller
         }
         elseif ($district_id) {
             if ($this->profile_model->add_district($district_id)) {
-                $data['success_message'] = 'Your district details have been successfully updated.';
+                $_SESSION['message'] = 'Your district details have been successfully updated.';
+                redirect(base_url('user/success'));
             }
             else {
-                $data['error_message'] = 'Sorry, but an error occured.';
+                redirect(base_url('user/error'));
             }
         }
+
+        $data = array_merge($data, $this->user_model->initialize_user());
+        $data['title'] = 'Add your district';
+        $this->load->view('common/header', $data);
 
         $data['heading'] = 'Add District';
         $this->load->view('edit/district', $data);

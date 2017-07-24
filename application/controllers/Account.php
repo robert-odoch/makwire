@@ -17,9 +17,7 @@ class Account extends CI_Controller
 
     public function change_password()
     {
-        $data = $this->user_model->initialize_user();
-        $data['title'] = 'Change your password';
-        $this->load->view('common/header', $data);
+        $data = [];
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $error_messages = array();
@@ -68,12 +66,18 @@ class Account extends CI_Controller
             }
         }
 
+        $data = array_merge($data, $this->user_model->initialize_user());
+        $data['title'] = 'Change your password';
+        $this->load->view('common/header', $data);
+
         $this->load->view('settings/account/change-password', $data);
         $this->load->view('common/footer');
     }
 
     public function set_prefered_name()
     {
+        $data = [];
+
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $prefered_name = trim(strip_tags($this->input->post('prefered_name')));
             if (strlen($prefered_name) != 0) {
@@ -83,7 +87,7 @@ class Account extends CI_Controller
             }
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = array_merge($data, $this->user_model->initialize_user());
         $data['title'] = 'Set prefered profile name';
         $this->load->view('common/header', $data);
 
@@ -94,9 +98,7 @@ class Account extends CI_Controller
 
     public function change_name()
     {
-        $data = $this->user_model->initialize_user();
-        $data['title'] = 'Change your name';
-        $this->load->view('common/header', $data);
+        $data = [];
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $error_messages = array();
@@ -122,13 +124,19 @@ class Account extends CI_Controller
             }
         }
 
+        $data = array_merge($data, $this->user_model->initialize_user());
+        $data['title'] = 'Change your name';
+        $this->load->view('common/header', $data);
+
         $this->load->view('settings/account/change-name', $data);
         $this->load->view('common/footer');
     }
 
     public function delete()
     {
-        $data = $this->user_model->initialize_user();
+        $data = [];
+
+        $data = array_merge($data, $this->user_model->initialize_user());
         $data['title'] = 'Delete your account';
         $this->load->view('common/header', $data);
 

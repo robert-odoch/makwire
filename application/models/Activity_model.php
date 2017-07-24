@@ -259,7 +259,7 @@ class Activity_model extends CI_Model
     {
         // Delete likes for this comment.
         $likes_sql = sprintf('SELECT like_id FROM likes ' .
-                                'WHERE source_type = \'comment\' AND source_id = %d',
+                                'WHERE source_id = %d AND source_type = \'comment\'',
                                 $comment_id);
         $likes_results = $this->db->query($likes_sql)->result_array();
         foreach ($likes_results as $r) {
@@ -268,7 +268,7 @@ class Activity_model extends CI_Model
 
         // Delete replies to this comment.
         $replies_sql = sprintf('SELECT comment_id FROM comments ' .
-                                'WHERE source_type = \'comment\' AND source_id = %d',
+                                'WHERE source_id = %d AND source_type = \'comment\'',
                                 $comment_id);
         $replies_results = $this->db->query($replies_sql)->result_array();
         foreach ($replies_results as $r) {
@@ -288,7 +288,7 @@ class Activity_model extends CI_Model
     {
         // Delete likes for this reply.
         $likes_sql = sprintf('SELECT like_id FROM likes ' .
-                                'WHERE source_type = \'reply\' AND source_id = %d',
+                                'WHERE source_id = %d AND source_type = \'reply\'',
                                 $reply_id);
         $likes_results = $this->db->query($likes_sql)->result_array();
         foreach ($likes_results as $r) {

@@ -114,8 +114,8 @@ class Utility_model extends CI_Model
     public function delete_item_likes(Likeable $item)
     {
         $likes_sql = sprintf('SELECT like_id FROM likes ' .
-                                'WHERE source_type = \'%s\' AND source_id = %d',
-                                $item->getType(), $item->getId());
+                                'WHERE source_id = %d AND source_type = \'%s\'',
+                                $item->getId(), $item->getType());
         $likes_results = $this->db->query($likes_sql)->result_array();
         foreach ($likes_results as $r) {
             $this->activity_model->deleteLike($item, $r);
@@ -125,8 +125,8 @@ class Utility_model extends CI_Model
     public function delete_item_comments(Commentable $item)
     {
         $comments_sql = sprintf('SELECT comment_id FROM comments ' .
-                                'WHERE source_type = \'%s\' AND source_id = %d',
-                                $item->getType(), $item->getId());
+                                'WHERE source_id = %d AND source_type = \'%s\'',
+                                $item->getId(), $item->getType());
         $comments_results = $this->db->query($comments_sql)->result_array();
         foreach ($comments_results as $r) {
             $this->activity_model->deleteComment($item, $r);
@@ -142,5 +142,10 @@ class Utility_model extends CI_Model
         foreach ($shares_results as $r) {
             $this->activity_model->deleteShare($item, $share_id);
         }
+    }
+
+    public function un_share_item(Shareable $item)
+    {
+        
     }
 }

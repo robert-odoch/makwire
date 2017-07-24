@@ -17,10 +17,9 @@ class Login extends CI_Controller
 
     public function index()
     {
-        $data['title'] = 'Log in to your account';
-        $this->load->view('common/header', $data);
+        $data = [];
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (empty(trim($this->input->post('username')))) {
                 $data['login_errors']['username'] = 'Please enter a username!';
             }
@@ -54,6 +53,9 @@ class Login extends CI_Controller
                 }
             }
         }
+
+        $data['title'] = 'Log in to your account';
+        $this->load->view('common/header', $data);
 
         if (isset($_SESSION['message']) && !empty($_SESSION['message'])) {
             $data['message'] = $_SESSION['message'];

@@ -21,9 +21,7 @@ class Link extends CI_Controller
 
     public function new()
     {
-        $data = $this->user_model->initialize_user();
-        $data['title'] = 'Add link to a resource from another website';
-        $this->load->view('common/header', $data);
+        $data = [];
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $link_url = $this->input->post('link_url');
@@ -39,12 +37,29 @@ class Link extends CI_Controller
             }
         }
 
+        $data = array_merge($data, $this->user_model->initialize_user());
+        $data['title'] = 'Add link to a resource from another website';
+        $this->load->view('common/header', $data);
+
         $this->load->view('add-link', $data);
         $this->load->view('common/footer');
     }
 
     public function add_comment($link_id = 0)
     {
+        $data = [];
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $comment = trim(strip_tags($this->input->post('description')));
+            if (strlen($comment) == 0) {
+                $data['error_message'] = 'Please enter a comment.';
+            }
+            else {
+                $this->link_model->add_comment($comment, $link_id);
+                redirect(base_url("user/{$_SESSION['user_id']}"));
+            }
+        }
+
         try {
             $link = $this->link_model->get_link($link_id);
         }
@@ -59,20 +74,9 @@ class Link extends CI_Controller
             redirect(base_url('user/error'));
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = array_merge($data, $this->user_model->initialize_user());
         $data['title'] = 'Say something about this link';
         $this->load->view('common/header', $data);
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $comment = trim(strip_tags($this->input->post('description')));
-            if (strlen($comment) == 0) {
-                $data['error_message'] = 'Please enter a comment.';
-            }
-            else {
-                $this->link_model->add_comment($comment, $link_id);
-                redirect(base_url("user/{$_SESSION['user_id']}"));
-            }
-        }
 
         $data['link'] = $link;
         $data['item'] = 'link';
@@ -100,6 +104,19 @@ class Link extends CI_Controller
 
     public function comment($link_id = 0)
     {
+        $data = [];
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $comment = trim(strip_tags($this->input->post('comment')));
+            if (!$comment) {
+                $data['comment_error'] = 'Please enter a comment.';
+            }
+            else {
+                $this->link_model->comment($link_id, $comment);
+                redirect(base_url("link/comments/{$link_id}"));
+            }
+        }
+
         try {
             $link = $this->link_model->get_link($link_id);
         }
@@ -114,21 +131,9 @@ class Link extends CI_Controller
             redirect(base_url('user/error'));
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = array_merge($data, $this->user_model->initialize_user());
         $data['title'] = 'Comment on this link';
         $this->load->view('common/header', $data);
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $comment = trim(strip_tags($this->input->post('comment')));
-            if (!$comment) {
-                $data['comment_error'] = 'Please enter a comment.';
-            }
-            else {
-                $this->link_model->comment($link_id, $comment);
-                $this->comments($link_id);
-                return;
-            }
-        }
 
         $data['link'] = $link;
         $data['object'] = 'link';

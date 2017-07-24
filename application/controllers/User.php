@@ -175,7 +175,7 @@ class User extends CI_Controller
 
     public function send_birthday_message($user_id = 0, $age = 0)
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = "You don't have the proper permissions.";
@@ -220,6 +220,18 @@ class User extends CI_Controller
 
     public function send_message($user_id = 0, $offset = 0)
     {
+        $data = [];
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $message = trim(strip_tags($this->input->post('message')));
+            if (!$message) {
+                $data['message_error'] = "Message can't be empty!";
+            }
+            else {
+                $this->user_model->send_message($message, $user_id);
+            }
+        }
+
         // Prevent a user from sending a message to himself.
         if ($user_id === $_SESSION['user_id']) {
             $_SESSION['title'] = 'Permission Denied!';
@@ -228,7 +240,7 @@ class User extends CI_Controller
             redirect(base_url('user/error'));
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = array_merge($data, $this->user_model->initialize_user());
         try {
             $data['secondary_user'] = $this->user_model->get_profile_name($user_id);
         }
@@ -246,16 +258,6 @@ class User extends CI_Controller
         $data['suid'] = $user_id;
         $data['title'] = "Send a message to {$data['secondary_user']}";
         $this->load->view('common/header', $data);
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $message = trim(strip_tags($this->input->post('message')));
-            if (!$message) {
-                $data['message_error'] = "Message can't be empty!";
-            }
-            else {
-                $this->user_model->send_message($message, $user_id);
-            }
-        }
 
         $limit = 5;  // Maximum number of previous messages to show.
         if ($offset != 0) {
@@ -421,14 +423,11 @@ class User extends CI_Controller
 
     public function find_friends($offset = 0)
     {
-        $data = $this->user_model->initialize_user();
-        $data['title'] = 'Find Friends';
-        $this->load->view('common/header', $data);
-
-        $limit = 10;  // Maximum number of suggested users to show.
+        $data = [];
+        $limit = 10;  // Maximum number of suggested users/search results to show.
         $data['has_next'] = FALSE;
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_SESSION['search_results'])) {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' || isset($_SESSION['search_results'])) {
             if (isset($_SESSION['search_results'])) {
                 $query = $_SESSION['query'];
             }
@@ -464,6 +463,10 @@ class User extends CI_Controller
                 $data['next_offset'] = ($offset + $limit);
             }
         }
+
+        $data = array_merge($data, $this->user_model->initialize_user());
+        $data['title'] = 'Find Friends';
+        $this->load->view('common/header', $data);
 
         $this->load->view('find-friends', $data);
         $this->load->view('common/footer');

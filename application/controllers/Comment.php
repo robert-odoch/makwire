@@ -38,6 +38,19 @@ class Comment extends CI_Controller
 
     public function reply($comment_id = 0)
     {
+        $data = [];
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $reply = trim(strip_tags($this->input->post('reply')));
+            if (!$reply) {
+                $data['reply_error'] = "Reply can't be empty!";
+            }
+            else {
+                $this->comment_model->reply($comment_id, $reply);
+                redirect(base_url("comment/replies/{$comment_id}"));
+            }
+        }
+
         try {
             $comment = $this->comment_model->get_comment($comment_id);
         }
@@ -61,21 +74,9 @@ class Comment extends CI_Controller
             redirect(base_url('user/error'));
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = array_merge($data, $this->user_model->initialize_user());
         $data['title'] ='Reply to Comment';
         $this->load->view('common/header', $data);
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $reply = trim(strip_tags($this->input->post('reply')));
-            if (!$reply) {
-                $data['reply_error'] = "Reply can't be empty!";
-            }
-            else {
-                $this->comment_model->reply($comment_id, $reply);
-                $this->replies($comment_id);
-                return;
-            }
-        }
 
         $data['comment'] = $comment;
         $data['object'] = 'comment';

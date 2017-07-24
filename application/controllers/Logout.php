@@ -9,7 +9,7 @@ class Logout extends CI_Controller
 
         session_start();
         if (empty($_SESSION['user_id'])) {
-            redirect(base_url("login"));
+            redirect(base_url('login');
         }
 
         $this->load->model('logout_model');

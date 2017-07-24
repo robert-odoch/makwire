@@ -17,10 +17,9 @@ class Register extends CI_Controller
 
     public function step_one()
     {
-        $data['title'] = 'Sign Up: step 1 of 3';
-        $this->load->view('common/header', $data);
+        $data = [];
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $email = trim($this->input->post('email'));
             if (strlen($email) == 0) {
                 $data['error_message'] = 'Please enter an email address!';
@@ -87,25 +86,18 @@ class Register extends CI_Controller
             }
         }
 
+        $data['title'] = 'Sign Up: step 1 of 3';
+        $this->load->view('common/header', $data);
+
         $this->load->view('register/step-one', $data);
         $this->load->view('common/external-page-footer');
     }
 
     public function step_two($user_email_id = 0, $activation_code = 0)
     {
-        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
-            try {
-                $this->settings_model->activate_email($user_email_id, $activation_code);
-            }
-            catch (NotFoundException $e) {
-                show_404();
-            }
-        }
+        $data = [];
 
-        $data['title'] = 'Sign Up: step 2 of 3';
-        $this->load->view('common/header', $data);
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $lname = trim(strip_tags($this->input->post('lname')));
             if (strlen($lname) == 0) {
                 $error_messages['lname'] = "Last name can't be empty!";
@@ -158,6 +150,17 @@ class Register extends CI_Controller
                 redirect(base_url('register/step-three'));
             }
         }
+        else {
+            try {
+                $this->settings_model->activate_email($user_email_id, $activation_code);
+            }
+            catch (NotFoundException $e) {
+                show_404();
+            }
+        }
+
+        $data['title'] = 'Sign Up: step 2 of 3';
+        $this->load->view('common/header', $data);
 
         $this->load->view('register/step-two', $data);
         $this->load->view('common/external-page-footer');
@@ -165,14 +168,13 @@ class Register extends CI_Controller
 
     public function step_three()
     {
+        $data = [];
+
         if (!isset($_SESSION['data']) || !is_array($_SESSION['data'])) {
             redirect(base_url('register/step-one'));
         }
 
-        $data['title'] = 'Sign Up: step 3 of 3';
-        $this->load->view('common/header', $data);
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $uname = trim($this->input->post('uname'));
             if (strlen($uname) < 3) {
                 $error_messages['uname'] = 'Username must be atleast 3 characters long!';
@@ -226,6 +228,9 @@ class Register extends CI_Controller
                 redirect(base_url('welcome'));
             }
         }
+
+        $data['title'] = 'Sign Up: step 3 of 3';
+        $this->load->view('common/header', $data);
 
         $this->load->view('register/step-three', $data);
         $this->load->view('common/external-page-footer');
