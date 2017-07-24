@@ -219,5 +219,30 @@ class Post_model extends CI_Model
             $limit
         );
     }
+
+    public function delete_post(&$post)
+    {
+        if ($post['user_id'] != $_SESSION['user_id']) {
+            throw new IllegalAccessException();
+        }
+
+        $simplePost = new SimplePost($post['post_id'], 'post', $post['user_id']);
+
+        // Delete likes for this post.
+        $this->utility_model->delete_item_likes($simplePost);
+
+        // Delete comments on this post.
+        $this->utility_model->delete_item_comments($simplePost);
+
+        // Delete shares for this post.
+        $this->utility_model->delete_item_shares($simplePost);
+
+        // Delete activity for this post.
+        $this->activity_model->delete_activity($simplePost, $simplePost->getType());
+
+        // Delete this post.
+        $post_sql = sprintf('DELETE FROM posts WHERE post_id = %d', $simplePost->getId());
+        $this->db->query($post_sql);
+    }
 }
 ?>

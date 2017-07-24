@@ -67,8 +67,16 @@
                     Options <span class='caret'></span>
                 </button>
                 <ul class='dropdown-menu' aria-labelledby='options-menu'>
-                    <li><a href='#'>Edit</a></li>
-                    <li><a href='#'>Delete</a></li>
+                    <li>
+                        <a href='<?= base_url("{$object}/edit/{$$object[$object . '_id']}"); ?>'>
+                            Edit
+                        </a>
+                    </li>
+                    <li>
+                        <a href='<?= base_url("{$object}/delete/{$$object[$object . '_id']}"); ?>'>
+                            Delete
+                        </a>
+                    </li>
                 </ul>
             </li>
             <?php endif; ?>
