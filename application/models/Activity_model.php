@@ -244,5 +244,83 @@ class Activity_model extends CI_Model
 
         return ($share_query->num_rows() == 1);
     }
+
+    public function deleteLike(Likeable $item, $like_id)
+    {
+        // Delete activity for this like.
+        $this->delete_activity($item, 'like');
+
+        // Delete this like.
+        $like_sql = sprintf('DELETE FROM likes WHERE like_id = %d LIMIT 1', $like_id);
+        $this->db->query($like_sql);
+    }
+
+    public function deleteComment(Commentable $item, $comment_id)
+    {
+        // Delete likes for this comment.
+        $likes_sql = sprintf('SELECT like_id FROM likes ' .
+                                'WHERE source_type = \'comment\' AND source_id = %d',
+                                $comment_id);
+        $likes_results = $this->db->query($likes_sql)->result_array();
+        foreach ($likes_results as $r) {
+            $this->deleteLike($comment, $r);
+        }
+
+        // Delete replies to this comment.
+        $replies_sql = sprintf('SELECT comment_id FROM comments ' .
+                                'WHERE source_type = \'comment\' AND source_id = %d',
+                                $comment_id);
+        $replies_results = $this->db->query($replies_sql)->result_array();
+        foreach ($replies_results as $r) {
+            $this->deleteReply($comment, $r);
+        }
+
+        // Delete activity for this comment.
+        $this->delete_activity($item, 'comment');
+
+        // Delete this comment.
+        $comment_sql = sprintf('DELETE FROM comments WHERE comment_id = %d LIMIT 1',
+                                $comment_id);
+        $this->db->query($comment_sql);
+    }
+
+    public function deleteReply(Replyable $item, $reply_id)
+    {
+        // Delete likes for this reply.
+        $likes_sql = sprintf('SELECT like_id FROM likes ' .
+                                'WHERE source_type = \'reply\' AND source_id = %d',
+                                $reply_id);
+        $likes_results = $this->db->query($likes_sql)->result_array();
+        foreach ($likes_results as $r) {
+            $this->deleteLike($reply, $r);
+        }
+
+        // Delete activity for this reply.
+        $this->delete_activity($item, 'reply');
+
+        // Delete this reply.
+        $reply_sql = sprintf('DELETE FROM comments WHERE comment_id = %d LIMIT 1',
+                                $reply_id);
+        $this->db->query($reply_sql);
+    }
+
+    public function deleteShare(Shareable $item, $share_id)
+    {
+        // Delete activity for this share.
+        $this->delete_activity($item, 'share');
+
+        // Delete this share.
+        $share_sql = sprintf('DELETE FROM shares WHERE share_id = %d LIMIT 1', $share_id);
+        $this->db->query($share_sql);
+    }
+
+    public function delete_activity(Object $object, $activity)
+    {
+        $activity_sql = sprintf('DELETE FROM activities ' .
+                                'WHERE source_id = %d AND source_type = \'%s\' AND ' .
+                                'activity = \'%s\' LIMIT 1',
+                                $object->getId(), $object->getType(), $activity);
+        $this->db->query($activity_sql);
+    }
 }
 ?>

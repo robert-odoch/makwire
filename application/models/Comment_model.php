@@ -1,9 +1,13 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+require_once('classes/SimplePost.php');
+require_once('classes/SimpleLink.php');
+require_once('classes/SimplePhoto.php');
+require_once('classes/SimpleVideo.php');
 require_once('classes/SimpleComment.php');
-require_once('exceptions/IllegalAccessException.php');
 require_once('exceptions/NotFoundException.php');
+require_once('exceptions/IllegalAccessException.php');
 
 /**
  * Contains functions relating to comments on a post, photo.
@@ -158,6 +162,54 @@ class Comment_model extends CI_Model
         }
 
         return $replies;
+    }
+
+    public function delete_comment($comment_id)
+    {
+        $source_sql = sprintf('SELECT commenter_id FROM comments WHERE comment_id = %d',
+                                $comment_id);
+        $source_query = $this->db->query($source_sql);
+        if ($source_query->num_rows() == 0) {
+            throw new NotFoundException();
+        }
+
+        $source_result = $source_query->row_array();
+        if ($source_result['commenter_id'] != $_SESSION['user_id']) {
+            throw new IllegalAccessException();
+        }
+
+        $commentable = NULL;
+        switch ($source_result['source_type']) {
+        case 'post':
+            $owner_sql = sprintf('SELECT user_id FROM posts WHERE post_id = %d',
+                                    $source_result['source_id']);
+            $owner_id = $this->db->query($owner_query)->row_array()['user_id'];
+            $commentable = new SimplePost($source_result['source_id'], 'post', $owner_id);
+            break;
+        case 'photo':
+            $owner_sql = sprintf('SELECT user_id FROM user_photos WHERE photo_id = %d',
+                                    $source_result['source_id']);
+            $owner_id = $this->db->query($owner_query)->row_array()['user_id'];
+            $commentable = new SimplePhoto($source_result['source_id'], 'photo', $owner_id);
+            break;
+        case 'video':
+            $owner_sql = sprintf('SELECT user_id FROM videos WHERE video_id = %d',
+                                    $source_result['source_id']);
+            $owner_id = $this->db->query($owner_query)->row_array()['user_id'];
+            $commentable = new SimpleVideo($source_result['source_id'], 'video', $owner_id);
+            break;
+        case 'link':
+            $owner_sql = sprintf('SELECT user_id FROM links WHERE link_id = %d',
+                                    $source_result['source_id']);
+            $owner_id = $this->db->query($owner_query)->row_array()['user_id'];
+            $commentable = new SimpleLink($source_result['source_id'], 'link', $owner_id);
+            break;
+        default:
+            # do nothing...
+            break;
+        }
+
+        $this->activity_model->deleteComment($commentable, $comment_id);
     }
 }
 ?>
