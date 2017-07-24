@@ -10,20 +10,20 @@ require_once('common/user-page-start.php');
     require_once(dirname(__FILE__) . '/common/status-nav.php');
     ?>
 
-    <div class='panel panel-default'>
-        <div class='panel-body'>
-            <form action='<?= base_url('video/new'); ?>' method='post' role='form'>
-                <div class='form-group'>
-                    <label for='link-url'>URL for link:</label>
-                    <input type='url' name='link_url' id='link-url' class='fluid
-                            <?php if (isset($error_message)) print ' has-error'; ?>' required>
-                    <?php
-                    if (isset($error_message)) {
-                        print "<span class='error'>{$error_message}</span>";
-                    }?>
-                </div>
-                <input type='submit' name='submit' value='Submit' class='btn btn-sm'>
-            </form>
-        </div>
+    <h4 class='sr-only'>Add link to a resource on another website.</h4>
+
+    <?php if (isset($error_message)) { ?>
+    <div class='alert alert-danger' role='alert'>
+        <p><?= $error_message; ?></p>
     </div>
+    <?php }?>
+
+    <form action='<?= base_url('link/new'); ?>' method='post' role='form'>
+        <div class='form-group'>
+            <label for='link-url'>URL for link:</label>
+            <input type='url' name='link_url' id='link-url' class='fluid'
+                    <?php if (!empty($link_url)) print " value='{$link_url}'"; ?> required>
+        </div>
+        <input type='submit' name='submit' value='Submit' class='btn btn-sm'>
+    </form>
 </div>
