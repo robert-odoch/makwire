@@ -53,11 +53,10 @@ class Link extends CI_Controller
         }
 
         if ($link['user_id'] != $_SESSION['user_id']) {
-            $this->utility_model->show_error(
-                'Permission Denied!',
-                'You don\'t have the proper permissions.'
-            );
-            return;
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = 'You don\'t have the proper permissions.';
+            redirect(base_url('user/error'));
         }
 
         $data = $this->user_model->initialize_user();
@@ -92,10 +91,10 @@ class Link extends CI_Controller
             show_404();
         }
         catch (IllegalAccessException $e) {
-            $this->utility_model->show_error(
-                'Permission Denied!',
-                'You don\'t have the proper permissions to like this link.'
-            );
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = 'You don\'t have the proper permissions to like this link.';
+            redirect(base_url('user/error'));
         }
     }
 
@@ -109,11 +108,10 @@ class Link extends CI_Controller
         }
 
         if (!$this->user_model->are_friends($link['user_id'])) {
-            $this->utility_model->show_error(
-                'Permission Denied!',
-                'You don\'t have the proper permissions to comment on this link.'
-            );
-            return;
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = 'You don\'t have the proper permissions to comment on this link.';
+            redirect(base_url('user/error'));
         }
 
         $data = $this->user_model->initialize_user();
@@ -148,10 +146,10 @@ class Link extends CI_Controller
             show_404();
         }
         catch (IllegalAccessException $e) {
-            $this->utility_model->show_error(
-                'Permission Denied!',
-                'You don\'t have the proper permissions to share this link.'
-            );
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = 'You don\'t have the proper permissions to share this link.';
+            redirect(base_url('user/error'));
         }
     }
 

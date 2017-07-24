@@ -60,8 +60,8 @@ class Account extends CI_Controller
 
             if (empty($error_messages)) {
                 $this->account_model->change_password($new_passwd);
-                $this->utility_model->show_success("Your password has been successfully changed.");
-                return;
+                $_SESSION['message'] = 'Your password has been successfully changed.';
+                redirect(base_url('user/success'));
             }
             else {
                 $data['error_messages'] = $error_messages;
@@ -78,10 +78,8 @@ class Account extends CI_Controller
             $prefered_name = trim(strip_tags($this->input->post('prefered_name')));
             if (strlen($prefered_name) != 0) {
                 $this->account_model->set_prefered_profile_name($prefered_name);
-                $this->utility_model->show_success(
-                    "Your profile name has been successfully changed to ${prefered_name}."
-                );
-                return;
+                $_SESSION['message'] = "Your profile name has been successfully changed to ${prefered_name}.";
+                redirect(base_url('user/success'));
             }
         }
 

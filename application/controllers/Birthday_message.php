@@ -31,10 +31,10 @@ class Birthday_message extends CI_Controller
             show_404();
         }
         catch (IllegalAccessException $e) {
-            $this->utility_model->show_error(
-                "Permission Denied!",
-                "You don't have the proper permissions to like this message."
-            );
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = 'You don\'t have the proper permissions to like this message.';
+            redirect(base_url('user/error'));
         }
     }
 
@@ -89,19 +89,17 @@ class Birthday_message extends CI_Controller
         // Only allow a user to reply to his message if there is atleast one reply.
         if ($message['sender_id'] == $_SESSION['user_id'] &&
             $message['num_replies'] == 0) {
-            $this->utility_model->show_error(
-                "Permission Denied!",
-                "For you to reply to your own message, atleast one of your friends must have replied."
-            );
-            return;
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = 'For you to reply to your own message, atleast one of your friends must have replied.';
+            redirect(base_url('user/error'));
         }
 
         if (!$message['user_can_reply']) {
-            $this->utility_model->show_error(
-                "Permission Denied!",
-                "You don't have the proper permissions to reply to this message."
-            );
-            return;
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = "You don't have the proper permissions to reply to this message.";
+            redirect(base_url('user/error'));
         }
 
         $data = $this->user_model->initialize_user();

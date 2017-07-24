@@ -29,10 +29,10 @@ class Comment extends CI_Controller
             show_404();
         }
         catch (IllegalAccessException $e) {
-            $this->utility_model->show_error(
-                "Permission Denied!",
-                "You don't have the proper permissions to like this comment."
-            );
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = "You don't have the proper permissions to like this comment.";
+            redirect(base_url('user/error'));
         }
     }
 
@@ -46,21 +46,19 @@ class Comment extends CI_Controller
         }
 
         if (!$this->user_model->are_friends($comment['commenter_id'])) {
-            $this->utility_model->show_error(
-                "Permission Denied!",
-                "You don't have the proper permissions to reply to this comment."
-            );
-            return;
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = "You don't have the proper permissions to reply to this comment.";
+            redirect(base_url('user/error'));
         }
 
         // Only allow a user to reply to his comment if there is atleast one reply.
         if ($comment['commenter_id'] == $_SESSION['user_id'] &&
             $comment['num_replies'] == 0) {
-            $this->utility_model->show_error(
-                "Permission Denied!",
-                "For you to reply to your own comment, atleast one of your friends must have replied."
-            );
-            return;
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = "For you to reply to your own comment, atleast one of your friends must have replied.";
+            redirect(base_url('user/error'));
         }
 
         $data = $this->user_model->initialize_user();

@@ -22,6 +22,74 @@ class User extends CI_Controller
         $this->user_model->confirm_logged_in();
     }
 
+    public function success()
+    {
+        $data = $this->user_model->initialize_user();
+
+        // Defaults.
+        $title = 'Success! - Makwire';
+        $heading = 'Success';
+        $message = 'Hi there, thanks for passing by.';
+
+        // Allow calls to override.
+        if (!empty($_SESSION['title'])) {
+            $title = $_SESSION['title'];
+            unset($_SESSION['title']);
+        }
+
+        if (!empty($_SESSION['heading'])) {
+            $heading = $_SESSION['heading'];
+            unset($_SESSION['heading']);
+        }
+
+        if (!empty($_SESSION['message'])) {
+            $message = $_SESSION['message'];
+            unset($_SESSION['message']);
+        }
+
+        $data['title'] = $title;
+        $data['heading'] = $heading;
+        $data['message'] = $message;
+
+        $this->load->view('common/header', $data);
+        $this->load->view('show/user-success', $data);
+        $this->load->view('common/footer');
+    }
+
+    public function error()
+    {
+        $data = $this->user_model->initialize_user();
+
+        // Defaults.
+        $title = 'Error! - Makwire';
+        $heading = 'Something isn\'t right';
+        $message = 'Oh dear, I don\'t know how you ended up here.';
+
+        // Allow calls to override.
+        if (!empty($_SESSION['title'])) {
+            $title = $_SESSION['title'];
+            unset($_SESSION['title']);
+        }
+
+        if (!empty($_SESSION['heading'])) {
+            $heading = $_SESSION['heading'];
+            unset($_SESSION['heading']);
+        }
+
+        if (!empty($_SESSION['message'])) {
+            $message = $_SESSION['message'];
+            unset($_SESSION['message']);
+        }
+
+        $data['title'] = $title;
+        $data['heading'] = $heading;
+        $data['message'] = $message;
+
+        $this->load->view('common/header', $data);
+        $this->load->view('show/user-error', $data);
+        $this->load->view('common/footer');
+    }
+
     public function index($user_id = 0, $offset = 0)
     {
         $data = $this->user_model->initialize_user();
@@ -70,11 +138,10 @@ class User extends CI_Controller
         }
 
         if (!$this->user_model->are_friends($user_id)) {
-            $this->utility_model->show_error(
-                "Permission Denied!",
-                "You don't have the proper permissions."
-            );
-            return;
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = "You don't have the proper permissions.";
+            redirect(base_url('user/error'));
         }
 
         $data = $this->user_model->initialize_user();
@@ -109,11 +176,10 @@ class User extends CI_Controller
     public function send_birthday_message($user_id = 0, $age = 0)
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->utility_model->show_error(
-                "Permission Denied!",
-                "You don't have the proper permissions."
-            );
-            return;
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = "You don't have the proper permissions.";
+            redirect(base_url('user/error'));
         }
 
         $message = trim(strip_tags($this->input->post('birthday-message')));
@@ -156,11 +222,10 @@ class User extends CI_Controller
     {
         // Prevent a user from sending a message to himself.
         if ($user_id === $_SESSION['user_id']) {
-            $this->utility_model->show_error(
-                "Unsupported Operation!",
-                "You can't send a message to yourself."
-            );
-            return;
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = "You can't send a message to yourself.";
+            redirect(base_url('user/error'));
         }
 
         $data = $this->user_model->initialize_user();
@@ -172,11 +237,10 @@ class User extends CI_Controller
         }
 
         if (!$this->user_model->are_friends($user_id)) {
-            $this->utility_model->show_error(
-                "Permission Denied!",
-                "You don't have the proper permissions to send a message to this user."
-            );
-            return;
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = "You don't have the proper permissions to send a message to this user.";
+            redirect(base_url('user/error'));
         }
 
         $data['suid'] = $user_id;
@@ -440,11 +504,11 @@ class User extends CI_Controller
             redirect(base_url("user/{$user_id}"));
         }
         catch (IllegalAccessException $e) {
-            $this->utility_model->show_error(
-                "Permission Denied!",
-                "Either the two of you are already friends, " .
-                "or there exists a pending freind request."
-            );
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = "Either the two of you are already friends, " .
+                                    "or there exists a pending freind request.";
+            redirect(base_url('user/error'));
         }
     }
 
@@ -455,10 +519,10 @@ class User extends CI_Controller
             redirect(base_url("user/{$user_id}"));
         }
         catch (IllegalAccessException $e) {
-            $this->utility_model->show_error(
-                "Permission Denied!",
-                "This user didn't send you a friend request."
-            );
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = "This user didn't send you a friend request.";
+            redirect(base_url('user/error'));
         }
     }
 
@@ -480,10 +544,10 @@ class User extends CI_Controller
             redirect(base_url("user/{$user_id}"));
         }
         catch (IllegalAccessException $e) {
-            $this->utility_model->show_error(
-                "Permission Denied!",
-                "This user is not your friends."
-            );
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = "This user is not your friend.";
+            redirect(base_url('user/error'));
         }
     }
 

@@ -122,10 +122,8 @@ class Profile extends CI_Controller
             if (!isset($data['error_message'])) {
                 // Try saving the college and school.
                 if ($this->profile_model->add_college($data)) {
-                    $this->utility_model->show_success(
-                        'Your college and school have been succesfully saved.'
-                    );
-                    return;
+                    $_SESSION['message'] = 'Your college and school have been succesfully saved.';
+                    redirect(base_url('user/success'));
                 }
                 else {
                     $data['error_message'] = "The years you entered conflict with one of your records.<br>" .
@@ -191,10 +189,8 @@ class Profile extends CI_Controller
 
             if (!isset($data['error_message'])) {
                 if ($this->profile_model->update_college($data)) {
-                    $this->utility_model->show_success(
-                        'Your edits have been succesfully saved.'
-                    );
-                    return;
+                    $_SESSION['message'] = 'Your edits have been succesfully saved.';
+                    redirect(base_url('user/success'));
                 }
                 else {
                     $data['error_message'] = "The years you entered conflict with one of your records.<br>" .
@@ -237,10 +233,8 @@ class Profile extends CI_Controller
             $data['graduated'] = ($data['year_of_study'] == 0) ? 1 : 0;
 
             $this->profile_model->add_programme($data);
-            $this->utility_model->show_success(
-                'Your programme details have been successfully saved.'
-            );
-            return;
+            $_SESSION['message'] = 'Your programme details have been successfully saved.';
+            redirect(base_url('user/success'));
         }
 
         $data = $this->user_model->initialize_user();
@@ -275,10 +269,8 @@ class Profile extends CI_Controller
             $data['graduated'] = ($data['year_of_study'] == 0) ? 1 : 0;
 
             $this->profile_model->update_programme($data);
-            $this->utility_model->show_success(
-                'Your edits have been successfully saved.'
-            );
-            return;
+            $_SESSION['message'] = 'Your edits have been successfully saved.';
+            redirect(base_url('user/success'));
         }
 
         try {
@@ -328,10 +320,8 @@ class Profile extends CI_Controller
 
             if (!isset($data['error_message'])) {
                 if ($this->profile_model->add_hall($data)) {
-                    $this->utility_model->show_success(
-                        'Your hall details have been successfully saved.'
-                    );
-                    return;
+                    $_SESSION['message'] = 'Your hall details have been successfully saved.';
+                    redirect(base_url('user/success'));
                 }
                 else {
                     $data['error_message'] = 'The years you entered either conflict with one of your records.<br>' .
@@ -385,10 +375,8 @@ class Profile extends CI_Controller
 
             if (!isset($data['error_message'])) {
                 if ($this->profile_model->update_hall($data)) {
-                    $this->utility_model->show_success(
-                        'Your edits have been successfully saved.'
-                    );
-                    return;
+                    $_SESSION['message'] = 'Your edits have been successfully saved.';
+                    redirect(base_url('user/success'));
                 }
                 else {
                     $data['error_message'] = 'The years you entered conflict with one of your records.<br>' .
@@ -456,10 +444,8 @@ class Profile extends CI_Controller
 
             if (!isset($data['error_message'])) {
                 if ($this->profile_model->add_hostel($data)) {
-                    $this->utility_model->show_success(
-                        'Your hostel details have been successfully saved.'
-                    );
-                    return;
+                    $_SESSION['message'] = 'Your hostel details have been successfully saved.';
+                    redirect(base_url('user/success'));
                 }
                 else {
                     $data['error_message'] = 'The hostel you entered conflicts with one of your records.<br>' .
@@ -511,10 +497,8 @@ class Profile extends CI_Controller
 
             if (!isset($data['error_message'])) {
                 if ($this->profile_model->update_hostel($data)) {
-                    $this->utility_model->show_success(
-                        'Your edits have been successfully saved.'
-                    );
-                    return;
+                    $_SESSION['message'] = 'Your edits have been successfully saved.';
+                    redirect(base_url('user/success'));
                 }
                 else {
                     $data['error_message'] = 'The hostel you entered conflicts with one of your records.<br>' .

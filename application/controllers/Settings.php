@@ -99,9 +99,8 @@ class Settings extends CI_Controller
     {
         try {
             $this->settings_model->activate_email($user_email_id, $activation_code);
-            $this->utility_model->show_success(
-                'Your email address has been successfully activated. Enjoy!'
-            );
+            $_SESSION['message'] = 'Your email address has been successfully activated. Enjoy!';
+            redirect(base_url('user/success'));
         }
         catch (NotFoundException $e) {
             show_404();

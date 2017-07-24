@@ -4,6 +4,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
 ?>
 
 <div class='box'>
+    <h4><?= $heading; ?></h4>
     <div class='alert alert-success' role='alert'>
         <p>
             <span class='glyphicon glyphicon-ok-circle' aria-hidden='true'></span>

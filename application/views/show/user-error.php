@@ -6,7 +6,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
 <div class='box'>
     <h4>
         <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
-        <?= $title; ?>
+        <?= $heading; ?>
     </h4>
     <div class='alert alert-danger' role='alert'>
         <p><?= $message; ?></p>

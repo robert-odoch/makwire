@@ -39,38 +39,6 @@ class Utility_model extends CI_Model
         return $query;
     }
 
-    /**
-     * Shows a success message.
-     *
-     * @param $message the message to display.
-     */
-    public function show_success($message)
-    {
-        $data = $this->user_model->initialize_user();
-        $data['title'] = "Success!";
-        $this->load->view("common/header", $data);
-
-        $data['message'] = $message;
-        $this->load->view("show/success", $data);
-        $this->load->view("common/footer");
-    }
-
-    /**
-     * Shows message if a user attempts to perfrom an illegal activity.
-     *
-     * @param $message the message to display.
-     */
-    public function show_error($title, $message)
-    {
-        $data = $this->user_model->initialize_user();
-        $data['title'] = $title;
-        $this->load->view("common/header", $data);
-
-        $data['message'] = $message;
-        $this->load->view("show/error", $data);
-        $this->load->view("common/footer");
-    }
-
     public function send_email($email, $subject, $message)
     {
         $this->load->library('email');
@@ -141,5 +109,38 @@ class Utility_model extends CI_Model
         }
 
         return $ids;
+    }
+
+    public function delete_item_likes(Likeable $item)
+    {
+        $likes_sql = sprintf('SELECT like_id FROM likes ' .
+                                'WHERE source_type = \'%s\' AND source_id = %d',
+                                $item->getType(), $item->getId());
+        $likes_results = $this->db->query($likes_sql)->result_array();
+        foreach ($likes_results as $r) {
+            $this->activity_model->deleteLike($item, $r);
+        }
+    }
+
+    public function delete_item_comments(Commentable $item)
+    {
+        $comments_sql = sprintf('SELECT comment_id FROM comments ' .
+                                'WHERE source_type = \'%s\' AND source_id = %d',
+                                $item->getType(), $item->getId());
+        $comments_results = $this->db->query($comments_sql)->result_array();
+        foreach ($comments_results as $r) {
+            $this->activity_model->deleteComment($item, $r);
+        }
+    }
+
+    public function delete_item_shares(Shareable $item)
+    {
+        $shares_sql = sprintf('SELECT share_id FROM shares ' .
+                                'WHERE subject_id = %d AND subject_type = \'%s\'',
+                                $item->getId(), $item->getType());
+        $shares_results = $this->db->query($shares_sql)->result_array();
+        foreach ($shares_results as $r) {
+            $this->activity_model->deleteShare($item, $share_id);
+        }
     }
 }

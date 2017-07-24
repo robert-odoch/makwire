@@ -29,10 +29,10 @@ class Reply extends CI_Controller
             show_404();
         }
         catch (IllegalAccessException $e) {
-            $this->utility_model->show_error(
-                "Permission Denied!",
-                "You don't have the proper permissions to like this reply."
-            );
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = "You don't have the proper permissions to like this reply.";
+            redirect(base_url('user/error'));
         }
     }
 

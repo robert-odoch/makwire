@@ -22,11 +22,10 @@ class Post extends CI_Controller
     public function new()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->utility_model->show_error(
-                "Permission Denied!",
-                "You don't have the proper permissions."
-            );
-            return;
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = "I won't allow you to do that, baby."
+            redirect(base_url('user/error'));
         }
 
         $post = trim(strip_tags($this->input->post('post')));
@@ -39,6 +38,38 @@ class Post extends CI_Controller
         redirect(base_url("user/{$_SESSION['user_id']}"));
     }
 
+    public function delete($post_id)
+    {
+        try {
+            $post = $this->post_model->get_post($post_id);
+        }
+        catch (NotFoundException $e) {
+            show_404();
+        }
+
+        $data = $this->user_model->initialize_user();
+        $data['title'] = 'Delete post - Makwire';
+        $this->load->view('common/header', $data);
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            try {
+                $this->post_model->delete_post($post);
+                $_SESSION['message'] = 'Your post has been successfully deleted.';
+                redirect(base_url('user/success'));
+            }
+            catch (IllegalAccessException $e) {
+                $_SESSION['title'] = 'Permission Denied!';
+                $_SESSION['heading'] = 'Permission Denied';
+                $_SESSION['message'] = 'You don\'t have the proper permissions to delete this post.';
+                redirect(base_url('user/error'));
+            }
+        }
+
+        $data['post'] = $post;
+        $this->load->view('delete-post', $data);
+        $this->load->view('common/footer');
+    }
+
     public function like($post_id = 0)
     {
         try {
@@ -49,10 +80,10 @@ class Post extends CI_Controller
             show_404();
         }
         catch (IllegalAccessException $e) {
-            $this->utility_model->show_error(
-                "Permission Denied!",
-                "You don't have the proper permissions to like this post."
-            );
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = "You don't have the proper permissions to like this post."
+            redirect(base_url('user/error'));
         }
     }
 
@@ -66,11 +97,10 @@ class Post extends CI_Controller
         }
 
         if (!$this->user_model->are_friends($post['user_id'])) {
-            $this->utility_model->show_error(
-                "Permission Denied!",
-                "You don't have the proper permissions to comment on this post."
-            );
-            return;
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = "You don't have the proper permissions to comment on this post."
+            redirect(base_url('user/error'));
         }
 
         $data = $this->user_model->initialize_user();
@@ -110,10 +140,10 @@ class Post extends CI_Controller
             show_404();
         }
         catch (IllegalAccessException $e) {
-            $this->utility_model->show_error(
-                "Permission Denied!",
-                "You don't have the proper permissions to share this post."
-            );
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = "You don't have the proper permissions to share this post."
+            redirect(base_url('user/error'));
         }
     }
 
