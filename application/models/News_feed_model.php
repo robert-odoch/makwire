@@ -20,7 +20,7 @@ class News_feed_model extends CI_Model
         $friends_ids[] = 0;  // Add extra element for query-safety.
         $friends_ids_str = implode(',', $friends_ids);
 
-        $user_ids_sql = sprintf('SELECT sharer_id FROM shares s1 ' .
+        $user_ids_sql = sprintf('SELECT DISTINCT sharer_id FROM shares s1 ' .
                                 'WHERE (sharer_id IN(%s) AND subject_type = \'%s\' AND date_shared = (%s))',
                                 $friends_ids_str, $item, $latest_share_date_sql);
         $user_ids_results = $this->utility_model->run_query($user_ids_sql)->result_array();
@@ -194,7 +194,6 @@ class News_feed_model extends CI_Model
                                         $friends_ids_str, $latest_shared_links_user_ids_str, $_SESSION['user_id'],
                                         $offset, $limit);
         $news_feed_items = $this->utility_model->run_query($news_feed_items_sql)->result_array();
-
 
         foreach ($news_feed_items as &$r) {
             switch ($r['source_type']) {
