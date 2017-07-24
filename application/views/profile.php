@@ -127,24 +127,24 @@ require_once("common/secondary-user-nav.php");
                 <?php
                 if (!$is_visitor) {
                     if ($profile['origin']['district_name']) {
-                        print "<li><b>District: </b>{$profile['origin']['district_name']}";
+                        print "<li><b>District:</b> {$profile['origin']['district_name']}";
                         print " <a href='" . base_url("profile/edit-district") .
                                 "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Edit</a>";
                         print "</li>";
                     }
                     else {
-                        print "<li><b>District: </b><a href='" . base_url("profile/add-district") .
+                        print "<li><b>District:</b> <a href='" . base_url("profile/add-district") .
                                 "'>Add district</a></li>";
                     }
 
                     if ($profile['origin']['country_name']) {
-                        print "<li><b>Country: </b>{$profile['origin']['country_name']}";
+                        print "<li><b>Country:</b> {$profile['origin']['country_name']}";
                         print " <a href='" . base_url("profile/edit-country") .
                                 "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Edit</a>";
                         print "</li>";
                     }
                     else {
-                        print "<li><b>Country: </b><a href='" . base_url("profile/add-country") .
+                        print "<li><b>Country:</b> <a href='" . base_url("profile/add-country") .
                                 "'>Add country</a></li>";
                     }
                 } else {
