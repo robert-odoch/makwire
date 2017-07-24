@@ -24,7 +24,7 @@ class Post extends CI_Controller
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
-            $_SESSION['message'] = "I won't allow you to do that, baby."
+            $_SESSION['message'] = "I won't allow you to do that, baby.";
             redirect(base_url('user/error'));
         }
 
@@ -82,7 +82,7 @@ class Post extends CI_Controller
         catch (IllegalAccessException $e) {
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
-            $_SESSION['message'] = "You don't have the proper permissions to like this post."
+            $_SESSION['message'] = "You don't have the proper permissions to like this post.";
             redirect(base_url('user/error'));
         }
     }
@@ -99,7 +99,7 @@ class Post extends CI_Controller
         if (!$this->user_model->are_friends($post['user_id'])) {
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
-            $_SESSION['message'] = "You don't have the proper permissions to comment on this post."
+            $_SESSION['message'] = "You don't have the proper permissions to comment on this post.";
             redirect(base_url('user/error'));
         }
 
@@ -142,7 +142,7 @@ class Post extends CI_Controller
         catch (IllegalAccessException $e) {
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
-            $_SESSION['message'] = "You don't have the proper permissions to share this post."
+            $_SESSION['message'] = "You don't have the proper permissions to share this post.";
             redirect(base_url('user/error'));
         }
     }
