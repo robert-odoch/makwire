@@ -14,11 +14,15 @@ require_once(dirname(__FILE__) . '/helper functions/show_notifications_functions
         </p>
     </div>
     <?php } else {
-        if (isset($has_prev)) { ?>
-            <a href='<?= base_url("user/notifications/{$prev_offset}"); ?>' class='previous'>
-                Show previous notifications
-            </a>
-        <?php } ?>
+        if (isset($has_prev)) {
+            $url = 'user/notifications';
+            if ($prev_offset != 0) {
+                $url .= "/{$prev_offset}";
+            }
+
+            print "<a href='" . base_url($url) . "' class='previous'>Show previous notifications</a>";
+        }
+    ?>
         <ul class='notifications'>
             <?php
             foreach ($notifications as $notif) {

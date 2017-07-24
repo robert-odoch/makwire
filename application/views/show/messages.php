@@ -13,11 +13,15 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
         </p>
     </div>
     <?php } else {
-        if (isset($has_prev)) { ?>
-            <a href='<?= base_url("user/messages/{$prev_offset}"); ?>' class='previous'>
-                Show previous messages
-            </a>
-        <?php } ?>
+        if (isset($has_prev)) {
+            $url = 'user/messages';
+            if ($prev_offset != 0) {
+                $url .= "/{$prev_offset}";
+            }
+
+            print "<a href='" . base_url($url) . "' class='previous'>Show previous messages</a>";
+        }
+    ?>
     <div class='messages'>
         <?php foreach ($messages as $m) { ?>
         <article class='media message'>

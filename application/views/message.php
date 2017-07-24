@@ -7,8 +7,12 @@ require_once('common/user-page-start.php');
     <?php
     if (count($messages) > 0) {
         if (isset($has_prev)) {
-            print "<a href='" . base_url("user/send-message/{$suid}/{$prev_offset}") .
-                    "' class='previous'>Show previous messages</a>";
+            $url = "user/send-message/{$suid}";
+            if ($prev_offset != 0) {
+                $url .= "/{$prev_offset}";
+            }
+
+            print "<a href='" . base_url($url) . "' class='previous'>Show previous messages</a>";
         }
     ?>
         <div class='messages'>

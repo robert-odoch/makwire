@@ -39,9 +39,12 @@ switch ($object) {
     </div>
     <?php } else {
         if (isset($has_prev)) {
-            print "<a href='" .
-                    base_url("$object/likes/{$$object[$object . '_id']}/{$prev_offset}") .
-                    "' class='previous'>Show previous likes</a>";
+            $url = "$object/likes/{$$object[$object . '_id']}";
+            if ($prev_offset != 0) {
+                $url .= "/{$prev_offset}";
+            }
+
+            print "<a href='" . base_url($url) . "' class='previous'>Show previous likes</a>";
         }
     ?>
     <div class='likes'>

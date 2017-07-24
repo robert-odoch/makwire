@@ -11,9 +11,12 @@
     <?php } else { ?>
         <?php
         if (isset($has_prev)) {
-            print "<a href='" .
-                    base_url("{$object}/comments/{$$object[$object . '_id']}/{$prev_offset}") .
-                    "' class='previous'>Show previous comments</a>";
+            $url = "{$object}/comments/{$$object[$object . '_id']}";
+            if ($prev_offset != 0) {
+                $url .= "/{$prev_offset}";
+            }
+
+            print "<a href='" . base_url($url) . "' class='previous'>Show previous comments</a>";
         }
         ?>
 
