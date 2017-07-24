@@ -17,7 +17,7 @@
                         <div class='radio'>
                             <label for='<?= implode('-', explode(' ', $n)); ?>'>
                                 <input type='radio' name='prefered_name'
-                                    value='<?= $n; ?>" id="<?= implode('-', explode(' ', $n)); ?>'
+                                    value='<?= $n; ?>' id='<?= implode('-', explode(' ', $n)); ?>'
                                     <?php if ($n == $primary_user) print ' checked'; ?>>
                                 <?= $n; ?>
                             </label>
