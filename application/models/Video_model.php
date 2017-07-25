@@ -220,5 +220,11 @@ class Video_model extends CI_Model
             $limit
         );
     }
+
+    public function delete_video(&$video)
+    {
+        $simpleVideo = new SimpleVideo($video['video_id'], 'video', $video['user_id']);
+        $this->utility_model->delete_item($simpleVideo);
+    }
 }
 ?>

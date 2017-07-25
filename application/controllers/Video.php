@@ -53,6 +53,46 @@ class Video extends CI_Controller
         $this->load->view('common/footer');
     }
 
+    public function delete($video_id)
+    {
+        try {
+            $video = $this->video_model->get_video($video_id);
+        }
+        catch (NotFoundException $e) {
+            show_404();
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            try {
+                $this->video_model->delete_video($video);
+                $_SESSION['message'] = 'Your video has been successfully deleted.';
+                redirect(base_url('user/success'));
+            }
+            catch (IllegalAccessException $e) {
+                $_SESSION['title'] = 'Permission Denied!';
+                $_SESSION['heading'] = 'Permission Denied';
+                $_SESSION['message'] = 'You don\'t have the proper permissions to delete this video.';
+                redirect(base_url('user/error'));
+            }
+        }
+
+        $data = $this->user_model->initialize_user();
+        $data['title'] = 'Delete video - Makwire';
+        $this->load->view('common/header', $data);
+
+        $video_data = [
+            'item' => 'video',
+            'video' => $video,
+            'item_owner_id' => $video['user_id'],
+            'form_action' => base_url("video/delete/{$video['video_id']}"),
+            'cancel_url' => base_url("user/video/{$video['video_id']}")
+        ];
+
+        $data = array_merge($data, $video_data);
+        $this->load->view('delete-item', $data);
+        $this->load->view('common/footer');
+    }
+
     public function add_description($video_id = 0)
     {
         $data = [];
