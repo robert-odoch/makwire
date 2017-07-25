@@ -16,6 +16,7 @@
 - System that might be help full in software development {
     Feature, status(accepted|rejected), if (rejected) { reason }, comments, modified version.
 }
+- outline CSS property.
 
 #Ajax candidates.
 - news feed, timeline.
@@ -29,12 +30,10 @@
 - settings.
 
 #TODO
-- Code for adding a link.
-- edit/delete post, photo, video, link.
+- Code for editing post, photo, video, link.
 - Viewing friendship status.
 - Minimize memory consumption by unsetting no longer required variables.
 - Style the HTML email sent.
-- Invite friends by email.
 - Make access to register/step-three more secure.
 - Test registration.
 - Improve on the security of parameters passed in the link for email confirmation.
@@ -48,7 +47,11 @@
 - Add code for deleting an account.
 - Optimize get_num_* functions so that they select just on more than $limit.
 - edit/delete comment, reply.
-- Don't show offset 0 in URLs.
+- Add contraints on foreign keys.
+
+#Unchecked activities.
+- A youtube video not loading.
+- URLs used for redirects in login.
 
 #IMPROVEMENTS
 - Show birthday.
@@ -60,6 +63,7 @@
         margin: 0 5px 15px;
 })
 - For conditionals that have no else or default clause, log a warning/error message.
+- Invite friends by email.
 
 ================================================================================
 - Hunt for bugs.
@@ -75,6 +79,7 @@
 - If you allow users to delete posts and photos, then also delete the 
     corresponding values in activities, notification_read, shares, likes and comments.
     (This can be automated by putting foreign key constraints)
+- Allow users to add links to other social networks.
 - Integrate news from external sources.
 ________________________________________________________________________________
 
@@ -95,7 +100,7 @@ ________________________________________________________________________________
     the original author of the post should not see the post, also comments, 
     likes and shares of the post should be recorded against the original post,
     but the user who shared the post should also be notified about a comment on the post.
-- Consider creating a table post shares for shared posts.
+- Consider creating a table post shares for shared posts. *
 - Change variable names in models that index and array to use the name of the 
     argument directly since it safe.
 - If many people triggered the same notification, show one name and only 
@@ -177,7 +182,6 @@ ________________________________________________________________________________
 - Work on the server side code for settings.
 - Ensure blocked users can't intefere with users who blocked them. *
 - Add code for unfriending a user.
-- Add contraints on foreign keys.
 - When a user views a friend request, the friend request should no longer be counted as a new notification.
 - Fix un-used arguments "offset" and "limit" in get_suggested_users() method.
 - If there are no friend_request to show, check if an ID was passed and show the status of that request.
@@ -190,8 +194,20 @@ ________________________________________________________________________________
 - Refactor News_feed_model.
 - Consider changing activity for photo, video, and link to post. *
 - Revise code for showing comment notifications.
+- Refactor switch in secondary-user-nav.
+- Fix birthday message notifications.
+- Check for duplicate IDs get[_shared]_items_ids().
+- Don't show offset 0 in URLs.
+- Code for adding a link.
+- Code for deleting post, photo, video, link.
+- Give default values for types in classes.
+- Give `take back links' on show-user-success pages of the user arrived there
+    after deleting an item. *
+- Remove conditionals that result in permission denied from controllers. *
+- Use exception messages from models.
 
             ^^^^^^ The ones marked with * were foregone. ^^^^^^
+            ^^^^^^ Take some time later to re-consider them. ^^^^^
 
 activities {
     activity_id,
@@ -267,5 +283,9 @@ schools {
 }
 
 TABLE_videos {
-    id, user_id, url, description, date_entered
+    video_id, user_id, url, description, date_entered
+}
+
+TABLE_links {
+    link_id, user_id, url, title, description, image, site, comment, date_entered
 }
