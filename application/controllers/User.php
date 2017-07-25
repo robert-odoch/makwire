@@ -539,8 +539,7 @@ class User extends CI_Controller
         catch (IllegalAccessException $e) {
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
-            $_SESSION['message'] = "Either the two of you are already friends, " .
-                                    "or there exists a pending freind request.";
+            $_SESSION['message'] = $e->getMessage();
             redirect(base_url('user/error'));
         }
     }
@@ -554,7 +553,7 @@ class User extends CI_Controller
         catch (IllegalAccessException $e) {
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
-            $_SESSION['message'] = "This user didn't send you a friend request.";
+            $_SESSION['message'] = $e->getMessage();
             redirect(base_url('user/error'));
         }
     }
@@ -579,7 +578,7 @@ class User extends CI_Controller
         catch (IllegalAccessException $e) {
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
-            $_SESSION['message'] = "This user is not your friend.";
+            $_SESSION['message'] = $e->getMessage();
             redirect(base_url('user/error'));
         }
     }

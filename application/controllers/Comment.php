@@ -31,7 +31,7 @@ class Comment extends CI_Controller
         catch (IllegalAccessException $e) {
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
-            $_SESSION['message'] = "You don't have the proper permissions to like this comment.";
+            $_SESSION['message'] = $e->getMessage();
             redirect(base_url('user/error'));
         }
     }

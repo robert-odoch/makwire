@@ -92,7 +92,9 @@ class Comment_model extends CI_Model
         $owner_result = $owner_query->row_array();
         $owner_id = $owner_result['commenter_id'];
         if (!$this->user_model->are_friends($owner_id)) {
-            throw new IllegalAccessException();
+            throw new IllegalAccessException(
+                "You don't have the proper permissions to like this comment."
+            );
         }
 
         // Record the like.
@@ -175,7 +177,9 @@ class Comment_model extends CI_Model
 
         $source_result = $source_query->row_array();
         if ($source_result['commenter_id'] != $_SESSION['user_id']) {
-            throw new IllegalAccessException();
+            throw new IllegalAccessException(
+                "You don't have the proper permissions to delete this comment."
+            );
         }
 
         $commentable = NULL;

@@ -92,7 +92,9 @@ class Birthday_message_model extends CI_Model
         $owner_id = $owner_result['sender_id'];
 
         if (! $this->user_model->are_friends($owner_id)) {
-            throw new IllegalAccessException();
+            throw new IllegalAccessException(
+                "You don't have the proper permissions to like this message."
+            );
         }
 
         // Record the like.

@@ -153,7 +153,9 @@ class Photo_model extends CI_Model
         $owner_id = $owner_result['user_id'];
 
         if (!$this->user_model->are_friends($owner_id)) {
-            throw new IllegalAccessException();
+            throw new IllegalAccessException(
+                "You don't have the proper permissions to like this photo."
+            );
         }
 
         $this->activity_model->like(new SimplePhoto($photo_id, $owner_id));
@@ -181,7 +183,9 @@ class Photo_model extends CI_Model
         $owner_result = $owner_query->row_array();
         $owner_id = $owner_result['user_id'];
         if (!$this->user_model->are_friends($owner_id)) {
-            throw new IllegalAccessException();
+            throw new IllegalAccessException(
+                "You don't have the proper permissions to share this photo."
+            );
         }
 
         $this->activity_model->share(new SimplePhoto($photo_id, $owner_id));

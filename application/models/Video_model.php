@@ -118,7 +118,9 @@ class Video_model extends CI_Model
         $owner_id = $owner_result['user_id'];
 
         if (!$this->user_model->are_friends($owner_id)) {
-            throw new IllegalAccessException();
+            throw new IllegalAccessException(
+                "You don't have the proper permissions to like this video."
+            );
         }
 
         $this->activity_model->like(new SimpleVideo($video_id, $owner_id));
@@ -144,7 +146,9 @@ class Video_model extends CI_Model
         $owner_result = $owner_query->row_array();
         $owner_id = $owner_result['user_id'];
         if (!$this->user_model->are_friends($owner_id)) {
-            throw new IllegalAccessException();
+            throw new IllegalAccessException(
+                "You don't have the proper permissions to share this video."
+            );
         }
 
         $this->activity_model->share(new SimpleVideo($video_id, $owner_id));

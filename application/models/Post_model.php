@@ -112,7 +112,9 @@ class Post_model extends CI_Model
         $owner_result = $owner_query->row_array();
         $owner_id = $owner_result['user_id'];
         if (!$this->user_model->are_friends($owner_id)) {
-            throw new IllegalAccessException();
+            throw new IllegalAccessException(
+                "You don't have the proper permissions to like this post."
+            );
         }
 
         // Record the like.
@@ -141,7 +143,9 @@ class Post_model extends CI_Model
         $owner_result = $owner_query->row_array();
         $owner_id = $owner_result['user_id'];
         if (!$this->user_model->are_friends($owner_id)) {
-            throw new IllegalAccessException();
+            throw new IllegalAccessException(
+                "You don't have the proper permissions to share this post."
+            );
         }
 
         // Share the post.

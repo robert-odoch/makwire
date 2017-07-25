@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-require_once('class/SimpleComment.php');
+require_once('classes/SimpleComment.php');
 
 /**
  * Contains functions for recording and getting activities

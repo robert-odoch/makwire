@@ -33,7 +33,7 @@ class Birthday_message extends CI_Controller
         catch (IllegalAccessException $e) {
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
-            $_SESSION['message'] = 'You don\'t have the proper permissions to like this message.';
+            $_SESSION['message'] = $e->getMessage();
             redirect(base_url('user/error'));
         }
     }
@@ -99,7 +99,7 @@ class Birthday_message extends CI_Controller
             show_404();
         }
 
-        // Only allow a user to reply to his message if there is atleast one reply.
+        // Only allow sender to reply to his message if there is atleast one reply.
         if ($message['sender_id'] == $_SESSION['user_id'] &&
             $message['num_replies'] == 0) {
             $_SESSION['title'] = 'Permission Denied!';

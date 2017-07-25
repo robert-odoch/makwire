@@ -139,7 +139,9 @@ class Utility_model extends CI_Model
                                     $_SESSION['user_id'], $item->getId(), $item->getType());
             $share_query = $this->db->query($share_sql);
             if ($share_query->num_rows() == 0) {
-                throw new IllegalAccessException();
+                throw new IllegalAccessException(
+                    "You don't have the proper permissions to delete this " . $item->getType() . "."
+                );
             }
             else {
                 // User shared this item. Only remove it from his timeline.

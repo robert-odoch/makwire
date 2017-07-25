@@ -93,7 +93,7 @@ class Photo extends CI_Controller
             catch (IllegalAccessException $e) {
                 $_SESSION['title'] = 'Permission Denied!';
                 $_SESSION['heading'] = 'Permission Denied';
-                $_SESSION['message'] = 'You don\'t have the proper permissions to delete this photo.';
+                $_SESSION['message'] = $e->getMessage();
                 redirect(base_url('user/error'));
             }
         }
@@ -167,7 +167,7 @@ class Photo extends CI_Controller
         catch (IllegalAccessException $e) {
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
-            $_SESSION['message'] = 'You don\'t have the proper permissions to like this photo.';
+            $_SESSION['message'] = $e->getMessage();
             redirect(base_url('user/error'));
         }
     }
@@ -223,7 +223,7 @@ class Photo extends CI_Controller
         catch (IllegalAccessException $e) {
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
-            $_SESSION['message'] = 'You don\'t have the proper permissions to share this photo.';
+            $_SESSION['message'] = $e->getMessage();
             redirect(base_url('user/error'));
         }
     }

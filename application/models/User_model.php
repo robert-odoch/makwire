@@ -1320,7 +1320,10 @@ class User_model extends CI_Model
     {
         $friendship_status = $this->get_friendship_status($target_id);
         if ($friendship_status['are_friends'] || $friendship_status['fr_sent']) {
-            throw new IllegalAccessException();
+            throw new IllegalAccessException(
+                "Either the two of you are already friends, " .
+                "or there exists a pending freind request between you."
+            );
         }
 
         $fr_sql = sprintf("INSERT INTO friend_requests " .
@@ -1365,11 +1368,13 @@ class User_model extends CI_Model
     {
         // First check whether a friend request actually exist.
         $id_sql = sprintf("SELECT request_id FROM friend_requests " .
-                            "WHERE (target_id = %d AND user_id = %d)",
+                            "WHERE (target_id = %d AND user_id = %d AND confirmed IS FALSE)",
                             $_SESSION['user_id'], $friend_id);
         $id_query = $this->utility_model->run_query($id_sql);
         if ($id_query->num_rows() == 0) {
-            throw new IllegalAccessException();
+            throw new IllegalAccessException(
+                "This user didn't send you a friend request."
+            );
         }
 
         // Add the user to the list of friends.
@@ -1425,7 +1430,9 @@ class User_model extends CI_Model
     public function unfriend_user($user_id)
     {
         if ( ! $this->are_friends($user_id)) {
-            throw new IllegalAccessException();
+            throw new IllegalAccessException(
+                "This user is not your friend."
+            );
         }
 
         // Get friend request ID for deleting this activity from activities table.
