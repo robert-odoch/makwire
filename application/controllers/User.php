@@ -15,7 +15,7 @@ class User extends CI_Controller
 
         $this->load->model([
             'user_model', 'post_model', 'profile_model', 'photo_model',
-            'utility_model'
+            'link_model', 'utility_model'
         ]);
 
         // Check whether the user hasn't been logged out from some where else.
@@ -367,6 +367,36 @@ class User extends CI_Controller
         $data['comments'] = $this->video_model->get_comments($video, $offset, $limit);
 
         $this->load->view('show/video', $data);
+        $this->load->view('common/footer');
+    }
+
+    public function link($link_id = 0, $offset = 0)
+    {
+        try {
+            $link = $this->link_model->get_link($link_id);
+        }
+        catch (NotFoundException $e) {
+            show_404();
+        }
+
+        $data = $this->user_model->initialize_user();
+        $data['title'] = format_name($link['author']) . ' link';
+
+        $this->load->view('common/header', $data);
+
+        $data['link'] = $link;
+
+        $limit = 10;  // Maximum number of comments to show.
+        $data['has_next'] = FALSE;
+        if (($data['link']['num_comments'] - $offset) > $limit) {
+            $data['has_next'] = TRUE;
+            $data['next_offset'] = ($offset + $limit);
+        }
+
+        $data['num_prev'] = $offset;
+        $data['comments'] = $this->link_model->get_comments($link, $offset, $limit);
+
+        $this->load->view('show/link', $data);
         $this->load->view('common/footer');
     }
 

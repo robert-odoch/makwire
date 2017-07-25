@@ -11,7 +11,7 @@ class News_feed_model extends CI_Model
         $this->load->model([
             'utility_model', 'user_model',
             'post_model', 'photo_model',
-            'video_model'
+            'video_model', 'link_model'
         ]);
     }
 

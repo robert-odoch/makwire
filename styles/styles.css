@@ -41,7 +41,8 @@ h5 {
     margin-bottom: 0;
 }
 .panel-heading,
-.panel-body {
+.panel-body,
+.panel-footer {
     padding: 5px;
 }
 /* End override */
@@ -511,8 +512,9 @@ div#add-description > img {
     width: 100%;
     border: 1px solid rgba(143, 188, 143, .2);
 }
-div#add-description img,
-div#add-description .embed-responsive {
+div#add-description > img,
+div#add-description > .panel,
+div#add-description > .embed-responsive {
     margin-bottom: 5px;
 }
 
@@ -751,20 +753,24 @@ div#birthday-message img.media-object {
 .link-image {
     width: 100%;
     max-height: 250px;
-    border-radius: 2px 2px 0 0;
 }
 .link-panel .panel-footer a {
     color: #000;
     display: block;
     text-decoration: none;
+    outline: none;
+}
+.link-title,
+.link-site {
+    display: block;
+    padding: 3px 0;
 }
 .link-title {
-    font-size: 1.2em;
+    line-height: 1.3;
+    margin-bottom: 3px;
 }
 .link-site {
     font-size: .7em;
-    margin-top: 5px;
-    display: block;
     text-transform: uppercase;
 }
 

@@ -70,9 +70,9 @@ class Link_model extends CI_Model
         // Record link data in the links table.
         $link_sql = sprintf('INSERT INTO links (user_id, url, title, description, image, site) ' .
                             'VALUES (%d, %s, %s, %s, %s, %s) ',
-                            $_SESSION['user_id'], $this->db->escape($data['url']),
-                            $this->db->escape($data['title']), $this->db->escape($data['description']),
-                            $this->db->escape($data['image']), $this->db->escape($data['site']));
+                            $_SESSION['user_id'], $this->db->escape($link_data['url']),
+                            $this->db->escape($link_data['title']), $this->db->escape($link_data['description']),
+                            $this->db->escape($link_data['image']), $this->db->escape($link_data['site']));
         $this->utility_model->run_query($link_sql);
         $link_id = $this->db->insert_id();
 
