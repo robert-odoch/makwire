@@ -51,7 +51,7 @@ class Link_model extends CI_Model
         $link['viewer_is_friend_to_owner'] = $this->user_model->are_friends($link['user_id']);
 
         // Get number of liks, comments and shares.
-        $simpleLink = new SimpleLink($link['link_id'], 'link', $link['user_id']);
+        $simpleLink = new SimpleLink($link['link_id'], $link['user_id']);
         $link['num_likes'] = $this->activity_model->getNumLikes($simpleLink);
         $link['num_comments'] = $this->activity_model->getNumComments($simpleLink);
         $link['num_shares'] = $this->activity_model->getNumShares($simpleLink);
@@ -124,7 +124,7 @@ class Link_model extends CI_Model
             throw new IllegalAccessException();
         }
 
-        $this->activity_model->like(new SimpleLink($link_id, 'link', $owner_id));
+        $this->activity_model->like(new SimpleLink($link_id, $owner_id));
     }
 
     /**
@@ -150,7 +150,7 @@ class Link_model extends CI_Model
             throw new IllegalAccessException();
         }
 
-        $this->activity_model->share(new SimpleLink($link_id, 'link', $owner_id));
+        $this->activity_model->share(new SimpleLink($link_id, $owner_id));
     }
 
     /**
@@ -168,7 +168,7 @@ class Link_model extends CI_Model
 
         // Record the comment.
         $this->activity_model->comment(
-            new SimpleLink($link_id, 'link', $owner_id),
+            new SimpleLink($link_id, $owner_id),
             $comment
         );
     }
@@ -184,7 +184,7 @@ class Link_model extends CI_Model
     public function get_likes(&$link, $offset, $limit)
     {
         return $this->activity_model->getLikes(
-            new SimpleLink($link['link_id'], 'link', $link['user_id']),
+            new SimpleLink($link['link_id'], $link['user_id']),
             $offset,
             $limit
         );
@@ -201,7 +201,7 @@ class Link_model extends CI_Model
     public function get_shares(&$link, $offset, $limit)
     {
         return $this->activity_model->getShares(
-            new SimpleLink($link['link_id'], 'link', $link['user_id']),
+            new SimpleLink($link['link_id'], $link['user_id']),
             $offset,
             $limit
         );
@@ -218,7 +218,7 @@ class Link_model extends CI_Model
     public function get_comments(&$link, $offset, $limit)
     {
         return $this->activity_model->getComments(
-            new SimpleLink($link['link_id'], 'link', $link['user_id']),
+            new SimpleLink($link['link_id'], $link['user_id']),
             $offset,
             $limit
         );
@@ -226,7 +226,7 @@ class Link_model extends CI_Model
 
     public function delete_link(&$link)
     {
-        $simpleLink = new SimpleLink($link['link_id'], 'link', $link['user_id']);
+        $simpleLink = new SimpleLink($link['link_id'], $link['user_id']);
         $this->utility_model->delete_item($simpleLink);
     }
 }

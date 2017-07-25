@@ -51,7 +51,7 @@ class Video_model extends CI_Model
         $video['viewer_is_friend_to_owner'] = $this->user_model->are_friends($video['user_id']);
 
         // Get number of liks, comments and shares.
-        $simpleVideo = new SimpleVideo($video['video_id'], 'video', $video['user_id']);
+        $simpleVideo = new SimpleVideo($video['video_id'], $video['user_id']);
         $video['num_likes'] = $this->activity_model->getNumLikes($simpleVideo);
         $video['num_comments'] = $this->activity_model->getNumComments($simpleVideo);
         $video['num_shares'] = $this->activity_model->getNumShares($simpleVideo);
@@ -121,7 +121,7 @@ class Video_model extends CI_Model
             throw new IllegalAccessException();
         }
 
-        $this->activity_model->like(new SimpleVideo($video_id, 'video', $owner_id));
+        $this->activity_model->like(new SimpleVideo($video_id, $owner_id));
     }
 
     /**
@@ -147,7 +147,7 @@ class Video_model extends CI_Model
             throw new IllegalAccessException();
         }
 
-        $this->activity_model->share(new SimpleVideo($video_id, 'video', $owner_id));
+        $this->activity_model->share(new SimpleVideo($video_id, $owner_id));
     }
 
     /**
@@ -165,7 +165,7 @@ class Video_model extends CI_Model
 
         // Record the comment.
         $this->activity_model->comment(
-            new SimpleVideo($video_id, 'video', $owner_id),
+            new SimpleVideo($video_id, $owner_id),
             $comment
         );
     }
@@ -181,7 +181,7 @@ class Video_model extends CI_Model
     public function get_likes(&$video, $offset, $limit)
     {
         return $this->activity_model->getLikes(
-            new SimpleVideo($video['video_id'], 'video', $video['user_id']),
+            new SimpleVideo($video['video_id'], $video['user_id']),
             $offset,
             $limit
         );
@@ -198,7 +198,7 @@ class Video_model extends CI_Model
     public function get_shares(&$video, $offset, $limit)
     {
         return $this->activity_model->getShares(
-            new SimpleVideo($video['video_id'], 'video', $video['user_id']),
+            new SimpleVideo($video['video_id'], $video['user_id']),
             $offset,
             $limit
         );
@@ -215,7 +215,7 @@ class Video_model extends CI_Model
     public function get_comments(&$video, $offset, $limit)
     {
         return $this->activity_model->getComments(
-            new SimpleVideo($video['video_id'], 'video', $video['user_id']),
+            new SimpleVideo($video['video_id'], $video['user_id']),
             $offset,
             $limit
         );
@@ -223,7 +223,7 @@ class Video_model extends CI_Model
 
     public function delete_video(&$video)
     {
-        $simpleVideo = new SimpleVideo($video['video_id'], 'video', $video['user_id']);
+        $simpleVideo = new SimpleVideo($video['video_id'], $video['user_id']);
         $this->utility_model->delete_item($simpleVideo);
     }
 }

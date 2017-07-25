@@ -6,9 +6,9 @@ require_once(dirname(__FILE__) . '/../interfaces/Likeable.php');
 
 class SimpleReply extends Object implements Likeable
 {
-    public function __construct($id, $type, $ownerId)
+    public function __construct($id, $ownerId, $type = 'reply')
     {
-        parent::__construct($id, $type, $ownerId);
+        parent::__construct($id, $ownerId, $type);
     }
 }
 ?>

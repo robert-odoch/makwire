@@ -1,6 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+require_once('class/SimpleComment.php');
+
 /**
  * Contains functions for recording and getting activities
  * (e.g., like, comment, shares, replies) performed on an object.
@@ -260,7 +262,7 @@ class Activity_model extends CI_Model
         $comment_sql = sprintf('SELECT commenter_id FROM comments WHERE comment_id = %d',
                                 $comment_id);
         $comment_result = $this->db->query($comment_sql)->row_array();
-        $comment = new SimpleComment($comment_id, 'comment', $comment_result['commenter_id']);
+        $comment = new SimpleComment($comment_id, $comment_result['commenter_id']);
 
         // Delete likes for this comment.
         $likes_sql = sprintf('SELECT like_id FROM likes ' .

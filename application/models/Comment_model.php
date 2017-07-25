@@ -57,7 +57,7 @@ class Comment_model extends CI_Model
         // Add data used by views.
         $comment['viewer_is_friend_to_owner'] = $this->user_model->are_friends($comment['commenter_id']);
 
-        $simpleComment = new SimpleComment($comment['comment_id'], 'comment', $comment['commenter_id']);
+        $simpleComment = new SimpleComment($comment['comment_id'], $comment['commenter_id']);
 
         // Add the number of likes and replies.
         $comment['num_likes'] = $this->activity_model->getNumLikes($simpleComment);
@@ -96,7 +96,7 @@ class Comment_model extends CI_Model
         }
 
         // Record the like.
-        $this->activity_model->like(new SimpleComment($comment_id, 'comment', $owner_id));
+        $this->activity_model->like(new SimpleComment($comment_id, $owner_id));
     }
 
     /**
@@ -115,7 +115,7 @@ class Comment_model extends CI_Model
 
         // Record the reply.
         $this->activity_model->reply(
-            new SimpleComment($comment_id, 'comment', $owner_id),
+            new SimpleComment($comment_id, $owner_id),
             $reply
         );
     }
@@ -131,7 +131,7 @@ class Comment_model extends CI_Model
     public function get_likes(&$comment, $offset, $limit)
     {
         return $this->activity_model->getLikes(
-            new SimpleComment($comment['comment_id'], 'comment', $comment['commenter_id']),
+            new SimpleComment($comment['comment_id'], $comment['commenter_id']),
             $offset,
             $limit
         );
@@ -184,25 +184,25 @@ class Comment_model extends CI_Model
             $owner_sql = sprintf('SELECT user_id FROM posts WHERE post_id = %d',
                                     $source_result['source_id']);
             $owner_id = $this->db->query($owner_query)->row_array()['user_id'];
-            $commentable = new SimplePost($source_result['source_id'], 'post', $owner_id);
+            $commentable = new SimplePost($source_result['source_id'], $owner_id);
             break;
         case 'photo':
             $owner_sql = sprintf('SELECT user_id FROM user_photos WHERE photo_id = %d',
                                     $source_result['source_id']);
             $owner_id = $this->db->query($owner_query)->row_array()['user_id'];
-            $commentable = new SimplePhoto($source_result['source_id'], 'photo', $owner_id);
+            $commentable = new SimplePhoto($source_result['source_id'], $owner_id);
             break;
         case 'video':
             $owner_sql = sprintf('SELECT user_id FROM videos WHERE video_id = %d',
                                     $source_result['source_id']);
             $owner_id = $this->db->query($owner_query)->row_array()['user_id'];
-            $commentable = new SimpleVideo($source_result['source_id'], 'video', $owner_id);
+            $commentable = new SimpleVideo($source_result['source_id'], $owner_id);
             break;
         case 'link':
             $owner_sql = sprintf('SELECT user_id FROM links WHERE link_id = %d',
                                     $source_result['source_id']);
             $owner_id = $this->db->query($owner_query)->row_array()['user_id'];
-            $commentable = new SimpleLink($source_result['source_id'], 'link', $owner_id);
+            $commentable = new SimpleLink($source_result['source_id'], $owner_id);
             break;
         default:
             # do nothing...

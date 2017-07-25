@@ -7,7 +7,7 @@ class Object
     private $type;
     private $ownerId;
 
-    public function __construct($id, $type, $ownerId)
+    public function __construct($id, $ownerId, $type)
     {
         $this->id = $id;
         $this->type = $type;

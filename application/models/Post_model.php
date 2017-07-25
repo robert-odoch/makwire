@@ -51,7 +51,7 @@ class Post_model extends CI_Model
         // like, comment and share buttons to friends of the original author.
         $post['viewer_is_friend_to_owner'] = $this->user_model->are_friends($post['user_id']);
 
-        $simplePost = new SimplePost($post['post_id'], 'post', $post['user_id']);
+        $simplePost = new SimplePost($post['post_id'], $post['user_id']);
 
         // Get the number of likes.
         $post['num_likes'] = $this->activity_model->getNumLikes($simplePost);
@@ -116,7 +116,7 @@ class Post_model extends CI_Model
         }
 
         // Record the like.
-        $this->activity_model->like(new SimplePost($post_id, 'post', $owner_id));
+        $this->activity_model->like(new SimplePost($post_id, $owner_id));
     }
 
     /**
@@ -145,7 +145,7 @@ class Post_model extends CI_Model
         }
 
         // Share the post.
-        $this->activity_model->share(new SimplePost($post_id, 'post', $owner_id));
+        $this->activity_model->share(new SimplePost($post_id, $owner_id));
     }
 
     /**
@@ -164,7 +164,7 @@ class Post_model extends CI_Model
 
         // Record the comment.
         $this->activity_model->comment(
-            new SimplePost($post_id, 'post', $owner_id),
+            new SimplePost($post_id, $owner_id),
             $comment
         );
     }
@@ -180,7 +180,7 @@ class Post_model extends CI_Model
     public function get_likes(&$post, $offset, $limit)
     {
         return $this->activity_model->getLikes(
-            new SimplePost($post['post_id'], 'post', $post['user_id']),
+            new SimplePost($post['post_id'], $post['user_id']),
             $offset,
             $limit
         );
@@ -197,7 +197,7 @@ class Post_model extends CI_Model
     public function get_shares(&$post, $offset, $limit)
     {
         return $this->activity_model->getShares(
-            new SimplePost($post['post_id'], 'post', $post['user_id']),
+            new SimplePost($post['post_id'], $post['user_id']),
             $offset,
             $limit
         );
@@ -214,7 +214,7 @@ class Post_model extends CI_Model
     public function get_comments(&$post, $offset, $limit)
     {
         return $this->activity_model->getComments(
-            new SimplePost($post['post_id'], 'post', $post['user_id']),
+            new SimplePost($post['post_id'], $post['user_id']),
             $offset,
             $limit
         );
@@ -222,7 +222,7 @@ class Post_model extends CI_Model
 
     public function delete_post(&$post)
     {
-        $simplePost = new SimplePost($post['post_id'], 'post', $post['user_id']);
+        $simplePost = new SimplePost($post['post_id'], $post['user_id']);
         $this->utility_model->delete_item($simplePost);
     }
 }

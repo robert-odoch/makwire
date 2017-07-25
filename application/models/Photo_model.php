@@ -71,7 +71,7 @@ class Photo_model extends CI_Model
             $photo['user_gender'] = ($this->utility_model->run_query($gender_sql)->row_array()['gender'] == 'M')? 'his': 'her';
         }
 
-        $simplePhoto = new SimplePhoto($photo['photo_id'], 'photo', $photo['user_id']);
+        $simplePhoto = new SimplePhoto($photo['photo_id'], $photo['user_id']);
 
         // Get the number of likes.
         $photo['num_likes'] = $this->activity_model->getNumLikes($simplePhoto);
@@ -156,7 +156,7 @@ class Photo_model extends CI_Model
             throw new IllegalAccessException();
         }
 
-        $this->activity_model->like(new SimplePhoto($photo_id, 'photo', $owner_id));
+        $this->activity_model->like(new SimplePhoto($photo_id, $owner_id));
     }
 
     /**
@@ -184,7 +184,7 @@ class Photo_model extends CI_Model
             throw new IllegalAccessException();
         }
 
-        $this->activity_model->share(new SimplePhoto($photo_id, 'photo', $owner_id));
+        $this->activity_model->share(new SimplePhoto($photo_id, $owner_id));
     }
 
     /**
@@ -203,7 +203,7 @@ class Photo_model extends CI_Model
 
         // Record the comment.
         $this->activity_model->comment(
-            new SimplePhoto($photo_id, 'photo', $owner_id),
+            new SimplePhoto($photo_id, $owner_id),
             $comment
         );
     }
@@ -219,7 +219,7 @@ class Photo_model extends CI_Model
     public function get_likes(&$photo, $offset, $limit)
     {
         return $this->activity_model->getLikes(
-            new SimplePhoto($photo['photo_id'], 'photo', $photo['user_id']),
+            new SimplePhoto($photo['photo_id'], $photo['user_id']),
             $offset,
             $limit
         );
@@ -236,7 +236,7 @@ class Photo_model extends CI_Model
     public function get_shares(&$photo, $offset, $limit)
     {
         return $this->activity_model->getShares(
-            new SimplePhoto($photo['photo_id'], 'photo', $photo['user_id']),
+            new SimplePhoto($photo['photo_id'], $photo['user_id']),
             $offset,
             $limit
         );
@@ -253,7 +253,7 @@ class Photo_model extends CI_Model
     public function get_comments(&$photo, $offset, $limit)
     {
         return $this->activity_model->getComments(
-            new SimplePhoto($photo['photo_id'], 'photo', $photo['user_id']),
+            new SimplePhoto($photo['photo_id'], $photo['user_id']),
             $offset,
             $limit
         );
@@ -261,7 +261,7 @@ class Photo_model extends CI_Model
 
     public function delete_photo(&$photo)
     {
-        $simplePhoto = new SimplePhoto($photo['photo_id'], 'photo', $photo['user_id']);
+        $simplePhoto = new SimplePhoto($photo['photo_id'], $photo['user_id']);
         $this->utility_model->delete_item($simplePhoto);
     }
 }

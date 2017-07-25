@@ -47,7 +47,7 @@ class Reply_model extends CI_Model
         // Add data used by views.
         $reply['viewer_is_friend_to_owner'] = $this->user_model->are_friends($reply['commenter_id']);
 
-        $simpleReply = new SimpleReply($reply['comment_id'], 'reply', $reply['commenter_id']);
+        $simpleReply = new SimpleReply($reply['comment_id'], $reply['commenter_id']);
 
         // Add the number of likes.
         $reply['num_likes'] = $this->activity_model->getNumLikes($simpleReply);
@@ -85,7 +85,7 @@ class Reply_model extends CI_Model
         }
 
         // Record the like.
-        $this->activity_model->like(new SimpleReply($reply_id, 'reply', $owner_id));
+        $this->activity_model->like(new SimpleReply($reply_id, $owner_id));
     }
 
     /**
@@ -99,7 +99,7 @@ class Reply_model extends CI_Model
     public function get_likes(&$reply, $offset, $limit)
     {
         return $this->activity_model->getLikes(
-            new SimpleReply($reply['comment_id'], 'reply', $reply['commenter_id']),
+            new SimpleReply($reply['comment_id'], $reply['commenter_id']),
             $offset,
             $limit
         );

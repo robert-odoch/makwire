@@ -47,9 +47,7 @@ class Birthday_message_model extends CI_Model
         $message['timespan'] = timespan(mysql_to_unix($message['date_sent']), now(), 1);
 
         // Has the user liked this comment?
-        $simpleBirthdayMessage = new SimpleBirthdayMessage(
-            $message['id'], 'birthday_message', $message['sender_id']
-        );
+        $simpleBirthdayMessage = new SimpleBirthdayMessage($message['id'], $message['sender_id']);
         $message['liked'] = $this->activity_model->isLiked($simpleBirthdayMessage);
 
         // Get the number of likes.
@@ -99,7 +97,7 @@ class Birthday_message_model extends CI_Model
 
         // Record the like.
         $this->activity_model->like(
-            new SimpleBirthdayMessage($birthday_message_id, 'birthday_message', $owner_id)
+            new SimpleBirthdayMessage($birthday_message_id, $owner_id)
         );
     }
 
@@ -114,7 +112,7 @@ class Birthday_message_model extends CI_Model
     public function get_likes(&$message, $offset, $limit)
     {
         return $this->activity_model->getLikes(
-            new SimpleBirthdayMessage($message['id'], 'birthday_message', $message['sender_id']),
+            new SimpleBirthdayMessage($message['id'], $message['sender_id']),
             $offset,
             $limit
         );
@@ -136,7 +134,7 @@ class Birthday_message_model extends CI_Model
 
         // Record the reply.
         $this->activity_model->reply(
-            new SimpleBirthdayMessage($message_id, 'birthday_message', $owner_id),
+            new SimpleBirthdayMessage($message_id, $owner_id),
             $reply
         );
     }
@@ -144,7 +142,7 @@ class Birthday_message_model extends CI_Model
     public function get_replies(&$message, $offset, $limit)
     {
         return $this->activity_model->getReplies(
-            new SimpleBirthdayMessage($message['id'], 'birthday_message', $message['sender_id']),
+            new SimpleBirthdayMessage($message['id'], $message['sender_id']),
             $offset,
             $limit
         );

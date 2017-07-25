@@ -8,9 +8,9 @@ require_once(dirname(__FILE__) . '/../interfaces/Commentable.php');
 
 class SimpleVideo extends Object implements Likeable, Shareable, Commentable
 {
-    public function __construct($id, $type, $ownerId)
+    public function __construct($id, $ownerId, $type = 'video')
     {
-        parent::__construct($id, $type, $ownerId);
+        parent::__construct($id, $ownerId, $type);
     }
 }
 ?>
