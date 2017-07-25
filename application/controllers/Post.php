@@ -57,13 +57,12 @@ class Post extends CI_Controller
         }
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $post_id = $this->input->post('post_id');
-            $post = $this->input->post('post');
-            if (strlen($post) == 0) {
+            $new_post = $this->input->post('post');
+            if (strlen($new_post) == 0) {
                 $data['error_message'] = "Post can't be empty.";
             }
             else {
-                $this->post_model->update_post($post_id, $post);
+                $this->post_model->update_post($post_id, $new_post);
                 redirect(base_url("user/post/{$post_id}"));
             }
         }

@@ -18,7 +18,6 @@ require_once('common/user-page-start.php');
             ?>
         </div>
 
-        <input type='hidden' name='post_id' value='<?= $post['post_id']; ?>'>
         <input type='submit' value='Save' class='btn btn-sm'>
         <a href='<?= base_url("user/post/{$post['post_id']}"); ?>' class='btn btn-sm btn-default'>Cancel</a>
     </form>
