@@ -88,7 +88,7 @@ class Video extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function delete($video_id)
+    public function delete($video_id = 0)
     {
         try {
             $video = $this->video_model->get_video($video_id);

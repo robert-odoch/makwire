@@ -76,7 +76,7 @@ class Post extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function delete($post_id)
+    public function delete($post_id = 0)
     {
         try {
             $post = $this->post_model->get_post($post_id);

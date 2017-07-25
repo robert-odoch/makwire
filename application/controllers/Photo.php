@@ -110,7 +110,7 @@ class Photo extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function delete($photo_id)
+    public function delete($photo_id = 0)
     {
         try {
             $photo = $this->photo_model->get_photo($photo_id);

@@ -80,7 +80,7 @@ class Link extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function delete($link_id)
+    public function delete($link_id = 0)
     {
         try {
             $link = $this->link_model->get_link($link_id);
