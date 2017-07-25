@@ -45,6 +45,41 @@ class Link extends CI_Controller
         $this->load->view('common/footer');
     }
 
+    public function edit($link_id = 0)
+    {
+        try {
+            $link = $this->link_model->get_link($link_id);
+        }
+        catch (NotFoundException $e) {
+            show_404();
+        }
+
+        if ($link['user_id'] != $_SESSION['user_id']) {
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = "You don't have the proper permissions to edit this link.";
+            redirect(base_url('user/error'));
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $new_comment = $this->input->post('description');
+            $this->link_model->update_comment($link_id, $new_comment);
+            redirect(base_url("user/link/{$link_id}"));
+        }
+
+        $data = $this->user_model->initialize_user();
+        $data['title'] = 'Edit link - Makwire';
+        $this->load->view('common/header', $data);
+
+        $data['item'] = 'link';
+        $data['link'] = $link;
+        $data['description'] = $link['comment'];
+        $data['form_action'] = base_url("link/edit/{$link_id}");
+        $data['cancel_url'] = base_url("user/link/{$link_id}");
+        $this->load->view('edit-description', $data);
+        $this->load->view('common/footer');
+    }
+
     public function delete($link_id)
     {
         try {

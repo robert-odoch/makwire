@@ -233,5 +233,12 @@ class Link_model extends CI_Model
         $simpleLink = new SimpleLink($link['link_id'], $link['user_id']);
         $this->utility_model->delete_item($simpleLink);
     }
+
+    public function update_comment($link_id, $new_comment)
+    {
+        $sql = sprintf('UPDATE links SET comment = %s WHERE link_id = %d',
+                        $this->db->escape($new_comment), $link_id);
+        $this->db->query($sql);
+    }
 }
 ?>
