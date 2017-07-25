@@ -118,7 +118,7 @@ class Utility_model extends CI_Model
                                 $item->getId(), $item->getType());
         $likes_results = $this->db->query($likes_sql)->result_array();
         foreach ($likes_results as $r) {
-            $this->activity_model->deleteLike($item, $r);
+            $this->activity_model->deleteLike($item, $r['like_id']);
         }
     }
 
@@ -129,7 +129,7 @@ class Utility_model extends CI_Model
                                 $item->getId(), $item->getType());
         $comments_results = $this->db->query($comments_sql)->result_array();
         foreach ($comments_results as $r) {
-            $this->activity_model->deleteComment($item, $r);
+            $this->activity_model->deleteComment($item, $r['comment_id']);
         }
     }
 
@@ -140,12 +140,20 @@ class Utility_model extends CI_Model
                                 $item->getId(), $item->getType());
         $shares_results = $this->db->query($shares_sql)->result_array();
         foreach ($shares_results as $r) {
-            $this->activity_model->deleteShare($item, $share_id);
+            $this->activity_model->deleteShare($item, $r['share_id']);
         }
     }
 
-    public function un_share_item(Shareable $item)
+    /**
+     * @param $user_id The ID of the user whom the item is being deleted from
+     * their timeline.
+     */
+    public function un_share_item(Shareable $item, $user_id)
     {
-        
+        $share_sql = sprintf('SELECT share_id FROM shares ' .
+                                'WHERE sharer_id = %d AND subject_id = %d AND subject_type = \'%s\'',
+                                $user_id, $item->getId(), $item->getType());
+        $share_id = $this->db->query($share_sql)->row_array()['share_id'];
+        $this->activity_model->deleteShare($item, $share_id);
     }
 }

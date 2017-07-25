@@ -163,7 +163,7 @@ class Post_model extends CI_Model
         $owner_id = $owner_result['user_id'];
 
         // Record the comment.
-        $this->utility_model->comment(
+        $this->activity_model->comment(
             new SimplePost($post_id, 'post', $owner_id),
             $comment
         );
@@ -222,11 +222,23 @@ class Post_model extends CI_Model
 
     public function delete_post(&$post)
     {
-        if ($post['user_id'] != $_SESSION['user_id']) {
-            throw new IllegalAccessException();
-        }
-
         $simplePost = new SimplePost($post['post_id'], 'post', $post['user_id']);
+
+        if ($post['user_id'] != $_SESSION['user_id']) {
+            // Check whether this user shared the post.
+            $share_sql = sprintf('SELECT share_id FROM shares ' .
+                                    'WHERE sharer_id = %d AND subject_id = %d AND subject_type = \'%s\'',
+                                    $_SESSION['user_id'], $post['post_id'], 'post');
+            $share_query = $this->db->query($share_sql);
+            if ($share_query->num_rows() == 0) {
+                throw new IllegalAccessException();
+            }
+            else {
+                // User shared this post. Only remove it from his timeline.
+                $this->utility_model->un_share_item($simplePost, $_SESSION['user_id']);
+                return;
+            }
+        }
 
         // Delete likes for this post.
         $this->utility_model->delete_item_likes($simplePost);

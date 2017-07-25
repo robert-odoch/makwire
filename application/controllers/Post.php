@@ -40,6 +40,13 @@ class Post extends CI_Controller
 
     public function delete($post_id)
     {
+        try {
+            $post = $this->post_model->get_post($post_id);
+        }
+        catch (NotFoundException $e) {
+            show_404();
+        }
+
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             try {
                 $this->post_model->delete_post($post);
@@ -52,13 +59,6 @@ class Post extends CI_Controller
                 $_SESSION['message'] = 'You don\'t have the proper permissions to delete this post.';
                 redirect(base_url('user/error'));
             }
-        }
-
-        try {
-            $post = $this->post_model->get_post($post_id);
-        }
-        catch (NotFoundException $e) {
-            show_404();
         }
 
         $data = $this->user_model->initialize_user();

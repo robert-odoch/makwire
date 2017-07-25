@@ -257,6 +257,11 @@ class Activity_model extends CI_Model
 
     public function deleteComment(Commentable $item, $comment_id)
     {
+        $comment_sql = sprintf('SELECT commenter_id FROM comments WHERE comment_id = %d',
+                                $comment_id);
+        $comment_result = $this->db->query($comment_sql)->row_array();
+        $comment = new SimpleComment($comment_id, 'comment', $comment_result['commenter_id']);
+
         // Delete likes for this comment.
         $likes_sql = sprintf('SELECT like_id FROM likes ' .
                                 'WHERE source_id = %d AND source_type = \'comment\'',
