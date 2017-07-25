@@ -38,6 +38,45 @@ class Post extends CI_Controller
         redirect(base_url("user/{$_SESSION['user_id']}"));
     }
 
+    public function edit($post_id = 0)
+    {
+        $data = [];
+
+        try {
+            $post = $this->post_model->get_post($post_id);
+        }
+        catch (NotFoundException $e) {
+            show_404();
+        }
+
+        if ($post['user_id'] != $_SESSION['user_id']) {
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = "You don't have the proper permissions to edit this post.";
+            redirect(base_url('user/error'));
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $post_id = $this->input->post('post_id');
+            $post = $this->input->post('post');
+            if (strlen($post) == 0) {
+                $data['error_message'] = "Post can't be empty.";
+            }
+            else {
+                $this->post_model->update_post($post_id, $post);
+                redirect(base_url("user/post/{$post_id}"));
+            }
+        }
+
+        $data = array_merge($data, $this->user_model->initialize_user());
+        $data['title'] = 'Edit post - Makwire';
+        $this->load->view('common/header', $data);
+
+        $data['post'] = $post;
+        $this->load->view('edit-post', $data);
+        $this->load->view('common/footer');
+    }
+
     public function delete($post_id)
     {
         try {
