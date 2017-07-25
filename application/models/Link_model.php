@@ -223,5 +223,11 @@ class Link_model extends CI_Model
             $limit
         );
     }
+
+    public function delete_link(&$link)
+    {
+        $simpleLink = new SimpleLink($link['link_id'], 'link', $link['user_id']);
+        $this->utility_model->delete_item($simpleLink);
+    }
 }
 ?>

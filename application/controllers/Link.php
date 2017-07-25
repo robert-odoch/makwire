@@ -45,6 +45,46 @@ class Link extends CI_Controller
         $this->load->view('common/footer');
     }
 
+    public function delete($link_id)
+    {
+        try {
+            $link = $this->link_model->get_link($link_id);
+        }
+        catch (NotFoundException $e) {
+            show_404();
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            try {
+                $this->link_model->delete_link($link);
+                $_SESSION['message'] = 'Your link has been successfully deleted.';
+                redirect(base_url('user/success'));
+            }
+            catch (IllegalAccessException $e) {
+                $_SESSION['title'] = 'Permission Denied!';
+                $_SESSION['heading'] = 'Permission Denied';
+                $_SESSION['message'] = 'You don\'t have the proper permissions to delete this link.';
+                redirect(base_url('user/error'));
+            }
+        }
+
+        $data = $this->user_model->initialize_user();
+        $data['title'] = 'Delete link - Makwire';
+        $this->load->view('common/header', $data);
+
+        $link_data = [
+            'item' => 'link',
+            'link' => $link,
+            'item_owner_id' => $link['user_id'],
+            'form_action' => base_url("link/delete/{$link['link_id']}"),
+            'cancel_url' => base_url("user/link/{$link['link_id']}")
+        ];
+
+        $data = array_merge($data, $link_data);
+        $this->load->view('delete-item', $data);
+        $this->load->view('common/footer');
+    }
+
     public function add_comment($link_id = 0)
     {
         $data = [];
