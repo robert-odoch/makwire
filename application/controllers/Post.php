@@ -65,8 +65,16 @@ class Post extends CI_Controller
         $data['title'] = 'Delete post - Makwire';
         $this->load->view('common/header', $data);
 
-        $data['post'] = $post;
-        $this->load->view('delete-post', $data);
+        $post_data = [
+            'item' => 'post',
+            'post' => $post,
+            'item_owner_id' => $post['user_id'],
+            'form_action' => base_url("post/delete/{$post['post_id']}"),
+            'cancel_url' => base_url("user/post/{$post['post_id']}")
+        ];
+
+        $data = array_merge($data, $post_data);
+        $this->load->view('delete-item', $data);
         $this->load->view('common/footer');
     }
 
