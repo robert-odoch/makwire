@@ -53,6 +53,41 @@ class Video extends CI_Controller
         $this->load->view('common/footer');
     }
 
+    public function edit($video_id = 0)
+    {
+        try {
+            $video = $this->video_model->get_video($video_id);
+        }
+        catch (NotFoundException $e) {
+            show_404();
+        }
+
+        if ($video['user_id'] != $_SESSION['user_id']) {
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = "You don't have the proper permissions to edit this video.";
+            redirect(base_url('user/error'));
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $new_description = $this->input->post('description');
+            $this->video_model->update_description($video_id, $new_description);
+            redirect(base_url("user/video/{$video_id}"));
+        }
+
+        $data = $this->user_model->initialize_user();
+        $data['title'] = 'Edit video - Makwire';
+        $this->load->view('common/header', $data);
+
+        $data['item'] = 'video';
+        $data['video'] = $video;
+        $data['description'] = $video['description'];
+        $data['form_action'] = base_url("video/edit/{$video_id}");
+        $data['cancel_url'] = base_url("user/video/{$video_id}");
+        $this->load->view('edit-description', $data);
+        $this->load->view('common/footer');
+    }
+
     public function delete($video_id)
     {
         try {

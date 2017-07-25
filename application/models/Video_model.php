@@ -230,5 +230,12 @@ class Video_model extends CI_Model
         $simpleVideo = new SimpleVideo($video['video_id'], $video['user_id']);
         $this->utility_model->delete_item($simpleVideo);
     }
+
+    public function update_description($video_id, $new_description)
+    {
+        $sql = sprintf('UPDATE videos SET description = %s WHERE video_id = %d',
+                        $this->db->escape($new_description), $video_id);
+        $this->db->query($sql);
+    }
 }
 ?>
