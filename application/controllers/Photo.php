@@ -75,6 +75,41 @@ class Photo extends CI_Controller
         $this->load->view('common/footer');
     }
 
+    public function edit($photo_id = 0)
+    {
+        try {
+            $photo = $this->photo_model->get_photo($photo_id);
+        }
+        catch (NotFoundException $e) {
+            show_404();
+        }
+
+        if ($photo['user_id'] != $_SESSION['user_id']) {
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = "You don't have the proper permissions to edit this photo.";
+            redirect(base_url('user/error'));
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $new_description = $this->input->post('description');
+            $this->photo_model->update_description($photo_id, $new_description);
+            redirect(base_url("user/photo/{$photo_id}"));
+        }
+
+        $data = $this->user_model->initialize_user();
+        $data['title'] = 'Edit photo - Makwire';
+        $this->load->view('common/header', $data);
+
+        $data['item'] = 'photo';
+        $data['photo'] = $photo;
+        $data['description'] = $photo['description'];
+        $data['form_action'] = base_url("photo/edit/{$photo_id}");
+        $data['cancel_url'] = base_url("user/photo/{$photo_id}");
+        $this->load->view('edit-description', $data);
+        $this->load->view('common/footer');
+    }
+
     public function delete($photo_id)
     {
         try {
@@ -148,8 +183,8 @@ class Photo extends CI_Controller
         $data['title'] = 'Say something about this photo';
         $this->load->view('common/header', $data);
 
-        $data['photo'] = $photo;
         $data['item'] = 'photo';
+        $data['photo'] = $photo;
         $data['form_action'] = base_url("photo/add-description/{$photo_id}");
         $this->load->view('add-description', $data);
         $this->load->view('common/footer');

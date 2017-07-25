@@ -268,5 +268,12 @@ class Photo_model extends CI_Model
         $simplePhoto = new SimplePhoto($photo['photo_id'], $photo['user_id']);
         $this->utility_model->delete_item($simplePhoto);
     }
+
+    public function update_description($photo_id, $new_description)
+    {
+        $sql = sprintf('UPDATE photos SET description = %s WHERE photo_id = %d',
+                        $this->db->escape($new_description), $photo_id);
+        $this->db->query($sql);
+    }
 }
 ?>
