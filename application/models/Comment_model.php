@@ -191,7 +191,7 @@ class Comment_model extends CI_Model
             $commentable = new SimplePost($source_result['source_id'], $owner_id);
             break;
         case 'photo':
-            $owner_sql = sprintf('SELECT user_id FROM user_photos WHERE photo_id = %d',
+            $owner_sql = sprintf('SELECT user_id FROM photos WHERE photo_id = %d',
                                     $source_result['source_id']);
             $owner_id = $this->db->query($owner_query)->row_array()['user_id'];
             $commentable = new SimplePhoto($source_result['source_id'], $owner_id);

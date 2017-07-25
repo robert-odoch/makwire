@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 22, 2017 at 10:39 AM
+-- Generation Time: Jul 25, 2017 at 06:41 PM
 -- Server version: 10.1.10-MariaDB
 -- PHP Version: 7.0.2
 
@@ -172,10 +172,14 @@ CREATE TABLE `likes` (
 --
 
 CREATE TABLE `links` (
-  `id` bigint(20) NOT NULL,
+  `link_id` bigint(20) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `url` int(11) NOT NULL,
-  `description` text NOT NULL,
+  `url` varchar(500) NOT NULL,
+  `title` tinytext NOT NULL,
+  `description` tinytext NOT NULL,
+  `image` varchar(1000) NOT NULL,
+  `site` varchar(100) NOT NULL,
+  `comment` text,
   `date_entered` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -205,6 +209,21 @@ CREATE TABLE `notification_read` (
   `user_id` int(11) UNSIGNED NOT NULL,
   `activity_id` bigint(20) UNSIGNED NOT NULL,
   `date_read` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `photos`
+--
+
+CREATE TABLE `photos` (
+  `photo_id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` int(11) UNSIGNED NOT NULL,
+  `image_type` varchar(15) NOT NULL,
+  `full_path` varchar(200) NOT NULL,
+  `description` text,
+  `date_entered` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -256,7 +275,7 @@ CREATE TABLE `shares` (
   `share_id` bigint(20) UNSIGNED NOT NULL,
   `subject_id` bigint(20) UNSIGNED NOT NULL,
   `sharer_id` int(11) UNSIGNED NOT NULL,
-  `subject_type` enum('post','photo','video','linke') NOT NULL,
+  `subject_type` enum('post','photo','video','link') NOT NULL,
   `date_shared` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -337,21 +356,6 @@ CREATE TABLE `user_hostels` (
   `hostel_id` int(11) UNSIGNED NOT NULL,
   `date_from` date NOT NULL,
   `date_to` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `user_photos`
---
-
-CREATE TABLE `user_photos` (
-  `photo_id` bigint(20) UNSIGNED NOT NULL,
-  `user_id` int(11) UNSIGNED NOT NULL,
-  `image_type` varchar(15) NOT NULL,
-  `full_path` varchar(200) NOT NULL,
-  `description` text,
-  `date_entered` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -486,7 +490,7 @@ ALTER TABLE `likes`
 -- Indexes for table `links`
 --
 ALTER TABLE `links`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`link_id`);
 
 --
 -- Indexes for table `messages`
@@ -498,7 +502,14 @@ ALTER TABLE `messages`
 -- Indexes for table `notification_read`
 --
 ALTER TABLE `notification_read`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `activity_id` (`activity_id`);
+
+--
+-- Indexes for table `photos`
+--
+ALTER TABLE `photos`
+  ADD PRIMARY KEY (`photo_id`);
 
 --
 -- Indexes for table `posts`
@@ -556,12 +567,6 @@ ALTER TABLE `user_halls`
 --
 ALTER TABLE `user_hostels`
   ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `user_photos`
---
-ALTER TABLE `user_photos`
-  ADD PRIMARY KEY (`photo_id`);
 
 --
 -- Indexes for table `user_profile`
@@ -651,7 +656,7 @@ ALTER TABLE `likes`
 -- AUTO_INCREMENT for table `links`
 --
 ALTER TABLE `links`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `link_id` bigint(20) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `messages`
 --
@@ -662,6 +667,11 @@ ALTER TABLE `messages`
 --
 ALTER TABLE `notification_read`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `photos`
+--
+ALTER TABLE `photos`
+  MODIFY `photo_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `posts`
 --
@@ -708,11 +718,6 @@ ALTER TABLE `user_halls`
 ALTER TABLE `user_hostels`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT for table `user_photos`
---
-ALTER TABLE `user_photos`
-  MODIFY `photo_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
---
 -- AUTO_INCREMENT for table `user_profile`
 --
 ALTER TABLE `user_profile`
@@ -732,6 +737,16 @@ ALTER TABLE `user_schools`
 --
 ALTER TABLE `videos`
   MODIFY `video_id` bigint(20) NOT NULL AUTO_INCREMENT;
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `notification_read`
+--
+ALTER TABLE `notification_read`
+  ADD CONSTRAINT `notification_read_ibfk_1` FOREIGN KEY (`activity_id`) REFERENCES `activities` (`activity_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

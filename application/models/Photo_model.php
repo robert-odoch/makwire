@@ -23,12 +23,12 @@ class Photo_model extends CI_Model
      *
      * Throws NotFoundException if the photo cannot be found.
      *
-     * @param $photo_id the ID of the photo in the user_photos table.
+     * @param $photo_id the ID of the photo in the photos table.
      * @return the photo with the given ID.
      */
     public function get_photo($photo_id)
     {
-        $photo_sql = sprintf("SELECT p.*, u.profile_name AS author FROM user_photos p " .
+        $photo_sql = sprintf("SELECT p.*, u.profile_name AS author FROM photos p " .
                             "LEFT JOIN users u ON(p.user_id = u.user_id) " .
                             "WHERE photo_id = %d",
                             $photo_id);
@@ -92,12 +92,12 @@ class Photo_model extends CI_Model
      * @param $audience the target audience for the photo. May be timeline or group.
      * @param $audience_id the ID of the target audience. Same as user ID if
      * audience is timeline.
-     * @return $photo_id the ID of the photo in the user_photos table.
+     * @return $photo_id the ID of the photo in the photos table.
      */
     public function publish($data, $audience, $audience_id)
     {
         // Record photo data in the photos table.
-        $photo_sql = sprintf("INSERT INTO user_photos " .
+        $photo_sql = sprintf("INSERT INTO photos " .
                             "(user_id, image_type, full_path) " .
                             "VALUES (%d, %s, %s)",
                             $_SESSION['user_id'],
@@ -117,14 +117,14 @@ class Photo_model extends CI_Model
     /**
      * Adds a brief description about a photo.
      *
-     * Assumes that the photo alreay exists in the user_photos table.
+     * Assumes that the photo alreay exists in the photos table.
      *
      * @param $description the description entered by the user.
-     * @param $photo_id the id of the photo in the user_photos table.
+     * @param $photo_id the id of the photo in the photos table.
      */
     public function add_description($description, $photo_id)
     {
-        $sql = sprintf("UPDATE user_photos SET description = %s " .
+        $sql = sprintf("UPDATE photos SET description = %s " .
                         "WHERE (photo_id = %d)",
                         $this->db->escape($description), $photo_id);
         $this->utility_model->run_query($sql);
@@ -137,12 +137,12 @@ class Photo_model extends CI_Model
      * It may also throw IllegalAccessException if a user attempts to like
      * a photo published by a user who is not his friend.
      *
-     * @param $photo_id the ID of the photo in the user_photos table.
+     * @param $photo_id the ID of the photo in the photos table.
      */
     public function like($photo_id)
     {
         // Get the id of the owner of this photo.
-        $owner_sql = sprintf("SELECT user_id FROM user_photos WHERE photo_id = %d",
+        $owner_sql = sprintf("SELECT user_id FROM photos WHERE photo_id = %d",
                             $photo_id);
         $owner_query = $this->utility_model->run_query($owner_sql);
         if ($owner_query->num_rows() == 0) {
@@ -168,11 +168,11 @@ class Photo_model extends CI_Model
      * It may also throw IllegalAccessException if a user attempts to share
      * a photo that was published by a user who is not his friend.
      *
-     * @param $photo_id the ID of the photo in the user_photos table.
+     * @param $photo_id the ID of the photo in the photos table.
      */
     public function share($photo_id)
     {
-        $owner_sql = sprintf("SELECT user_id FROM user_photos WHERE photo_id = %d",
+        $owner_sql = sprintf("SELECT user_id FROM photos WHERE photo_id = %d",
                             $photo_id);
         $owner_query = $this->utility_model->run_query($owner_sql);
         if ($owner_query->num_rows() == 0) {
@@ -194,13 +194,13 @@ class Photo_model extends CI_Model
     /**
      * Records a comment on a photo.
      *
-     * @param $photo_id the ID of the photo in the user_photos table.
+     * @param $photo_id the ID of the photo in the photos table.
      * @param $comment the comment a user made.
      */
     public function comment($photo_id, $comment)
     {
         // Get the ID of the owner of this photo.
-        $owner_sql = sprintf("SELECT user_id FROM user_photos WHERE photo_id = %d",
+        $owner_sql = sprintf("SELECT user_id FROM photos WHERE photo_id = %d",
                             $photo_id);
         $owner_result = $this->utility_model->run_query($owner_sql)->row_array();
         $owner_id = $owner_result['user_id'];

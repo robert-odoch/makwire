@@ -119,7 +119,7 @@ class Utility_model extends CI_Model
                 'pk' => 'post_id'
             ],
             'photo' => [
-                'name' => 'user_photos',
+                'name' => 'photos',
                 'pk' => 'photo_id'
             ],
             'video' => [

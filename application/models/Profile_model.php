@@ -22,7 +22,7 @@ class Profile_model extends CI_Model
     public function set_profile_picture($data)
     {
         // Record photo data in the photos table.
-        $photo_sql = sprintf("INSERT INTO user_photos (user_id, image_type, full_path) " .
+        $photo_sql = sprintf("INSERT INTO photos (user_id, image_type, full_path) " .
                                 "VALUES (%d, %s, %s)",
                                 $_SESSION['user_id'],
                                 $this->db->escape($data['file_type']),

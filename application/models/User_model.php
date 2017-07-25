@@ -508,7 +508,7 @@ class User_model extends CI_Model
      */
     public function get_num_photos($user_id)
     {
-        $sql = sprintf("SELECT COUNT(photo_id) FROM user_photos " .
+        $sql = sprintf("SELECT COUNT(photo_id) FROM photos " .
                         "WHERE (user_id = %d)",
                         $user_id);
         $query = $this->utility_model->run_query($sql);
@@ -526,7 +526,7 @@ class User_model extends CI_Model
      */
     public function get_photos($user_id, $offset, $limit)
     {
-        $sql = sprintf("SELECT photo_id, full_path FROM user_photos " .
+        $sql = sprintf("SELECT photo_id, full_path FROM photos " .
                         "WHERE (user_id = %d) ORDER BY date_entered DESC " .
                         "LIMIT %d, %d",
                         $user_id, $offset, $limit);
