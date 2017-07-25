@@ -111,7 +111,63 @@ class Utility_model extends CI_Model
         return $ids;
     }
 
-    public function delete_item_likes(Likeable $item)
+    public function delete_item(Object $item)
+    {
+        $tables = [
+            'post' => [
+                'name' => 'posts',
+                'pk' => 'post_id'
+            ],
+            'photo' => [
+                'name' => 'user_photos',
+                'pk' => 'photo_id'
+            ],
+            'video' => [
+                'name' => 'videos',
+                'pk' => 'video_id'
+            ],
+            'link' => [
+                'name' => 'links',
+                'pk' => 'link_id'
+            ]
+        ];
+
+        if ($item->getOwnerId() != $_SESSION['user_id']) {
+            // Check whether this user shared the item.
+            $share_sql = sprintf('SELECT share_id FROM shares ' .
+                                    'WHERE sharer_id = %d AND subject_id = %d AND subject_type = \'%s\'',
+                                    $_SESSION['user_id'], $item->getId(), $item->getType());
+            $share_query = $this->db->query($share_sql);
+            if ($share_query->num_rows() == 0) {
+                throw new IllegalAccessException();
+            }
+            else {
+                // User shared this item. Only remove it from his timeline.
+                $this->un_share_item($item, $_SESSION['user_id']);
+                return;
+            }
+        }
+
+        // Delete likes for this item.
+        $this->delete_item_likes($item);
+
+        // Delete comments on this item.
+        $this->delete_item_comments($item);
+
+        // Delete shares for this item.
+        $this->delete_item_shares($item);
+
+        // Delete activity for this item.
+        $this->activity_model->delete_activity($item, $item->getType());
+
+        // Delete this item.
+        $table = $tables[$item->getType()];
+        $item_sql = sprintf('DELETE FROM %s WHERE %s = %d',
+                            $table['name'], $table['pk'], $item->getId());
+        $this->db->query($item_sql);
+    }
+
+    private function delete_item_likes(Likeable $item)
     {
         $likes_sql = sprintf('SELECT like_id FROM likes ' .
                                 'WHERE source_id = %d AND source_type = \'%s\'',
@@ -122,7 +178,7 @@ class Utility_model extends CI_Model
         }
     }
 
-    public function delete_item_comments(Commentable $item)
+    private function delete_item_comments(Commentable $item)
     {
         $comments_sql = sprintf('SELECT comment_id FROM comments ' .
                                 'WHERE source_id = %d AND source_type = \'%s\'',
@@ -133,7 +189,7 @@ class Utility_model extends CI_Model
         }
     }
 
-    public function delete_item_shares(Shareable $item)
+    private function delete_item_shares(Shareable $item)
     {
         $shares_sql = sprintf('SELECT share_id FROM shares ' .
                                 'WHERE subject_id = %d AND subject_type = \'%s\'',
@@ -148,7 +204,7 @@ class Utility_model extends CI_Model
      * @param $user_id The ID of the user whom the item is being deleted from
      * their timeline.
      */
-    public function un_share_item(Shareable $item, $user_id)
+    private function un_share_item(Shareable $item, $user_id)
     {
         $share_sql = sprintf('SELECT share_id FROM shares ' .
                                 'WHERE sharer_id = %d AND subject_id = %d AND subject_type = \'%s\'',

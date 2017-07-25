@@ -223,38 +223,7 @@ class Post_model extends CI_Model
     public function delete_post(&$post)
     {
         $simplePost = new SimplePost($post['post_id'], 'post', $post['user_id']);
-
-        if ($post['user_id'] != $_SESSION['user_id']) {
-            // Check whether this user shared the post.
-            $share_sql = sprintf('SELECT share_id FROM shares ' .
-                                    'WHERE sharer_id = %d AND subject_id = %d AND subject_type = \'%s\'',
-                                    $_SESSION['user_id'], $post['post_id'], 'post');
-            $share_query = $this->db->query($share_sql);
-            if ($share_query->num_rows() == 0) {
-                throw new IllegalAccessException();
-            }
-            else {
-                // User shared this post. Only remove it from his timeline.
-                $this->utility_model->un_share_item($simplePost, $_SESSION['user_id']);
-                return;
-            }
-        }
-
-        // Delete likes for this post.
-        $this->utility_model->delete_item_likes($simplePost);
-
-        // Delete comments on this post.
-        $this->utility_model->delete_item_comments($simplePost);
-
-        // Delete shares for this post.
-        $this->utility_model->delete_item_shares($simplePost);
-
-        // Delete activity for this post.
-        $this->activity_model->delete_activity($simplePost, $simplePost->getType());
-
-        // Delete this post.
-        $post_sql = sprintf('DELETE FROM posts WHERE post_id = %d', $simplePost->getId());
-        $this->db->query($post_sql);
+        $this->utility_model->delete_item($simplePost);
     }
 }
 ?>
