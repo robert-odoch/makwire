@@ -258,5 +258,11 @@ class Photo_model extends CI_Model
             $limit
         );
     }
+
+    public function delete_photo(&$photo)
+    {
+        $simplePost = new SimplePost($photo['photo_id'], 'photo', $photo['user_id']);
+        $this->utility_model->delete_item($simplePost);
+    }
 }
 ?>

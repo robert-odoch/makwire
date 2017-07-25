@@ -75,6 +75,46 @@ class Photo extends CI_Controller
         $this->load->view('common/footer');
     }
 
+    public function delete($photo_id)
+    {
+        try {
+            $photo = $this->photo_model->get_photo($photo_id);
+        }
+        catch (NotFoundException $e) {
+            show_404();
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            try {
+                $this->photo_model->delete_photo($photo);
+                $_SESSION['message'] = 'Your photo has been successfully deleted.';
+                redirect(base_url('user/success'));
+            }
+            catch (IllegalAccessException $e) {
+                $_SESSION['title'] = 'Permission Denied!';
+                $_SESSION['heading'] = 'Permission Denied';
+                $_SESSION['message'] = 'You don\'t have the proper permissions to delete this photo.';
+                redirect(base_url('user/error'));
+            }
+        }
+
+        $data = $this->user_model->initialize_user();
+        $data['title'] = 'Delete photo - Makwire';
+        $this->load->view('common/header', $data);
+
+        $photo_data = [
+            'item' => 'photo',
+            'photo' => $photo,
+            'item_owner_id' => $photo['user_id'],
+            'form_action' => base_url("photo/delete/{$photo['photo_id']}"),
+            'cancel_url' => base_url("user/photo/{$photo['photo_id']}")
+        ];
+
+        $data = array_merge($data, $photo_data);
+        $this->load->view('delete-item', $data);
+        $this->load->view('common/footer');
+    }
+
     public function add_description($photo_id = 0)
     {
         $data = [];
