@@ -19,7 +19,7 @@
                     else {
                         print "<a href='" . base_url("user/{$video['user_id']}") .
                                     "'>{$video['author']}</a> " .
-                                    "added a new video";
+                                    "shared a video";
                     }
                     ?>
                     </h4>

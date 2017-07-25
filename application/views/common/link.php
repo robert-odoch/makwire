@@ -19,7 +19,7 @@
                     else {
                         print "<a href='" . base_url("user/{$link['user_id']}") .
                                     "'>{$link['author']}</a> " .
-                                    "added a new link";
+                                    "shared a link";
                     }
                     ?>
                     </h4>

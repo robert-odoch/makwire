@@ -32,7 +32,7 @@
                         } else {
                             print "<a href='" . base_url("user/{$photo['user_id']}") .
                                     "'>{$photo['author']}</a> " .
-                                    "added a new photo";
+                                    "added a photo";
                         }
                     }
                     ?>
