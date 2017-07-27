@@ -75,7 +75,7 @@ if (!$is_visitor) {
         if ($has_next) {
             print "<div class='box more'>";
             if ($page == 'news-feed') {
-                print '<a href="' . base_url("user/news-feed/{$next_offset}") .
+                print '<a href="' . base_url("news-feed/{$next_offset}") .
                         '">Show more</a>';
             }
             else if ($page == 'timeline') {

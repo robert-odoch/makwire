@@ -51,5 +51,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 $route['default_controller'] = 'news_feed';
 $route['user/(:num)(/:num)?'] = 'user/index/$1$2';
+$route['news-feed/(:num)'] = 'news-feed/index/$1';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = TRUE;
