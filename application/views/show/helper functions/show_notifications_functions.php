@@ -10,7 +10,7 @@ function build_item_comment_notif(array $notif)
                     "commented on your {$notif['source_type']}";
 
         if ($notif['source_type'] == 'post') {
-            $comment .= " \"{$notif['post']}\"";
+            $comment .= " `{$notif['post']}'";
         }
     }
     else {
@@ -21,7 +21,7 @@ function build_item_comment_notif(array $notif)
                             "commented on {$notif['subject_gender']} {$notif['source_type']} you shared";
 
                 if ($notif['source_type'] == 'post') {
-                    $comment .= " \"{$notif['post']}\"";
+                    $comment .= " `{$notif['post']}'";
                 }
             }
             else {
@@ -30,7 +30,7 @@ function build_item_comment_notif(array $notif)
                             "commented on a {$notif['source_type']} you shared";
 
                 if ($notif['source_type'] == 'post') {
-                    $comment .= " \"{$notif['post']}\"";
+                    $comment .= " `{$notif['post']}'";
                 }
             }
         }
@@ -40,7 +40,7 @@ function build_item_comment_notif(array $notif)
                             "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} " .
                             "also commented on {$notif['subject_gender']} {$notif['source_type']}";
                 if ($notif['source_type'] == 'post') {
-                    $comment .= " \"{$notif['post']}\"";
+                    $comment .= " `{$notif['post']}'";
                 }
             }
             else {
@@ -49,7 +49,7 @@ function build_item_comment_notif(array $notif)
                             "also commented on <strong class='object'>{$notif['subject']}</strong>'s {$notif['source_type']}";
 
                 if ($notif['source_type'] == 'post') {
-                    $comment .= " \"{$notif['post']}\"";
+                    $comment .= " `{$notif['post']}'";
                 }
             }
         }
@@ -69,7 +69,7 @@ function build_item_like_notif(array $notif)
                     "liked your {$notif['source_type']}";
 
     if ($notif['source_type'] == 'post') {
-        $notif_str .= " \"{$notif['post']}\"";
+        $notif_str .= " `{$notif['post']}'";
     }
 
     $notif_str .= "</a> <small class='time'>" .
@@ -85,7 +85,7 @@ function build_item_share_notif(array $notif)
                     "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} " .
                     "shared your {$notif['source_type']}";
     if ($notif['source_type'] == 'post') {
-        $notif_str .= " \"{$notif['post']}\"";
+        $notif_str .= " `{$notif['post']}'";
     }
 
     $notif_str .= "</a> <small class='time'>" .
@@ -102,7 +102,7 @@ function build_like_notif(array $notif)
                     "liked your " . str_replace('_', ' ', $notif['source_type']);
 
     if (in_array($notif['source_type'], ['comment', 'reply'])) {
-        $notif_str .= " \"{$notif['comment']}\"";
+        $notif_str .= " `{$notif['comment']}'";
     }
 
     $notif_str .= "</a> <small class='time'>" .
@@ -121,7 +121,7 @@ function build_reply_notif(array $notif)
                         "replied to your " . str_replace('_', ' ', $notif['source_type']);
 
         if ($notif['source_type'] == 'comment') {
-            $notif_str .= " \"{$notif['comment']}\"";
+            $notif_str .= " `{$notif['comment']}'";
         }
 
         $notif_str .= "</a> <small class='time'>" .
@@ -136,7 +136,7 @@ function build_reply_notif(array $notif)
                             str_replace('_', ' ', $notif['source_type']);
 
             if ($notif['source_type'] == 'comment') {
-                $notif_str .= " \"{$notif['comment']}\"";
+                $notif_str .= " `{$notif['comment']}'";
             }
 
             $notif_str .= "</a> <small class='time'>" .
@@ -147,7 +147,7 @@ function build_reply_notif(array $notif)
             $notif_str = "<a href='" . base_url("comment/replies/{$notif['source_id']}") .
                             "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} " .
                             "also replied to <strong class='object'>{$notif['subject']}</strong>'s comment" .
-                            " \"{$notif['comment']}\"</a> " .
+                            " `{$notif['comment']}'</a> " .
                             "<small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> " .
                             "{$notif['timespan']} ago</small>";
         }
