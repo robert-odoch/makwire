@@ -522,7 +522,7 @@ article.message footer {
     display: inline-block;
 }
 
-article header div.media-{
+article header {
     margin-bottom: 2px;
 }
 
