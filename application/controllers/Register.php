@@ -62,11 +62,24 @@ class Register extends CI_Controller
                     $user_email_id = $this->settings_model->add_email($email);
                     $activation_code = sha1($email);
                     $subject = 'Makwire: Account creation.';
-                    $message = '<p>Hi, thanks for your interest in makwire!</p>' .
-                                '<p>Please use <a href="' .
-                                base_url("register/step-two/{$user_email_id}/{$activation_code}") .
-                                '">this link</a> to verify your email adress and continue with the registration.</p>';
-                    if ( ! $this->utility_model->send_email($emal, $subject, $message)) {
+
+                    $email_data['email_heading'] = 'makwire account creation';
+                    $email_data['email_title'] = $email_data['email_heading'];
+                    $email_data['message'] = '<p>
+                                                Hi Robert, thanks for your interest in joining
+                                                <a href="http://www.makwire.com">Makwire</a>.
+                                            </p>
+                                            <p>
+                                              Please use the link below to verify your email
+                                              address and continue with the registration process.
+                                            </p>
+                                            <a href="' .
+                                                base_url("register/step-two/{$user_email_id}/{$activation_code}") . '"
+                                                class="btn">Verify your email address</a>';
+
+                    $email_html = $this->load->view('email', $email_data, TRUE);
+
+                    if ( ! $this->utility_model->send_email($email, $subject, $email_html)) {
                         $data['info_message'] = "Sorry, we couldn't send your activation email.<br>" .
                                                 "The admin has been notified about the issue " .
                                                 "and will fix it as soon as possible.<br>" .

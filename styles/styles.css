@@ -770,8 +770,8 @@ div#birthday-message img.media-object {
     margin-bottom: 3px;
 }
 .link-site {
-    font-size: .7em;
-    text-transform: uppercase;
+    font-size: 1em;
+    text-transform: lowercase;
 }
 
 @media (max-width: 480px) {
