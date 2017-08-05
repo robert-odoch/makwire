@@ -8,7 +8,41 @@ class Account extends CI_Controller
         parent::__construct();
 
         session_start();
-        $this->load->model(['user_model', 'account_model']);
+        $this->load->model(['user_model', 'account_model', 'settings_model']);
+    }
+
+    public function forgot_password()
+    {
+        if (isset($_SESSION['user_id'])) {
+            redirect(base_url('news-feed'));
+        }
+
+        $data['title'] = 'Recover your password';
+        $this->load->view('common/header', $data);
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $email_address = $this->input->post('email');
+            if (strlen($email_address) == 0) {
+                $error_message = 'Please enter an email address.';
+            }
+            elseif (!filter_var($email_address, FILTER_VALIDATE_EMAIL)) {
+                $error_message = 'Please enter a valid email address.';
+            }
+            elseif ( ! $this->settings_model->is_activated_email($email_address)) {
+                $error_message = 'Sorry, makwire does not recognise that email address.';
+            }
+
+            if (isset($error_message)) {
+                $data['error_message'] = $error_message;
+                $data['email'] = $email_address;
+            }
+            else {
+                // Send instructions for re-setting password.
+            }
+        }
+
+        $this->load->view('settings/account/forgot-password', $data);
+        $this->load->view('common/external-page-footer');
     }
 
     public function change_password()
