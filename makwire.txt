@@ -17,6 +17,13 @@
     Feature, status(accepted|rejected), if (rejected) { reason }, comments, modified version.
 }
 - outline CSS property.
+- twitter timeline {
+    When they do, their Tweets will show up here.
+    - [makwire] When they do, their status updates will show up here.
+}
+- Facebook message: I was just feeling so horny at that time, but I'm now okay.
+- news.mak.ac.ug { font-family: 'montserrat', sans-serif; }
+- facebook page view on external sites (screenshot in pictures directory).
 
 #Ajax candidates.
 - news feed, timeline.
@@ -30,30 +37,29 @@
 - settings.
 
 #TODO
-- Code for editing post, photo, video, link.
-- Viewing friendship status.
-- Minimize memory consumption by unsetting no longer required variables.
-- Style the HTML email sent.
+- Improve on the security of parameters passed in the link for email confirmation.
 - Make access to register/step-three more secure.
 - Test registration.
-- Improve on the security of parameters passed in the link for email confirmation.
-- Secure resend email.
+- Secure link for re-send email.
+- Re-send email for registration incase a user doesn't receive.
+- re-setting forgotten password.
+- Add code for deleting an account.
+- edit/delete comment, reply.
+- Viewing friendship.
+- let users select a school to add to their profile and get the college automatically.
+- Send welcome email to users upon completing registration.
 - Use bootstrap's error classes for form inputs.
 - Go through the code and remove duplicate code.
 - Document the code.
 - Enhance the user interface (consider revising Bootstrap).
 - Read through the stylesheet and remove duplicate code.
-- Consider calling show_(success/error) with redirects.
-- Add code for deleting an account.
-- Optimize get_num_* functions so that they select just on more than $limit.
-- edit/delete comment, reply.
-- Add contraints on foreign keys.
 
 #Unchecked activities.
 - A youtube video not loading.
 - URLs used for redirects in login.
 
 #IMPROVEMENTS
+- Ensure that every page has a link for viewing more items.
 - Show birthday.
 - chat sidebar.
 - get[_num]_notifications.
@@ -64,6 +70,9 @@
 })
 - For conditionals that have no else or default clause, log a warning/error message.
 - Invite friends by email.
+- Minimize memory consumption by unsetting no longer required variables.
+- Optimize get_num_* functions so that they select just on more than $limit.
+- Consider replacing isset() with !empty().
 
 ================================================================================
 - Hunt for bugs.
@@ -81,6 +90,9 @@
     (This can be automated by putting foreign key constraints)
 - Allow users to add links to other social networks.
 - Integrate news from external sources.
+- Wish users MERRY CHRISTMAS, Happy Easter, etc.
+- Allow users to upload files (powerpoint, pdf, odt, word, excel, access)
+- Group chat should use threads.
 ________________________________________________________________________________
 
 #DONE
@@ -205,6 +217,14 @@ ________________________________________________________________________________
     after deleting an item. *
 - Remove conditionals that result in permission denied from controllers. *
 - Use exception messages from models.
+- Code for editing post, photo, video, link.
+- Give default ID 0 to IDs passed to delete.
+- Add margin below article header.
+- Consider calling show_(success/error) with redirects.
+- Quote posts/comments/replies in notifications using `'
+- Style the HTML email sent.
+- Link notifications for likes to user/item
+- Add foreign key contraints.
 
             ^^^^^^ The ones marked with * were foregone. ^^^^^^
             ^^^^^^ Take some time later to re-consider them. ^^^^^
