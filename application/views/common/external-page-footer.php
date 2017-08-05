@@ -6,7 +6,7 @@
         <footer role='contentinfo' class='footer'>
             <div class='wrapper'>
                 <a href='#' class='pull-right'>Back to top</a>
-                <span>&copy; <?php echo date('Y'); ?> Makwire</span><span> &middot; </span>
+                <span>&copy; <?php echo date('Y'); ?> makwire</span><span> &middot; </span>
                 <a href='#'>Terms of Use</a><span> &middot; </span>
                 <a href='#'>Privacy Policy</a><span> &middot; </span>
                 <a href='#'>Advertising</a><span> &middot; </span>
