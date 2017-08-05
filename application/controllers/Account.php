@@ -8,15 +8,13 @@ class Account extends CI_Controller
         parent::__construct();
 
         session_start();
-        if (empty($_SESSION['user_id'])) {
-            $_SESSION['return_uri'] = $_SERVER['REQUEST_URI'];
-            redirect(base_url('login'));
-        }
         $this->load->model(['user_model', 'account_model']);
     }
 
     public function change_password()
     {
+        $this->ensure_user_is_logged_in();
+
         $data = [];
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -76,6 +74,8 @@ class Account extends CI_Controller
 
     public function set_prefered_name()
     {
+        $this->ensure_user_is_logged_in();
+
         $data = [];
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -98,6 +98,8 @@ class Account extends CI_Controller
 
     public function change_name()
     {
+        $this->ensure_user_is_logged_in();
+
         $data = [];
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -134,6 +136,8 @@ class Account extends CI_Controller
 
     public function delete()
     {
+        $this->ensure_user_is_logged_in();
+
         $data = [];
 
         $data = array_merge($data, $this->user_model->initialize_user());
@@ -142,6 +146,14 @@ class Account extends CI_Controller
 
         $this->load->view('settings/account/delete', $data);
         $this->load->view('common/footer');
+    }
+
+    private function ensure_user_is_logged_in()
+    {
+        if (empty($_SESSION['user_id'])) {
+            $_SESSION['return_uri'] = $_SERVER['REQUEST_URI'];
+            redirect(base_url('login'));
+        }
     }
 
 }
