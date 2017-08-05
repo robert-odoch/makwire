@@ -9,7 +9,7 @@
                     <p><?= $info_message; ?></p>
                 </div>
             <?php } elseif (isset($success_message)) { ?>
-                <div class='alert alert-success'>
+                <div class='alert alert-info'>
                     <p><?= $success_message; ?></p>
                 </div>
             <?php } else { ?>

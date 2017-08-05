@@ -55,17 +55,17 @@ class Register extends CI_Controller
                                             "<strong>{$email}</strong> to continue with " .
                                             "the registration process.<br>" .
                                             "If you cant' find the email, then we can " .
-                                            "<a href='" . base_url("register/resend_email/{$email}") .
+                                            "<a href='" . base_url("register/resend-email/{$email}") .
                                             "'>resend the email.</a>";
                 }
                 else {
                     $user_email_id = $this->settings_model->add_email($email);
                     $activation_code = sha1($email);
-                    $subject = 'Makwire: Account creation.';
+                    $subject = 'Makwire: Please verify your email address.';
 
                     $email_data['email_heading'] = 'makwire account creation';
                     $email_data['message'] = "<p>
-                                                Hi, thanks for your interest in joining
+                                                Hi there, thanks for your interest in joining
                                                 <a href='http://www.makwire.com'>makwire</a>.
                                             </p>
                                             <p>
@@ -76,7 +76,13 @@ class Register extends CI_Controller
                                                 base_url("register/step-two/{$user_email_id}/{$activation_code}") . "'
                                                 style='color: #fff; margin: 5px 0; padding: 10px; display: block; text-align: center; border-radius: 2px;
                                                     border-color: #46b8da; text-decoration: none; box-sizing: border-box; font-variant: small-caps;
-                                                    background-color: #5bc0de;'>Verify your email address</a>";
+                                                    background-color: #5bc0de;'>Verify your email address</a>
+
+                                            <hr>
+                                            <p>
+                                                You’re receiving this email because you recently tried to create
+                                                a new <b>makwire</b> account. If this wasn’t you, please ignore this email.
+                                            </p>";
 
                     $email_html = $this->load->view('email', $email_data, TRUE);
 
@@ -88,7 +94,7 @@ class Register extends CI_Controller
                     }
                     else {
                         $data['success_message'] = "An email has been sent to " .
-                                                    "<strong>{$email}</strong>, please " .
+                                                    "<strong>{$email}</strong>. Please " .
                                                     "use the link in that email to continue with " .
                                                     "the registration process.";
                     }
