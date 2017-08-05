@@ -69,7 +69,13 @@ a:focus {
 
 .wrap-single {
     margin: auto;
-    width: 25%;
+    width: 40%;
+}
+
+.wrap-single input[type="text"],
+.wrap-single input[type="email"],
+.wrap-single input[type="password"] {
+    width: 70% !important;
 }
 
 .wrapper {
@@ -772,6 +778,14 @@ div#birthday-message img.media-object {
 .link-site {
     font-size: 1em;
     text-transform: lowercase;
+}
+
+@media (max-width: 380px) {
+    .wrap-single input[type="text"],
+    .wrap-single input[type="email"],
+    .wrap-single input[type="password"] {
+        width: 100% !important;
+    }
 }
 
 @media (max-width: 480px) {

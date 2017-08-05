@@ -128,6 +128,6 @@
                         </div>
                     </div>
                 </fieldset>
-                <input type='submit' value='Next &rarr;' class='btn btn-sm'>
+                <input type='submit' value='Next &raquo;' class='btn btn-sm'>
             </form>
         </div><!-- box -->

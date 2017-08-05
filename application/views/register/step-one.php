@@ -22,7 +22,7 @@
                                 Your Makerere University email address
                             </span>
                             <input type='email' name='email' id='email'
-                                    placeholder='e.g., name@college.mak.ac.ug' class='fluid
+                                    placeholder='name@college.mak.ac.ug' class='fluid
                                     <?php
                                     if (isset($error_message)) {
                                         print ' has-error';
@@ -41,7 +41,7 @@
                             ?>
                         </div>
                     </fieldset>
-                    <input type='submit' value='Next &rarr;' class='btn btn-sm'>
+                    <input type='submit' value='Next &raquo;' class='btn btn-sm'>
                 </form>
             <?php } ?>
         </div><!-- box -->
