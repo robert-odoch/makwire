@@ -51,7 +51,7 @@
                             <label for='male'>
                                 <input type='radio' name='gender' id='male' value='male'
                                 <?php
-                                if(isset($gender) && $gender == 'male') {
+                                if( ! isset($gender) || $gender == 'male') {
                                     print ' checked';
                                 }
                                 ?>> Male
@@ -115,9 +115,7 @@
                                     $current_year = date('Y');
                                     $min_age = 15;
                                     $max_age = 80;
-                                    for ($i = ($current_year - $min_age);
-                                        $i > ($current_year - $max_age);
-                                        --$i) {
+                                    for ($i = ($current_year - $min_age); $i > ($current_year - $max_age); --$i) {
                                         print "<option value='{$i}'";
                                         if (isset($year) && $year == $i) {
                                             print ' selected';

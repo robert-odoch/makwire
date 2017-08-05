@@ -64,18 +64,19 @@ class Register extends CI_Controller
                     $subject = 'Makwire: Account creation.';
 
                     $email_data['email_heading'] = 'makwire account creation';
-                    $email_data['email_title'] = $email_data['email_heading'];
-                    $email_data['message'] = '<p>
-                                                Hi Robert, thanks for your interest in joining
-                                                <a href="http://www.makwire.com">Makwire</a>.
+                    $email_data['message'] = "<p>
+                                                Hi, thanks for your interest in joining
+                                                <a href='http://www.makwire.com'>makwire</a>.
                                             </p>
                                             <p>
                                               Please use the link below to verify your email
                                               address and continue with the registration process.
                                             </p>
-                                            <a href="' .
-                                                base_url("register/step-two/{$user_email_id}/{$activation_code}") . '"
-                                                class="btn">Verify your email address</a>';
+                                            <a href='" .
+                                                base_url("register/step-two/{$user_email_id}/{$activation_code}") . "'
+                                                style='color: #fff; margin: 5px 0; padding: 10px; display: block; text-align: center; border-radius: 2px;
+                                                    border-color: #46b8da; text-decoration: none; box-sizing: border-box; font-variant: small-caps;
+                                                    background-color: #5bc0de;'>Verify your email address</a>";
 
                     $email_html = $this->load->view('email', $email_data, TRUE);
 
