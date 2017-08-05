@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 25, 2017 at 06:41 PM
+-- Generation Time: Aug 05, 2017 at 08:52 PM
 -- Server version: 10.1.10-MariaDB
 -- PHP Version: 7.0.2
 
@@ -172,8 +172,8 @@ CREATE TABLE `likes` (
 --
 
 CREATE TABLE `links` (
-  `link_id` bigint(20) NOT NULL,
-  `user_id` int(11) NOT NULL,
+  `link_id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` int(11) UNSIGNED NOT NULL,
   `url` varchar(500) NOT NULL,
   `title` tinytext NOT NULL,
   `description` tinytext NOT NULL,
@@ -261,7 +261,7 @@ CREATE TABLE `programmes` (
 
 CREATE TABLE `schools` (
   `school_id` int(11) UNSIGNED NOT NULL,
-  `college_id` int(11) UNSIGNED NOT NULL,
+  `college_id` int(11) UNSIGNED DEFAULT NULL,
   `school_name` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -308,7 +308,7 @@ CREATE TABLE `users` (
 CREATE TABLE `user_colleges` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `user_id` int(11) UNSIGNED NOT NULL,
-  `college_id` int(11) NOT NULL,
+  `college_id` int(11) UNSIGNED NOT NULL,
   `date_from` date NOT NULL,
   `date_to` date NOT NULL,
   `level` enum('undergraduate','postgraduate') NOT NULL
@@ -397,7 +397,7 @@ CREATE TABLE `user_schools` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `user_id` int(11) UNSIGNED NOT NULL,
   `school_id` int(11) UNSIGNED NOT NULL,
-  `user_college_id` bigint(20) UNSIGNED NOT NULL
+  `user_college_id` bigint(20) UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -407,8 +407,8 @@ CREATE TABLE `user_schools` (
 --
 
 CREATE TABLE `videos` (
-  `video_id` bigint(20) NOT NULL,
-  `user_id` int(11) NOT NULL,
+  `video_id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` int(11) UNSIGNED NOT NULL,
   `url` varchar(200) NOT NULL,
   `description` text NOT NULL,
   `date_entered` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -422,13 +422,17 @@ CREATE TABLE `videos` (
 -- Indexes for table `activities`
 --
 ALTER TABLE `activities`
-  ADD PRIMARY KEY (`activity_id`);
+  ADD PRIMARY KEY (`activity_id`),
+  ADD KEY `actor_id` (`actor_id`),
+  ADD KEY `subject_id` (`subject_id`);
 
 --
 -- Indexes for table `birthday_messages`
 --
 ALTER TABLE `birthday_messages`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `sender_id` (`sender_id`);
 
 --
 -- Indexes for table `colleges`
@@ -440,7 +444,8 @@ ALTER TABLE `colleges`
 -- Indexes for table `comments`
 --
 ALTER TABLE `comments`
-  ADD PRIMARY KEY (`comment_id`);
+  ADD PRIMARY KEY (`comment_id`),
+  ADD KEY `commenter_id` (`commenter_id`);
 
 --
 -- Indexes for table `countries`
@@ -453,20 +458,25 @@ ALTER TABLE `countries`
 --
 ALTER TABLE `districts`
   ADD PRIMARY KEY (`district_id`),
-  ADD KEY `district_name` (`district_name`);
+  ADD KEY `district_name` (`district_name`),
+  ADD KEY `country_id` (`country_id`);
 ALTER TABLE `districts` ADD FULLTEXT KEY `district_name_2` (`district_name`);
 
 --
 -- Indexes for table `friends`
 --
 ALTER TABLE `friends`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `friend_id` (`friend_id`);
 
 --
 -- Indexes for table `friend_requests`
 --
 ALTER TABLE `friend_requests`
-  ADD PRIMARY KEY (`request_id`);
+  ADD PRIMARY KEY (`request_id`),
+  ADD KEY `target_id` (`target_id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `halls`
@@ -484,56 +494,67 @@ ALTER TABLE `hostels`
 -- Indexes for table `likes`
 --
 ALTER TABLE `likes`
-  ADD PRIMARY KEY (`like_id`);
+  ADD PRIMARY KEY (`like_id`),
+  ADD KEY `liker_id` (`liker_id`);
 
 --
 -- Indexes for table `links`
 --
 ALTER TABLE `links`
-  ADD PRIMARY KEY (`link_id`);
+  ADD PRIMARY KEY (`link_id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `messages`
 --
 ALTER TABLE `messages`
-  ADD PRIMARY KEY (`message_id`);
+  ADD PRIMARY KEY (`message_id`),
+  ADD KEY `sender_id` (`sender_id`),
+  ADD KEY `sender_id_2` (`sender_id`,`receiver_id`),
+  ADD KEY `receiver_id` (`receiver_id`);
 
 --
 -- Indexes for table `notification_read`
 --
 ALTER TABLE `notification_read`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `activity_id` (`activity_id`);
+  ADD KEY `activity_id` (`activity_id`),
+  ADD KEY `user_id` (`user_id`,`activity_id`);
 
 --
 -- Indexes for table `photos`
 --
 ALTER TABLE `photos`
-  ADD PRIMARY KEY (`photo_id`);
+  ADD PRIMARY KEY (`photo_id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `posts`
 --
 ALTER TABLE `posts`
-  ADD PRIMARY KEY (`post_id`);
+  ADD PRIMARY KEY (`post_id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `programmes`
 --
 ALTER TABLE `programmes`
-  ADD PRIMARY KEY (`programme_id`);
+  ADD PRIMARY KEY (`programme_id`),
+  ADD KEY `school_id` (`school_id`);
 
 --
 -- Indexes for table `schools`
 --
 ALTER TABLE `schools`
-  ADD PRIMARY KEY (`school_id`);
+  ADD PRIMARY KEY (`school_id`),
+  ADD KEY `college_id` (`college_id`);
 
 --
 -- Indexes for table `shares`
 --
 ALTER TABLE `shares`
-  ADD PRIMARY KEY (`share_id`);
+  ADD PRIMARY KEY (`share_id`),
+  ADD KEY `sharer_id` (`sharer_id`);
 
 --
 -- Indexes for table `users`
@@ -548,50 +569,65 @@ ALTER TABLE `users` ADD FULLTEXT KEY `profile_name` (`profile_name`);
 ALTER TABLE `user_colleges`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`),
-  ADD KEY `college_id` (`college_id`);
+  ADD KEY `college_id` (`college_id`),
+  ADD KEY `user_id_2` (`user_id`,`college_id`);
 
 --
 -- Indexes for table `user_emails`
 --
 ALTER TABLE `user_emails`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `user_halls`
 --
 ALTER TABLE `user_halls`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`,`hall_id`),
+  ADD KEY `hall_id` (`hall_id`);
 
 --
 -- Indexes for table `user_hostels`
 --
 ALTER TABLE `user_hostels`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`,`hostel_id`),
+  ADD KEY `hostel_id` (`hostel_id`);
 
 --
 -- Indexes for table `user_profile`
 --
 ALTER TABLE `user_profile`
-  ADD PRIMARY KEY (`profile_id`);
+  ADD PRIMARY KEY (`profile_id`),
+  ADD KEY `user_id` (`user_id`,`district_id`,`country_id`),
+  ADD KEY `district_id` (`district_id`),
+  ADD KEY `country_id` (`country_id`);
 
 --
 -- Indexes for table `user_programmes`
 --
 ALTER TABLE `user_programmes`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`,`programme_id`,`user_school_id`),
+  ADD KEY `programme_id` (`programme_id`),
+  ADD KEY `user_school_id` (`user_school_id`);
 
 --
 -- Indexes for table `user_schools`
 --
 ALTER TABLE `user_schools`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `user_college_id` (`user_college_id`);
+  ADD KEY `user_college_id` (`user_college_id`),
+  ADD KEY `user_id` (`user_id`,`school_id`,`user_college_id`),
+  ADD KEY `school_id` (`school_id`);
 
 --
 -- Indexes for table `videos`
 --
 ALTER TABLE `videos`
-  ADD PRIMARY KEY (`video_id`);
+  ADD PRIMARY KEY (`video_id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -656,7 +692,7 @@ ALTER TABLE `likes`
 -- AUTO_INCREMENT for table `links`
 --
 ALTER TABLE `links`
-  MODIFY `link_id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `link_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `messages`
 --
@@ -736,16 +772,163 @@ ALTER TABLE `user_schools`
 -- AUTO_INCREMENT for table `videos`
 --
 ALTER TABLE `videos`
-  MODIFY `video_id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `video_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- Constraints for dumped tables
 --
 
 --
+-- Constraints for table `activities`
+--
+ALTER TABLE `activities`
+  ADD CONSTRAINT `activities_ibfk_1` FOREIGN KEY (`actor_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `activities_ibfk_2` FOREIGN KEY (`subject_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `birthday_messages`
+--
+ALTER TABLE `birthday_messages`
+  ADD CONSTRAINT `birthday_messages_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `birthday_messages_ibfk_2` FOREIGN KEY (`sender_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `comments`
+--
+ALTER TABLE `comments`
+  ADD CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`commenter_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `districts`
+--
+ALTER TABLE `districts`
+  ADD CONSTRAINT `districts_ibfk_1` FOREIGN KEY (`country_id`) REFERENCES `countries` (`country_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `friends`
+--
+ALTER TABLE `friends`
+  ADD CONSTRAINT `friends_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `friends_ibfk_2` FOREIGN KEY (`friend_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `friend_requests`
+--
+ALTER TABLE `friend_requests`
+  ADD CONSTRAINT `friend_requests_ibfk_1` FOREIGN KEY (`target_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `friend_requests_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `likes`
+--
+ALTER TABLE `likes`
+  ADD CONSTRAINT `likes_ibfk_1` FOREIGN KEY (`liker_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `links`
+--
+ALTER TABLE `links`
+  ADD CONSTRAINT `links_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `messages`
+--
+ALTER TABLE `messages`
+  ADD CONSTRAINT `messages_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `messages_ibfk_2` FOREIGN KEY (`receiver_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `notification_read`
 --
 ALTER TABLE `notification_read`
-  ADD CONSTRAINT `notification_read_ibfk_1` FOREIGN KEY (`activity_id`) REFERENCES `activities` (`activity_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `notification_read_ibfk_1` FOREIGN KEY (`activity_id`) REFERENCES `activities` (`activity_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `notification_read_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `photos`
+--
+ALTER TABLE `photos`
+  ADD CONSTRAINT `photos_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `posts`
+--
+ALTER TABLE `posts`
+  ADD CONSTRAINT `posts_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `programmes`
+--
+ALTER TABLE `programmes`
+  ADD CONSTRAINT `programmes_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `schools` (`school_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `schools`
+--
+ALTER TABLE `schools`
+  ADD CONSTRAINT `schools_ibfk_1` FOREIGN KEY (`college_id`) REFERENCES `colleges` (`college_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `shares`
+--
+ALTER TABLE `shares`
+  ADD CONSTRAINT `shares_ibfk_1` FOREIGN KEY (`sharer_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `user_colleges`
+--
+ALTER TABLE `user_colleges`
+  ADD CONSTRAINT `user_colleges_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `user_colleges_ibfk_2` FOREIGN KEY (`college_id`) REFERENCES `colleges` (`college_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `user_emails`
+--
+ALTER TABLE `user_emails`
+  ADD CONSTRAINT `user_emails_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `user_halls`
+--
+ALTER TABLE `user_halls`
+  ADD CONSTRAINT `user_halls_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `user_halls_ibfk_2` FOREIGN KEY (`hall_id`) REFERENCES `halls` (`hall_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `user_hostels`
+--
+ALTER TABLE `user_hostels`
+  ADD CONSTRAINT `user_hostels_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `user_hostels_ibfk_2` FOREIGN KEY (`hostel_id`) REFERENCES `hostels` (`hostel_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `user_profile`
+--
+ALTER TABLE `user_profile`
+  ADD CONSTRAINT `user_profile_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `user_profile_ibfk_2` FOREIGN KEY (`district_id`) REFERENCES `districts` (`district_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `user_profile_ibfk_3` FOREIGN KEY (`country_id`) REFERENCES `countries` (`country_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Constraints for table `user_programmes`
+--
+ALTER TABLE `user_programmes`
+  ADD CONSTRAINT `user_programmes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `user_programmes_ibfk_2` FOREIGN KEY (`programme_id`) REFERENCES `programmes` (`programme_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `user_programmes_ibfk_3` FOREIGN KEY (`user_school_id`) REFERENCES `user_schools` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `user_schools`
+--
+ALTER TABLE `user_schools`
+  ADD CONSTRAINT `user_schools_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `user_schools_ibfk_2` FOREIGN KEY (`school_id`) REFERENCES `schools` (`school_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `user_schools_ibfk_3` FOREIGN KEY (`user_college_id`) REFERENCES `user_colleges` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `videos`
+--
+ALTER TABLE `videos`
+  ADD CONSTRAINT `videos_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
