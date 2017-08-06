@@ -41,6 +41,12 @@
                         print "</a>";
                     }
                 }
+
+                if ($$object['commenter_id'] == $_SESSION['user_id']) {
+                    print "<span> &middot; </span>
+                            <a href='" . base_url("{$object}/options/{$$object['comment_id']}") . "'
+                                    title='Edit or delete this {$object}'>More</a>";
+                }
                 ?>
             </span>
         </div>
