@@ -43,12 +43,10 @@
 
                             <?php
                             if ($comment['viewer_is_friend_to_owner']) {
-                                if (!$comment['liked']) {
-                                    print '<span> &middot; </span>' .
-                                            '<a href="' . base_url("comment/like/{$comment['comment_id']}") .
-                                            '">Like</a>' .
-                                            '<span> &middot; </span>';
-                                }
+                                print '<span> &middot; </span>' .
+                                        '<a href="' . base_url("comment/like/{$comment['comment_id']}") .
+                                        '">Like</a>' .
+                                        '<span> &middot; </span>';
 
                                 // Only allow a user to reply to his comment if there is atleast one reply.
                                 if ($comment['commenter_id'] != $_SESSION['user_id'] ||
