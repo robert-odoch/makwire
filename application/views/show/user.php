@@ -43,7 +43,7 @@ if (!$is_visitor) {
             <div class='alert alert-info' role='alert'>
                 <p>
                     <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
-                    No posts to show.
+                    When they do, their status updates will show up here.
                 </p>
             </div>
         </div>
