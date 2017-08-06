@@ -57,10 +57,10 @@ class Account_model extends CI_Model
         $this->utility_model->run_query($sql);
     }
 
-    public function delete_user()
+    public function delete_account()
     {
-        $sql = sprintf("DELETE FROM users WHERE user_id = ?", $_SESSION['user_id']);
-        $this->utility_model->run_query($sql);
+        $sql = sprintf("DELETE FROM users WHERE user_id = %d", $_SESSION['user_id']);
+        $this->db->query($sql);
     }
 }
 ?>

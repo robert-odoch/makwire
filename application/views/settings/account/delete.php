@@ -11,13 +11,13 @@
             <div class='main-content'>
                 <div class='box'>
                     <h4>Delete account</h4>
-                        <p>
-                            Please be absolutely sure that you really want to delete your account
-                            because
-                            <span style='color: red'>
-                                there is no going back once this action is performed.
-                            </span>
-                        </p>
+                    <p>
+                        Please be absolutely sure that you really want to delete your account
+                        because
+                        <span style='color: red'>
+                            there is no way we can help you recover your account once this action is performed.
+                        </span>
+                    </p>
 
                     <form action='<?= base_url('account/delete'); ?>' method='post'
                             accept-charset='utf-8' role='form'>

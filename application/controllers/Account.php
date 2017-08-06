@@ -11,6 +11,71 @@ class Account extends CI_Controller
         $this->load->model(['user_model', 'account_model', 'settings_model']);
     }
 
+    public function success()
+    {
+        // Defaults.
+        $title = 'Success! - Makwire';
+
+        // Allow calls to override.
+        if (!empty($_SESSION['title'])) {
+            $title = $_SESSION['title'];
+            unset($_SESSION['title']);
+        }
+
+        if (empty($_SESSION['heading']) || empty($_SESSION['message'])) {
+            redirect(base_url('account/error'));
+        }
+        else {
+            $heading = $_SESSION['heading'];
+            unset($_SESSION['heading']);
+
+            $message = $_SESSION['message'];
+            unset($_SESSION['message']);
+        }
+
+        $data['title'] = $title;
+        $data['heading'] = $heading;
+        $data['message'] = $message;
+
+        $this->load->view('common/header', $data);
+        $this->load->view('show/success', $data);
+        $this->load->view('common/external-page-footer');
+    }
+
+    public function error()
+    {
+        $data = $this->user_model->initialize_user();
+
+        // Defaults.
+        $title = 'Error! - Makwire';
+        $heading = 'Something isn\'t right';
+        $message = 'Oh dear, I don\'t know how you ended up here.';
+
+        // Allow calls to override.
+        if (!empty($_SESSION['title'])) {
+            $title = $_SESSION['title'];
+            unset($_SESSION['title']);
+        }
+
+        if (!empty($_SESSION['heading'])) {
+            $heading = $_SESSION['heading'];
+            unset($_SESSION['heading']);
+        }
+
+        if (!empty($_SESSION['message'])) {
+            $message = $_SESSION['message'];
+            unset($_SESSION['message']);
+        }
+
+        $data['title'] = $title;
+        $data['heading'] = $heading;
+        $data['message'] = $message;
+
+        $this->load->view('common/header', $data);
+        $this->load->view('show/error', $data);
+        $this->load->view('common/external-page-footer');
+    }
+
     public function forgot_password()
     {
         if (isset($_SESSION['user_id'])) {
@@ -177,6 +242,16 @@ class Account extends CI_Controller
         $data = array_merge($data, $this->user_model->initialize_user());
         $data['title'] = 'Delete your account';
         $this->load->view('common/header', $data);
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $this->account_model->delete_account();
+            unset($_SESSION['user_id']);
+
+            $_SESSION['heading'] = 'Account deleted';
+            $_SESSION['message'] = "Your account has been successfully deleted.
+                                    It's so sad that you had leave too soon, we'll surely miss you.";
+            redirect(base_url('account/success'));
+        }
 
         $this->load->view('settings/account/delete', $data);
         $this->load->view('common/footer');
