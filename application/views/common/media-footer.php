@@ -67,11 +67,14 @@
                     Options <span class='caret'></span>
                 </button>
                 <ul class='dropdown-menu' aria-labelledby='options-menu'>
-                    <li>
-                        <a href='<?= base_url("{$object}/edit/{$$object[$object . '_id']}"); ?>'>
-                            Edit
-                        </a>
-                    </li>
+                    <?php if (!$$object['shared']):  // Only the owners of an item can edit it. ?>
+                        <li>
+                            <a href='<?= base_url("{$object}/edit/{$$object[$object . '_id']}"); ?>'>
+                                Edit
+                            </a>
+                        </li>
+                    <?php endif; ?>
+
                     <li>
                         <a href='<?= base_url("{$object}/delete/{$$object[$object . '_id']}"); ?>'>
                             Delete
