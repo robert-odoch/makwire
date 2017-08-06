@@ -106,7 +106,7 @@ class Photo extends CI_Controller
         $data['description'] = $photo['description'];
         $data['form_action'] = base_url("photo/edit/{$photo_id}");
         $data['cancel_url'] = base_url("user/photo/{$photo_id}");
-        $this->load->view('edit-description', $data);
+        $this->load->view('edit/description', $data);
         $this->load->view('common/footer');
     }
 

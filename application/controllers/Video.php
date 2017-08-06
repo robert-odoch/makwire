@@ -84,7 +84,7 @@ class Video extends CI_Controller
         $data['description'] = $video['description'];
         $data['form_action'] = base_url("video/edit/{$video_id}");
         $data['cancel_url'] = base_url("user/video/{$video_id}");
-        $this->load->view('edit-description', $data);
+        $this->load->view('edit/description', $data);
         $this->load->view('common/footer');
     }
 

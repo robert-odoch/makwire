@@ -72,7 +72,7 @@ class Post extends CI_Controller
         $this->load->view('common/header', $data);
 
         $data['post'] = $post;
-        $this->load->view('edit-post', $data);
+        $this->load->view('edit/post', $data);
         $this->load->view('common/footer');
     }
 

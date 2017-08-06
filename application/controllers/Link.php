@@ -76,7 +76,7 @@ class Link extends CI_Controller
         $data['description'] = $link['comment'];
         $data['form_action'] = base_url("link/edit/{$link_id}");
         $data['cancel_url'] = base_url("user/link/{$link_id}");
-        $this->load->view('edit-description', $data);
+        $this->load->view('edit/description', $data);
         $this->load->view('common/footer');
     }
 
