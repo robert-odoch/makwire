@@ -78,7 +78,7 @@ class Profile extends CI_Controller
         $data['title'] = 'Change profile picture';
         $this->load->view('common/header', $data);
 
-        $this->load->view('add-profile-picture', $data);
+        $this->load->view('add/profile-picture', $data);
         $this->load->view('common/footer');
     }
 

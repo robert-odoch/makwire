@@ -49,7 +49,7 @@ class Video extends CI_Controller
         $data['title'] = 'Add YouTube video';
         $this->load->view('common/header', $data);
 
-        $this->load->view('add-video', $data);
+        $this->load->view('add/video', $data);
         $this->load->view('common/footer');
     }
 
@@ -164,7 +164,7 @@ class Video extends CI_Controller
         $data['video'] = $video;
         $data['item'] = 'video';
         $data['form_action'] = base_url("video/add-description/{$video_id}");
-        $this->load->view('add-description', $data);
+        $this->load->view('add/description', $data);
         $this->load->view('common/footer');
     }
 

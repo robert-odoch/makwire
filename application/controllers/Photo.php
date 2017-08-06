@@ -71,7 +71,7 @@ class Photo extends CI_Controller
         $data['title'] = 'Add new photo';
         $this->load->view('common/header', $data);
 
-        $this->load->view('add-photo', $data);
+        $this->load->view('add/photo', $data);
         $this->load->view('common/footer');
     }
 
@@ -186,7 +186,7 @@ class Photo extends CI_Controller
         $data['item'] = 'photo';
         $data['photo'] = $photo;
         $data['form_action'] = base_url("photo/add-description/{$photo_id}");
-        $this->load->view('add-description', $data);
+        $this->load->view('add/description', $data);
         $this->load->view('common/footer');
     }
 

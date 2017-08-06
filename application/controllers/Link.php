@@ -41,7 +41,7 @@ class Link extends CI_Controller
         $data['title'] = 'Add link to a resource from another website';
         $this->load->view('common/header', $data);
 
-        $this->load->view('add-link', $data);
+        $this->load->view('add/link', $data);
         $this->load->view('common/footer');
     }
 
@@ -156,7 +156,7 @@ class Link extends CI_Controller
         $data['link'] = $link;
         $data['item'] = 'link';
         $data['form_action'] = base_url("link/add-comment/{$link_id}");
-        $this->load->view('add-description', $data);
+        $this->load->view('add/description', $data);
         $this->load->view('common/footer');
     }
 
