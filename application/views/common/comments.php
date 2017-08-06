@@ -66,6 +66,12 @@
                                 print ($comment['num_replies'] == 1) ? " reply" : " replies";
                                 print "</a>";
                             }
+
+                            if ($comment['commenter_id'] == $_SESSION['user_id']) {
+                                print "<span> &middot; </span>
+                                        <a href='" . base_url("comment/options/{$comment['comment_id']}") . "'
+                                                title='Edit or delete this comment'>More</a>";
+                            }
                             ?>
                         </span>
                     </div>

@@ -74,5 +74,24 @@ class Reply extends CI_Controller
         $this->load->view('show/likes', $data);
         $this->load->view('common/footer');
     }
+
+    public function options($reply_id = 0)
+    {
+        try {
+            $reply = $this->reply_model->get_reply($reply_id);
+        }
+        catch (NotFoundException $e) {
+            show_404();
+        }
+
+        $data = $this->user_model->initialize_user();
+        $data['title'] = 'Edit or delete this reply';
+        $this->load->view('common/header', $data);
+
+        $data['object'] = 'reply';
+        $data['reply'] = $reply;
+        $this->load->view('options', $data);
+        $this->load->view('common/footer');
+    }
 }
 ?>

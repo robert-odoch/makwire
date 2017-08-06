@@ -45,6 +45,13 @@ h5 {
 .panel-footer {
     padding: 5px;
 }
+
+.list-group {
+    margin-bottom: 0;
+}
+.list-group-item {
+    padding: 5px 10px;
+}
 /* End override */
 
 .table {

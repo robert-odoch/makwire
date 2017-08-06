@@ -158,5 +158,65 @@ class Comment extends CI_Controller
         $this->load->view('show/replies', $data);
         $this->load->view('common/footer');
     }
+
+    public function options($comment_id = 0)
+    {
+        try {
+            $comment = $this->comment_model->get_comment($comment_id);
+        }
+        catch (NotFoundException $e) {
+            show_404();
+        }
+
+        $data = $this->user_model->initialize_user();
+        $data['title'] = 'Edit or delete this comment';
+        $this->load->view('common/header', $data);
+
+        $data['object'] = 'comment';
+        $data['comment'] = $comment;
+        $this->load->view('options', $data);
+        $this->load->view('common/footer');
+    }
+
+    public function delete($comment_id = 0)
+    {
+        try {
+            $comment = $this->comment_model->get_comment($comment_id);
+        }
+        catch (NotFoundException $e) {
+            show_404();
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            try {
+                $this->comment_model->delete_comment($comment_id);
+                $_SESSION['message'] = 'Your comment has been successfully deleted.';
+                redirect(base_url('user/success'));
+            }
+            catch (IllegalAccessException $e) {
+                $_SESSION['title'] = 'Permission Denied!';
+                $_SESSION['heading'] = 'Permission Denied';
+                $_SESSION['message'] = $e->getMessage();
+                redirect(base_url('user/error'));
+            }
+        }
+
+        $data = $this->user_model->initialize_user();
+        $data['title'] = 'Delete comment - Makwire';
+        $this->load->view('common/header', $data);
+
+        $comment_data = [
+            'item' => 'comment',
+            'object' => 'comment',
+            'comment' => $comment,
+            'item_owner_id' => $comment['commenter_id'],
+            'form_action' => base_url("comment/delete/{$comment['comment_id']}"),
+            'cancel_url' => base_url("comment/replies/{$comment['comment_id']}")
+        ];
+
+        $data = array_merge($data, $comment_data);
+        $this->load->view('delete-item', $data);
+        $this->load->view('common/footer');
+    }
 }
 ?>

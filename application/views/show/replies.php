@@ -62,6 +62,12 @@ else if ($object == 'birthday-message') {
                         print ($reply['num_likes'] == 1) ? " like" : " likes";
                         print "</a>";
                     }
+
+                    if ($reply['commenter_id'] == $_SESSION['user_id']) {
+                        print "<span> &middot; </span>
+                                <a href='" . base_url("reply/options/{$reply['comment_id']}") . "'
+                                    title='Edit or delete this reply'>More</a>";
+                    }
                     ?>
                 </span>
             </div>

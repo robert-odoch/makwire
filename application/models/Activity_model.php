@@ -270,7 +270,7 @@ class Activity_model extends CI_Model
                                 $comment_id);
         $likes_results = $this->db->query($likes_sql)->result_array();
         foreach ($likes_results as $r) {
-            $this->deleteLike($comment, $r);
+            $this->deleteLike($comment, $r['like_id']);
         }
 
         // Delete replies to this comment.
@@ -279,7 +279,7 @@ class Activity_model extends CI_Model
                                 $comment_id);
         $replies_results = $this->db->query($replies_sql)->result_array();
         foreach ($replies_results as $r) {
-            $this->deleteReply($comment, $r);
+            $this->deleteReply($comment, $r['comment_id']);
         }
 
         // Delete activity for this comment.
@@ -293,13 +293,18 @@ class Activity_model extends CI_Model
 
     public function deleteReply(Replyable $item, $reply_id)
     {
+        $reply_sql = sprintf('SELECT commenter_id FROM comments WHERE comment_id = %d',
+                                $reply_id);
+        $reply_result = $this->db->query($reply_sql)->row_array();
+        $reply = new SimpleReply($reply_id, $reply_result['commenter_id']);
+
         // Delete likes for this reply.
         $likes_sql = sprintf('SELECT like_id FROM likes ' .
                                 'WHERE source_id = %d AND source_type = \'reply\'',
                                 $reply_id);
         $likes_results = $this->db->query($likes_sql)->result_array();
         foreach ($likes_results as $r) {
-            $this->deleteLike($reply, $r);
+            $this->deleteLike($reply, $r['like_id']);
         }
 
         // Delete activity for this reply.
