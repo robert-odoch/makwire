@@ -2,6 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 require_once('classes/SimpleReply.php');
+require_once('classes/SimpleComment.php');
 require_once('exceptions/IllegalAccessException.php');
 require_once('exceptions/NotFoundException.php');
 
@@ -105,6 +106,18 @@ class Reply_model extends CI_Model
             $offset,
             $limit
         );
+    }
+
+    public function delete_reply($reply_id)
+    {
+        $comment_sql = sprintf('SELECT comment_id, commenter_id FROM comments
+                                WHERE comment_id = (SELECT parent_id FROM comments WHERE comment_id = %d)',
+                                $reply_id);
+        $comment_query = $this->db->query($comment_sql);
+        $comment_result = $comment_query->row_array();
+        $comment = new SimpleComment($comment_result['comment_id'], $comment_result['commenter_id']);
+
+        $this->activity_model->deleteReply($comment, $reply_id);
     }
 }
 ?>

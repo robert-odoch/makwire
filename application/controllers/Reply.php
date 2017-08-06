@@ -93,5 +93,45 @@ class Reply extends CI_Controller
         $this->load->view('options', $data);
         $this->load->view('common/footer');
     }
+
+    public function delete($reply_id = 0)
+    {
+        try {
+            $reply = $this->reply_model->get_reply($reply_id);
+        }
+        catch (NotFoundException $e) {
+            show_404();
+        }
+
+        if ($reply['commenter_id'] != $_SESSION['user_id']) {
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = "You don't have the proper permissions to delete this reply.";
+            redirect(base_url('user/error'));
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $this->reply_model->delete_reply($reply_id);
+            $_SESSION['message'] = 'Your reply has been successfully deleted.';
+            redirect(base_url('user/success'));
+        }
+
+        $data = $this->user_model->initialize_user();
+        $data['title'] = 'Delete reply - Makwire';
+        $this->load->view('common/header', $data);
+
+        $reply_data = [
+            'item' => 'reply',
+            'object' => 'reply',
+            'reply' => $reply,
+            'item_owner_id' => $reply['commenter_id'],
+            'form_action' => base_url("reply/delete/{$reply['comment_id']}"),
+            'cancel_url' => base_url("reply/likes/{$reply['comment_id']}")
+        ];
+
+        $data = array_merge($data, $reply_data);
+        $this->load->view('delete-item', $data);
+        $this->load->view('common/footer');
+    }
 }
 ?>

@@ -1,6 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+require_once('classes/SimpleReply.php');
 require_once('classes/SimpleComment.php');
 
 /**
