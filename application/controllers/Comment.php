@@ -38,19 +38,6 @@ class Comment extends CI_Controller
 
     public function reply($comment_id = 0)
     {
-        $data = [];
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $reply = trim(strip_tags($this->input->post('reply')));
-            if (!$reply) {
-                $data['reply_error'] = "Reply can't be empty!";
-            }
-            else {
-                $this->comment_model->reply($comment_id, $reply);
-                redirect(base_url("comment/replies/{$comment_id}"));
-            }
-        }
-
         try {
             $comment = $this->comment_model->get_comment($comment_id);
         }
@@ -72,6 +59,19 @@ class Comment extends CI_Controller
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = "For you to reply to your own comment, atleast one of your friends must have replied.";
             redirect(base_url('user/error'));
+        }
+
+        $data = [];
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $reply = trim(strip_tags($this->input->post('reply')));
+            if (!$reply) {
+                $data['reply_error'] = "Reply can't be empty!";
+            }
+            else {
+                $this->comment_model->reply($comment_id, $reply);
+                redirect(base_url("comment/replies/{$comment_id}"));
+            }
         }
 
         $data = array_merge($data, $this->user_model->initialize_user());
@@ -175,6 +175,45 @@ class Comment extends CI_Controller
         $data['object'] = 'comment';
         $data['comment'] = $comment;
         $this->load->view('options', $data);
+        $this->load->view('common/footer');
+    }
+
+    public function edit($comment_id = 0)
+    {
+        $data = [];
+
+        try {
+            $comment = $this->comment_model->get_comment($comment_id);
+        }
+        catch (NotFoundException $e) {
+            show_404();
+        }
+
+        if ($comment['commenter_id'] != $_SESSION['user_id']) {
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = "You don't have the proper permissions to edit this comment.";
+            redirect(base_url('user/error'));
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $new_comment = $this->input->post('comment');
+            if (strlen($new_comment) == 0) {
+                $data['error_message'] = "Comment can't be empty.";
+            }
+            else {
+                $this->comment_model->update_comment($comment_id, $new_comment);
+                redirect(base_url("comment/replies/{$comment_id}"));
+            }
+        }
+
+        $data = array_merge($data, $this->user_model->initialize_user());
+        $data['title'] = 'Edit comment - Makwire';
+        $this->load->view('common/header', $data);
+
+        $data['object'] = 'comment';
+        $data['comment'] = $comment;
+        $this->load->view('edit/comment-or-reply', $data);
         $this->load->view('common/footer');
     }
 

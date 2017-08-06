@@ -166,6 +166,13 @@ class Comment_model extends CI_Model
         return $replies;
     }
 
+    public function update_comment($comment_id, $new_comment)
+    {
+        $sql = sprintf('UPDATE comments SET comment = %s WHERE comment_id = %d',
+                        $this->db->escape($new_comment), $comment_id);
+        $this->db->query($sql);
+    }
+
     public function delete_comment($comment_id)
     {
         $source_sql = sprintf('SELECT commenter_id, source_id, source_type FROM comments WHERE comment_id = %d',

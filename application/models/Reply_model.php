@@ -108,6 +108,13 @@ class Reply_model extends CI_Model
         );
     }
 
+    public function update_reply($reply_id, $new_reply)
+    {
+        $sql = sprintf('UPDATE comments SET comment = %s WHERE comment_id = %d',
+                        $this->db->escape($new_reply), $reply_id);
+        $this->db->query($sql);
+    }
+
     public function delete_reply($reply_id)
     {
         $comment_sql = sprintf('SELECT comment_id, commenter_id FROM comments

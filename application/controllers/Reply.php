@@ -94,6 +94,45 @@ class Reply extends CI_Controller
         $this->load->view('common/footer');
     }
 
+    public function edit($reply_id = 0)
+    {
+        $data = [];
+
+        try {
+            $reply = $this->reply_model->get_reply($reply_id);
+        }
+        catch (NotFoundException $e) {
+            show_404();
+        }
+
+        if ($reply['commenter_id'] != $_SESSION['user_id']) {
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = "You don't have the proper permissions to edit this reply.";
+            redirect(base_url('user/error'));
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $new_reply = $this->input->post('reply');
+            if (strlen($new_reply) == 0) {
+                $data['error_message'] = "Reply can't be empty.";
+            }
+            else {
+                $this->reply_model->update_reply($reply_id, $new_reply);
+                redirect(base_url("reply/likes/{$reply_id}"));
+            }
+        }
+
+        $data = array_merge($data, $this->user_model->initialize_user());
+        $data['title'] = 'Edit reply - Makwire';
+        $this->load->view('common/header', $data);
+
+        $data['object'] = 'reply';
+        $data['reply'] = $reply;
+        $this->load->view('edit/comment-or-reply', $data);
+        $this->load->view('common/footer');
+    }
+
     public function delete($reply_id = 0)
     {
         try {

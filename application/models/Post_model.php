@@ -224,10 +224,10 @@ class Post_model extends CI_Model
         );
     }
 
-    public function update_post($post_id, $post)
+    public function update_post($post_id, $new_post)
     {
         $sql = sprintf('UPDATE posts SET post = %s WHERE post_id = %d',
-                        $this->db->escape($post), $post_id);
+                        $this->db->escape($new_post), $post_id);
         $this->db->query($sql);
     }
 
