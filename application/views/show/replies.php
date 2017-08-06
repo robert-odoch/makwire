@@ -52,15 +52,12 @@ else if ($object == 'birthday-message') {
                     </small>
 
                     <?php
-                    if ($reply['viewer_is_friend_to_owner'] && !$reply['liked']) {
+                    if ($reply['viewer_is_friend_to_owner']) {
                         print '<span> &middot; </span>' .
                                 '<a href="' . base_url("reply/like/{$reply['comment_id']}") . '">Like</a>';
                     }
                     if ($reply['num_likes'] > 0) {
-                        if (!$reply['liked']) {
-                            print "<span> &middot; </span>";
-                        }
-
+                        print "<span> &middot; </span>";
                         print "<a href='" . base_url("reply/likes/{$reply['comment_id']}") . "'>{$reply['num_likes']}";
                         print ($reply['num_likes'] == 1) ? " like" : " likes";
                         print "</a>";
