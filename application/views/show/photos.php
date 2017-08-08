@@ -5,28 +5,11 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
 require_once(dirname(__FILE__) . '/../common/secondary-user-nav.php');
 ?>
 
-<div class='box'>
-    <?php if (count($photos) == 0) { ?>
-        <div class='alert alert-info' role='alert'>
-            <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
-            No photos to show.
-        </div>
-    <?php } else { ?>
-
-    <div class='container-fluid'>
-        <div class='row gallery'>
-            <?php foreach ($photos as $photo) { ?>
-            <div class='col-xs-6 col-md-3'>
-                <a href='<?= base_url("user/photo/{$photo['photo_id']}"); ?>' title='view photo'>
-                    <img src='<?= $photo['web_path']; ?>' alt="<?= $photo['alt']; ?>"
-                            class='img-responsive'>
-                </a>
-            </div>
-            <?php } ?>
-        </div>
-    </div>
-    <?php } ?>
-</div><!-- box -->
+<?php
+foreach ($photos as $photo) {
+    require(dirname(__FILE__) . '/../common/photo.php');
+}
+?>
 
 <?php if ($has_next) { ?>
     <div class='box more'>

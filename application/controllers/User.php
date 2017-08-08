@@ -725,7 +725,7 @@ class User extends CI_Controller
 
         $this->load->view('common/header', $data);
 
-        $limit = 12;  // Maximum number of photos to show.
+        $limit = 10;  // Maximum number of photos to show.
         $data['has_next'] = FALSE;
         $num_photos = $this->user_model->get_num_photos($user_id);
         if (($num_photos - $offset) > $limit) {

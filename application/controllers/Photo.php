@@ -47,13 +47,6 @@ class Photo extends CI_Controller
                 $config['thumb_marker'] = "";
                 $config['maintain_ratio'] = TRUE;
 
-                // Create a 150x100 thumbnail for photo.
-                $config['new_image'] = "{$upload_data['file_path']}medium";
-                $config['width'] = 150;
-                $config['height'] = 100;
-                $this->image_lib->initialize($config);
-                $this->image_lib->resize();
-
                 // Create a 480x300 thumbnail for photo.
                 $config['new_image'] = $upload_data['file_path'];
                 $config['width'] = 480;

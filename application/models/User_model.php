@@ -13,7 +13,7 @@ class User_model extends CI_Model
     {
         parent::__construct();
         $this->load->model([
-            'utility_model', 'post_model',
+            'utility_model', 'post_model', 'photo_model',
             'video_model', 'birthday_message_model'
         ]);
     }
@@ -526,19 +526,16 @@ class User_model extends CI_Model
      */
     public function get_photos($user_id, $offset, $limit)
     {
-        $sql = sprintf("SELECT photo_id, full_path FROM photos " .
+        $sql = sprintf("SELECT photo_id FROM photos " .
                         "WHERE (user_id = %d) ORDER BY date_entered DESC " .
                         "LIMIT %d, %d",
                         $user_id, $offset, $limit);
-        $photos = $this->utility_model->run_query($sql)->result_array();
-        $alt = $this->get_profile_name($user_id);
-        foreach ($photos as &$photo) {
-            $photo['alt'] = $alt;
-            $web_path = str_replace("{$_SERVER['DOCUMENT_ROOT']}makwire", '', $photo['full_path']);
-            $web_path = str_replace('/uploads', 'uploads/medium', $web_path);
-            $photo['web_path'] = base_url("{$web_path}");
+        $results = $this->utility_model->run_query($sql)->result_array();
+
+        $photos = [];
+        foreach ($results as $r) {
+            $photos[] = $this->photo_model->get_photo($r['photo_id']);
         }
-        unset($photo);
 
         return $photos;
     }
