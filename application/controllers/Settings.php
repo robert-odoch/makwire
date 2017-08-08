@@ -65,11 +65,11 @@ class Settings extends CI_Controller
                                             "'>resend the email.</a>";
                 }
                 else {
-                    $user_email_id = $this->settings_model->add_email($email);
-                    $activation_code = sha1($email);
+                    $activation_code = md5(uniqid(rand(), true));
+                    $user_email_id = $this->settings_model->add_email($email, $activation_code);
                     $subject = 'Makwire: Activate your email address.';
                     $message = 'Please use <a href="' .
-                                base_url("settings/activate-email/${user_email_id}/${activation_code}") .
+                                base_url("settings/activate-email/${activation_code}") .
                                 '">this link</a> to activate your email address.';
                     if ( ! $this->utility_model->send_email($email, $subject, $message)) {
                         $data['info_message'] = "Sorry, we couldn't send your activation email.<br>" .
@@ -97,10 +97,10 @@ class Settings extends CI_Controller
 
     }
 
-    public function activate_email($user_email_id, $activation_code)
+    public function activate_email($activation_code)
     {
         try {
-            $this->settings_model->activate_email($user_email_id, $activation_code);
+            $this->settings_model->activate_email($activation_code);
             $_SESSION['message'] = 'Your email address has been successfully activated. Enjoy!';
             redirect(base_url('user/success'));
         }

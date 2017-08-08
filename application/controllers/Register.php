@@ -59,8 +59,8 @@ class Register extends CI_Controller
                                             "'>resend the email.</a>";
                 }
                 else {
-                    $user_email_id = $this->settings_model->add_email($email);
-                    $activation_code = sha1($email);
+                    $activation_code = md5(uniqid(rand(), true));
+                    $this->settings_model->add_email($email, $activation_code);
                     $subject = 'Makwire: Please verify your email address.';
 
                     $email_data['email_heading'] = 'makwire account creation';
@@ -73,7 +73,7 @@ class Register extends CI_Controller
                                               address and continue with the registration process.
                                             </p>
                                             <a href='" .
-                                                base_url("register/step-two/{$user_email_id}/{$activation_code}") . "'
+                                                base_url("register/step-two/{$activation_code}") . "'
                                                 style='color: #fff; margin: 5px 0; padding: 10px; display: block; text-align: center; border-radius: 2px;
                                                     border-color: #46b8da; text-decoration: none; box-sizing: border-box; font-variant: small-caps;
                                                     background-color: #5bc0de;'>Verify your email address</a>
@@ -113,7 +113,7 @@ class Register extends CI_Controller
         $this->load->view('common/external-page-footer');
     }
 
-    public function step_two($user_email_id = 0, $activation_code = 0)
+    public function step_two($activation_code = 0)
     {
         $data = [];
 
@@ -172,7 +172,7 @@ class Register extends CI_Controller
         }
         else {
             try {
-                $this->settings_model->activate_email($user_email_id, $activation_code);
+                $this->settings_model->activate_email($activation_code);
             }
             catch (NotFoundException $e) {
                 show_404();
