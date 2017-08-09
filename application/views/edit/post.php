@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-require_once('common/user-page-start.php');
+require_once(dirname(__FILE__) . '/../common/user-page-start.php');
 ?>
 
 <div class='box'>

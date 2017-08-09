@@ -33,7 +33,7 @@
 
         <?php
         if ($video['has_description']) {
-            print "<p>{$video['description']}</p>";
+            print "<p class='post'>" . nl2br($video['description']) . "</p>";
         }
         elseif ($video['user_id'] == $_SESSION['user_id']) {
             print "<a href='" . base_url("video/add-description/{$video['video_id']}") .

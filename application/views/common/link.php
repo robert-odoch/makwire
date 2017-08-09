@@ -33,7 +33,7 @@
 
         <?php
         if ($link['has_comment']) {
-            print "<p>{$link['comment']}</p>";
+            print "<p class='post'>" . nl2br($link['comment']) . "</p>";
         }
         elseif ($link['user_id'] == $_SESSION['user_id']) {
             print "<a href='" . base_url("link/add-comment/{$link['link_id']}") .

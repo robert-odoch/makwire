@@ -47,7 +47,7 @@
 
         <?php
         if ($photo['has_description']) {
-            print "<p>{$photo['description']}</p>";
+            print "<p class='post'>" . nl2br($photo['description']) . "</p>";
         }
         elseif ($photo['user_id'] == $_SESSION['user_id'] && !$photo['is_profile_pic']) {
             print '<a href="' . base_url("photo/add-description/{$photo['photo_id']}") .

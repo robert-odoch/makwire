@@ -18,6 +18,11 @@ h5 {
     font-weight: bold;
 }
 
+br + br {
+    display: block;
+    margin: 5px 0;
+}
+
 .navbar-fixed-top {
     border-bottom: 2px solid #f00;
 }
@@ -684,6 +689,7 @@ span.help-block {
 
 p.post {
     text-align: justify;
+    line-height: 1.5;
     margin: 0;
 }
 
