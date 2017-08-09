@@ -148,7 +148,7 @@ class Register extends CI_Controller
         $data['title'] = 'Activate your email address';
         $this->load->view('common/header', $data);
 
-        $data['form_action'] = base_url("settings/activate-email/{$activation_code}");
+        $data['form_action'] = base_url("register/activate-email/{$activation_code}");
         $this->load->view('settings/account/activate-email', $data);
         $this->load->view('common/footer');
     }
