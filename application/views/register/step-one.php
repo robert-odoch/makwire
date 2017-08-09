@@ -22,7 +22,7 @@
                                 Your Makerere University email address
                             </span>
                             <input type='email' name='email' id='email'
-                                    placeholder='name@college.mak.ac.ug' class='fluid
+                                    placeholder='you@college.mak.ac.ug' class='fluid
                                     <?php
                                     if (isset($error_message)) {
                                         print ' has-error';
