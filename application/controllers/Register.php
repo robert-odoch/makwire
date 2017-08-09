@@ -73,7 +73,7 @@ class Register extends CI_Controller
                                               address and continue with the registration process.
                                             </p>
                                             <a href='" .
-                                                base_url("register/step-two/{$activation_code}") . "'
+                                                base_url("register/activate-email/{$activation_code}") . "'
                                                 style='color: #fff; margin: 5px 0; padding: 10px; display: block; text-align: center; border-radius: 2px;
                                                     border-color: #46b8da; text-decoration: none; box-sizing: border-box; font-variant: small-caps;
                                                     background-color: #5bc0de;'>Verify your email address</a>
@@ -113,8 +113,56 @@ class Register extends CI_Controller
         $this->load->view('common/external-page-footer');
     }
 
+    public function activate_email($activation_code)
+    {
+        $data = [];
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $email = $this->input->post('email');
+            if (strlen($email) == 0) {
+                $error_message = 'Please enter your email address.';
+            }
+            else {
+                if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    try {
+                        $this->settings_model->activate_email($email, $activation_code);
+                        $_SESSION['activation_code'] = $activation_code;
+                        redirect(base_url("register/step-two/{$activation_code}"));
+                    }
+                    catch (NotFoundException $e) {
+                        show_404();
+                    }
+                }
+                else {
+                    $error_message = 'Please enter a valid email address.';
+                }
+            }
+
+            if (isset($error_message)) {
+                $data['email'] = $email;
+                $data['error_message'] = $error_message;
+            }
+        }
+
+        $data = array_merge($data, $this->user_model->initialize_user());
+        $data['title'] = 'Activate your email address';
+        $this->load->view('common/header', $data);
+
+        $data['form_action'] = base_url("settings/activate-email/{$activation_code}");
+        $this->load->view('settings/account/activate-email', $data);
+        $this->load->view('common/footer');
+    }
+
     public function step_two($activation_code = 0)
     {
+        if (empty($_SESSION['activation_code']) ||
+                $_SESSION['activation_code'] != $activation_code) {
+            show_404();
+        }
+        else {
+            unset($_SESSION['activation_code']);
+        }
+
         $data = [];
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -160,22 +208,11 @@ class Register extends CI_Controller
                 ];
             }
             else {
-                // For updating user_emails table.
-                $data['user_email_id'] = $user_email_id;
-
                 session_start();
                 session_regenerate_id(TRUE);
 
                 $_SESSION['data'] = $data;
                 redirect(base_url('register/step-three'));
-            }
-        }
-        else {
-            try {
-                $this->settings_model->activate_email($activation_code);
-            }
-            catch (NotFoundException $e) {
-                show_404();
             }
         }
 

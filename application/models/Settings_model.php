@@ -112,21 +112,17 @@ class Settings_model extends CI_Model
      *
      * @param $activation_code activation code for this email address.
      */
-    public function activate_email($activation_code)
+    public function activate_email($email, $activation_code)
     {
-        // Check whether the record exists.
-        $email_sql = sprintf("SELECT id FROM user_emails WHERE (activation_code = %s)",
-                             $this->db->escape($activation_code));
-        $email_query = $this->utility_model->run_query($email_sql);
-        if ($email_query->num_rows() == 0) {
+        $update_sql = sprintf("UPDATE user_emails SET activation_code = NULL
+                                WHERE email = %s AND activation_code = %s",
+                                $this->db->escape($email),
+                                $this->db->escape($activation_code));
+        $this->db->query($update_sql);
+
+        if ($this->db->affected_rows() == 0) {
             throw new NotFoundException();
         }
-
-        // Set activation code to NULL.
-        $update_sql = sprintf("UPDATE user_emails SET activation_code = NULL " .
-                                "WHERE activation_code = %s",
-                                $this->db->escape($activation_code));
-        $this->utility_model->run_query($update_sql);
     }
 
 }

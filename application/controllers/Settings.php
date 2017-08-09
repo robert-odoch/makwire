@@ -99,14 +99,42 @@ class Settings extends CI_Controller
 
     public function activate_email($activation_code)
     {
-        try {
-            $this->settings_model->activate_email($activation_code);
-            $_SESSION['message'] = 'Your email address has been successfully activated. Enjoy!';
-            redirect(base_url('user/success'));
+        $data = [];
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $email = $this->input->post('email');
+            if (strlen($email) == 0) {
+                $error_message = 'Please enter your email address.';
+            }
+            else {
+                if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    try {
+                        $this->settings_model->activate_email($email, $activation_code);
+                        $_SESSION['message'] = 'Your email address has been successfully activated. Enjoy!';
+                        redirect(base_url('user/success'));
+                    }
+                    catch (NotFoundException $e) {
+                        show_404();
+                    }
+                }
+                else {
+                    $error_message = 'Please enter a valid email address.';
+                }
+            }
+
+            if (isset($error_message)) {
+                $data['email'] = $email;
+                $data['error_message'] = $error_message;
+            }
         }
-        catch (NotFoundException $e) {
-            show_404();
-        }
+
+        $data = array_merge($data, $this->user_model->initialize_user());
+        $data['title'] = 'Activate your email address';
+        $this->load->view('common/header', $data);
+
+        $data['form_action'] = base_url("settings/activate-email/{$activation_code}");
+        $this->load->view('settings/account/activate-email', $data);
+        $this->load->view('common/footer');
     }
 
 }
