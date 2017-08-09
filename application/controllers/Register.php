@@ -212,7 +212,8 @@ class Register extends CI_Controller
                 session_regenerate_id(TRUE);
 
                 $_SESSION['data'] = $data;
-                redirect(base_url('register/step-three'));
+                $_SESSION['access_code'] = md5(uniqid(rand(), true));
+                redirect(base_url("register/step-three/{$data['access_code']}"));
             }
         }
 
@@ -223,13 +224,9 @@ class Register extends CI_Controller
         $this->load->view('common/external-page-footer');
     }
 
-    public function step_three()
+    public function step_three($access_code = 0)
     {
         $data = [];
-
-        if (!isset($_SESSION['data']) || !is_array($_SESSION['data'])) {
-            redirect(base_url('register/step-one'));
-        }
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $uname = trim($this->input->post('uname'));
@@ -283,6 +280,14 @@ class Register extends CI_Controller
 
                 $_SESSION['user_id'] = $user_id;
                 redirect(base_url('welcome'));
+            }
+        }
+        else {
+            if (empty($_SESSION['access_code']) || ($_SESSION['access_code'] != $access_code)) {
+                redirect(base_url('register/step-one'));
+            }
+            else {
+                unset($_SESSION['access_code']);
             }
         }
 
