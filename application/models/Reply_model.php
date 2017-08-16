@@ -68,7 +68,7 @@ class Reply_model extends CI_Model
      *
      * @param $reply_id the ID of the reply in the comments table.
      */
-    public function like($reply_id)
+    public function like($reply_id, $user_id)
     {
         $owner_sql = sprintf("SELECT commenter_id " .
                             "FROM comments " .
@@ -88,7 +88,10 @@ class Reply_model extends CI_Model
         }
 
         // Record the like.
-        $this->activity_model->like(new SimpleReply($reply_id, $owner_id));
+        $this->activity_model->like(
+            new SimpleReply($reply_id, $owner_id),
+            $user_id
+        );
     }
 
     /**

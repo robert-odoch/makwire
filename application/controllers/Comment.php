@@ -22,7 +22,7 @@ class Comment extends CI_Controller
     public function like($comment_id = 0)
     {
         try {
-            $this->comment_model->like($comment_id);
+            $this->comment_model->like($comment_id, $_SESSION['user_id']);
             redirect($_SERVER['HTTP_REFERER']);
         }
         catch (NotFoundException $e) {
@@ -69,7 +69,7 @@ class Comment extends CI_Controller
                 $data['reply_error'] = "Reply can't be empty!";
             }
             else {
-                $this->comment_model->reply($comment_id, $reply);
+                $this->comment_model->reply($comment_id, $reply, $_SESSION['user_id']);
                 redirect(base_url("comment/replies/{$comment_id}"));
             }
         }

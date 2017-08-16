@@ -77,7 +77,7 @@ class Birthday_message_model extends CI_Model
      *
      * @param $birthday_message_id the id of the message in the birthday_messages table.
      */
-    public function like($birthday_message_id)
+    public function like($birthday_message_id, $user_id)
     {
         // Get the id of the user who sent the message.
         $owner_sql = sprintf("SELECT user_id, sender_id " .
@@ -99,7 +99,8 @@ class Birthday_message_model extends CI_Model
 
         // Record the like.
         $this->activity_model->like(
-            new SimpleBirthdayMessage($birthday_message_id, $owner_id)
+            new SimpleBirthdayMessage($birthday_message_id, $owner_id),
+            $user_id
         );
     }
 
@@ -126,7 +127,7 @@ class Birthday_message_model extends CI_Model
      * @param $message_id the ID of the comment in the birthday_messages table.
      * @param $reply the reply on this message.
      */
-    public function reply($message_id, $reply)
+    public function reply($message_id, $reply, $user_id)
     {
         // Get the ID of the owner of this photo.
         $owner_sql = sprintf("SELECT sender_id FROM birthday_messages WHERE id = %d",
@@ -137,7 +138,8 @@ class Birthday_message_model extends CI_Model
         // Record the reply.
         $this->activity_model->reply(
             new SimpleBirthdayMessage($message_id, $owner_id),
-            $reply
+            $reply,
+            $user_id
         );
     }
 

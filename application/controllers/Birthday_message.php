@@ -24,7 +24,7 @@ class Birthday_message extends CI_Controller
     public function like($message_id = 0)
     {
         try {
-            $this->birthday_message_model->like($message_id);
+            $this->birthday_message_model->like($message_id, $_SESSION['user_id']);
             redirect($_SERVER['HTTP_REFERER']);
         }
         catch (NotFoundException $e) {
@@ -87,7 +87,7 @@ class Birthday_message extends CI_Controller
                 $data['reply_error'] = "Reply can't be empty!";
             }
             else {
-                $this->birthday_message_model->reply($message_id, $reply);
+                $this->birthday_message_model->reply($message_id, $reply, $_SESSION['user_id']);
                 redirect(base_url("birthday-message/replies/{$message_id}"));
             }
         }

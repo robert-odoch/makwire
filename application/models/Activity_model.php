@@ -16,54 +16,54 @@ class Activity_model extends CI_Model
         $this->load->model(['utility_model', 'user_model']);
     }
 
-    public function like(Likeable $object)
+    public function like(Likeable $object, $user_id)
     {
-        if ($this->isLiked($object)) {
+        if ($this->isLiked($object, $user_id)) {
             return;
         }
 
         $like_sql = sprintf("INSERT INTO likes (liker_id, source_id, source_type) " .
                             "VALUES (%d, %d, '%s')",
-                            $_SESSION['user_id'], $object->getId(), $object->getType());
+                            $user_id, $object->getId(), $object->getType());
         $this->utility_model->run_query($like_sql);
 
         // Dispatch an activity.
         $activity_sql = sprintf("INSERT INTO activities " .
                                 "(actor_id, subject_id, source_id, source_type, activity) " .
                                 "VALUES (%d, %d, %d, '%s', '%s')",
-                                $_SESSION['user_id'], $object->getOwnerId(), $object->getId(),
+                                $user_id, $object->getOwnerId(), $object->getId(),
                                 $object->getType(), 'like');
         $this->utility_model->run_query($activity_sql);
     }
 
-    public function share(Shareable $object)
+    public function share(Shareable $object, $user_id)
     {
-        if ($this->isShared($object)) {
+        if ($this->isShared($object, $user_id)) {
             return;
         }
 
         // Insert it into the shares table.
         $share_sql = sprintf("INSERT INTO shares (subject_id, sharer_id, subject_type) " .
                                 "VALUES (%d, %d, '%s')",
-                                $object->getId(), $_SESSION['user_id'], $object->getType());
+                                $object->getId(), $user_id, $object->getType());
         $this->utility_model->run_query($share_sql);
 
         // Dispatch an activity.
         $activity_sql = sprintf("INSERT INTO activities " .
                                 "(actor_id, subject_id, source_id, source_type, activity) " .
                                 "VALUES (%d, %d, %d, '%s', '%s')",
-                                $_SESSION['user_id'], $object->getOwnerId(), $object->getId(),
+                                $user_id, $object->getOwnerId(), $object->getId(),
                                 $object->getType(), 'share');
         $this->utility_model->run_query($activity_sql);
     }
 
-    public function reply(Replyable $object, $reply)
+    public function reply(Replyable $object, $reply, $user_id)
     {
         // Record the reply.
         $reply_sql = sprintf("INSERT INTO comments " .
                                 "(commenter_id, parent_id, source_id, source_type, comment) " .
                                 "VALUES (%d, %d, %d, '%s', %s)",
-                                $_SESSION['user_id'], $object->getId(), $object->getId(),
+                                $user_id, $object->getId(), $object->getId(),
                                 $object->getType(), $this->db->escape($reply));
         $this->utility_model->run_query($reply_sql);
 
@@ -71,18 +71,18 @@ class Activity_model extends CI_Model
         $activity_sql = sprintf("INSERT INTO activities " .
                                 "(actor_id, subject_id, source_id, source_type, activity) " .
                                 "VALUES (%d, %d, %d, '%s', '%s')",
-                                $_SESSION['user_id'], $object->getOwnerId(),
+                                $user_id, $object->getOwnerId(),
                                 $object->getId(), $object->getType(), 'reply');
         $this->utility_model->run_query($activity_sql);
     }
 
-    public function comment(Commentable $object, $comment)
+    public function comment(Commentable $object, $comment, $user_id)
     {
         // Record the comment.
         $comment_sql = sprintf("INSERT INTO comments " .
                                 "(commenter_id, parent_id, source_id, source_type, comment) " .
                                 "VALUES (%d, %d, %d, '%s', %s)",
-                                $_SESSION['user_id'], 0, $object->getId(), $object->getType(),
+                                $user_id, 0, $object->getId(), $object->getType(),
                                 $this->db->escape($comment));
         $this->utility_model->run_query($comment_sql);
 
@@ -90,7 +90,7 @@ class Activity_model extends CI_Model
         $activity_sql = sprintf("INSERT INTO activities " .
                                 "(actor_id, subject_id, source_id, source_type, activity) " .
                                 "VALUES (%d, %d, %d, '%s', '%s')",
-                                $_SESSION['user_id'], $object->getOwnerId(), $object->getId(),
+                                $user_id, $object->getOwnerId(), $object->getId(),
                                 $object->getType(), 'comment');
         $this->utility_model->run_query($activity_sql);
     }
@@ -214,10 +214,10 @@ class Activity_model extends CI_Model
         return $comments_query->row_array()['COUNT(comment_id)'];
     }
 
-    public function isLiked(Likeable $object)
+    public function isLiked(Likeable $object, $user_id)
     {
         // Check whether this object belongs to the current user.
-        if ($object->getOwnerId() == $_SESSION['user_id']) {
+        if ($object->getOwnerId() == $user_id) {
             return TRUE;
         }
 
@@ -225,16 +225,16 @@ class Activity_model extends CI_Model
         $like_sql = sprintf("SELECT like_id FROM likes " .
                             "WHERE (source_id = %d AND source_type = '%s' AND liker_id = %d) " .
                             "LIMIT %d",
-                            $object->getId(), $object->getType(), $_SESSION['user_id'], 1);
+                            $object->getId(), $object->getType(), $user_id, 1);
         $like_query = $this->utility_model->run_query($like_sql);
 
         return ($like_query->num_rows() == 1);
     }
 
-    public function isShared(Shareable $object)
+    public function isShared(Shareable $object, $user_id)
     {
         // Check whether this object belongs to the current user.
-        if ($object->getOwnerId() == $_SESSION['user_id']) {
+        if ($object->getOwnerId() == $user_id) {
             return TRUE;
         }
 
@@ -242,7 +242,7 @@ class Activity_model extends CI_Model
         $share_sql = sprintf("SELECT share_id FROM shares " .
                                 "WHERE (subject_id = %d AND sharer_id = %d AND subject_type='%s') " .
                                 "LIMIT %d",
-                                $object->getId(), $_SESSION['user_id'], $object->getType(), 1);
+                                $object->getId(), $user_id, $object->getType(), 1);
         $share_query = $this->utility_model->run_query($share_sql);
 
         return ($share_query->num_rows() == 1);

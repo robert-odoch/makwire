@@ -22,7 +22,7 @@ class Reply extends CI_Controller
     public function like($reply_id = 0)
     {
         try {
-            $this->reply_model->like($reply_id);
+            $this->reply_model->like($reply_id, $_SESSION['user_id']);
             redirect($_SERVER['HTTP_REFERER']);
         }
         catch (NotFoundException $e) {

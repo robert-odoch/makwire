@@ -108,7 +108,7 @@ class Link_model extends CI_Model
      *
      * @param $link_id the ID of the link in the user_links table.
      */
-    public function like($link_id)
+    public function like($link_id, $user_id)
     {
         // Get the id of the owner of this link.
         $owner_sql = sprintf('SELECT user_id FROM links WHERE link_id = %d', $link_id);
@@ -126,7 +126,10 @@ class Link_model extends CI_Model
             );
         }
 
-        $this->activity_model->like(new SimpleLink($link_id, $owner_id));
+        $this->activity_model->like(
+            new SimpleLink($link_id, $owner_id),
+            $user_id
+        );
     }
 
     /**
@@ -138,7 +141,7 @@ class Link_model extends CI_Model
      *
      * @param $link_id the ID of the link in the user_links table.
      */
-    public function share($link_id)
+    public function share($link_id, $user_id)
     {
         $owner_sql = sprintf('SELECT user_id FROM links WHERE link_id = %d', $link_id);
         $owner_query = $this->utility_model->run_query($owner_sql);
@@ -154,7 +157,10 @@ class Link_model extends CI_Model
             );
         }
 
-        $this->activity_model->share(new SimpleLink($link_id, $owner_id));
+        $this->activity_model->share(
+            new SimpleLink($link_id, $owner_id),
+            $user_id
+        );
     }
 
     /**
@@ -163,7 +169,7 @@ class Link_model extends CI_Model
      * @param $link_id the ID of the link in the user_links table.
      * @param $comment the comment a user made.
      */
-    public function comment($link_id, $comment)
+    public function comment($link_id, $comment, $user_id)
     {
         // Get the ID of the owner of this link.
         $owner_sql = sprintf('SELECT user_id FROM links WHERE link_id = %d', $link_id);
@@ -173,7 +179,8 @@ class Link_model extends CI_Model
         // Record the comment.
         $this->activity_model->comment(
             new SimpleLink($link_id, $owner_id),
-            $comment
+            $comment,
+            $user_id
         );
     }
 

@@ -124,7 +124,7 @@ class Account extends CI_Controller
                 $error_messages['oldpasswd'] = 'Please enter your old password.';
             }
             // Check if there exists a user with this password.
-            elseif (! $this->account_model->user_exists($oldpasswd)) {
+            elseif (! $this->account_model->user_exists($_SESSION['user_id'], $oldpasswd)) {
                 $error_messages['oldpasswd'] = 'Incorrect password, please try again.';
             }
             else {
@@ -154,7 +154,7 @@ class Account extends CI_Controller
             }
 
             if (empty($error_messages)) {
-                $this->account_model->change_password($new_passwd);
+                $this->account_model->change_password($_SESSION['user_id'], $new_passwd);
                 $_SESSION['message'] = 'Your password has been successfully changed.';
                 redirect(base_url('user/success'));
             }
@@ -180,7 +180,7 @@ class Account extends CI_Controller
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $prefered_name = trim(strip_tags($this->input->post('prefered_name')));
             if (strlen($prefered_name) != 0) {
-                $this->account_model->set_prefered_profile_name($prefered_name);
+                $this->account_model->set_prefered_profile_name($_SESSION['user_id'], $prefered_name);
                 $_SESSION['message'] = "Your profile name has been successfully changed to ${prefered_name}.";
                 redirect(base_url('user/success'));
             }
@@ -190,7 +190,7 @@ class Account extends CI_Controller
         $data['title'] = 'Set prefered profile name';
         $this->load->view('common/header', $data);
 
-        $data['name_combinations'] = $this->account_model->get_name_combinations();
+        $data['name_combinations'] = $this->account_model->get_name_combinations($_SESSION['user_id']);
         $this->load->view('settings/account/prefered-profile-name', $data);
         $this->load->view('common/footer');
     }
@@ -215,7 +215,7 @@ class Account extends CI_Controller
             }
 
             if (empty($error_messages)) {
-                $this->account_model->change_name($lname, $other_names);
+                $this->account_model->change_name($_SESSION['user_id'], $lname, $other_names);
                 redirect(base_url('account/set-prefered-name'));
             }
             else {
@@ -244,7 +244,7 @@ class Account extends CI_Controller
         $this->load->view('common/header', $data);
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $this->account_model->delete_account();
+            $this->account_model->delete_account($_SESSION['user_id']);
             unset($_SESSION['user_id']);
 
             $_SESSION['heading'] = 'Account deleted';

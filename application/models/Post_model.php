@@ -99,7 +99,7 @@ class Post_model extends CI_Model
      *
      * @param $post_id the ID of the post in the posts table.
      */
-    public function like($post_id)
+    public function like($post_id, $user_id)
     {
         // Get the ID of the owner of this post.
         $owner_sql = sprintf("SELECT user_id FROM posts WHERE post_id = %d",
@@ -118,7 +118,10 @@ class Post_model extends CI_Model
         }
 
         // Record the like.
-        $this->activity_model->like(new SimplePost($post_id, $owner_id));
+        $this->activity_model->like(
+            new SimplePost($post_id, $owner_id),
+            $user_id
+        );
     }
 
     /**
@@ -130,7 +133,7 @@ class Post_model extends CI_Model
      *
      * @param $post_id the ID of the post in the posts table.
      */
-    public function share($post_id)
+    public function share($post_id, $user_id)
     {
         // Get the ID of the owner of this post.
         $owner_sql = sprintf("SELECT user_id FROM posts WHERE post_id = %d",
@@ -149,7 +152,10 @@ class Post_model extends CI_Model
         }
 
         // Share the post.
-        $this->activity_model->share(new SimplePost($post_id, $owner_id));
+        $this->activity_model->share(
+            new SimplePost($post_id, $owner_id),
+            $user_id
+        );
     }
 
     /**
@@ -158,7 +164,7 @@ class Post_model extends CI_Model
      * @param $post_id the ID of the post in the posts table.
      * @param $comment the comment a user made.
      */
-    public function comment($post_id, $comment)
+    public function comment($post_id, $comment, $user_id)
     {
         // Get the ID of the owner of this post.
         $owner_sql = sprintf("SELECT user_id FROM posts WHERE post_id = %d",
@@ -169,7 +175,8 @@ class Post_model extends CI_Model
         // Record the comment.
         $this->activity_model->comment(
             new SimplePost($post_id, $owner_id),
-            $comment
+            $comment,
+            $user_id
         );
     }
 

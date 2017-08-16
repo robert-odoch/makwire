@@ -139,7 +139,7 @@ class Photo_model extends CI_Model
      *
      * @param $photo_id the ID of the photo in the photos table.
      */
-    public function like($photo_id)
+    public function like($photo_id, $user_id)
     {
         // Get the id of the owner of this photo.
         $owner_sql = sprintf("SELECT user_id FROM photos WHERE photo_id = %d",
@@ -158,7 +158,10 @@ class Photo_model extends CI_Model
             );
         }
 
-        $this->activity_model->like(new SimplePhoto($photo_id, $owner_id));
+        $this->activity_model->like(
+            new SimplePhoto($photo_id, $owner_id),
+            $user_id
+        );
     }
 
     /**
@@ -170,7 +173,7 @@ class Photo_model extends CI_Model
      *
      * @param $photo_id the ID of the photo in the photos table.
      */
-    public function share($photo_id)
+    public function share($photo_id, $user_id)
     {
         $owner_sql = sprintf("SELECT user_id FROM photos WHERE photo_id = %d",
                             $photo_id);
@@ -188,7 +191,10 @@ class Photo_model extends CI_Model
             );
         }
 
-        $this->activity_model->share(new SimplePhoto($photo_id, $owner_id));
+        $this->activity_model->share(
+            new SimplePhoto($photo_id, $owner_id),
+            $user_id
+        );
     }
 
     /**
@@ -197,7 +203,7 @@ class Photo_model extends CI_Model
      * @param $photo_id the ID of the photo in the photos table.
      * @param $comment the comment a user made.
      */
-    public function comment($photo_id, $comment)
+    public function comment($photo_id, $comment, $user_id)
     {
         // Get the ID of the owner of this photo.
         $owner_sql = sprintf("SELECT user_id FROM photos WHERE photo_id = %d",
@@ -208,7 +214,8 @@ class Photo_model extends CI_Model
         // Record the comment.
         $this->activity_model->comment(
             new SimplePhoto($photo_id, $owner_id),
-            $comment
+            $comment,
+            $user_id
         );
     }
 

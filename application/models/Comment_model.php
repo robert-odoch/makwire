@@ -79,7 +79,7 @@ class Comment_model extends CI_Model
      *
      * @param $comment_id the ID of the comment in the comments table.
      */
-    public function like($comment_id)
+    public function like($comment_id, $user_id)
     {
         // Get the id of the user who commented.
         $owner_sql = sprintf("SELECT commenter_id FROM comments WHERE comment_id = %d",
@@ -98,7 +98,10 @@ class Comment_model extends CI_Model
         }
 
         // Record the like.
-        $this->activity_model->like(new SimpleComment($comment_id, $owner_id));
+        $this->activity_model->like(
+            new SimpleComment($comment_id, $owner_id),
+            $user_id
+        );
     }
 
     /**
@@ -107,7 +110,7 @@ class Comment_model extends CI_Model
      * @param $comment_id the ID of the comment in the comments table.
      * @param $reply the reply on this comment.
      */
-    public function reply($comment_id, $reply)
+    public function reply($comment_id, $reply, $user_id)
     {
         // Get the id of the user who commented.
         $owner_sql = sprintf("SELECT commenter_id FROM comments WHERE comment_id = %d",
@@ -118,7 +121,8 @@ class Comment_model extends CI_Model
         // Record the reply.
         $this->activity_model->reply(
             new SimpleComment($comment_id, $owner_id),
-            $reply
+            $reply,
+            $user_id
         );
     }
 

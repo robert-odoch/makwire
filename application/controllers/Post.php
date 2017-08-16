@@ -119,7 +119,7 @@ class Post extends CI_Controller
     public function like($post_id = 0)
     {
         try {
-            $this->post_model->like($post_id);
+            $this->post_model->like($post_id, $_SESSION['user_id']);
             redirect($_SERVER['HTTP_REFERER']);
         }
         catch (NotFoundException $e) {
@@ -143,7 +143,7 @@ class Post extends CI_Controller
                 $data['comment_error'] = "Comment can't be empty";
             }
             else {
-                $this->post_model->comment($post_id, $comment);
+                $this->post_model->comment($post_id, $comment, $_SESSION['user_id']);
                 redirect(base_url("post/comments/{$post_id}"));
             }
         }
@@ -180,7 +180,7 @@ class Post extends CI_Controller
     public function share($post_id = 0)
     {
         try {
-            $this->post_model->share($post_id);
+            $this->post_model->share($post_id, $_SESSION['user_id']);
             redirect(base_url("user/{$_SESSION['user_id']}"));
         }
         catch (NotFoundException $e) {

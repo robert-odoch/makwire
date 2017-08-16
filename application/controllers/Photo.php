@@ -186,7 +186,7 @@ class Photo extends CI_Controller
     public function like($photo_id = 0)
     {
         try {
-            $this->photo_model->like($photo_id);
+            $this->photo_model->like($photo_id, $_SESSION['user_id']);
             redirect($_SERVER['HTTP_REFERER']);
         }
         catch (NotFoundException $e) {
@@ -210,7 +210,7 @@ class Photo extends CI_Controller
                 $data['comment_error'] = "Comment can't be empty";
             }
             else {
-                $this->photo_model->comment($photo_id, $comment);
+                $this->photo_model->comment($photo_id, $comment, $_SESSION['user_id']);
                 redirect(base_url("photo/comments/{$photo_id}"));
             }
         }
@@ -242,7 +242,7 @@ class Photo extends CI_Controller
     public function share($photo_id = 0)
     {
         try {
-            $this->photo_model->share($photo_id);
+            $this->photo_model->share($photo_id, $_SESSION['user_id']);
             redirect(base_url("user/{$_SESSION['user_id']}"));
         }
         catch (NotFoundException $e) {

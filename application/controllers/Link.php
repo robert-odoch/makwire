@@ -163,7 +163,7 @@ class Link extends CI_Controller
     public function like($link_id = 0)
     {
         try {
-            $this->link_model->like($link_id);
+            $this->link_model->like($link_id, $_SESSION['user_id']);
             redirect($_SERVER['HTTP_REFERER']);
         }
         catch (NotFoundException $e) {
@@ -187,7 +187,7 @@ class Link extends CI_Controller
                 $data['comment_error'] = 'Please enter a comment.';
             }
             else {
-                $this->link_model->comment($link_id, $comment);
+                $this->link_model->comment($link_id, $comment, $_SESSION['user_id']);
                 redirect(base_url("link/comments/{$link_id}"));
             }
         }
@@ -219,7 +219,7 @@ class Link extends CI_Controller
     public function share($link_id = 0)
     {
         try {
-            $this->link_model->share($link_id);
+            $this->link_model->share($link_id, $_SESSION['user_id']);
             redirect(base_url("user/{$_SESSION['user_id']}"));
         }
         catch (NotFoundException $e) {
