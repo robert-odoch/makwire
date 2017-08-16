@@ -9,24 +9,24 @@ class Account_model extends CI_Model
         $this->load->model(['utility_model']);
     }
 
-    public function user_exists($password)
+    public function user_exists($user_id, $password)
     {
-        $sql = sprintf("SELECT passwd FROM users WHERE user_id = %d", $_SESSION['user_id']);
+        $sql = sprintf("SELECT passwd FROM users WHERE user_id = %d", $user_id);
         $query = $this->utility_model->run_query($sql);
         return password_verify($password, $query->row()->passwd);
     }
 
-    public function change_password($new_password)
+    public function change_password($user_id, $new_password)
     {
         $sql = sprintf("UPDATE users SET passwd = '%s' WHERE user_id = %d",
-                        password_hash($new_password, PASSWORD_BCRYPT), $_SESSION['user_id']);
+                        password_hash($new_password, PASSWORD_BCRYPT), $user_id);
         $this->utility_model->run_query($sql);
     }
 
-    public function get_name_combinations()
+    public function get_name_combinations($user_id)
     {
         $sql = sprintf("SELECT lname, other_names FROM users WHERE user_id = %d",
-                        $_SESSION['user_id']);
+                        $_user_id);
         $query = $this->utility_model->run_query($sql);
         $result = $query->row_array();
 
@@ -40,26 +40,26 @@ class Account_model extends CI_Model
         return $name_combinations;
     }
 
-    public function set_prefered_profile_name($name)
+    public function set_prefered_profile_name($user_id, $name)
     {
         $sql = sprintf("UPDATE users SET profile_name = %s WHERE user_id = %d",
-                        $this->db->escape($name), $_SESSION['user_id']);
+                        $this->db->escape($name), $user_id);
         $this->utility_model->run_query($sql);
     }
 
-    public function change_name($last_name, $other_names)
+    public function change_name($user_id, $last_name, $other_names)
     {
         $sql = sprintf("UPDATE users SET lname = %s, other_names = %s, profile_name = %s " .
                         "WHERE user_id = %d", $this->db->escape($last_name),
                         $this->db->escape($other_names),
                         $this->db->escape($last_name) . ' ' . $this->db->escape($other_names),
-                        $_SESSION['user_id']);
+                        $user_id);
         $this->utility_model->run_query($sql);
     }
 
-    public function delete_account()
+    public function delete_account($user_id)
     {
-        $sql = sprintf("DELETE FROM users WHERE user_id = %d", $_SESSION['user_id']);
+        $sql = sprintf("DELETE FROM users WHERE user_id = %d", $user_id);
         $this->db->query($sql);
     }
 }
