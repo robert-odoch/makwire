@@ -57,7 +57,7 @@
 
             <?php
             if (
-                ($$object['user_id'] == $_SESSION['user_id']) ||
+                (!$$object['shared'] && $$object['user_id'] == $_SESSION['user_id']) ||
                 ($$object['shared'] && ($$object['sharer_id'] == $_SESSION['user_id']))
             ): ?>
             <li class='dropdown pull-right'>
