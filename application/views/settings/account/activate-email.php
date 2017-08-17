@@ -1,34 +1,35 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-require_once(dirname(__FILE__) . '/../../common/user-page-start.php');
 ?>
 
-<div class='box'>
-    <h4>Activate your email address</h4>
-    <p>That reminds me of something. What is your email address again?</p>
-    <form action='<?= $form_action; ?>' method='post'
-            accept-charset='utf-8' role='form'>
-        <fieldset>
-            <div class='form-group'>
-                <label for='email'>Email Address:</label>
-                <input type='email' name='email' id='email' class='fluid
+<div class='wrap-single'>
+    <div role='main' class='main'>
+        <div class='box'>
+            <h4>Activate your email address</h4>
+            <p>That reminds me of something. What is your email address again?</p>
+            <form action='<?= $form_action; ?>' method='post'
+                    accept-charset='utf-8' role='form'>
+                <fieldset>
+                    <div class='form-group'>
+                        <label for='email'>Email Address:</label>
+                        <input type='email' name='email' id='email' class='fluid
+                                <?php
+                                if (isset($error_message)) {
+                                    print ' has-error';
+                                }
+                                ?>'
+                                <?php
+                                if (isset($email)) {
+                                    print " value = '{$email}' ";
+                                }
+                                ?> required>
                         <?php
                         if (isset($error_message)) {
-                            print ' has-error';
+                            print "<span class='error'>{$error_message}</span>";
                         }
-                        ?>'
-                        <?php
-                        if (isset($email)) {
-                            print " value = '{$email}' ";
-                        }
-                        ?> required>
-                <?php
-                if (isset($error_message)) {
-                    print "<span class='error'>{$error_message}</span>";
-                }
-                ?>
-            </div>
-        </fieldset>
-        <input type='submit' value='Confirm' class='btn btn-sm'>
-    </form>
-</div><!-- box -->
+                        ?>
+                    </div>
+                </fieldset>
+                <input type='submit' value='Confirm' class='btn btn-sm'>
+            </form>
+        </div><!-- box -->

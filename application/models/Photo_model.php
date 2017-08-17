@@ -26,7 +26,7 @@ class Photo_model extends CI_Model
      * @param $photo_id the ID of the photo in the photos table.
      * @return the photo with the given ID.
      */
-    public function get_photo($photo_id)
+    public function get_photo($visitor_id, $photo_id)
     {
         $photo_sql = sprintf("SELECT p.*, u.profile_name AS author FROM photos p " .
                             "LEFT JOIN users u ON(p.user_id = u.user_id) " .
@@ -57,7 +57,7 @@ class Photo_model extends CI_Model
         // Check whether the user currently viewing the page is a friend to the
         // owner of the photo. This will allow us to only show the like, comment
         // and share buttons to friends of the owner.
-        $photo['viewer_is_friend_to_owner'] = $this->user_model->are_friends($photo['user_id']);
+        $photo['viewer_is_friend_to_owner'] = $this->user_model->are_friends($visitor_id, $photo['user_id']);
 
         // Check if photo was used as a profile picture.
         $is_profile_pic_sql = sprintf("SELECT activity_id FROM activities " .
@@ -89,18 +89,14 @@ class Photo_model extends CI_Model
      * Allows a user to add a new photo to his status.
      *
      * @param $data an array containing details about the uploaded photo.
-     * @param $audience the target audience for the photo. May be timeline or group.
-     * @param $audience_id the ID of the target audience. Same as user ID if
-     * audience is timeline.
-     * @return $photo_id the ID of the photo in the photos table.
      */
-    public function publish($data, $audience, $audience_id)
+    public function publish($data, $user_id)
     {
         // Record photo data in the photos table.
         $photo_sql = sprintf("INSERT INTO photos " .
                             "(user_id, image_type, full_path) " .
                             "VALUES (%d, %s, %s)",
-                            $_SESSION['user_id'],
+                            $user_id,
                             $this->db->escape($data['file_type']),
                             $this->db->escape($data['full_path']));
         $this->utility_model->run_query($photo_sql);
@@ -110,7 +106,7 @@ class Photo_model extends CI_Model
         $activity_sql = sprintf("INSERT INTO activities " .
                                 "(actor_id, subject_id, source_id, source_type, activity) " .
                                 "VALUES (%d, %d, %d, 'photo', 'photo')",
-                                $_SESSION['user_id'], $_SESSION['user_id'], $photo_id);
+                                $user_id, $user_id, $photo_id);
         $this->utility_model->run_query($activity_sql);
     }
 
@@ -152,7 +148,7 @@ class Photo_model extends CI_Model
         $owner_result = $owner_query->row_array();
         $owner_id = $owner_result['user_id'];
 
-        if (!$this->user_model->are_friends($owner_id)) {
+        if (!$this->user_model->are_friends($user_id, $owner_id)) {
             throw new IllegalAccessException(
                 "You don't have the proper permissions to like this photo."
             );
@@ -185,7 +181,7 @@ class Photo_model extends CI_Model
 
         $owner_result = $owner_query->row_array();
         $owner_id = $owner_result['user_id'];
-        if (!$this->user_model->are_friends($owner_id)) {
+        if (!$this->user_model->are_friends($user_id, $owner_id)) {
             throw new IllegalAccessException(
                 "You don't have the proper permissions to share this photo."
             );
@@ -261,19 +257,20 @@ class Photo_model extends CI_Model
      * @param $limit the maximum number of records to return.
      * @return the comments made on this photo.
      */
-    public function get_comments(&$photo, $offset, $limit)
+    public function get_comments($visitor_id, &$photo, $offset, $limit)
     {
         return $this->activity_model->getComments(
+            $visitor_id,
             new SimplePhoto($photo['photo_id'], $photo['user_id']),
             $offset,
             $limit
         );
     }
 
-    public function delete_photo(&$photo)
+    public function delete_photo($user_id, &$photo)
     {
         $simplePhoto = new SimplePhoto($photo['photo_id'], $photo['user_id']);
-        $this->utility_model->delete_item($simplePhoto);
+        $this->utility_model->delete_item($user_id, $simplePhoto);
     }
 
     public function update_description($photo_id, $new_description)

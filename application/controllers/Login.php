@@ -36,7 +36,11 @@ class Login extends CI_Controller
             }
 
             if (!isset($data['login_errors'])) {
-                if ($this->login_model->is_valid_login($username, $password)) {
+                if ($user_id = $this->login_model->is_valid_login($username, $password)) {
+                    session_start();
+                    session_regenerate_id(TRUE);
+                    $_SESSION['user_id'] = $user_id;
+
                     if (isset($_SESSION['return_uri'])) {
                         $return_url = base_url(
                             str_replace('/makwire/', '', $_SESSION['return_uri'])

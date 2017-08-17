@@ -27,7 +27,7 @@ class Link_model extends CI_Model
      * @param $link_id the ID of the link in the links table.
      * @return the link with the given ID.
      */
-    public function get_link($link_id)
+    public function get_link($visitor_id, $link_id)
     {
         $link_sql = sprintf("SELECT v.*, u.profile_name AS author FROM links v " .
                             "LEFT JOIN users u ON(v.user_id = u.user_id) " .
@@ -48,7 +48,7 @@ class Link_model extends CI_Model
         // Check whether the user currently viewing the page is a friend to the
         // owner of the link. This will allow us to only show the like, comment
         // and share buttons to friends of the owner.
-        $link['viewer_is_friend_to_owner'] = $this->user_model->are_friends($link['user_id']);
+        $link['viewer_is_friend_to_owner'] = $this->user_model->are_friends($visitor_id, $link['user_id']);
 
         // Get number of liks, comments and shares.
         $simpleLink = new SimpleLink($link['link_id'], $link['user_id']);
@@ -65,12 +65,12 @@ class Link_model extends CI_Model
      * @param $url.
      * @return $link_id the ID of the link in the user_links table.
      */
-    public function publish($link_data)
+    public function publish($link_data, $user_id)
     {
         // Record link data in the links table.
         $link_sql = sprintf('INSERT INTO links (user_id, url, title, description, image, site) ' .
                             'VALUES (%d, %s, %s, %s, %s, %s) ',
-                            $_SESSION['user_id'], $this->db->escape($link_data['url']),
+                            $user_id, $this->db->escape($link_data['url']),
                             $this->db->escape($link_data['title']), $this->db->escape($link_data['description']),
                             $this->db->escape($link_data['image']), $this->db->escape($link_data['site']));
         $this->utility_model->run_query($link_sql);
@@ -80,7 +80,7 @@ class Link_model extends CI_Model
         $activity_sql = sprintf('INSERT INTO activities ' .
                                 '(actor_id, subject_id, source_id, source_type, activity) ' .
                                 'VALUES (%d, %d, %d, "link", "link")',
-                                $_SESSION['user_id'], $_SESSION['user_id'], $link_id);
+                                $user_id, $user_id, $link_id);
         $this->utility_model->run_query($activity_sql);
     }
 
@@ -120,7 +120,7 @@ class Link_model extends CI_Model
         $owner_result = $owner_query->row_array();
         $owner_id = $owner_result['user_id'];
 
-        if (!$this->user_model->are_friends($owner_id)) {
+        if (!$this->user_model->are_friends($user_id, $owner_id)) {
             throw new IllegalAccessException(
                 "You don't have the proper permissions to like this link."
             );
@@ -151,7 +151,7 @@ class Link_model extends CI_Model
 
         $owner_result = $owner_query->row_array();
         $owner_id = $owner_result['user_id'];
-        if (!$this->user_model->are_friends($owner_id)) {
+        if (!$this->user_model->are_friends($user_id, $owner_id)) {
             throw new IllegalAccessException(
                 "You don't have the proper permissions to share this link."
             );
@@ -226,19 +226,20 @@ class Link_model extends CI_Model
      * @param $limit the maximum number of records to return.
      * @return the comments made on this link.
      */
-    public function get_comments(&$link, $offset, $limit)
+    public function get_comments($visitor_id, &$link, $offset, $limit)
     {
         return $this->activity_model->getComments(
+            $visitor_id,
             new SimpleLink($link['link_id'], $link['user_id']),
             $offset,
             $limit
         );
     }
 
-    public function delete_link(&$link)
+    public function delete_link($user_id, &$link)
     {
         $simpleLink = new SimpleLink($link['link_id'], $link['user_id']);
-        $this->utility_model->delete_item($simpleLink);
+        $this->utility_model->delete_item($user_id, $simpleLink);
     }
 
     public function update_comment($link_id, $new_comment)

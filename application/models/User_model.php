@@ -33,27 +33,6 @@ class User_model extends CI_Model
     }
 
     /**
-     * Checks whether an account has not been logged out from another location.
-     *
-     * @return true if this account has not been logged out.
-     */
-    public function confirm_logged_in()
-    {
-        $logged_in_sql = sprintf("SELECT logged_in FROM users WHERE user_id = %d",
-                                $_SESSION['user_id']);
-        $logged_in_query = $this->utility_model->run_query($logged_in_sql);
-
-        if (!$logged_in_query->row_array()['logged_in']) {
-            unset($_SESSION['user_id']);
-            $_SESSION = array();
-            $_SESSION['message'] = "This account was logged out from another location.<br>" .
-                                   "Please log in again to continue using this account.<br>" .
-                                   "We are sorry for bothering you.";
-            redirect(base_url("login"));
-        }
-    }
-
-    /**
      * Checks whether a user is currently logged in.
      *
      * @param $user_id ID of the user to check for.
@@ -76,14 +55,14 @@ class User_model extends CI_Model
      * @return true if the current logged in user is a friend to the user
      * with the specified ID.
      */
-    public function are_friends($user_id)
+    public function are_friends($user_id, $other_id)
     {
-        if ($user_id == $_SESSION['user_id']) {
+        if ($user_id == $other_id) {
             return TRUE;
         }
 
-        $friends_ids = $this->get_friends_ids();
-        return in_array($user_id, $friends_ids);
+        $friends_ids = $this->get_friends_ids($user_id);
+        return in_array($other_id, $friends_ids);
     }
 
     /**
@@ -117,18 +96,18 @@ class User_model extends CI_Model
      *
      * @return Array for friends IDs.
      */
-    public function get_friends_ids()
+    public function get_friends_ids($user_id)
     {
         $friends_sql = sprintf("SELECT user_id, friend_id " .
                                 "FROM friends " .
                                 "WHERE (user_id = %d) OR (friend_id = %d)",
-                                $_SESSION['user_id'], $_SESSION['user_id']);
+                                $user_id, $user_id);
         $friends_query = $this->utility_model->run_query($friends_sql);
 
         $friends = array();
         $results = $friends_query->result_array();
         foreach ($results as &$f) {
-            if ($f['friend_id'] == $_SESSION['user_id']) {
+            if ($f['friend_id'] == $user_id) {
                 $f['friend_id'] = $f['user_id'];
             }
             array_push($friends, $f['friend_id']);
@@ -157,16 +136,16 @@ class User_model extends CI_Model
      *
      * @return Array of these common variables.
      */
-    public function initialize_user()
+    public function initialize_user($user_id)
     {
-        $data['profile_pic_path'] = $this->get_profile_pic_path($_SESSION['user_id']);
-        $data['primary_user'] = $this->get_profile_name($_SESSION['user_id']);
-        $data['people_you_may_know'] = $this->get_suggested_users(0, 4);
-        $data['num_friend_requests'] = $this->get_num_friend_requests(TRUE);
-        $data['num_active_friends'] = $this->get_num_chat_users(TRUE);
-        $data['num_new_messages'] = $this->get_num_messages(TRUE);
-        $data['num_new_notifs'] = $this->get_num_notifications(TRUE);
-        $data['chat_users'] = $this->get_chat_users(TRUE);
+        $data['profile_pic_path'] = $this->get_profile_pic_path($user_id);
+        $data['primary_user'] = $this->get_profile_name($user_id);
+        $data['people_you_may_know'] = $this->get_suggested_users($user_id, 0, 4);
+        $data['num_friend_requests'] = $this->get_num_friend_requests($user_id, TRUE);
+        $data['num_active_friends'] = $this->get_num_chat_users($user_id, TRUE);
+        $data['num_new_messages'] = $this->get_num_messages($user_id, TRUE);
+        $data['num_new_notifs'] = $this->get_num_notifications($user_id, TRUE);
+        $data['chat_users'] = $this->get_chat_users($user_id, TRUE);
 
         return $data;
     }
@@ -246,7 +225,7 @@ class User_model extends CI_Model
      * @param $user_id ID of the user to be displayed.
      * @return posts, photos, videos, and links to be displayed.
      */
-    public function get_timeline_items($user_id, $offset, $limit)
+    public function get_timeline_items($visitor_id, $user_id, $offset, $limit)
     {
         // Get posts, photos, videos, and links posted/shared by this user.
         $timeline_items_sql = sprintf("SELECT * FROM activities " .
@@ -260,7 +239,7 @@ class User_model extends CI_Model
         foreach ($timeline_items as &$r) {
             switch ($r['source_type']) {
                 case 'post':
-                    $r['post'] = $this->post_model->get_post($r['source_id']);
+                    $r['post'] = $this->post_model->get_post($visitor_id, $r['source_id']);
 
                     // Get only 540 characters from post if possible.
                     $post_url = base_url("user/post/{$r['post']['post_id']}");
@@ -274,7 +253,7 @@ class User_model extends CI_Model
                     }
                     break;
                 case 'photo':
-                    $r['photo'] = $this->photo_model->get_photo($r['source_id']);
+                    $r['photo'] = $this->photo_model->get_photo($visitor_id, $r['source_id']);
 
                     // Was it shared from another user?
                     $r['photo']['shared'] = FALSE;
@@ -284,7 +263,7 @@ class User_model extends CI_Model
                     }
                     break;
                 case 'video':
-                    $r['video'] = $this->video_model->get_video($r['source_id']);
+                    $r['video'] = $this->video_model->get_video($visitor_id, $r['source_id']);
 
                     // Was it shared from another user?
                     $r['video']['shared'] = FALSE;
@@ -294,7 +273,7 @@ class User_model extends CI_Model
                     }
                     break;
                 case 'link':
-                    $r['link'] = $this->link_model->get_link($r['source_id']);
+                    $r['link'] = $this->link_model->get_link($visitor_id, $r['source_id']);
 
                     // Was it shared from another user?
                     $r['link']['shared'] = FALSE;
@@ -359,16 +338,16 @@ class User_model extends CI_Model
      * Sends a birthday message to a user.
      *
      * @param $message the message to be sent.
-     * @param $user_id ID of the user to send the message to.
+     * @param $receiver_id ID of the user to send the message to.
      * @param $age the age he had reached on his birthday.
      */
-    public function send_birthday_message($message, $user_id, $age)
+    public function send_birthday_message($sender_id, $message, $receiver_id, $age)
     {
         // Record the message.
         $sql = sprintf("INSERT INTO birthday_messages " .
                         "(user_id, sender_id, message, age) " .
                         "VALUES (%d, %d, %s, %d)",
-                        $user_id, $_SESSION['user_id'],
+                        $receiver_id, $sender_id,
                         $this->db->escape($message), $age);
         $this->utility_model->run_query($sql);
 
@@ -376,7 +355,7 @@ class User_model extends CI_Model
         $activity_sql = sprintf("INSERT INTO activities " .
                                 "(actor_id, subject_id, source_id, source_type, activity) " .
                                 "VALUES (%d, %d, %d, 'user', 'message')",
-                                $_SESSION['user_id'], $user_id, $user_id);
+                                $sender_id, $receiver_id, $receiver_id);
         $this->utility_model->run_query($activity_sql);
     }
 
@@ -386,19 +365,19 @@ class User_model extends CI_Model
      * @param $filter whether to return only unread messages.
      * @return number of messages.
      */
-    public function get_num_messages($filter = TRUE)
+    public function get_num_messages($user_id, $filter = TRUE)
     {
         if ($filter) {
             $sql = sprintf("SELECT COUNT(message_id) " .
                             "FROM messages " .
                             "WHERE (receiver_id = %d AND seen IS FALSE)",
-                            $_SESSION['user_id']);
+                            $user_id);
         }
         else {
             $sql = sprintf("SELECT COUNT(message_id) " .
                             "FROM messages " .
                             "WHERE receiver_id = %d",
-                            $_SESSION['user_id']);
+                            $user_id);
         }
 
         $query = $this->utility_model->run_query($sql);
@@ -412,19 +391,19 @@ class User_model extends CI_Model
      * @param $limit
      * @param $filter whether to return only unread messages.
      */
-    public function get_messages($offset, $limit, $filter = TRUE)
+    public function get_messages($user_id, $offset, $limit, $filter = TRUE)
     {
         if ($filter) {
             $sql = sprintf("SELECT DISTINCT sender_id " .
                             "FROM messages WHERE (receiver_id = %d AND seen IS FALSE) " .
                             "ORDER BY date_sent DESC LIMIT %d, %d",
-                            $_SESSION['user_id'], $offset, $limit);
+                            $user_id, $offset, $limit);
         }
         else {
             $sql = sprintf("SELECT DISTINCT sender_id " .
                             "FROM messages WHERE (receiver_id = %d) " .
                             "ORDER BY date_sent DESC LIMIT %d, %d",
-                            $_SESSION['user_id'], $offset, $limit);
+                            $user_id, $offset, $limit);
         }
         $query = $this->utility_model->run_query($sql);
 
@@ -433,7 +412,7 @@ class User_model extends CI_Model
             $message_sql = sprintf("SELECT message_id, message, seen, date_sent FROM messages " .
                                     "WHERE (receiver_id = %d AND sender_id = %d) " .
                                     "ORDER BY date_sent DESC LIMIT 1",
-                                    $_SESSION['user_id'], $msg['sender_id']);
+                                    $user_id, $msg['sender_id']);
             $message_query = $this->utility_model->run_query($message_sql);
             $msg = array_merge($msg, $message_query->row_array());
 
@@ -524,7 +503,7 @@ class User_model extends CI_Model
      * @param $limit
      * @return photos uploaded by this user.
      */
-    public function get_photos($user_id, $offset, $limit)
+    public function get_photos($visitor_id, $user_id, $offset, $limit)
     {
         $sql = sprintf("SELECT photo_id FROM photos " .
                         "WHERE (user_id = %d) ORDER BY date_entered DESC " .
@@ -534,7 +513,7 @@ class User_model extends CI_Model
 
         $photos = [];
         foreach ($results as $r) {
-            $photos[] = $this->photo_model->get_photo($r['photo_id']);
+            $photos[] = $this->photo_model->get_photo($visitor_id, $r['photo_id']);
         }
 
         return $photos;
@@ -573,9 +552,9 @@ class User_model extends CI_Model
      * @param $filter whether to count only logged in users.
      * @return number friends who are currently logged in.
      */
-    public function get_num_chat_users($filter = TRUE)
+    public function get_num_chat_users($user_id, $filter = TRUE)
     {
-        return count($this->get_chat_users(TRUE));
+        return count($this->get_chat_users($user_id, TRUE));
     }
 
     /**
@@ -584,12 +563,12 @@ class User_model extends CI_Model
      * @param $filter whether to strictly return only logged in users.
      * @return friends who are currently logged in.
      */
-    public function get_chat_users($filter = TRUE)
+    public function get_chat_users($user_id, $filter = TRUE)
     {
         $chat_users = array();
 
         // Get this user's friends.
-        $friends = $this->get_all_friends($_SESSION['user_id']);
+        $friends = $this->get_all_friends($user_id);
 
         if ($filter) {
             // Get the active friends.
@@ -618,9 +597,9 @@ class User_model extends CI_Model
      * @param $limit
      * @return Array users whose name or email address match the query.
      */
-    public function get_searched_user($query, $offset, $limit)
+    public function get_searched_user($user_id, $query, $offset, $limit)
     {
-        $friends_ids = $this->get_friends_ids($_SESSION['user_id']);
+        $friends_ids = $this->get_friends_ids($user_id);
         $friends_ids[] = 0;
         $friends_ids = implode(',', $friends_ids);
 
@@ -664,7 +643,7 @@ class User_model extends CI_Model
      * counted.
      * @return number of notifications for this user.
      */
-    public function get_num_notifications($filter = TRUE)
+    public function get_num_notifications($user_id, $filter = TRUE)
     {
         // Notifications that can/can't be combined together if the are performed on
         // the same object.
@@ -675,20 +654,20 @@ class User_model extends CI_Model
                                 "'confirmed_join_group_request', 'added_photo'";
 
         // Get the ID's of all this user's friends.
-        $friends_ids = $this->get_friends_ids();
+        $friends_ids = $this->get_friends_ids($user_id);
         $friends_ids[] = 0;  // Add an extra lement for query-safety.
         $friends_ids_str = implode(',', $friends_ids);
 
         // WHERE clause for notifications having this user as a direct target.
         $primary_notifs_clause = sprintf("subject_id = %d AND actor_id != %d",
-                                         $_SESSION['user_id'], $_SESSION['user_id']);
+                                         $user_id, $user_id);
 
         if ($filter) {
             // Query to get the last time the user read a notification.
             $last_read_date_sql = sprintf("SELECT date_read FROM notification_read " .
                                             "WHERE (user_id = %d) ORDER BY date_read DESC " .
                                             "LIMIT 1",
-                                            $_SESSION['user_id']);
+                                            $user_id);
             $last_read_date_query = $this->utility_model->run_query($last_read_date_sql);
             if ($last_read_date_query->num_rows() == 0) {
 
@@ -696,14 +675,14 @@ class User_model extends CI_Model
                 // use his account creation date.
                 $last_read_date_sql = sprintf("SELECT date_created FROM users " .
                                                 "WHERE (user_id = %d)",
-                                                $_SESSION['user_id']);
+                                                $user_id);
             }
 
             // Query to get activities that were performed by this user..
             $acted_on_sql = sprintf("SELECT DISTINCT source_id FROM activities " .
                                     "WHERE (actor_id = %d AND subject_id != %d AND " .
                                             "activity IN('share', 'comment', 'reply'))",
-                                    $_SESSION['user_id'], $_SESSION['user_id']);
+                                    $user_id, $user_id);
 
             // WHERE clause for notifications from other sources like profile_pic_change, comment and reply.
             // Only applies to users with friends.
@@ -740,7 +719,7 @@ class User_model extends CI_Model
             $acted_on_sql = sprintf("SELECT DISTINCT source_id FROM activities " .
                                     "WHERE (actor_id = %d AND subject_id != %d AND " .
                                     "activity IN('share', 'comment', 'reply'))",
-                                    $_SESSION['user_id'], $_SESSION['user_id']);
+                                    $user_id, $user_id);
 
             // WHERE clause for notifications from other sources like profile_pic_change, comment, reply and birthday.
             // Only applies to users with friends.
@@ -812,7 +791,7 @@ class User_model extends CI_Model
                     // Not so new, but check whether this user has seen it.
                     $seen_sql = sprintf("SELECT user_id FROM notification_read " .
                                         "WHERE (user_id = %d AND activity_id = %d)",
-                                        $_SESSION['user_id'], $query->row_array()['activity_id']);
+                                        $user_id, $query->row_array()['activity_id']);
                     if ($this->utility_model->run_query($seen_sql)->num_rows() == 0) {
                         // Hasn't seen.
                         ++$num_notifications;
@@ -833,7 +812,7 @@ class User_model extends CI_Model
      * returned.
      * @return notifications for this user.
      */
-    public function get_notifications($offset, $limit, $filter = TRUE)
+    public function get_notifications($user_id, $offset, $limit, $filter = TRUE)
     {
         // Notifications that can/can't be combined together if the are performed on
         // the same object.
@@ -844,33 +823,33 @@ class User_model extends CI_Model
                                 "'confirmed_join_group_request', 'added_photo'";
 
         // Get the ID's of all this user's friends.
-        $friends_ids = $this->get_friends_ids();
+        $friends_ids = $this->get_friends_ids($user_id);
         $friends_ids[] = 0;  // Add an extra element for query-safety.
         $friends_ids_str = implode(',', $friends_ids);
 
         // WHERE clause for notifications having this user as a direct target.
         $primary_notifs_clause = sprintf("subject_id = %d AND actor_id != %d",
-                                         $_SESSION['user_id'], $_SESSION['user_id']);
+                                         $user_id, $user_id);
 
         if ($filter) {
             // Query to get the last time the user read a notification.
             $last_read_date_sql = sprintf("SELECT date_read FROM notification_read " .
                                             "WHERE (user_id = %d) ORDER BY date_read DESC " .
                                             "LIMIT 1",
-                                            $_SESSION['user_id']);
+                                            $user_id);
             $last_read_date_query = $this->utility_model->run_query($last_read_date_sql);
             if ($last_read_date_query->num_rows() == 0) {
                 // User has'nt read any notifications before, use his account creation date.
                 $last_read_date_sql = sprintf("SELECT date_created FROM users " .
                                                 "WHERE (user_id = %d)",
-                                                $_SESSION['user_id']);
+                                                $user_id);
             }
 
             // Query to get activities that were performed by this user..
             $acted_on_sql = sprintf("SELECT DISTINCT source_id FROM activities " .
                                     "WHERE (actor_id = %d AND subject_id != %d AND " .
                                             "activity IN('share', 'comment', 'reply'))",
-                                    $_SESSION['user_id'], $_SESSION['user_id']);
+                                    $user_id, $user_id);
 
             // WHERE clause for notifications from other sources like profile_pic_change, comment and reply.
             // Only applies to users with friends.
@@ -910,7 +889,7 @@ class User_model extends CI_Model
             $acted_on_sql = sprintf("SELECT DISTINCT source_id FROM activities " .
                                     "WHERE (actor_id = %d AND subject_id != %d AND " .
                                             "activity IN('share', 'comment', 'reply'))",
-                                    $_SESSION['user_id'], $_SESSION['user_id']);
+                                    $user_id, $user_id);
 
             // WHERE clause for notifications from other sources
             // like profile_pic_change, comment, reply and birthday.
@@ -948,16 +927,16 @@ class User_model extends CI_Model
         /// as they are stored in different tables.
 
         /// IDS of shared posts.
-        $shared_posts_ids = $this->utility_model->get_shared_items_ids('post', [$_SESSION['user_id']]);
+        $shared_posts_ids = $this->utility_model->get_shared_items_ids('post', [$user_id]);
 
         /// IDs of shared photos.
-        $shared_photos_ids = $this->utility_model->get_shared_items_ids('photo', [$_SESSION['user_id']]);
+        $shared_photos_ids = $this->utility_model->get_shared_items_ids('photo', [$user_id]);
 
         /// IDs of shared videos.
-        $shared_videos_ids = $this->utility_model->get_shared_items_ids('video', [$_SESSION['user_id']]);
+        $shared_videos_ids = $this->utility_model->get_shared_items_ids('video', [$user_id]);
 
         /// IDs of shared links.
-        $shared_links_ids = $this->utility_model->get_shared_items_ids('link', [$_SESSION['user_id']]);
+        $shared_links_ids = $this->utility_model->get_shared_items_ids('link', [$user_id]);
 
         $notifications = $this->utility_model->run_query($notifs_sql)->result_array();
         foreach ($notifications as &$n) {
@@ -1000,7 +979,7 @@ class User_model extends CI_Model
                                                 "date_entered > (%s))",
                                                 $n['source_id'], $n['source_type'], $n['activity'],
                                                 $n['subject_id'], $n['activity_id'], $n['actor_id'],
-                                                $_SESSION['user_id'], $last_read_date_sql);
+                                                $user_id, $last_read_date_sql);
                 }
                 else {
                     $num_actors_sql = sprintf("SELECT DISTINCT actor_id FROM activities " .
@@ -1010,7 +989,7 @@ class User_model extends CI_Model
                                                 $n['source_id'], $n['source_type'],
                                                 $n['activity'], $n['subject_id'],
                                                 $n['activity_id'], $n['actor_id'],
-                                                $_SESSION['user_id']);
+                                                $user_id);
                 }
                 $n['num_actors'] = $this->utility_model->run_query($num_actors_sql)->num_rows();
             }
@@ -1047,7 +1026,7 @@ class User_model extends CI_Model
                     // Check whether this user has seen it before.
                     $seen_sql = sprintf("SELECT user_id FROM notification_read " .
                                         "WHERE (user_id = %d AND activity_id = %d)",
-                                        $_SESSION['user_id'], $activity_id);
+                                        $user_id, $activity_id);
                     if ($this->utility_model->run_query($seen_sql)->num_rows() == 0) {
 
                         // Hasn't seen.
@@ -1074,7 +1053,7 @@ class User_model extends CI_Model
                 $sql = sprintf("INSERT INTO notification_read " .
                                 "(user_id, activity_id, date_read) " .
                                 "VALUES (%d, %d, '%s')",
-                                $_SESSION['user_id'], $r['activity_id'],
+                                $user_id, $r['activity_id'],
                                 $r['date_entered']);
                 $this->utility_model->run_query($sql);
             }
@@ -1098,7 +1077,7 @@ class User_model extends CI_Model
             }
 
             if (in_array($notif['activity'], array('comment','reply')) &&
-                $notif['subject_id'] != $_SESSION['user_id']) {
+                $notif['subject_id'] != $user_id) {
                 // Get the gender of the subject.
                 $gender_sql = sprintf("SELECT gender FROM users WHERE user_id = %d LIMIT 1",
                                         $notif['subject_id']);
@@ -1159,15 +1138,15 @@ class User_model extends CI_Model
      * @return whether two users are friends or there exists a freind request
      * between them.
      */
-    public function get_friendship_status($user_id)
+    public function get_friendship_status($user_id, $other_id)
     {
         // Check whether the two users are already friends.
         $fr_sql = sprintf("SELECT id FROM friends " .
                             "WHERE (user_id = %d AND friend_id = %d) OR " .
                                     "(user_id = %d AND friend_id = %d) " .
                             "LIMIT 1",
-                            $_SESSION['user_id'], $user_id,
-                            $user_id, $_SESSION['user_id']);
+                            $user_id, $other_id,
+                            $other_id, $user_id);
         $fr_query = $this->utility_model->run_query($fr_sql);
         $data['are_friends'] = FALSE;
         if ($fr_query->num_rows() == 1) {
@@ -1183,8 +1162,8 @@ class User_model extends CI_Model
                                 "WHERE (user_id = %d AND target_id = %d) OR " .
                                         "(user_id = %d AND target_id = %d) " .
                                 "LIMIT 1",
-                                $_SESSION['user_id'], $user_id,
-                                $user_id, $_SESSION['user_id']);
+                                $user_id, $other_id,
+                                $other_id, $user_id);
             $req_query = $this->utility_model->run_query($req_sql);
 
             $data['fr_sent'] = FALSE;
@@ -1205,9 +1184,9 @@ class User_model extends CI_Model
      * @param $limit
      * @return users whom the current logged user might be knowing.
      */
-    public function get_suggested_users($offset, $limit)
+    public function get_suggested_users($user_id, $offset, $limit)
     {
-        $friends_ids = $this->get_friends_ids();
+        $friends_ids = $this->get_friends_ids($user_id);
         $friends_ids[] = 0;
         $friends_ids = implode(',', $friends_ids);
 
@@ -1216,13 +1195,13 @@ class User_model extends CI_Model
                                     "WHERE (user_id = %d OR target_id = %d) AND " .
                                         "confirmed IS FALSE " .
                                     "LIMIT 1",
-                                    $_SESSION['user_id'], $_SESSION['user_id']);
+                                    $user_id, $user_id);
         $pending_fr_query = $this->utility_model->run_query($pending_fr_sql);
         $pending_fr_results = $pending_fr_query->result_array();
 
         $pending_fr_user_ids =  [0];
         foreach ($pending_fr_results as $pr) {
-            if ($pr['user_id'] == $_SESSION['user_id'])
+            if ($pr['user_id'] == $user_id)
                 $pending_fr_user_ids[] = $pr['target_id'];
             else
                 $pending_fr_user_ids[] = $pr['user_id'];
@@ -1236,7 +1215,7 @@ class User_model extends CI_Model
                         "WHERE u.user_id NOT IN (%s) AND u.user_id NOT IN(%s) AND u.user_id != %d AND " .
                             "(f.friend_id IN(%s) OR f.user_id IN (%s)) " .
                         "GROUP BY u.user_id ORDER BY COUNT(*) DESC LIMIT %d, %d",
-                        $friends_ids, $pending_fr_user_ids, $_SESSION['user_id'],
+                        $friends_ids, $pending_fr_user_ids, $user_id,
                         $friends_ids, $friends_ids,
                         $offset, $limit);
 
@@ -1257,17 +1236,17 @@ class User_model extends CI_Model
      * seen.
      * @return number of friend requests for the current logged in user.
      */
-    public function get_num_friend_requests($filter = TRUE)
+    public function get_num_friend_requests($user_id, $filter = TRUE)
     {
         if ($filter) {
             $req_sql = sprintf("SELECT COUNT(user_id) FROM friend_requests " .
                                 "WHERE (target_id = %d AND seen IS FALSE AND confirmed IS FALSE)",
-                                $_SESSION['user_id']);
+                                $user_id);
         }
         else {
             $req_sql = sprintf("SELECT COUNT(user_id) FROM friend_requests " .
                                 "WHERE (target_id = %d AND confirmed IS FALSE)",
-                                $_SESSION['user_id']);
+                                $user_id);
         }
 
         $req_query = $this->utility_model->run_query($req_sql);
@@ -1279,12 +1258,12 @@ class User_model extends CI_Model
      *
      * @return friend requests for the current logged in user.
      */
-    public function get_friend_requests()
+    public function get_friend_requests($user_id, $offset, $limit)
     {
         $req_sql = sprintf("SELECT user_id, seen FROM friend_requests " .
                             "WHERE (target_id = %d AND confirmed IS FALSE) " .
-                            "ORDER BY date_entered DESC",
-                            $_SESSION['user_id']);
+                            "ORDER BY date_entered DESC LIMIT %d, %d",
+                            $user_id, $offset, $limit);
         $req_query = $this->utility_model->run_query($req_sql);
 
         $friend_requests = $req_query->result_array();
@@ -1292,7 +1271,7 @@ class User_model extends CI_Model
             if (!$fr['seen']) {
                 $update_sql = sprintf("UPDATE friend_requests SET seen = 1 " .
                                         "WHERE (target_id = %d AND user_id = %d)",
-                                        $_SESSION['user_id'], $fr['user_id']);
+                                        $user_id, $fr['user_id']);
                 $this->utility_model->run_query($update_sql);
             }
 
@@ -1313,9 +1292,9 @@ class User_model extends CI_Model
      *
      * @param $target_id ID of user to send request to.
      */
-    public function send_friend_request($target_id)
+    public function send_friend_request($user_id, $target_id)
     {
-        $friendship_status = $this->get_friendship_status($target_id);
+        $friendship_status = $this->get_friendship_status($user_id, $target_id);
         if ($friendship_status['are_friends'] || $friendship_status['fr_sent']) {
             throw new IllegalAccessException(
                 "Either the two of you are already friends, " .
@@ -1325,7 +1304,7 @@ class User_model extends CI_Model
 
         $fr_sql = sprintf("INSERT INTO friend_requests " .
                             "(user_id, target_id) VALUES (%d, %d)",
-                            $_SESSION['user_id'], $target_id);
+                            $user_id, $target_id);
         $this->utility_model->run_query($fr_sql);
 
         // Dispatch an activity.
@@ -1333,16 +1312,16 @@ class User_model extends CI_Model
         $activity_sql = sprintf("INSERT INTO activities " .
                                 "(actor_id, subject_id, source_id, source_type, activity) " .
                                 "VALUES (%d, %d, %d, 'friend_request', 'friend_request')",
-                                $_SESSION['user_id'], $target_id, $request_id);
+                                $user_id, $target_id, $request_id);
         $this->utility_model->run_query($activity_sql);
     }
 
-    public function get_friend_request($request_id)
+    public function get_friend_request($user_id, $request_id)
     {
         $sql = sprintf("SELECT fr.*, u.profile_name FROM friend_requests fr " .
                         "LEFT JOIN users u ON (fr.user_id = u.user_id) " .
                         "WHERE request_id = %d AND target_id = %d",
-                        $request_id, $_SESSION['user_id']);
+                        $request_id, $user_id);
         $query = $this->utility_model->run_query($sql);
         if ($query->num_rows() == 0) {
             throw new NotFoundException();
@@ -1361,12 +1340,12 @@ class User_model extends CI_Model
      *
      * @param $friend_id ID of the user who sent him a request.
      */
-    public function confirm_friend_request($friend_id)
+    public function confirm_friend_request($user_id, $friend_id)
     {
         // First check whether a friend request actually exist.
         $id_sql = sprintf("SELECT request_id FROM friend_requests " .
                             "WHERE (target_id = %d AND user_id = %d AND confirmed IS FALSE)",
-                            $_SESSION['user_id'], $friend_id);
+                            $user_id, $friend_id);
         $id_query = $this->utility_model->run_query($id_sql);
         if ($id_query->num_rows() == 0) {
             throw new IllegalAccessException(
@@ -1377,31 +1356,31 @@ class User_model extends CI_Model
         // Add the user to the list of friends.
         $fr_sql = sprintf("INSERT INTO friends " .
                             "(user_id, friend_id) VALUES (%d, %d)",
-                            $_SESSION['user_id'], $friend_id);
+                            $user_id, $friend_id);
         $this->utility_model->run_query($fr_sql);
 
         // Update the friend_requests table.
         $update_sql = sprintf("UPDATE friend_requests SET confirmed = 1 " .
                                 "WHERE (user_id = %d AND target_id = %d)",
-                                $friend_id, $_SESSION['user_id']);
+                                $friend_id, $user_id);
         $this->utility_model->run_query($update_sql);
 
         // Dispatch an activity.
         $activity_sql = sprintf("INSERT INTO activities " .
                                 "(actor_id, subject_id, source_id, source_type, activity) " .
                                 "VALUES (%d, %d, %d, 'user', 'confirmed_friend_request')",
-                                $_SESSION['user_id'], $friend_id, $_SESSION['user_id']);
+                                $user_id, $friend_id, $user_id);
         $this->utility_model->run_query($activity_sql);
     }
 
-    public function delete_friend_request($user_id)
+    public function delete_friend_request($user_id, $requesting_user_id)
     {
         // Get friend request ID for deleting this activity from activities table.
         $request_id_sql = sprintf("SELECT request_id FROM friend_requests " .
                                     "WHERE (user_id = %d AND target_id = %d) OR " .
                                     "(user_id = %d AND target_id = %d) LIMIT 1",
-                                    $_SESSION['user_id'], $user_id,
-                                    $user_id, $_SESSION['user_id']);
+                                    $user_id, $requesting_user_id,
+                                    $requesting_user_id, $user_id);
         $request_id_query = $this->utility_model->run_query($request_id_sql);
         if ($request_id_query->num_rows() == 0) {
             throw new NotFoundException();
@@ -1419,14 +1398,14 @@ class User_model extends CI_Model
         $fr_sql = sprintf("DELETE from friend_requests " .
                             "WHERE (user_id = %d AND target_id = %d) OR " .
                             "(user_id = %d AND target_id = %d) LIMIT 1",
-                            $_SESSION['user_id'], $user_id,
-                            $user_id, $_SESSION['user_id']);
+                            $user_id, $requesting_user_id,
+                            $requesting_user_id, $user_id);
         $this->utility_model->run_query($fr_sql);
     }
 
-    public function unfriend_user($user_id)
+    public function unfriend_user($user_id, $friend_id)
     {
-        if ( ! $this->are_friends($user_id)) {
+        if ( ! $this->are_friends($user_id, $friend_id)) {
             throw new IllegalAccessException(
                 "This user is not your friend."
             );
@@ -1436,8 +1415,8 @@ class User_model extends CI_Model
         $request_id_sql = sprintf("SELECT request_id FROM friend_requests " .
                                     "WHERE (user_id = %d AND target_id = %d) OR " .
                                     "(user_id = %d AND target_id = %d) LIMIT 1",
-                                    $_SESSION['user_id'], $user_id,
-                                    $user_id, $_SESSION['user_id']);
+                                    $user_id, $friend_id,
+                                    $friend_id, $user_id);
         $request_id_query = $this->utility_model->run_query($request_id_sql);
         $request_id = $request_id_query->row_array()['request_id'];
 
@@ -1452,15 +1431,15 @@ class User_model extends CI_Model
         $fr_sql = sprintf("DELETE from friend_requests " .
                             "WHERE (user_id = %d AND target_id = %d) OR " .
                             "(user_id = %d AND target_id = %d) LIMIT 1",
-                            $_SESSION['user_id'], $user_id,
-                            $user_id, $_SESSION['user_id']);
+                            $user_id, $friend_id,
+                            $friend_id, $user_id);
         $this->utility_model->run_query($fr_sql);
 
         // Un-friend the user.
         $unfr_sql = sprintf("DELETE FROM friends WHERE (user_id = %d AND friend_id = %d) OR " .
                             "(user_id = %d AND friend_id = %d) LIMIT 1",
-                            $_SESSION['user_id'], $user_id,
-                            $user_id, $_SESSION['user_id']);
+                            $user_id, $friend_id,
+                            $friend_id, $user_id);
         $this->utility_model->run_query($unfr_sql);
     }
 
@@ -1470,12 +1449,12 @@ class User_model extends CI_Model
      * @param $message the message to be sent.
      * @param $receiver_id ID the receiver
      */
-    public function send_message($message, $receiver_id)
+    public function send_message($sender_id, $receiver_id, $message)
     {
         $message_sql = sprintf("INSERT INTO messages " .
                                 "(sender_id, receiver_id, message) " .
                                 "VALUES (%d, %d, %s)",
-                                $_SESSION['user_id'], $receiver_id,
+                                $sender_id, $receiver_id,
                                 $this->db->escape($message));
         $this->utility_model->run_query($message_sql);
     }
@@ -1486,13 +1465,13 @@ class User_model extends CI_Model
      * @param $user_id ID of user whom this user was chatting with.
      * @return number of chat messages between these two users.
      */
-    public function get_num_conversation($user_id)
+    public function get_num_conversation($user_id, $other_id)
     {
         $sql = sprintf("SELECT COUNT(message_id) FROM messages " .
                         "WHERE (receiver_id = %d AND sender_id = %d) OR " .
                                 "(receiver_id = %d AND sender_id = %d)",
-                        $user_id, $_SESSION['user_id'],
-                        $_SESSION['user_id'], $user_id);
+                        $other_id, $user_id,
+                        $user_id, $other_id);
         $query = $this->utility_model->run_query($sql);
 
         return $query->row_array()['COUNT(message_id)'];
@@ -1506,29 +1485,29 @@ class User_model extends CI_Model
      * @param $limit
      * @return chat messages between these two users.
      */
-    public function get_conversation($user_id, $offset, $limit)
+    public function get_conversation($user_id, $other_id, $offset, $limit)
     {
         $sql = sprintf("SELECT * FROM messages " .
                      "WHERE (receiver_id = %d AND sender_id = %d) OR " .
                             "(receiver_id = %d AND sender_id = %d) " .
                      "LIMIT %d, %d",
-                     $user_id, $_SESSION['user_id'],
-                     $_SESSION['user_id'], $user_id,
+                     $other_id, $user_id,
+                     $user_id, $other_id,
                      $offset, $limit);
         $query = $this->utility_model->run_query($sql);
 
         $messages = $query->result_array();
-        $sender = $this->get_profile_name($_SESSION['user_id']);
-        $receiver = $this->get_profile_name($user_id);
+        $sender = $this->get_profile_name($user_id);
+        $receiver = $this->get_profile_name($other_id);
         foreach ($messages as &$msg) {
-            if ($msg['sender_id'] == $_SESSION['user_id']) {
+            if ($msg['sender_id'] == $user_id) {
                 $msg['sender'] = $sender;
             }
-            else if ($msg['sender_id'] == $user_id) {
+            else if ($msg['sender_id'] == $other_id) {
                 $msg['sender'] = $receiver;
             }
 
-            if (($msg['seen'] == 0) && ($msg['receiver_id'] == $_SESSION['user_id'])) {
+            if (($msg['seen'] == 0) && ($msg['receiver_id'] == $user_id)) {
                 $update_sql = sprintf("UPDATE messages SET seen = 1 " .
                                         "WHERE (message_id = %d) LIMIT 1",
                                         $msg['message_id']);

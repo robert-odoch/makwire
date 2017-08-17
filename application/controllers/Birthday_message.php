@@ -16,9 +16,6 @@ class Birthday_message extends CI_Controller
         $this->load->model([
             'user_model', 'birthday_message_model', 'utility_model'
         ]);
-
-        // Check whether the user hasn't been logged out from some where else.
-        $this->user_model->confirm_logged_in();
     }
 
     public function like($message_id = 0)
@@ -41,13 +38,13 @@ class Birthday_message extends CI_Controller
     public function likes($message_id = 0, $offset = 0)
     {
         try {
-            $message = $this->birthday_message_model->get_message($message_id);
+            $message = $this->birthday_message_model->get_message($_SESSION['user_id'], $message_id);
         }
         catch (NotFoundException $e) {
             show_404();
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'People who liked this message';
         $this->load->view('common/header', $data);
 
@@ -93,7 +90,7 @@ class Birthday_message extends CI_Controller
         }
 
         try {
-            $message = $this->birthday_message_model->get_message($message_id);
+            $message = $this->birthday_message_model->get_message($_SESSION['user_id'], $message_id);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -115,7 +112,7 @@ class Birthday_message extends CI_Controller
             redirect(base_url('user/error'));
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Reply to birthday message';
         $this->load->view('common/header', $data);
 
@@ -127,13 +124,13 @@ class Birthday_message extends CI_Controller
     public function replies($message_id = 0, $offset = 0)
     {
         try {
-            $message = $this->birthday_message_model->get_message($message_id);
+            $message = $this->birthday_message_model->get_message($_SESSION['user_id'], $message_id);
         }
         catch (NotFoundException $e) {
             show_404();
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'People who replied to this message';
         $this->load->view('common/header', $data);
 

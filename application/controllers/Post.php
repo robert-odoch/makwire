@@ -14,9 +14,6 @@ class Post extends CI_Controller
         }
 
         $this->load->model(['post_model', 'user_model', 'utility_model']);
-
-        // Check whether the user hasn't been logged out from some where else.
-        $this->user_model->confirm_logged_in();
     }
 
     public function new()
@@ -34,7 +31,7 @@ class Post extends CI_Controller
             redirect(base_url("user/{$_SESSION['user_id']}"));
         }
 
-        $this->post_model->post($post, 'timeline', $_SESSION['user_id']);
+        $this->post_model->post($post, $_SESSION['user_id']);
         redirect(base_url("user/{$_SESSION['user_id']}"));
     }
 
@@ -43,7 +40,7 @@ class Post extends CI_Controller
         $data = [];
 
         try {
-            $post = $this->post_model->get_post($post_id);
+            $post = $this->post_model->get_post($_SESSION['user_id'], $post_id);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -67,7 +64,7 @@ class Post extends CI_Controller
             }
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Edit post - Makwire';
         $this->load->view('common/header', $data);
 
@@ -79,7 +76,7 @@ class Post extends CI_Controller
     public function delete($post_id = 0)
     {
         try {
-            $post = $this->post_model->get_post($post_id);
+            $post = $this->post_model->get_post($_SESSION['user_id'], $post_id);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -87,7 +84,7 @@ class Post extends CI_Controller
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             try {
-                $this->post_model->delete_post($post);
+                $this->post_model->delete_post($_SESSION['user_id'], $post);
                 $_SESSION['message'] = 'Your post has been successfully deleted.';
                 redirect(base_url('user/success'));
             }
@@ -99,7 +96,7 @@ class Post extends CI_Controller
             }
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'Delete post - Makwire';
         $this->load->view('common/header', $data);
 
@@ -149,20 +146,20 @@ class Post extends CI_Controller
         }
 
         try {
-            $post = $this->post_model->get_post($post_id);
+            $post = $this->post_model->get_post($_SESSION['user_id'], $post_id);
         }
         catch (NotFoundException $e) {
             show_404();
         }
 
-        if (!$this->user_model->are_friends($post['user_id'])) {
+        if (!$this->user_model->are_friends($_SESSION['user_id'], $post['user_id'])) {
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = "You don't have the proper permissions to comment on this post.";
             redirect(base_url('user/error'));
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Comment on this post';
         $this->load->view('common/header', $data);
 
@@ -197,13 +194,13 @@ class Post extends CI_Controller
     public function likes($post_id = 0, $offset = 0)
     {
         try {
-            $post = $this->post_model->get_post($post_id);
+            $post = $this->post_model->get_post($_SESSION['user_id'], $post_id);
         }
         catch (NotFoundException $e) {
             show_404();
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'People who liked this post';
         $this->load->view('common/header', $data);
 
@@ -241,13 +238,13 @@ class Post extends CI_Controller
     public function comments($post_id = 0, $offset = 0)
     {
         try {
-            $post = $this->post_model->get_post($post_id);
+            $post = $this->post_model->get_post($_SESSION['user_id'], $post_id);
         }
         catch (NotFoundException $e) {
             show_404();
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'Comments on this post';
         $this->load->view('common/header', $data);
 
@@ -268,7 +265,7 @@ class Post extends CI_Controller
             $data['next_offset'] = ($offset + $limit);
         }
 
-        $data['comments'] = $this->post_model->get_comments($post, $offset, $limit);
+        $data['comments'] = $this->post_model->get_comments($_SESSION['user_id'], $post, $offset, $limit);
         $post_url = base_url("user/post/{$post_id}");
         $post['post'] = character_limiter(
             $post['post'], 540, "&#8230;<a href='{$post_url}'>view more</a>"
@@ -283,13 +280,13 @@ class Post extends CI_Controller
     public function shares($post_id = 0, $offset = 0)
     {
         try {
-            $post = $this->post_model->get_post($post_id);
+            $post = $this->post_model->get_post($_SESSION['user_id'], $post_id);
         }
         catch (NotFoundException $e) {
             show_404();
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'People who shared this post';
         $this->load->view('common/header', $data);
 

@@ -14,9 +14,6 @@ class Link extends CI_Controller
         }
 
         $this->load->model(['user_model', 'link_model', 'utility_model']);
-
-        // Check whether the user hasn't been logged out from some where else.
-        $this->user_model->confirm_logged_in();
     }
 
     public function new()
@@ -32,12 +29,12 @@ class Link extends CI_Controller
             }
             else {
                 $link_data = $this->get_link_data($link_url);
-                $this->link_model->publish($link_data);
+                $this->link_model->publish($link_data, $_SESSION['user_id']);
                 redirect(base_url("user/{$_SESSION['user_id']}"));
             }
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Add link to a resource from another website';
         $this->load->view('common/header', $data);
 
@@ -48,7 +45,7 @@ class Link extends CI_Controller
     public function edit($link_id = 0)
     {
         try {
-            $link = $this->link_model->get_link($link_id);
+            $link = $this->link_model->get_link($_SESSION['user_id'], $link_id);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -67,7 +64,7 @@ class Link extends CI_Controller
             redirect(base_url("user/link/{$link_id}"));
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'Edit link - Makwire';
         $this->load->view('common/header', $data);
 
@@ -83,7 +80,7 @@ class Link extends CI_Controller
     public function delete($link_id = 0)
     {
         try {
-            $link = $this->link_model->get_link($link_id);
+            $link = $this->link_model->get_link($_SESSION['user_id'], $link_id);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -91,7 +88,7 @@ class Link extends CI_Controller
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             try {
-                $this->link_model->delete_link($link);
+                $this->link_model->delete_link($_SESSION['user_id'], $link);
                 $_SESSION['message'] = 'Your link has been successfully deleted.';
                 redirect(base_url('user/success'));
             }
@@ -103,7 +100,7 @@ class Link extends CI_Controller
             }
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'Delete link - Makwire';
         $this->load->view('common/header', $data);
 
@@ -136,7 +133,7 @@ class Link extends CI_Controller
         }
 
         try {
-            $link = $this->link_model->get_link($link_id);
+            $link = $this->link_model->get_link($_SESSION['user_id'], $link_id);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -149,7 +146,7 @@ class Link extends CI_Controller
             redirect(base_url('user/error'));
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Say something about this link';
         $this->load->view('common/header', $data);
 
@@ -193,20 +190,20 @@ class Link extends CI_Controller
         }
 
         try {
-            $link = $this->link_model->get_link($link_id);
+            $link = $this->link_model->get_link($_SESSION['user_id'], $link_id);
         }
         catch (NotFoundException $e) {
             show_404();
         }
 
-        if (!$this->user_model->are_friends($link['user_id'])) {
+        if (!$this->user_model->are_friends($_SESSION['user_id'], $link['user_id'])) {
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = 'You don\'t have the proper permissions to comment on this link.';
             redirect(base_url('user/error'));
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Comment on this link';
         $this->load->view('common/header', $data);
 
@@ -236,13 +233,13 @@ class Link extends CI_Controller
     public function likes($link_id = 0, $offset = 0)
     {
         try {
-            $link = $this->link_model->get_link($link_id);
+            $link = $this->link_model->get_link($_SESSION['user_id'], $link_id);
         }
         catch (NotFoundException $e) {
             show_404();
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'People who liked this link';
         $this->load->view('common/header', $data);
 
@@ -275,13 +272,13 @@ class Link extends CI_Controller
     public function comments($link_id = 0, $offset = 0)
     {
         try {
-            $link = $this->link_model->get_link($link_id);
+            $link = $this->link_model->get_link($_SESSION['user_id'], $link_id);
         }
         catch (NotFoundException $e) {
             show_404();
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'Comments on this link';
         $this->load->view('common/header', $data);
 
@@ -302,7 +299,7 @@ class Link extends CI_Controller
             $data['next_offset'] = ($offset + $limit);
         }
 
-        $data['comments'] = $this->link_model->get_comments($link, $offset, $limit);
+        $data['comments'] = $this->link_model->get_comments($_SESSION['user_id'], $link, $offset, $limit);
         $data['object'] = 'link';
         $data['link'] = $link;
         $this->load->view('show/comments', $data);
@@ -312,13 +309,13 @@ class Link extends CI_Controller
     public function shares($link_id = 0, $offset = 0)
     {
         try {
-            $link = $this->link_model->get_link($link_id);
+            $link = $this->link_model->get_link($_SESSION['user_id'], $link_id);
         }
         catch (NotFoundException $e) {
             show_404();
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'People who shared this link';
         $this->load->view('common/header', $data);
 

@@ -153,7 +153,7 @@ class Activity_model extends CI_Model
         return $replies;
     }
 
-    public function getComments(Commentable $object, $offset, $limit)
+    public function getComments($visitor_id, Commentable $object, $offset, $limit)
     {
         $this->load->model('comment_model');
 
@@ -167,7 +167,7 @@ class Activity_model extends CI_Model
         $comments = array();
         foreach ($results as $r) {
             // Get the detailed comment.
-            $comment = $this->comment_model->get_comment($r['comment_id']);
+            $comment = $this->comment_model->get_comment($visitor_id, $r['comment_id']);
             array_push($comments, $comment);
         }
 

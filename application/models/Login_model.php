@@ -35,11 +35,7 @@ class Login_model extends CI_Model
 
             $this->utility_model->run_query($login_sql);
 
-            session_start();
-            session_regenerate_id(TRUE);
-            $_SESSION['user_id'] = $user_query->row()->user_id;
-
-            return TRUE;
+            return $user_query->row()->user_id;
         }
         else {
             return FALSE;

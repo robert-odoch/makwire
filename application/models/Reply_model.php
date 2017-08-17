@@ -25,7 +25,7 @@ class Reply_model extends CI_Model
      * @param $reply_id the ID of the reply in the comments table.
      * @return the reply with the given ID.
      */
-    public function get_reply($reply_id)
+    public function get_reply($visitor_id, $reply_id)
     {
         $reply_sql = sprintf("SELECT c.*, u.profile_name AS commenter " .
                                 "FROM comments c " .
@@ -46,7 +46,7 @@ class Reply_model extends CI_Model
         $reply['timespan'] = timespan(mysql_to_unix($reply['date_entered']), now(), 1);
 
         // Add data used by views.
-        $reply['viewer_is_friend_to_owner'] = $this->user_model->are_friends($reply['commenter_id']);
+        $reply['viewer_is_friend_to_owner'] = $this->user_model->are_friends($visitor_id, $reply['commenter_id']);
 
         $simpleReply = new SimpleReply($reply['comment_id'], $reply['commenter_id']);
 
@@ -54,7 +54,7 @@ class Reply_model extends CI_Model
         $reply['num_likes'] = $this->activity_model->getNumLikes($simpleReply);
 
         // Has the user liked the reply?
-        $reply['liked'] = $this->activity_model->isLiked($simpleReply);
+        $reply['liked'] = $this->activity_model->isLiked($simpleReply, $visitor_id);
 
         return $reply;
     }
@@ -81,7 +81,7 @@ class Reply_model extends CI_Model
 
         $owner_result = $owner_query->row_array();
         $owner_id = $owner_result['commenter_id'];
-        if (!$this->user_model->are_friends($owner_id)) {
+        if (!$this->user_model->are_friends($user_id, $owner_id)) {
             throw new IllegalAccessException(
                 "You don't have the proper permissions to like this reply."
             );

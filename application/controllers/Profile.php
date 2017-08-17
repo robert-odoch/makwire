@@ -23,9 +23,6 @@ class Profile extends CI_Controller
         $this->load->library('image_lib');
         $this->load->helper(['form']);
         $this->load->model(['user_model', 'profile_model']);
-
-        // Check whether the user hasn't been logged out from some where else.
-        $this->user_model->confirm_logged_in();
     }
 
     public function change_profile_picture()
@@ -62,12 +59,12 @@ class Profile extends CI_Controller
                 $this->image_lib->resize();
 
                 // Record it in the database.
-                $this->profile_model->set_profile_picture($upload_data);
+                $this->profile_model->set_profile_picture($upload_data, $_SESSION['user_id']);
                 redirect(base_url("user/{$_SESSION['user_id']}"));
             }
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Change profile picture';
         $this->load->view('common/header', $data);
 
@@ -114,7 +111,7 @@ class Profile extends CI_Controller
 
             if (!isset($data['error_message'])) {
                 // Try saving the college and school.
-                if ($this->profile_model->add_college($data)) {
+                if ($this->profile_model->add_college($_SESSION['user_id'], $data)) {
                     $_SESSION['message'] = 'Your college and school have been succesfully saved.';
                     redirect(base_url('user/success'));
                 }
@@ -125,7 +122,7 @@ class Profile extends CI_Controller
             }
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Add your college';
         $this->load->view('common/header', $data);
 
@@ -183,7 +180,7 @@ class Profile extends CI_Controller
             }
 
             if (!isset($data['error_message'])) {
-                if ($this->profile_model->update_college($data)) {
+                if ($this->profile_model->update_college($_SESSION['user_id'], $data)) {
                     $_SESSION['message'] = 'Your edits have been succesfully saved.';
                     redirect(base_url('user/success'));
                 }
@@ -194,12 +191,12 @@ class Profile extends CI_Controller
             }
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Edit your college';
         $this->load->view('common/header', $data);
 
         try {
-            $user_college = $this->profile_model->get_user_college($user_college_id);
+            $user_college = $this->profile_model->get_user_college($_SESSION['user_id'], $user_college_id);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -235,17 +232,17 @@ class Profile extends CI_Controller
             $data['year_of_study'] = $this->input->post('year-of-study');
             $data['graduated'] = ($data['year_of_study'] == 0) ? 1 : 0;
 
-            $this->profile_model->add_programme($data);
+            $this->profile_model->add_programme($_SESSION['user_id'], $data);
             $_SESSION['message'] = 'Your programme details have been successfully saved.';
             redirect(base_url('user/success'));
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Add your programme';
         $this->load->view('common/header', $data);
 
         try {
-            $user_school = $this->profile_model->get_user_school($user_school_id);
+            $user_school = $this->profile_model->get_user_school($_SESSION['user_id'], $user_school_id);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -274,12 +271,12 @@ class Profile extends CI_Controller
             redirect(base_url('user/success'));
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Edit your programme';
         $this->load->view('common/header', $data);
 
         try {
-            $user_programme = $this->profile_model->get_user_programme($user_programme_id);
+            $user_programme = $this->profile_model->get_user_programme($_SESSION['user_id'], $user_programme_id);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -322,7 +319,7 @@ class Profile extends CI_Controller
             }
 
             if (!isset($data['error_message'])) {
-                if ($this->profile_model->add_hall($data)) {
+                if ($this->profile_model->add_hall($_SESSION['user_id'], $data)) {
                     $_SESSION['message'] = 'Your hall details have been successfully saved.';
                     redirect(base_url('user/success'));
                 }
@@ -334,7 +331,7 @@ class Profile extends CI_Controller
             }
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Add hall of attachment/residence';
         $this->load->view('common/header', $data);
 
@@ -379,7 +376,7 @@ class Profile extends CI_Controller
             }
 
             if (!isset($data['error_message'])) {
-                if ($this->profile_model->update_hall($data)) {
+                if ($this->profile_model->update_hall($_SESSION['user_id'], $data)) {
                     $_SESSION['message'] = 'Your edits have been successfully saved.';
                     redirect(base_url('user/success'));
                 }
@@ -390,12 +387,12 @@ class Profile extends CI_Controller
             }
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Edit hall of attachment/residence';
         $this->load->view('common/header', $data);
 
         try {
-            $user_hall = $this->profile_model->get_user_hall($user_hall_id);
+            $user_hall = $this->profile_model->get_user_hall($_SESSION['user_id'], $user_hall_id);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -452,7 +449,7 @@ class Profile extends CI_Controller
             }
 
             if (!isset($data['error_message'])) {
-                if ($this->profile_model->add_hostel($data)) {
+                if ($this->profile_model->add_hostel($_SESSION['user_id'], $data)) {
                     $_SESSION['message'] = 'Your hostel details have been successfully saved.';
                     redirect(base_url('user/success'));
                 }
@@ -464,7 +461,7 @@ class Profile extends CI_Controller
             }
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Add hostel';
         $this->load->view('common/header', $data);
 
@@ -507,7 +504,7 @@ class Profile extends CI_Controller
             }
 
             if (!isset($data['error_message'])) {
-                if ($this->profile_model->update_hostel($data)) {
+                if ($this->profile_model->update_hostel($_SESSION['user_id'], $data)) {
                     $_SESSION['message'] = 'Your edits have been successfully saved.';
                     redirect(base_url('user/success'));
                 }
@@ -519,12 +516,12 @@ class Profile extends CI_Controller
             }
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Edit hostel';
         $this->load->view('common/header', $data);
 
         try {
-            $user_hostel = $this->profile_model->get_user_hostel($user_hostel_id);
+            $user_hostel = $this->profile_model->get_user_hostel($_SESSION['user_id'], $user_hostel_id);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -562,13 +559,13 @@ class Profile extends CI_Controller
                 redirect(base_url('request-admin/add-country'));
             }
             else {
-                $this->profile_model->add_country($country_id);
+                $this->profile_model->add_country($_SESSION['user_id'], $country_id);
                 $_SESSION['message'] = 'Your country details have been successfully saved.';
                 redirect(base_url('user/success'));
             }
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Add your country of origin';
         $this->load->view('common/header', $data);
 
@@ -591,7 +588,7 @@ class Profile extends CI_Controller
             }
         }
         elseif ($district_id) {
-            if ($this->profile_model->add_district($district_id)) {
+            if ($this->profile_model->add_district($_SESSION['user_id'], $district_id)) {
                 $_SESSION['message'] = 'Your district details have been successfully updated.';
                 redirect(base_url('user/success'));
             }
@@ -600,7 +597,7 @@ class Profile extends CI_Controller
             }
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Add your district';
         $this->load->view('common/header', $data);
 

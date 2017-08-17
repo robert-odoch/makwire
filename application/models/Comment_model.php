@@ -30,7 +30,7 @@ class Comment_model extends CI_Model
      * @param $comment_id the ID of the comment in the comments table.
      * @return comment with the given ID.
      */
-    public function get_comment($comment_id)
+    public function get_comment($visitor_id, $comment_id)
     {
         $comment_sql = sprintf("SELECT commenter_id, comment, source_id, source_type, " .
                                 "date_entered, u.profile_name AS commenter " .
@@ -55,7 +55,7 @@ class Comment_model extends CI_Model
         $comment['timespan'] = timespan(mysql_to_unix($comment['date_entered']), now(), 1);
 
         // Add data used by views.
-        $comment['viewer_is_friend_to_owner'] = $this->user_model->are_friends($comment['commenter_id']);
+        $comment['viewer_is_friend_to_owner'] = $this->user_model->are_friends($visitor_id, $comment['commenter_id']);
 
         $simpleComment = new SimpleComment($comment['comment_id'], $comment['commenter_id']);
 
@@ -64,7 +64,7 @@ class Comment_model extends CI_Model
         $comment['num_replies'] = $this->activity_model->getNumReplies($simpleComment);
 
         // Has the user liked this comment?
-        $comment['liked'] = $this->activity_model->isLiked($simpleComment);
+        $comment['liked'] = $this->activity_model->isLiked($simpleComment, $visitor_id);
 
         return $comment;
     }
@@ -91,7 +91,7 @@ class Comment_model extends CI_Model
 
         $owner_result = $owner_query->row_array();
         $owner_id = $owner_result['commenter_id'];
-        if (!$this->user_model->are_friends($owner_id)) {
+        if (!$this->user_model->are_friends($user_id, $owner_id)) {
             throw new IllegalAccessException(
                 "You don't have the proper permissions to like this comment."
             );
@@ -151,7 +151,7 @@ class Comment_model extends CI_Model
      * @param $limit the maximum number of records to return.
      * @return the replies on this comment.
      */
-    public function get_replies($comment_id, $offset, $limit)
+    public function get_replies($visitor_id, $comment_id, $offset, $limit)
     {
         $replies_sql = sprintf("SELECT comment_id FROM comments " .
                                 "WHERE (source_type = 'comment' AND parent_id = %d) " .
@@ -163,7 +163,7 @@ class Comment_model extends CI_Model
         $replies = array();
         foreach ($results as $r) {
             // Get the detailed reply.
-            $reply = $this->reply_model->get_reply($r['comment_id']);
+            $reply = $this->reply_model->get_reply($visitor_id, $r['comment_id']);
             array_push($replies, $reply);
         }
 
@@ -177,13 +177,13 @@ class Comment_model extends CI_Model
         $this->db->query($sql);
     }
 
-    public function delete_comment($comment_id)
+    public function delete_comment($comment_id, $user_id)
     {
         $source_sql = sprintf('SELECT commenter_id, source_id, source_type FROM comments WHERE comment_id = %d',
                                 $comment_id);
         $source_query = $this->db->query($source_sql);
         $source_result = $source_query->row_array();
-        if ($source_result['commenter_id'] != $_SESSION['user_id']) {
+        if ($source_result['commenter_id'] != $user_id) {
             throw new IllegalAccessException(
                 "You don't have the proper permissions to delete this comment."
             );

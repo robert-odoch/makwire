@@ -17,14 +17,11 @@ class User extends CI_Controller
             'user_model', 'post_model', 'profile_model', 'photo_model',
             'link_model', 'utility_model'
         ]);
-
-        // Check whether the user hasn't been logged out from some where else.
-        $this->user_model->confirm_logged_in();
     }
 
     public function success()
     {
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
 
         // Defaults.
         $title = 'Success! - Makwire';
@@ -58,7 +55,7 @@ class User extends CI_Controller
 
     public function error()
     {
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
 
         // Defaults.
         $title = 'Error! - Makwire';
@@ -92,7 +89,7 @@ class User extends CI_Controller
 
     public function index($user_id = 0, $offset = 0)
     {
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = format_name($data['primary_user']) . ' posts';
 
         $data['is_visitor'] = ($user_id == $_SESSION['user_id']) ? FALSE : TRUE;
@@ -105,7 +102,7 @@ class User extends CI_Controller
 
         $data['suid'] = $user_id;
         $data['su_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
-        $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
+        $data['friendship_status'] = $this->user_model->get_friendship_status($_SESSION['user_id'], $user_id);
         $data['title'] = format_name($data['secondary_user']) . ' posts';
 
         $this->load->view('common/header', $data);
@@ -123,7 +120,7 @@ class User extends CI_Controller
             $data['next_offset'] = ($offset + $limit);
         }
 
-        $timeline_items = $this->user_model->get_timeline_items($user_id, $offset, $limit);
+        $timeline_items = $this->user_model->get_timeline_items($_SESSION['user_id'], $user_id, $offset, $limit);
         $data['items'] = $timeline_items;
         $data['page'] = 'timeline';
         $data['user_id'] = $user_id;
@@ -137,14 +134,14 @@ class User extends CI_Controller
             show_404();
         }
 
-        if (!$this->user_model->are_friends($user_id)) {
+        if (!$this->user_model->are_friends($_SESSION['user_id'], $user_id)) {
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = "You don't have the proper permissions.";
             redirect(base_url('user/error'));
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['user'] = $this->user_model->get_profile_name($user_id);
         $data['title'] = format_name($data['user']) . ' birthday';
         $data['is_visitor'] = ($user_id == $_SESSION['user_id']) ? FALSE : TRUE;
@@ -173,7 +170,7 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function send_birthday_message($user_id = 0, $age = 0)
+    public function send_birthday_message($receiver_id = 0, $age = 0)
     {
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
             $_SESSION['title'] = 'Permission Denied!';
@@ -187,7 +184,7 @@ class User extends CI_Controller
             $_SESSION['error_message'] = "Message can't be empty!";
         }
         else {
-            $this->user_model->send_birthday_message($message, $user_id, $age);
+            $this->user_model->send_birthday_message($_SESSION['user_id'], $message, $receiver_id, $age);
         }
 
         redirect($_SERVER['HTTP_REFERER']);
@@ -195,7 +192,7 @@ class User extends CI_Controller
 
     public function chat($offset = 0)
     {
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'Chat With Friends';
         $this->load->view('common/header', $data);
 
@@ -218,7 +215,7 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function send_message($user_id = 0, $offset = 0)
+    public function send_message($receiver_id = 0, $offset = 0)
     {
         $data = [];
 
@@ -228,34 +225,34 @@ class User extends CI_Controller
                 $data['message_error'] = "Message can't be empty!";
             }
             else {
-                $this->user_model->send_message($message, $user_id);
+                $this->user_model->send_message($_SESSION['user_id'], $receiver_id, $message);
             }
         }
 
         // Prevent a user from sending a message to himself.
-        if ($user_id === $_SESSION['user_id']) {
+        if ($receiver_id === $_SESSION['user_id']) {
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = "You can't send a message to yourself.";
             redirect(base_url('user/error'));
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         try {
-            $data['secondary_user'] = $this->user_model->get_profile_name($user_id);
+            $data['secondary_user'] = $this->user_model->get_profile_name($receiver_id);
         }
         catch (NotFoundException $e) {
             show_404();
         }
 
-        if (!$this->user_model->are_friends($user_id)) {
+        if (!$this->user_model->are_friends($_SESSION['user_id'], $receiver_id)) {
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = "You don't have the proper permissions to send a message to this user.";
             redirect(base_url('user/error'));
         }
 
-        $data['suid'] = $user_id;
+        $data['suid'] = $receiver_id;
         $data['title'] = "Send a message to {$data['secondary_user']}";
         $this->load->view('common/header', $data);
 
@@ -268,14 +265,14 @@ class User extends CI_Controller
             }
         }
 
-        $num_convo = $this->user_model->get_num_conversation($user_id);
+        $num_convo = $this->user_model->get_num_conversation($_SESSION['user_id'], $receiver_id);
         $data['has_next'] = FALSE;
         if (($num_convo - $offset) > $limit) {
             $data['has_next'] = TRUE;
             $data['next_offset'] = ($offset + $limit);
         }
 
-        $data['messages'] = $this->user_model->get_conversation($user_id, $offset, $limit);
+        $data['messages'] = $this->user_model->get_conversation($_SESSION['user_id'], $receiver_id, $offset, $limit);
         $this->load->view('message', $data);
         $this->load->view('common/footer');
     }
@@ -289,7 +286,7 @@ class User extends CI_Controller
             show_404();
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = format_name($post['author']) . ' post';
 
         $this->load->view('common/header', $data);
@@ -319,7 +316,7 @@ class User extends CI_Controller
             show_404();
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = format_name($photo['author']) . ' photo';
 
         $this->load->view('common/header', $data);
@@ -349,7 +346,7 @@ class User extends CI_Controller
             show_404();
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = format_name($video['author']) . ' video';
 
         $this->load->view('common/header', $data);
@@ -379,7 +376,7 @@ class User extends CI_Controller
             show_404();
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = format_name($link['author']) . ' link';
 
         $this->load->view('common/header', $data);
@@ -402,7 +399,7 @@ class User extends CI_Controller
 
     public function notifications($offset = 0)
     {
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'Notifications';
         $this->load->view('common/header', $data);
 
@@ -419,7 +416,7 @@ class User extends CI_Controller
 		if ($data['num_new_notifs'] > 0) {
 
 		    // First show only the new notifications.
-			$data['notifications'] = $this->user_model->get_notifications($offset, $limit, TRUE);
+			$data['notifications'] = $this->user_model->get_notifications($_SESSION['user_id'], $offset, $limit, TRUE);
 			if (($data['num_new_notifs'] - $offset) > $limit) {
 				$data['has_next'] = TRUE;
 				$data['next_offset'] = ($offset + $limit);
@@ -440,7 +437,7 @@ class User extends CI_Controller
 		}
 		else {
 		    $num_notifications = $this->user_model->get_num_notifications(FALSE);
-		    $data['notifications'] = $this->user_model->get_notifications($offset, $limit, FALSE);
+		    $data['notifications'] = $this->user_model->get_notifications($_SESSION['user_id'], $offset, $limit, FALSE);
 		    if (($num_notifications - $offset) > $limit) {
 		        $data['has_next'] = TRUE;
 		        $data['next_offset'] = ($offset + $limit);
@@ -474,8 +471,8 @@ class User extends CI_Controller
                     $_SESSION['search_results'] = TRUE;
                 }
 
-                $data['search_results'] = $this->user_model->get_searched_user($query, $offset, $limit);
-                $num_search_results = count($this->user_model->get_searched_user($query, $offset, $limit+1));
+                $data['search_results'] = $this->user_model->get_searched_user($_SESSION['user_id'], $query, $offset, $limit);
+                $num_search_results = count($this->user_model->get_searched_user($_SESSION['user_id'], $query, $offset, $limit+1));
                 if (($num_search_results - $offset) > $limit) {
                     $data['has_next'] = TRUE;
                     $data['next_of'] = ($offset + $limit);
@@ -487,14 +484,14 @@ class User extends CI_Controller
             }
         }
         else {
-            $data['suggested_users'] = $this->user_model->get_suggested_users($offset, $limit);
+            $data['suggested_users'] = $this->user_model->get_suggested_users($_SESSION['user_id'], $offset, $limit);
             if ((count($data['suggested_users']) - $offset) > $limit) {
                 $data['has_next'] = TRUE;
                 $data['next_offset'] = ($offset + $limit);
             }
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Find Friends';
         $this->load->view('common/header', $data);
 
@@ -504,16 +501,16 @@ class User extends CI_Controller
 
     public function friend_requests($offset = 0, $request_id = 0)
     {
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'Friend Requests';
         $this->load->view('common/header', $data);
 
         $limit = 10;
         $data['has_next'] = FALSE;
-        $num_friend_requests = $this->user_model->get_num_friend_requests(FALSE);
+        $num_friend_requests = $this->user_model->get_num_friend_requests($_SESSION['user_id'], FALSE);
         if ($num_friend_requests == 0 && $request_id != 0) {
             try {
-                $data['friend_request'] = $this->user_model->get_friend_request($request_id);
+                $data['friend_request'] = $this->user_model->get_friend_request($_SESSION['user_id'], $request_id);
             } catch (NotFoundException $e) {
                 $data['friend_requests'] = [];
             }
@@ -523,18 +520,18 @@ class User extends CI_Controller
                 $data['has_next'] = TRUE;
                 $data['next_offset'] = ($limit + $offset);
             }
-            $data['friend_requests'] = $this->user_model->get_friend_requests($offset, $limit);
+            $data['friend_requests'] = $this->user_model->get_friend_requests($_SESSION['user_id'], $offset, $limit);
         }
 
         $this->load->view('friend-requests', $data);
         $this->load->view('common/footer');
     }
 
-    public function add_friend($user_id = 0)
+    public function add_friend($target_id = 0)
     {
         try {
-            $this->user_model->send_friend_request($user_id);
-            redirect(base_url("user/{$user_id}"));
+            $this->user_model->send_friend_request($_SESSION['user_id'], $target_id);
+            redirect(base_url("user/{$target_id}"));
         }
         catch (IllegalAccessException $e) {
             $_SESSION['title'] = 'Permission Denied!';
@@ -547,7 +544,7 @@ class User extends CI_Controller
     public function accept_friend($user_id = 0)
     {
         try {
-            $this->user_model->confirm_friend_request($user_id);
+            $this->user_model->confirm_friend_request($_SESSION['user_id'], $user_id);
             redirect(base_url("user/{$user_id}"));
         }
         catch (IllegalAccessException $e) {
@@ -558,10 +555,10 @@ class User extends CI_Controller
         }
     }
 
-    public function delete_friend_request($user_id = 0)
+    public function delete_friend_request($requesting_user_id = 0)
     {
         try {
-            $this->user_model->delete_friend_request($user_id);
+            $this->user_model->delete_friend_request($_SESSION['user_id'], $requesting_user_id);
             redirect(base_url('user/friend-requests'));
         }
         catch (NotFoundException $e) {
@@ -569,11 +566,11 @@ class User extends CI_Controller
         }
     }
 
-    public function unfriend($user_id = 0)
+    public function unfriend($friend_id = 0)
     {
         try {
-            $this->user_model->unfriend_user($user_id);
-            redirect(base_url("user/{$user_id}"));
+            $this->user_model->unfriend_user($_SESSION['user_id'], $friend_id);
+            redirect(base_url("user/{$friend_id}"));
         }
         catch (IllegalAccessException $e) {
             $_SESSION['title'] = 'Permission Denied!';
@@ -585,7 +582,7 @@ class User extends CI_Controller
 
     public function messages($offset = 0)
     {
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'Messages';
         $this->load->view('common/header', $data);
 
@@ -601,13 +598,13 @@ class User extends CI_Controller
         $data['has_next'] = FALSE;
         if ($data['num_new_messages'] > 0) {  // There are new messages.
             // First show only the new messages.
-            $data['messages'] = $this->user_model->get_messages($offset, $limit, TRUE);
+            $data['messages'] = $this->user_model->get_messages($_SESSION['user_id'], $offset, $limit, TRUE);
             if (($data['num_new_messages'] - $offset) > $limit) {
                 $data['has_next'] = TRUE;
                 $data['next_offset'] = ($offset + $limit);
             }
             else {
-                $num_messages = $this->user_model->get_num_messages(FALSE);
+                $num_messages = $this->user_model->get_num_messages($_SESSION['user_id'], FALSE);
 
                 // Here, we are determining if there are older messages.
                 // And if they are there, get the correct offset to use
@@ -622,8 +619,8 @@ class User extends CI_Controller
             }
         }
         else {
-            $num_messages = $this->user_model->get_num_messages(FALSE);
-            $data['messages'] = $this->user_model->get_messages($offset, $limit, FALSE);
+            $num_messages = $this->user_model->get_num_messages($_SESSION['user_id'], FALSE);
+            $data['messages'] = $this->user_model->get_messages($_SESSION['user_id'], $offset, $limit, FALSE);
             if (($num_messages - $offset) > $limit) {
                 $data['has_next'] = TRUE;
                 $data['next_offset'] = ($offset + $limit);
@@ -640,7 +637,7 @@ class User extends CI_Controller
             $user_id = $_SESSION['user_id'];
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = format_name($data['primary_user']) . ' friends';
 
         $data['is_visitor'] = ($user_id == $_SESSION['user_id']) ? FALSE : TRUE;
@@ -652,7 +649,7 @@ class User extends CI_Controller
         }
 
         $data['su_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
-        $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
+        $data['friendship_status'] = $this->user_model->get_friendship_status($_SESSION['user_id'], $user_id);
         $data['suid'] = $user_id;
         $data['title'] = format_name($data['secondary_user']) . ' friends';
 
@@ -677,7 +674,7 @@ class User extends CI_Controller
             $user_id = $_SESSION['user_id'];
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = "Profile | {$data['primary_user']}";
 
         $data['is_visitor'] = ($user_id == $_SESSION['user_id']) ? FALSE : TRUE;
@@ -688,13 +685,13 @@ class User extends CI_Controller
             show_404();
         }
         $data['su_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
-        $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
+        $data['friendship_status'] = $this->user_model->get_friendship_status($_SESSION['user_id'], $user_id);
         $data['suid'] = $user_id;
         $data['title'] = "Profile | {$data['secondary_user']}";
 
         $this->load->view('common/header', $data);
         if ($user_id == $_SESSION['user_id']) {
-            $data['profile_questions'] = $this->profile_model->get_profile_questions();
+            $data['profile_questions'] = $this->profile_model->get_profile_questions($_SESSION['user_id']);
         }
         $data['profile'] = $this->profile_model->get_profile($user_id);
         $this->load->view('profile', $data);
@@ -707,7 +704,7 @@ class User extends CI_Controller
             $user_id = $_SESSION['user_id'];
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = format_name($data['primary_user']) . ' photos';
 
         $data['is_visitor'] = ($user_id == $_SESSION['user_id']) ? FALSE : TRUE;
@@ -719,7 +716,7 @@ class User extends CI_Controller
         }
 
         $data['su_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
-        $data['friendship_status'] = $this->user_model->get_friendship_status($user_id);
+        $data['friendship_status'] = $this->user_model->get_friendship_status($_SESSION['user_id'], $user_id);
         $data['suid'] = $user_id;
         $data['title'] = format_name($data['secondary_user']) . ' photos';
 
@@ -733,7 +730,7 @@ class User extends CI_Controller
             $data['next_offset'] = ($limit + $offset);
         }
 
-        $data['photos'] = $this->user_model->get_photos($user_id, $offset, $limit);
+        $data['photos'] = $this->user_model->get_photos($_SESSION['user_id'], $user_id, $offset, $limit);
         $data['user_id'] = $user_id;  // Used in view more photos.
         $this->load->view('show/photos', $data);
         $this->load->view('common/footer');

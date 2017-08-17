@@ -27,7 +27,7 @@ class Video_model extends CI_Model
      * @param $video_id the ID of the video in the videos table.
      * @return the video with the given ID.
      */
-    public function get_video($video_id)
+    public function get_video($visitor_id, $video_id)
     {
         $video_sql = sprintf("SELECT v.*, u.profile_name AS author FROM videos v " .
                             "LEFT JOIN users u ON(v.user_id = u.user_id) " .
@@ -48,7 +48,7 @@ class Video_model extends CI_Model
         // Check whether the user currently viewing the page is a friend to the
         // owner of the video. This will allow us to only show the like, comment
         // and share buttons to friends of the owner.
-        $video['viewer_is_friend_to_owner'] = $this->user_model->are_friends($video['user_id']);
+        $video['viewer_is_friend_to_owner'] = $this->user_model->are_friends($visitor_id, $video['user_id']);
 
         // Get number of liks, comments and shares.
         $simpleVideo = new SimpleVideo($video['video_id'], $video['user_id']);
@@ -65,11 +65,11 @@ class Video_model extends CI_Model
      * @param $url.
      * @return $video_id the ID of the video in the user_videos table.
      */
-    public function publish($url)
+    public function publish($user_id, $url)
     {
         // Record video data in the videos table.
         $video_sql = sprintf('INSERT INTO videos (user_id, url) VALUES (%d, %s) ',
-                            $_SESSION['user_id'], $this->db->escape($url));
+                            $user_id, $this->db->escape($url));
         $this->utility_model->run_query($video_sql);
         $video_id = $this->db->insert_id();
 
@@ -77,7 +77,7 @@ class Video_model extends CI_Model
         $activity_sql = sprintf('INSERT INTO activities ' .
                                 '(actor_id, subject_id, source_id, source_type, activity) ' .
                                 'VALUES (%d, %d, %d, "video", "video")',
-                                $_SESSION['user_id'], $_SESSION['user_id'], $video_id);
+                                $user_id, $user_id, $video_id);
         $this->utility_model->run_query($activity_sql);
     }
 
@@ -117,7 +117,7 @@ class Video_model extends CI_Model
         $owner_result = $owner_query->row_array();
         $owner_id = $owner_result['user_id'];
 
-        if (!$this->user_model->are_friends($owner_id)) {
+        if (!$this->user_model->are_friends($user_id, $owner_id)) {
             throw new IllegalAccessException(
                 "You don't have the proper permissions to like this video."
             );
@@ -145,7 +145,7 @@ class Video_model extends CI_Model
 
         $owner_result = $owner_query->row_array();
         $owner_id = $owner_result['user_id'];
-        if (!$this->user_model->are_friends($owner_id)) {
+        if (!$this->user_model->are_friends($user_id, $owner_id)) {
             throw new IllegalAccessException(
                 "You don't have the proper permissions to share this video."
             );
@@ -216,19 +216,20 @@ class Video_model extends CI_Model
      * @param $limit the maximum number of records to return.
      * @return the comments made on this video.
      */
-    public function get_comments(&$video, $offset, $limit)
+    public function get_comments($visitor_id, &$video, $offset, $limit)
     {
         return $this->activity_model->getComments(
+            $visitor_id,
             new SimpleVideo($video['video_id'], $video['user_id']),
             $offset,
             $limit
         );
     }
 
-    public function delete_video(&$video)
+    public function delete_video($user_id, &$video)
     {
         $simpleVideo = new SimpleVideo($video['video_id'], $video['user_id']);
-        $this->utility_model->delete_item($simpleVideo);
+        $this->utility_model->delete_item($user_id, $simpleVideo);
     }
 
     public function update_description($video_id, $new_description)

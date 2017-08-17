@@ -15,16 +15,12 @@ class Logout_model extends CI_Model
     /**
      * Logs out a user.
      */
-    public function logout()
+    public function logout($user_id)
     {
         $login_sql = sprintf("UPDATE users SET logged_in = 0 WHERE user_id = %d",
-                                $_SESSION['user_id']);
+                                $user_id);
 
         $this->utility_model->run_query($login_sql);
-
-        $_SESSION = array();
-        session_destroy();
-        setcookie(session_name(), '', time()-300);
     }
 }
 ?>

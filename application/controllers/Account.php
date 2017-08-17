@@ -8,7 +8,7 @@ class Account extends CI_Controller
         parent::__construct();
 
         session_start();
-        $this->load->model(['user_model', 'account_model', 'settings_model']);
+        $this->load->model(['user_model', 'account_model']);
     }
 
     public function success()
@@ -44,7 +44,7 @@ class Account extends CI_Controller
 
     public function error()
     {
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
 
         // Defaults.
         $title = 'Error! - Makwire';
@@ -93,7 +93,7 @@ class Account extends CI_Controller
             elseif (!filter_var($email_address, FILTER_VALIDATE_EMAIL)) {
                 $error_message = 'Please enter a valid email address.';
             }
-            elseif ( ! $this->settings_model->is_activated_email($email_address)) {
+            elseif ( ! $this->account_model->is_activated_email($email_address)) {
                 $error_message = 'Sorry, makwire does not recognise that email address.';
             }
 
@@ -163,7 +163,7 @@ class Account extends CI_Controller
             }
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Change your password';
         $this->load->view('common/header', $data);
 
@@ -186,7 +186,7 @@ class Account extends CI_Controller
             }
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Set prefered profile name';
         $this->load->view('common/header', $data);
 
@@ -225,7 +225,7 @@ class Account extends CI_Controller
             }
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Change your name';
         $this->load->view('common/header', $data);
 
@@ -239,7 +239,7 @@ class Account extends CI_Controller
 
         $data = [];
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Delete your account';
         $this->load->view('common/header', $data);
 
@@ -255,6 +255,54 @@ class Account extends CI_Controller
 
         $this->load->view('settings/account/delete', $data);
         $this->load->view('common/footer');
+    }
+
+    public function activate_email($activation_code)
+    {
+        $data = [];
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $email = $this->input->post('email');
+            if (strlen($email) == 0) {
+                $error_message = 'Please enter your email address.';
+            }
+            else {
+                if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    try {
+                        $this->account_model->activate_email($email, $activation_code);
+                        if ($this->account_model->email_has_user($email)) {
+                            $_SESSION['message'] = 'Your email address has been successfully activated. Enjoy!';
+                            redirect(base_url('user/success'));
+                        }
+                        else {
+                            $_SESSION['activation_code'] = $activation_code;
+                            redirect(base_url("register/step-two/{$activation_code}"));
+                        }
+                    }
+                    catch (NotFoundException $e) {
+                        show_404();
+                    }
+                }
+                else {
+                    $error_message = 'Please enter a valid email address.';
+                }
+            }
+
+            if (isset($error_message)) {
+                $data['email'] = $email;
+                $data['error_message'] = $error_message;
+            }
+        }
+
+        if (!empty($_SESSION['user_id'])) {
+            $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
+        }
+        $data['title'] = 'Activate your email address';
+        $this->load->view('common/header', $data);
+
+        $data['form_action'] = base_url("account/activate-email/{$activation_code}");
+        $this->load->view('settings/account/activate-email', $data);
+        $this->load->view('common/external-page-footer');
     }
 
     private function ensure_user_is_logged_in()

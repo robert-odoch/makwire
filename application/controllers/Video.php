@@ -14,9 +14,6 @@ class Video extends CI_Controller
         }
 
         $this->load->model(['user_model', 'video_model', 'utility_model']);
-
-        // Check whether the user hasn't been logged out from some where else.
-        $this->user_model->confirm_logged_in();
     }
 
     public function new()
@@ -37,7 +34,7 @@ class Video extends CI_Controller
                 $replacement = 'embed/';
                 $youtube_video_url = preg_replace($pattern, $replacement, $youtube_video_url);
 
-                $this->video_model->publish($youtube_video_url);
+                $this->video_model->publish($_SESSION['user_id'], $youtube_video_url);
                 redirect(base_url("user/{$_SESSION['user_id']}"));
             } else {
                 $data['error_message'] = $error_message;
@@ -45,7 +42,7 @@ class Video extends CI_Controller
             }
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Add YouTube video';
         $this->load->view('common/header', $data);
 
@@ -75,7 +72,7 @@ class Video extends CI_Controller
             redirect(base_url("user/video/{$video_id}"));
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'Edit video - Makwire';
         $this->load->view('common/header', $data);
 
@@ -99,7 +96,7 @@ class Video extends CI_Controller
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             try {
-                $this->video_model->delete_video($video);
+                $this->video_model->delete_video($_SESSION['user_id'], $video);
                 $_SESSION['message'] = 'Your video has been successfully deleted.';
                 redirect(base_url('user/success'));
             }
@@ -111,7 +108,7 @@ class Video extends CI_Controller
             }
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'Delete video - Makwire';
         $this->load->view('common/header', $data);
 
@@ -157,7 +154,7 @@ class Video extends CI_Controller
             redirect(base_url('user/error'));
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Say something about this video';
         $this->load->view('common/header', $data);
 
@@ -207,14 +204,14 @@ class Video extends CI_Controller
             show_404();
         }
 
-        if (!$this->user_model->are_friends($video['user_id'])) {
+        if (!$this->user_model->are_friends($_SESSION['user_id'], $video['user_id'])) {
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = 'You don\'t have the proper permissions to comment on this video.';
             redirect(base_url('user/error'));
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Comment on this video';
         $this->load->view('common/header', $data);
 
@@ -250,7 +247,7 @@ class Video extends CI_Controller
             show_404();
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'People who liked this video';
         $this->load->view('common/header', $data);
 
@@ -289,7 +286,7 @@ class Video extends CI_Controller
             show_404();
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'Comments on this video';
         $this->load->view('common/header', $data);
 
@@ -310,7 +307,7 @@ class Video extends CI_Controller
             $data['next_offset'] = ($offset + $limit);
         }
 
-        $data['comments'] = $this->video_model->get_comments($video, $offset, $limit);
+        $data['comments'] = $this->video_model->get_comments($_SESSION['user_id'], $video, $offset, $limit);
         $data['object'] = 'video';
         $data['video'] = $video;
         $this->load->view('show/comments', $data);
@@ -326,7 +323,7 @@ class Video extends CI_Controller
             show_404();
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'People who shared this video';
         $this->load->view('common/header', $data);
 

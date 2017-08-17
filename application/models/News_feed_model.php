@@ -38,9 +38,9 @@ class News_feed_model extends CI_Model
      *
      * @return number of posts, photos, videos, and links on this user's news feed.
      */
-    public function get_num_news_feed_items()
+    public function get_num_news_feed_items($user_id)
     {
-        $friends_ids = $this->user_model->get_friends_ids();
+        $friends_ids = $this->user_model->get_friends_ids($user_id);
 
         /* Get IDs of shared posts, photos, videos, and links. */
         /// IDS of shared posts.
@@ -91,7 +91,7 @@ class News_feed_model extends CI_Model
         $num_shared_items_sql = sprintf('SELECT COUNT(source_id) FROM activities ' .
                                         'WHERE (actor_id IN(%s) AND activity = \'share\' AND ' .
                                             'source_type IN(\'post\',\'photo\',\'video\',\'link\') AND subject_id != %d)',
-                                        $friends_ids_str, $_SESSION['user_id']);
+                                        $friends_ids_str, $user_id);
         $num_shared_items = $this->utility_model->run_query($num_shared_items_sql)->row_array()['COUNT(source_id)'];
 
         return ($num_posts + $num_photos + $num_videos + $num_links + $num_shared_items);
@@ -104,9 +104,9 @@ class News_feed_model extends CI_Model
      * @param $limit
      * @return number of posts, photos, videos, and links to be shown on this user's news feed.
      */
-    public function get_news_feed_items($offset, $limit)
+    public function get_news_feed_items($user_id, $offset, $limit)
     {
-        $friends_ids = $this->user_model->get_friends_ids();
+        $friends_ids = $this->user_model->get_friends_ids($user_id);
 
         /* Get IDs of shared items. */
         /// IDs are got seperately b'se many items may share the same ID
@@ -141,7 +141,7 @@ class News_feed_model extends CI_Model
                                         "WHERE (s1.subject_id = s2.subject_id AND " .
                                         "s1.subject_type = s2.subject_type AND " .
                                         "s2.sharer_id != %d)",
-                                        $_SESSION['user_id']);
+                                        $user_id);
 
         /// Latest shared posts user IDs.
         $latest_shared_posts_user_ids = $this->get_latest_shared_items_user_ids('post', $friends_ids, $latest_share_date_sql);
@@ -188,17 +188,17 @@ class News_feed_model extends CI_Model
                                         $friends_ids_str, $shared_photos_ids_str,
                                         $friends_ids_str, $shared_videos_ids_str,
                                         $friends_ids_str, $shared_links_ids_str,
-                                        $friends_ids_str, $latest_shared_posts_user_ids_str, $_SESSION['user_id'],
-                                        $friends_ids_str, $latest_shared_photos_user_ids_str, $_SESSION['user_id'],
-                                        $friends_ids_str, $latest_shared_videos_user_ids_str, $_SESSION['user_id'],
-                                        $friends_ids_str, $latest_shared_links_user_ids_str, $_SESSION['user_id'],
+                                        $friends_ids_str, $latest_shared_posts_user_ids_str, $user_id,
+                                        $friends_ids_str, $latest_shared_photos_user_ids_str, $user_id,
+                                        $friends_ids_str, $latest_shared_videos_user_ids_str, $user_id,
+                                        $friends_ids_str, $latest_shared_links_user_ids_str, $user_id,
                                         $offset, $limit);
         $news_feed_items = $this->utility_model->run_query($news_feed_items_sql)->result_array();
 
         foreach ($news_feed_items as &$r) {
             switch ($r['source_type']) {
             case 'post':
-                $r['post'] = $this->post_model->get_post($r['source_id']);
+                $r['post'] = $this->post_model->get_post($user_id, $r['source_id']);
 
                 // Get only 540 characters from post if possible.
                 $post_url = base_url("user/post/{$r['post']['post_id']}");
@@ -212,7 +212,7 @@ class News_feed_model extends CI_Model
                 }
                 break;
             case 'photo':
-                $r['photo'] = $this->photo_model->get_photo($r['source_id']);
+                $r['photo'] = $this->photo_model->get_photo($user_id, $r['source_id']);
 
                 // Was it shared from another user?
                 $r['photo']['shared'] = FALSE;
@@ -222,7 +222,7 @@ class News_feed_model extends CI_Model
                 }
                 break;
             case 'video':
-                $r['video'] = $this->video_model->get_video($r['source_id']);
+                $r['video'] = $this->video_model->get_video($user_id, $r['source_id']);
 
                 // Was it shared from another user?
                 $r['video']['shared'] = FALSE;
@@ -232,7 +232,7 @@ class News_feed_model extends CI_Model
                 }
                 break;
             case 'link':
-                $r['link'] = $this->link_model->get_link($r['source_id']);
+                $r['link'] = $this->link_model->get_link($user_id, $r['source_id']);
 
                 // Was it shared from another user?
                 $r['link']['shared'] = FALSE;

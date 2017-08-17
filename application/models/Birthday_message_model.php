@@ -26,7 +26,7 @@ class Birthday_message_model extends CI_Model
      * @param $birthday_message_id the id of the message in the birthday_messages table.
      * @return birthday message with the given ID plus other data.
      */
-    public function get_message($birthday_message_id)
+    public function get_message($visitor_id, $birthday_message_id)
     {
         $message_sql = sprintf("SELECT b.*, u.profile_name AS sender " .
                                 "FROM birthday_messages b " .
@@ -57,7 +57,7 @@ class Birthday_message_model extends CI_Model
         $message['num_replies'] = $this->activity_model->getNumReplies($simpleBirthdayMessage);
 
         // This will allow us to only show thelike link to friends of the owner.
-        $message['viewer_is_friend_to_owner'] = $this->user_model->are_friends($message['sender_id']);
+        $message['viewer_is_friend_to_owner'] = $this->user_model->are_friends($visitor_id, $message['sender_id']);
 
         return $message;
     }
@@ -85,7 +85,7 @@ class Birthday_message_model extends CI_Model
         $owner_result = $owner_query->row_array();
         $owner_id = $owner_result['sender_id'];
 
-        if (! $this->user_model->are_friends($owner_id)) {
+        if (! $this->user_model->are_friends($user_id, $owner_id)) {
             throw new IllegalAccessException(
                 "You don't have the proper permissions to like this message."
             );

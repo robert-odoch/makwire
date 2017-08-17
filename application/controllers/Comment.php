@@ -14,9 +14,6 @@ class Comment extends CI_Controller
         }
 
         $this->load->model(['user_model', 'comment_model', 'utility_model']);
-
-        // Check whether the user hasn't been logged out from some where else.
-        $this->user_model->confirm_logged_in();
     }
 
     public function like($comment_id = 0)
@@ -39,13 +36,13 @@ class Comment extends CI_Controller
     public function reply($comment_id = 0)
     {
         try {
-            $comment = $this->comment_model->get_comment($comment_id);
+            $comment = $this->comment_model->get_comment($_SESSION['user_id'], $comment_id);
         }
         catch (NotFoundException $e) {
             show_404();
         }
 
-        if (!$this->user_model->are_friends($comment['commenter_id'])) {
+        if (!$this->user_model->are_friends($_SESSION['user_id'], $comment['commenter_id'])) {
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = "You don't have the proper permissions to reply to this comment.";
@@ -74,7 +71,7 @@ class Comment extends CI_Controller
             }
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] ='Reply to Comment';
         $this->load->view('common/header', $data);
 
@@ -87,13 +84,13 @@ class Comment extends CI_Controller
     public function likes($comment_id = 0, $offset = 0)
     {
         try {
-            $comment = $this->comment_model->get_comment($comment_id);
+            $comment = $this->comment_model->get_comment($_SESSION['user_id'], $comment_id);
         }
         catch (NotFoundException $e) {
             show_404();
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'People who liked this comment';
         $this->load->view('common/header', $data);
 
@@ -125,13 +122,13 @@ class Comment extends CI_Controller
     public function replies($comment_id = 0, $offset = 0)
     {
         try {
-            $comment = $this->comment_model->get_comment($comment_id);
+            $comment = $this->comment_model->get_comment($_SESSION['user_id'], $comment_id);
         }
         catch (NotFoundException $e) {
             show_404();
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'People who replied to this comment';
         $this->load->view('common/header', $data);
 
@@ -152,7 +149,7 @@ class Comment extends CI_Controller
             $data['next_offset'] = ($offset + $limit);
         }
 
-        $data['replies'] = $this->comment_model->get_replies($comment_id, $offset, $limit);
+        $data['replies'] = $this->comment_model->get_replies($_SESSION['user_id'], $comment_id, $offset, $limit);
         $data['object'] = 'comment';
         $data['comment'] = $comment;
         $this->load->view('show/replies', $data);
@@ -162,13 +159,13 @@ class Comment extends CI_Controller
     public function options($comment_id = 0)
     {
         try {
-            $comment = $this->comment_model->get_comment($comment_id);
+            $comment = $this->comment_model->get_comment($_SESSION['user_id'], $comment_id);
         }
         catch (NotFoundException $e) {
             show_404();
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'Edit or delete this comment';
         $this->load->view('common/header', $data);
 
@@ -183,7 +180,7 @@ class Comment extends CI_Controller
         $data = [];
 
         try {
-            $comment = $this->comment_model->get_comment($comment_id);
+            $comment = $this->comment_model->get_comment($_SESSION['user_id'], $comment_id);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -207,7 +204,7 @@ class Comment extends CI_Controller
             }
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Edit comment - Makwire';
         $this->load->view('common/header', $data);
 
@@ -220,7 +217,7 @@ class Comment extends CI_Controller
     public function delete($comment_id = 0)
     {
         try {
-            $comment = $this->comment_model->get_comment($comment_id);
+            $comment = $this->comment_model->get_comment($_SESSION['user_id'], $comment_id);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -228,7 +225,7 @@ class Comment extends CI_Controller
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             try {
-                $this->comment_model->delete_comment($comment_id);
+                $this->comment_model->delete_comment($comment_id, $_SESSION['user_id']);
                 $_SESSION['message'] = 'Your comment has been successfully deleted.';
                 redirect(base_url('user/success'));
             }
@@ -240,7 +237,7 @@ class Comment extends CI_Controller
             }
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'Delete comment - Makwire';
         $this->load->view('common/header', $data);
 

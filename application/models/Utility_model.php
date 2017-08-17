@@ -111,7 +111,7 @@ class Utility_model extends CI_Model
         return $ids;
     }
 
-    public function delete_item(Object $item)
+    public function delete_item($user_id, Object $item)
     {
         $tables = [
             'post' => [
@@ -132,11 +132,11 @@ class Utility_model extends CI_Model
             ]
         ];
 
-        if ($item->getOwnerId() != $_SESSION['user_id']) {
+        if ($item->getOwnerId() != $user_id) {
             // Check whether this user shared the item.
             $share_sql = sprintf('SELECT share_id FROM shares ' .
                                     'WHERE sharer_id = %d AND subject_id = %d AND subject_type = \'%s\'',
-                                    $_SESSION['user_id'], $item->getId(), $item->getType());
+                                    $user_id, $item->getId(), $item->getType());
             $share_query = $this->db->query($share_sql);
             if ($share_query->num_rows() == 0) {
                 throw new IllegalAccessException(
@@ -145,7 +145,7 @@ class Utility_model extends CI_Model
             }
             else {
                 // User shared this item. Only remove it from his timeline.
-                $this->un_share_item($item, $_SESSION['user_id']);
+                $this->un_share_item($item, $user_id);
                 return;
             }
         }

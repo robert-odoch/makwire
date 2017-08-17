@@ -14,9 +14,6 @@ class Reply extends CI_Controller
         }
 
         $this->load->model(['user_model', 'reply_model', 'utility_model']);
-
-        // Check whether the user hasn't been logged out from some where else.
-        $this->user_model->confirm_logged_in();
     }
 
     public function like($reply_id = 0)
@@ -39,13 +36,13 @@ class Reply extends CI_Controller
     public function likes($reply_id = 0, $offset = 0)
     {
         try {
-            $reply = $this->reply_model->get_reply($reply_id);
+            $reply = $this->reply_model->get_reply($_SESSION['user_id'], $reply_id);
         }
         catch (NotFoundException $e) {
             show_404();
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'People who liked this reply';
         $this->load->view('common/header', $data);
 
@@ -78,13 +75,13 @@ class Reply extends CI_Controller
     public function options($reply_id = 0)
     {
         try {
-            $reply = $this->reply_model->get_reply($reply_id);
+            $reply = $this->reply_model->get_reply($_SESSION['user_id'], $reply_id);
         }
         catch (NotFoundException $e) {
             show_404();
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'Edit or delete this reply';
         $this->load->view('common/header', $data);
 
@@ -99,7 +96,7 @@ class Reply extends CI_Controller
         $data = [];
 
         try {
-            $reply = $this->reply_model->get_reply($reply_id);
+            $reply = $this->reply_model->get_reply($_SESSION['user_id'], $reply_id);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -123,7 +120,7 @@ class Reply extends CI_Controller
             }
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Edit reply - Makwire';
         $this->load->view('common/header', $data);
 
@@ -136,7 +133,7 @@ class Reply extends CI_Controller
     public function delete($reply_id = 0)
     {
         try {
-            $reply = $this->reply_model->get_reply($reply_id);
+            $reply = $this->reply_model->get_reply($_SESSION['user_id'], $reply_id);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -155,7 +152,7 @@ class Reply extends CI_Controller
             redirect(base_url('user/success'));
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'Delete reply - Makwire';
         $this->load->view('common/header', $data);
 

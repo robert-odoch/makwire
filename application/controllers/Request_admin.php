@@ -15,9 +15,6 @@ class Request_admin extends CI_Controller
         }
 
         $this->load->model('user_model');
-
-        // Check whether the user hasn't been logged out from some where else.
-        $this->user_model->confirm_logged_in();
     }
 
     public function add_district()
@@ -39,7 +36,7 @@ class Request_admin extends CI_Controller
             }
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Request admin to add your district or state';
         $this->load->view('common/header', $data);
 
@@ -65,7 +62,7 @@ class Request_admin extends CI_Controller
             }
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Request admin to add your country';
         $this->load->view('common/header', $data);
 

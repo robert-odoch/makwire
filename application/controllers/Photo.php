@@ -23,9 +23,6 @@ class Photo extends CI_Controller
         $this->load->library('image_lib');
         $this->load->helper(['form']);
         $this->load->model(['photo_model', 'user_model', 'utility_model']);
-
-        // Check whether the user hasn't been logged out from some where else.
-        $this->user_model->confirm_logged_in();
     }
 
     public function new()
@@ -55,12 +52,12 @@ class Photo extends CI_Controller
                 $this->image_lib->resize();
 
                 // Record it in the database.
-                $this->photo_model->publish($upload_data);
+                $this->photo_model->publish($upload_data, $_SESSION['user_id']);
                 redirect(base_url("user/{$_SESSION['user_id']}"));
             }
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Add new photo';
         $this->load->view('common/header', $data);
 
@@ -71,7 +68,7 @@ class Photo extends CI_Controller
     public function edit($photo_id = 0)
     {
         try {
-            $photo = $this->photo_model->get_photo($photo_id);
+            $photo = $this->photo_model->get_photo($_SESSION['user_id'], $photo_id);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -90,7 +87,7 @@ class Photo extends CI_Controller
             redirect(base_url("user/photo/{$photo_id}"));
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'Edit photo - Makwire';
         $this->load->view('common/header', $data);
 
@@ -106,7 +103,7 @@ class Photo extends CI_Controller
     public function delete($photo_id = 0)
     {
         try {
-            $photo = $this->photo_model->get_photo($photo_id);
+            $photo = $this->photo_model->get_photo($_SESSION['user_id'], $photo_id);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -114,7 +111,7 @@ class Photo extends CI_Controller
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             try {
-                $this->photo_model->delete_photo($photo);
+                $this->photo_model->delete_photo($_SESSION['user_id'], $photo);
                 $_SESSION['message'] = 'Your photo has been successfully deleted.';
                 redirect(base_url('user/success'));
             }
@@ -126,7 +123,7 @@ class Photo extends CI_Controller
             }
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'Delete photo - Makwire';
         $this->load->view('common/header', $data);
 
@@ -159,7 +156,7 @@ class Photo extends CI_Controller
         }
 
         try {
-            $photo = $this->photo_model->get_photo($photo_id);
+            $photo = $this->photo_model->get_photo($_SESSION['user_id'], $photo_id);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -172,7 +169,7 @@ class Photo extends CI_Controller
             redirect(base_url('user/error'));
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Say something about this photo';
         $this->load->view('common/header', $data);
 
@@ -216,20 +213,20 @@ class Photo extends CI_Controller
         }
 
         try {
-            $photo = $this->photo_model->get_photo($photo_id);
+            $photo = $this->photo_model->get_photo($_SESSION['user_id'], $photo_id);
         }
         catch (NotFoundException $e) {
             show_404();
         }
 
-        if (!$this->user_model->are_friends($photo['user_id'])) {
+        if (!$this->user_model->are_friends($_SESSION['user_id'], $photo['user_id'])) {
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = 'You don\'t have the proper permissions to comment on this photo.';
             redirect(base_url('user/error'));
         }
 
-        $data = array_merge($data, $this->user_model->initialize_user());
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Comment on this photo';
         $this->load->view('common/header', $data);
 
@@ -259,13 +256,13 @@ class Photo extends CI_Controller
     public function likes($photo_id = 0, $offset = 0)
     {
         try {
-            $photo = $this->photo_model->get_photo($photo_id);
+            $photo = $this->photo_model->get_photo($_SESSION['user_id'], $photo_id);
         }
         catch (NotFoundException $e) {
             show_404();
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'People who liked this photo';
         $this->load->view('common/header', $data);
 
@@ -298,13 +295,13 @@ class Photo extends CI_Controller
     public function comments($photo_id = 0, $offset = 0)
     {
         try {
-            $photo = $this->photo_model->get_photo($photo_id);
+            $photo = $this->photo_model->get_photo($_SESSION['user_id'], $photo_id);
         }
         catch (NotFoundException $e) {
             show_404();
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'Comments on this photo';
         $this->load->view('common/header', $data);
 
@@ -325,7 +322,7 @@ class Photo extends CI_Controller
             $data['next_offset'] = ($offset + $limit);
         }
 
-        $data['comments'] = $this->photo_model->get_comments($photo, $offset, $limit);
+        $data['comments'] = $this->photo_model->get_comments($_SESSION['user_id'], $photo, $offset, $limit);
         $data['object'] = 'photo';
         $data['photo'] = $photo;
         $this->load->view('show/comments', $data);
@@ -335,13 +332,13 @@ class Photo extends CI_Controller
     public function shares($photo_id = 0, $offset = 0)
     {
         try {
-            $photo = $this->photo_model->get_photo($photo_id);
+            $photo = $this->photo_model->get_photo($_SESSION['user_id'], $photo_id);
         }
         catch (NotFoundException $e) {
             show_404();
         }
 
-        $data = $this->user_model->initialize_user();
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'People who shared this photo';
         $this->load->view('common/header', $data);
 

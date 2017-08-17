@@ -24,7 +24,7 @@ class Post_model extends CI_Model
      * @param $post_id the ID of the post in the posts table.
      * @return the post with the given ID.
      */
-    public function get_post($post_id)
+    public function get_post($visitor_id, $post_id)
     {
         $post_sql = sprintf("SELECT p.*, u.profile_name AS author FROM posts p " .
                             "LEFT JOIN users u ON(p.user_id = u.user_id) " .
@@ -49,7 +49,7 @@ class Post_model extends CI_Model
         // Check whether the user currently viewing the page is a friend to the
         // original author of the post. This will allow us to only show the
         // like, comment and share buttons to friends of the original author.
-        $post['viewer_is_friend_to_owner'] = $this->user_model->are_friends($post['user_id']);
+        $post['viewer_is_friend_to_owner'] = $this->user_model->are_friends($visitor_id, $post['user_id']);
 
         $simplePost = new SimplePost($post['post_id'], $post['user_id']);
 
@@ -69,24 +69,19 @@ class Post_model extends CI_Model
      * Allows a user to add a new post on his status.
      *
      * @param $post the contents of the post.
-     * @param $audience target audience for the post. May be group or timeline.
-     * @param $audience_id the ID of the targe audience. Same as  user ID
-     * if audience timeline.
      */
-    public function post($post, $audience, $audience_id)
+    public function post($post, $user_id)
     {
         // Save the post.
-        $post_sql = sprintf("INSERT INTO posts (audience_id, audience, post, user_id) " .
-                            "VALUES (%d, '%s', %s, %d)",
-                            $audience_id, $audience,
-                            $this->db->escape($post), $_SESSION['user_id']);
+        $post_sql = sprintf("INSERT INTO posts (post, user_id) VALUES (%s, %d)",
+                            $this->db->escape($post), $user_id);
         $this->utility_model->run_query($post_sql);
 
         // Dispatch an activity.
         $activity_sql = sprintf("INSERT INTO activities " .
                                 "(actor_id, subject_id, source_id, source_type, activity) " .
                                 "VALUES (%d, %d, %d, 'post', 'post')",
-                                $_SESSION['user_id'], $audience_id, $this->db->insert_id());
+                                $user_id, $user_id, $this->db->insert_id());
         $this->utility_model->run_query($activity_sql);
     }
 
@@ -111,7 +106,7 @@ class Post_model extends CI_Model
 
         $owner_result = $owner_query->row_array();
         $owner_id = $owner_result['user_id'];
-        if (!$this->user_model->are_friends($owner_id)) {
+        if (!$this->user_model->are_friends($user_id, $owner_id)) {
             throw new IllegalAccessException(
                 "You don't have the proper permissions to like this post."
             );
@@ -145,7 +140,7 @@ class Post_model extends CI_Model
 
         $owner_result = $owner_query->row_array();
         $owner_id = $owner_result['user_id'];
-        if (!$this->user_model->are_friends($owner_id)) {
+        if (!$this->user_model->are_friends($user_id, $owner_id)) {
             throw new IllegalAccessException(
                 "You don't have the proper permissions to share this post."
             );
@@ -222,9 +217,10 @@ class Post_model extends CI_Model
      * @param $limit the maximum number of records to return.
      * @return the comments made on this post.
      */
-    public function get_comments(&$post, $offset, $limit)
+    public function get_comments($visitor_id, &$post, $offset, $limit)
     {
         return $this->activity_model->getComments(
+            $visitor_id,
             new SimplePost($post['post_id'], $post['user_id']),
             $offset,
             $limit
@@ -238,10 +234,10 @@ class Post_model extends CI_Model
         $this->db->query($sql);
     }
 
-    public function delete_post(&$post)
+    public function delete_post($user_id, &$post)
     {
         $simplePost = new SimplePost($post['post_id'], $post['user_id']);
-        $this->utility_model->delete_item($simplePost);
+        $this->utility_model->delete_item($user_id, $simplePost);
     }
 }
 ?>
