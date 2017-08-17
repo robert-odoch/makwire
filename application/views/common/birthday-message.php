@@ -43,7 +43,7 @@
         </div>
     </div>
 
-    <?php if ($message['user_can_reply']) { ?>
+    <?php if ($message['viewer_is_friend_to_owner']) { ?>
         <form action='<?= base_url("birthday-message/reply/{$message['id']}"); ?>'
               method='post' accept-charset='utf-8' role='form'>
             <label for='reply' class='sr-only'>Reply</label>

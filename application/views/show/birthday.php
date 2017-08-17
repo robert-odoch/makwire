@@ -107,8 +107,6 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
                             print "<span> &middot; </span>" .
                                     "<a href='" . base_url("birthday-message/like/{$msg['id']}") .
                                     "'>Like</a>";
-                        }
-                        if ($msg['user_can_reply']) {
                             print "<span> &middot; </span>" .
                                     "<a href='" . base_url("birthday-message/reply/{$msg['id']}") .
                                     "'>Reply</a>";

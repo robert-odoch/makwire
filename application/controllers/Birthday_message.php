@@ -108,7 +108,7 @@ class Birthday_message extends CI_Controller
             redirect(base_url('user/error'));
         }
 
-        if (!$message['user_can_reply']) {
+        if (!$message['viewer_is_friend_to_owner']) {
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = "You don't have the proper permissions to reply to this message.";

@@ -59,12 +59,6 @@ class Birthday_message_model extends CI_Model
         // This will allow us to only show thelike link to friends of the owner.
         $message['viewer_is_friend_to_owner'] = $this->user_model->are_friends($message['sender_id']);
 
-        // Only the user with a birthday and the user who sent this message can
-        // reply to it.
-        $message['user_can_reply'] = $_SESSION['user_id'] == $message['user_id'] ||
-                                     ($_SESSION['user_id'] == $message['sender_id'] &&
-                                      $message['num_replies'] > 0);
-
         return $message;
     }
 
