@@ -257,6 +257,14 @@ class Account extends CI_Controller
         $this->load->view('common/footer');
     }
 
+    public function send_email($from, $to, $subject, $body)
+    {
+        $this->load->library('email');
+        $result = $this->email->from($from)->to($to)->subject($subject)->message($body)->send();
+
+        return $result;
+    }
+
     public function activate_email($activation_code)
     {
         $data = [];

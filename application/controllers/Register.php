@@ -84,9 +84,9 @@ class Register extends CI_Controller
                                                 a new <b>makwire</b> account. If this wasn’t you, please ignore this email.
                                             </p>";
 
-                    $email_html = $this->load->view('email', $email_data, TRUE);
+                    $email_body = $this->load->view('email', $email_data, TRUE);
 
-                    if ( ! $this->utility_model->send_email($email, $subject, $email_html)) {
+                    if ( ! $this->account_model->send_email('robertelvisodoch@gmail.com', $email, $subject, $email_body)) {
                         $data['info_message'] = "Sorry, we couldn't send your activation email.<br>" .
                                                 "The admin has been notified about the issue " .
                                                 "and will fix it as soon as possible.<br>" .
