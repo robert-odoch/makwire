@@ -62,7 +62,7 @@ class Settings extends CI_Controller
                                             "'>resend the email.</a>";
                 }
                 else {
-                    $activation_code = md5(uniqid(rand(), true));
+                    $activation_code = $this->account_model->gen_email_activation_code();
                     $user_email_id = $this->account_model->add_email($_SESSION['user_id'], $email, $activation_code);
                     $subject = 'Makwire: Activate your email address.';
                     $message = 'Please use <a href="' .

@@ -55,11 +55,11 @@ class Register extends CI_Controller
                                             "<strong>{$email}</strong> to continue with " .
                                             "the registration process.<br>" .
                                             "If you cant' find the email, then we can " .
-                                            "<a href='" . base_url("register/resend-email/{$email}") .
+                                            "<a href='" . base_url("account/resend-email") .
                                             "'>resend the email.</a>";
                 }
                 else {
-                    $activation_code = md5(uniqid(rand(), true));
+                    $activation_code = $this->account_model->gen_email_activation_code();
                     $this->account_model->add_email(NULL, $email, $activation_code);
                     $subject = 'Makwire: Please verify your email address.';
 

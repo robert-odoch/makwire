@@ -185,5 +185,18 @@ class Account_model extends CI_Model
         $query = $this->db->query($sql);
         return ($query->num_rows() != 0);
     }
+
+    public function gen_email_activation_code()
+    {
+        return md5(uniqid(rand(), true));
+    }
+
+    public function send_email($from, $to, $subject, $body)
+    {
+        $this->load->library('email');
+        $result = $this->email->from($from)->to($to)->subject($subject)->message($body)->send();
+
+        return $result;
+    }
 }
 ?>

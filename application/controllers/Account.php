@@ -44,7 +44,12 @@ class Account extends CI_Controller
 
     public function error()
     {
-        $data = $this->user_model->initialize_user($_SESSION['user_id']);
+        if (empty($_SESSION['user_id'])) {
+            $data = [];
+        }
+        else {
+            $data = $this->user_model->initialize_user($_SESSION['user_id']);
+        }
 
         // Defaults.
         $title = 'Error! - Makwire';
@@ -257,12 +262,49 @@ class Account extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function send_email($from, $to, $subject, $body)
+    public function resend_email()
     {
-        $this->load->library('email');
-        $result = $this->email->from($from)->to($to)->subject($subject)->message($body)->send();
+        $data = [];
 
-        return $result;
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $email = $this->input->post('email');
+            if (strlen($email) == 0) {
+                $error_message = 'Please enter your email address.';
+            }
+            else {
+                if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    if ( ! $this->account_model->is_registered_email($email)) {
+                        $error_message = "Sorry, makwire does not recognise that email address.";
+                    }
+                    elseif ($this->account_model->is_activated_email($email)) {
+                        $error_message = "This email address was activated LONG T.";
+                    }
+                    else {
+                        $this->account_model->send_email('robertelvisodoch@gmail.com', $email, $subject, $email_body);
+                        $data['success_message'] = "An email has been sent to {$email}. Please use the link in that email
+                                                    to activate your email address.";
+                    }
+                }
+                else {
+                    $error_message = 'Please enter a valid email address.';
+                }
+            }
+
+            if (isset($error_message)) {
+                $data['email'] = $email;
+                $data['error_message'] = $error_message;
+            }
+        }
+
+        if (!empty($_SESSION['user_id'])) {
+            $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
+        }
+        $data['title'] = 'Resend email activation link';
+        $this->load->view('common/header', $data);
+
+        $data['form_action'] = base_url("account/resend-email");
+        $this->load->view('settings/account/resend-email', $data);
+        $this->load->view('common/external-page-footer');
     }
 
     public function activate_email($activation_code)
