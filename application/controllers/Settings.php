@@ -56,9 +56,8 @@ class Settings extends CI_Controller
                 elseif ($this->account_model->is_registered_email($email)) {
                     $data['info_message'] = "Please use the link in the email sent to " .
                                             "<strong>{$email}</strong> to activate your " .
-                                            "email address.<br>" .
-                                            "If you can't find the email, then we can " .
-                                            "<a href='" . base_url("register/resend_email/{$email}") .
+                                            "email address. If you can't find the email, then we can " .
+                                            "<a href='" . base_url("account/resend-email") .
                                             "'>resend the email.</a>";
                 }
                 else {

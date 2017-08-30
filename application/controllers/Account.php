@@ -264,6 +264,16 @@ class Account extends CI_Controller
 
     public function resend_email()
     {
+        if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+            if ($_SERVER['HTTP_REFERER'] == base_url('register/step-one') ||
+                    $_SERVER['HTTP_REFERER'] == base_url('settings/emails')) {
+                // continue...
+            }
+            else {
+                redirect(base_url('error'));
+            }
+        }
+
         $data = [];
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
