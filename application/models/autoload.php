@@ -5,6 +5,6 @@ spl_autoload_register(function($classname) {
 });
 spl_autoload_register(function($classname) {
     include __DIR__ . "/exceptions/{$classname}.php";
-})
+});
 
 ?>
