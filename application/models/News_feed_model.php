@@ -1,7 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
-require_once('exceptions/NotFoundException.php');
+require_once 'autoload.php';
 
 class News_feed_model extends CI_Model
 {

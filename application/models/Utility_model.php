@@ -1,5 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+require_once 'autoload.php';
 
 /**
  * Contians functions that are used by two or more models.

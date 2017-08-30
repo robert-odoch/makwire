@@ -1,13 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
-require_once('classes/SimplePost.php');
-require_once('classes/SimpleLink.php');
-require_once('classes/SimplePhoto.php');
-require_once('classes/SimpleVideo.php');
-require_once('classes/SimpleComment.php');
-require_once('exceptions/NotFoundException.php');
-require_once('exceptions/IllegalAccessException.php');
+require_once 'autoload.php';
 
 /**
  * Contains functions relating to comments on a post, photo.
