@@ -62,16 +62,15 @@ class Register extends CI_Controller
                     $subject = 'Makwire: Please verify your email address.';
                     $email_body = $this->register_model->get_formatted_email($activation_code);
                     if ( ! $this->account_model->send_email('robertelvisodoch@gmail.com', $email, $subject, $email_body)) {
-                        $data['info_message'] = "Sorry, we couldn't send your activation email.<br>" .
-                                                "The admin has been notified about the issue " .
-                                                "and will fix it as soon as possible.<br>" .
-                                                "Please try again later.";
+                        $data['info_message'] = "Sorry, we couldn't send your activation email.<br>
+                                                The admin has been notified about the issue
+                                                and will fix it as soon as possible.<br>
+                                                Please try again later.";
                     }
                     else {
-                        $data['success_message'] = "An email has been sent to " .
-                                                    "<strong>{$email}</strong>. Please " .
-                                                    "use the link in that email to continue with " .
-                                                    "the registration process.";
+                        $data['success_message'] = "An email has been sent to <strong>{$email}</strong>.
+                                                    Please use the link in that email to continue with
+                                                    the registration process.";
                     }
                 }
             }

@@ -255,7 +255,7 @@ class Account extends CI_Controller
             $_SESSION['heading'] = 'Account deleted';
             $_SESSION['message'] = "Your account has been successfully deleted.
                                     It's so sad that you had leave too soon, we'll surely miss you.";
-            redirect(base_url('account/success'));
+            redirect(base_url('success'));
         }
 
         $this->load->view('settings/account/delete', $data);
