@@ -290,6 +290,15 @@ class Account extends CI_Controller
                         $error_message = "This email address was activated LONG T.";
                     }
                     else {
+                        $activation_code = $this->account_model->gen_email_activation_code();
+                        $subject = 'Makwire: Please verify your email address.';
+                        if ($this->account_model->email_has_user($email)) {
+                            $email_body = $this->account_model->get_formatted_email($activation_code);
+                        }
+                        else {
+                            $email_body = $this->register_model->get_formatted_email($activation_code);
+                        }
+
                         $this->account_model->send_email('robertelvisodoch@gmail.com', $email, $subject, $email_body);
                         $data['success_message'] = "An email has been sent to {$email}. Please use the link in that email
                                                     to activate your email address.";

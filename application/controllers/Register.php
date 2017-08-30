@@ -51,41 +51,16 @@ class Register extends CI_Controller
                         $data['error_message'] = 'This email address is already registered.';
                 }
                 elseif ($this->account_model->is_registered_email($email)) {
-                    $data['info_message'] = "Please use the link in the email sent to " .
-                                            "<strong>{$email}</strong> to continue with " .
-                                            "the registration process.<br>" .
-                                            "If you cant' find the email, then we can " .
-                                            "<a href='" . base_url("account/resend-email") .
+                    $data['info_message'] = "Please use the link in the email sent to <strong>{$email}</strong>
+                                            to continue with the registration process. If you cant' find the email,
+                                            then we can <a href='" . base_url("account/resend-email") .
                                             "'>resend the email.</a>";
                 }
                 else {
                     $activation_code = $this->account_model->gen_email_activation_code();
                     $this->account_model->add_email(NULL, $email, $activation_code);
                     $subject = 'Makwire: Please verify your email address.';
-
-                    $email_data['email_heading'] = 'makwire account creation';
-                    $email_data['message'] = "<p>
-                                                Hi there, thanks for your interest in joining
-                                                <a href='http://www.makwire.com'>makwire</a>.
-                                            </p>
-                                            <p>
-                                              Please use the link below to verify your email
-                                              address and continue with the registration process.
-                                            </p>
-                                            <a href='" .
-                                                base_url("account/activate-email/{$activation_code}") . "'
-                                                style='color: #fff; margin: 5px 0; padding: 10px; display: block; text-align: center; border-radius: 2px;
-                                                    border-color: #46b8da; text-decoration: none; box-sizing: border-box; font-variant: small-caps;
-                                                    background-color: #5bc0de;'>Verify your email address</a>
-
-                                            <hr>
-                                            <p>
-                                                You’re receiving this email because you recently tried to create
-                                                a new <b>makwire</b> account. If this wasn’t you, please ignore this email.
-                                            </p>";
-
-                    $email_body = $this->load->view('email', $email_data, TRUE);
-
+                    $email_body = $this->register_model->get_formatted_email($activation_code);
                     if ( ! $this->account_model->send_email('robertelvisodoch@gmail.com', $email, $subject, $email_body)) {
                         $data['info_message'] = "Sorry, we couldn't send your activation email.<br>" .
                                                 "The admin has been notified about the issue " .
