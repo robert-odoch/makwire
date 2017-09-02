@@ -6,11 +6,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <div role='main' class='main'>
         <div class='box'>
             <h4>Resend email activation link</h4>
-            <?php if (!empty($success_message)): ?>
-                <div class='alert alert-success'>
-                    <p><?php echo $success_message; ?></p>
-                </div>
-            <?php else: ?>
+            <?php
+            if (!empty($success_message)) {
+                show_message($success_message, 'success');
+            }
+            else {
+            ?>
                 <p>What is your email address again?</p>
                 <form action='<?= $form_action; ?>' method='post'
                         accept-charset='utf-8' role='form'>
@@ -37,5 +38,5 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </fieldset>
                     <input type='submit' value='Submit' class='btn btn-sm'>
                 </form>
-            <?php endif; ?>
+            <?php } ?>
         </div><!-- box -->

@@ -104,8 +104,7 @@ class Profile extends CI_Controller
 
                 // Make sure college and school exist.
                 if (!$this->profile_model->college_and_school_exists($data['college_id'], $data['school_id'])) {
-                    $data['error_message'] = 'Your college and school do not match!<br>' .
-                                                'Please try again.';
+                    $data['error_message'] = 'Your college and school do not match!<br>Please try again.';
                 }
             }
 

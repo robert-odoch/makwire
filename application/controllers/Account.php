@@ -110,15 +110,15 @@ class Account extends CI_Controller
                 $data['success_message'] = [
                     'header'=>'Your password has been changed.',
                     'body'=>"The new, temporary password has been sent to <b>{$user_data['email']}</b>.
-                            Once you have logged in with this password,
-                            you may change it by going to <b>settings > change password</b>."
+                            Once you have logged in with this password, you may change it by going to
+                            <b>settings > change password</b>."
                 ];
             }
             else {
                 $data['info_message'] = [
-                    'header'=>'Your password could not be changed due to a system error.
-                                We apologize for the inconvenience.',
-                    'body'=>NULL
+                    'header'=>'We encountered an error.',
+                    'body'=>'Your password could not be changed due to a system error.
+                                We apologize for the inconvenience.'
                 ];
             }
         }
@@ -155,14 +155,16 @@ class Account extends CI_Controller
                     $email_sent = $this->account_model->send_email('robertelvisodoch@gmail.com', $email_address, $subject, $email_body);
                     if ($email_sent) {
                         $data['success_message'] = [
-                            'header'=>"An email has been sent to <b>{$email_address}</b>.
-                                        Please use the link in that email to reset your password."
+                            'header'=>'We just emailed you.',
+                            'body'=>"An email has been sent to <b>{$email_address}</b>.
+                                    Please use the link in that email to reset your password."
                         ];
                     }
                     else {
                         $data['info_message'] = [
-                            'header'=>'Your password could not be changed due to a system error.
-                                        We apologize for the inconvenience.'
+                            'header'=>'We encountered an error.',
+                            'body'=>'Your password could not be changed due to a system error.
+                                    We apologize for the inconvenience.'
                         ];
                     }
                 }
@@ -315,7 +317,7 @@ class Account extends CI_Controller
 
             $_SESSION['heading'] = 'Account deleted';
             $_SESSION['message'] = "Your account has been successfully deleted.
-                                    It's so sad that you had leave too soon, we'll surely miss you.";
+                                    It's so sad that you had to leave too soon, we'll surely miss you.";
             redirect(base_url('success'));
         }
 
@@ -361,8 +363,11 @@ class Account extends CI_Controller
                         }
 
                         $this->account_model->send_email('robertelvisodoch@gmail.com', $email, $subject, $email_body);
-                        $data['success_message'] = "An email has been sent to {$email}. Please use the link in that email
-                                                    to activate your email address.";
+                        $data['success_message'] = [
+                            'header'=>'We just emailed you.',
+                            'body'=>"An email has been sent to {$email}. Please use the link in that email
+                                    to activate your email address."
+                        ];
                     }
                 }
                 else {
