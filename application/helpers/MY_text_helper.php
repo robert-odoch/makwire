@@ -24,4 +24,13 @@ if (!function_exists('format_name')) {
         return $result;
     }
 }
+
+if (!function_exists('show_message')) {
+    function show_message($message, $type) {
+        echo "<div class='alert alert-{$type}'><p>{$message['header']}</p></div>";
+        if (!empty($message['body'])) {
+            echo "<p>{$message['body']}</p>";
+        }
+    }
+}
 ?>

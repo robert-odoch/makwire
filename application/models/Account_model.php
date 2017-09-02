@@ -187,7 +187,7 @@ class Account_model extends CI_Model
         return ($query->num_rows() != 0);
     }
 
-    public function gen_email_activation_code()
+    public function gen_email_verification_code()
     {
         return md5(uniqid(rand(), true));
     }
@@ -202,26 +202,58 @@ class Account_model extends CI_Model
 
     public function get_formatted_email($activation_code)
     {
-        $email_data['email_heading'] = 'makwire email settings';
-        $email_data['message'] = "<p>
-                                    Hi there, thanks for using <a href='http://www.makwire.com'>makwire</a>.
-                                </p>
-                                <p>Please use the link below to verify your email address.</p>
-                                <a href='" .
-                                    base_url("account/activate-email/{$activation_code}") . "'
-                                    style='color: #fff; margin: 5px 0; padding: 10px; display: block; text-align: center; border-radius: 2px;
-                                        border-color: #46b8da; text-decoration: none; box-sizing: border-box; font-variant: small-caps;
-                                        background-color: #5bc0de;'>Verify your email address</a>
+        $data['email_heading'] = 'makwire email settings';
+        $data['message'] = "<p>
+                                Hi there, thanks for using <a href='http://www.makwire.com'>makwire</a>.
+                            </p>
+                            <p>Please use the link below to verify your email address.</p>
+                            <a href='" .
+                                base_url("account/activate-email/{$activation_code}") . "'
+                                style='color: #fff; margin: 5px 0; padding: 10px; display: block; text-align: center; border-radius: 2px;
+                                    border-color: #46b8da; text-decoration: none; box-sizing: border-box; font-variant: small-caps;
+                                    background-color: #5bc0de;'>Verify your email address</a>
 
-                                <hr>
-                                <p>
-                                    You’re receiving this email because you recently tried to
-                                    add this email address in settings. If this wasn’t you, please ignore this email.
-                                </p>";
+                            <hr>
+                            <p>
+                                You’re receiving this email because you recently tried to
+                                add this email address in settings. If this wasn’t you, please ignore this email.
+                            </p>";
 
-        $email_body = $this->load->view('email', $email_data, TRUE);
+        $body = $this->load->view('email', $data, TRUE);
 
-        return $email_body;
+        return $body;
+    }
+
+    public function save_password_reset_token($email, $token)
+    {
+        $sql = sprintf("INSERT INTO password_reset_token VALUES (%s, %s)",
+                        $this->db->escape($email), $this->db->escape($token));
+        $this->db->query($sql);
+    }
+
+    public function get_password_reset_user_data($token) {
+        $sql = sprintf('SELECT email FROM password_reset_token WHERE token = %s',
+                        $this->db->escape($token));
+        $query = $this->db->query($sql);
+        if ($query->num_rows() == 0) {
+            return NULL;
+        }
+
+        $email = $query->row_array()['email'];
+        $sql = sprintf('SELECT user_id FROM user_emails WHERE email = %s',
+                        $this->db->escape($email));
+        $query = $this->db->query($sql);
+        if ($query->num_rows() == 0) {
+            return NULL;
+        }
+
+        $user_id = $query->row_array()['user_id'];
+        $data = [
+            'user_id'=>$user_id,
+            'email'=>$email
+        ];
+
+        return $data;
     }
 }
 ?>

@@ -81,35 +81,96 @@ class Account extends CI_Controller
         $this->load->view('common/external-page-footer');
     }
 
-    public function forgot_password()
+    public function forgot_password($token = NULL)
     {
         if (isset($_SESSION['user_id'])) {
             redirect(base_url('news-feed'));
         }
 
-        $data['title'] = 'Recover your password';
-        $this->load->view('common/header', $data);
-
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $email_address = $this->input->post('email');
-            if (strlen($email_address) == 0) {
-                $error_message = 'Please enter an email address.';
-            }
-            elseif (!filter_var($email_address, FILTER_VALIDATE_EMAIL)) {
-                $error_message = 'Please enter a valid email address.';
-            }
-            elseif ( ! $this->account_model->is_activated_email($email_address)) {
-                $error_message = 'Sorry, makwire does not recognise that email address.';
+        if (!empty($token)) {
+            $user_data = $this->account_model->get_password_reset_user_data($token);
+            if (empty($user_data)) {
+                redirect(base_url('error'));
             }
 
-            if (isset($error_message)) {
-                $data['error_message'] = $error_message;
-                $data['email'] = $email_address;
+            // Update the database.
+            $new_passwd = substr(md5(uniqid(rand(), true)), 3, 10);
+            $this->account_model->change_password($user_data['user_id'], $new_passwd);
+
+            // Send instructions for re-setting password.
+            $subject = 'Makwire: your new password';
+            $email_data['email_heading'] = 'Makwire password reset';
+            $email_data['message'] = "<p>Your password for logging into <b>makwire</b> has
+                                        been temporarily changed to {$new_passwd}. Please login
+                                        using this password. Then you may change your password to
+                                        something more familiar.</p>";
+            $email_body = $this->load->view('email', $email_data, true);
+            $email_sent = $this->account_model->send_email('robertelvisodoch@gmail.com', $user_data['email'], $subject, $email_body);
+            if ($email_sent) {
+                $data['success_message'] = [
+                    'header'=>'Your password has been changed.',
+                    'body'=>"The new, temporary password has been sent to <b>{$user_data['email']}</b>.
+                            Once you have logged in with this password,
+                            you may change it by going to <b>settings > change password</b>."
+                ];
             }
             else {
-                // Send instructions for re-setting password.
+                $data['info_message'] = [
+                    'header'=>'Your password could not be changed due to a system error.
+                                We apologize for the inconvenience.',
+                    'body'=>NULL
+                ];
             }
         }
+        else {
+            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                $email_address = $this->input->post('email');
+                if (strlen($email_address) == 0) {
+                    $error_message['header'] = 'Please enter an email address.';
+                }
+                elseif (!filter_var($email_address, FILTER_VALIDATE_EMAIL)) {
+                    $error_message['header'] = 'Please enter a valid email address.';
+                }
+                elseif ( ! $this->account_model->is_activated_email($email_address)) {
+                    $error_message['header'] = 'Sorry, makwire does not recognise that email address.';
+                }
+
+                if (isset($error_message)) {
+                    $data['error_message'] = $error_message;
+                    $data['email'] = $email_address;
+                }
+                else {
+                    // Verify that this email address belongs to the user.
+                    $token = $this->account_model->gen_email_verification_code();
+                    $this->account_model->save_password_reset_token($email_address, $token);
+                    $subject = 'Makwire: recover forgotten password';
+                    $email_data['email_heading'] = 'Makwire Password Reset';
+                    $email_data['message'] = "<p>Please use the link below to reset your password.</p>
+                                                <a href='" . base_url("account/forgot-password/{$token}") . "'
+                                                style='color: #fff; margin: 5px 0; padding: 10px; display: block; text-align: center; border-radius: 2px;
+                                                border-color: #46b8da; text-decoration: none; box-sizing: border-box; font-variant: small-caps;
+                                                background-color: #5bc0de;'>Reset Password</a>";
+                    $email_body = $this->load->view('email', $email_data, true);
+
+                    $email_sent = $this->account_model->send_email('robertelvisodoch@gmail.com', $email_address, $subject, $email_body);
+                    if ($email_sent) {
+                        $data['success_message'] = [
+                            'header'=>"An email has been sent to <b>{$email_address}</b>.
+                                        Please use the link in that email to reset your password."
+                        ];
+                    }
+                    else {
+                        $data['info_message'] = [
+                            'header'=>'Your password could not be changed due to a system error.
+                                        We apologize for the inconvenience.'
+                        ];
+                    }
+                }
+            }
+        }
+
+        $data['title'] = 'Recover your password';
+        $this->load->view('common/header', $data);
 
         $this->load->view('settings/account/forgot-password', $data);
         $this->load->view('common/external-page-footer');
