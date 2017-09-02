@@ -26,8 +26,7 @@ class Account_model extends CI_Model
 
     public function get_name_combinations($user_id)
     {
-        $sql = sprintf("SELECT lname, other_names FROM users WHERE user_id = %d",
-                        $user_id);
+        $sql = sprintf("SELECT lname, other_names FROM users WHERE user_id = %d", $user_id);
         $query = $this->utility_model->run_query($sql);
         $result = $query->row_array();
 
