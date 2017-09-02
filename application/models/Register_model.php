@@ -23,7 +23,7 @@ class Register_model extends CI_Model
         $profile_name = ucfirst($data['lname']) . ' ' . ucwords($data['other_names']);
         $reg_sql = sprintf("INSERT INTO users " .
                             "(dob, lname, other_names, gender, uname, passwd, profile_name) " .
-                            "VALUES (%s, %s, %s, '%s', %s, %s, %s)",
+                            "VALUES ('%s', %s, %s, '%s', %s, %s, %s)",
                             $data['dob'], $this->db->escape($data['lname']),
                             $this->db->escape($data['other_names']), $data['gender'],
                             $this->db->escape($data['uname']),
