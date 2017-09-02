@@ -1,13 +1,13 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-require_once('common/user-page-start.php');
+require_once(__DIR__ . '/../common/user-page-start.php');
 ?>
 
 <div class='box'>
 
     <?php
     define('STATUS', 'link');
-    require_once(dirname(__FILE__) . '/common/status-nav.php');
+    require_once(__DIR__ . '/../common/status-nav.php');
     ?>
 
     <h4 class='sr-only'>Add link to a resource on another website.</h4>

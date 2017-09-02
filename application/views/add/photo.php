@@ -1,13 +1,13 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-require_once('common/user-page-start.php');
+require_once(__DIR__ . '/../common/user-page-start.php');
 ?>
 
 <div class='box'>
 
     <?php
     define('STATUS', 'photo');
-    require_once(dirname(__FILE__) . '/common/status-nav.php');
+    require_once(__DIR__ . '/../common/status-nav.php');
     ?>
 
     <h4 class='sr-only'>Add a photo</h4>
@@ -17,7 +17,7 @@ require_once('common/user-page-start.php');
         <?= $error; ?>
     </div>
     <?php } ?>
-    
+
     <form action='<?= base_url('photo/new'); ?>' method='post'
             enctype='multipart/form-data' role='form'>
         <div class='form-group'>
