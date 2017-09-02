@@ -57,7 +57,7 @@ class Register extends CI_Controller
                                             "'>resend the email.</a>";
                 }
                 else {
-                    $activation_code = $this->account_model->gen_email_activation_code();
+                    $activation_code = $this->account_model->gen_email_verification_code();
                     $this->account_model->add_email(NULL, $email, $activation_code);
                     $subject = 'Makwire: Please verify your email address.';
                     $email_body = $this->register_model->get_formatted_email($activation_code);
@@ -89,14 +89,6 @@ class Register extends CI_Controller
 
     public function step_two($activation_code = 0)
     {
-        if (empty($_SESSION['activation_code']) ||
-                $_SESSION['activation_code'] != $activation_code) {
-            show_404();
-        }
-        else {
-            unset($_SESSION['activation_code']);
-        }
-
         $data = [];
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
