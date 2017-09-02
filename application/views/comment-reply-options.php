@@ -8,6 +8,7 @@ switch ($object) {
     case 'comment':
     case 'reply':
         require_once(dirname(__FILE__) . '/common/comment-or-reply.php');
+        break;
     default:
         # do nothing...
         break;
@@ -15,7 +16,7 @@ switch ($object) {
 ?>
 
 <div class='box'>
-    <h4>More options</h4>
+    <h4>Options</h4>
     <div class='list-group'>
         <a href='<?php echo base_url("{$object}/edit/{$$object['comment_id']}"); ?>' class='list-group-item'>
             Edit <?php echo $object; ?>

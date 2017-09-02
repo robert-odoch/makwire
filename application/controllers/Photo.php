@@ -367,5 +367,24 @@ class Photo extends CI_Controller
         $this->load->view('show/shares', $data);
         $this->load->view('common/footer');
     }
+
+    public function options($photo_id = 0)
+    {
+        try {
+            $photo = $this->photo_model->get_photo($_SESSION['user_id'], $photo_id);
+        }
+        catch (NotFoundException $e) {
+            show_404();
+        }
+
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
+        $data['title'] = 'More options for this photo';
+        $this->load->view('common/header', $data);
+
+        $data['object'] = 'photo';
+        $data['photo'] = $photo;
+        $this->load->view('item-options', $data);
+        $this->load->view('common/footer');
+    }
 }
 ?>

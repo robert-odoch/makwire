@@ -171,7 +171,7 @@ class Comment extends CI_Controller
 
         $data['object'] = 'comment';
         $data['comment'] = $comment;
-        $this->load->view('options', $data);
+        $this->load->view('comment-reply-options', $data);
         $this->load->view('common/footer');
     }
 

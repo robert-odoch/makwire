@@ -58,8 +58,11 @@ class Profile extends CI_Controller
                 $this->image_lib->initialize($config);
                 $this->image_lib->resize();
 
-                // Record it in the database.
-                $this->profile_model->set_profile_picture($upload_data, $_SESSION['user_id']);
+                // Record photo data in the photos table.
+                $photo_id = $this->photo_model->add_photo($upload_data, $_SESSION['user_id']);
+
+                // Set profile picture.
+                $this->profile_model->set_profile_picture($photo_id, $_SESSION['user_id']);
                 redirect(base_url("user/{$_SESSION['user_id']}"));
             }
         }

@@ -89,15 +89,7 @@ class Photo_model extends CI_Model
      */
     public function publish($data, $user_id)
     {
-        // Record photo data in the photos table.
-        $photo_sql = sprintf("INSERT INTO photos " .
-                            "(user_id, image_type, full_path) " .
-                            "VALUES (%d, %s, %s)",
-                            $user_id,
-                            $this->db->escape($data['file_type']),
-                            $this->db->escape($data['full_path']));
-        $this->utility_model->run_query($photo_sql);
-        $photo_id = $this->db->insert_id();
+        $photo_id = $this->add_photo($data, $user_id);
 
         // Dispatch an activity.
         $activity_sql = sprintf("INSERT INTO activities " .
@@ -275,6 +267,17 @@ class Photo_model extends CI_Model
         $sql = sprintf('UPDATE photos SET description = %s WHERE photo_id = %d',
                         $this->db->escape($new_description), $photo_id);
         $this->db->query($sql);
+    }
+
+    public function add_photo($data, $user_id)
+    {
+        $photo_sql = sprintf("INSERT INTO photos (user_id, image_type, full_path) VALUES (%d, %s, %s)",
+                            $user_id, $this->db->escape($data['file_type']),
+                            $this->db->escape($data['full_path']));
+        $this->utility_model->run_query($photo_sql);
+        $photo_id = $this->db->insert_id();
+
+        return $photo_id;
     }
 }
 ?>

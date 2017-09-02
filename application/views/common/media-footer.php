@@ -80,6 +80,14 @@
                             Delete
                         </a>
                     </li>
+
+                    <?php if ($object == 'photo' && $$object['user_id'] == $_SESSION['user_id']): ?>
+                        <li>
+                            <a href='<?= base_url("{$object}/options/{$$object[$object . '_id']}"); ?>'>
+                                More
+                            </a>
+                        </li>
+                    <?php endif; ?>
                 </ul>
             </li>
             <?php endif; ?>

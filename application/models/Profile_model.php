@@ -10,7 +10,7 @@ class Profile_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('utility_model');
+        $this->load->model('utility_model', 'photo_model');
     }
 
     /**
@@ -18,21 +18,20 @@ class Profile_model extends CI_Model
      *
      * @param $data an array containing details about an uploaded photo.
      */
-    public function set_profile_picture($data, $user_id)
+    public function set_profile_picture($photo_id, $user_id)
     {
-        // Record photo data in the photos table.
-        $photo_sql = sprintf("INSERT INTO photos (user_id, image_type, full_path) " .
-                                "VALUES (%d, %s, %s)",
-                                $user_id,
-                                $this->db->escape($data['file_type']),
-                                $this->db->escape($data['full_path']));
-        $this->utility_model->run_query($photo_sql);
-        $photo_id = $this->db->insert_id();
+        // Get photo path.
+        $sql = sprintf('SELECT full_path FROM photos WHERE photo_id = %d', $photo_id);
+        $query = $this->db->query($sql);
+        $photo_path = $query->row_array()['full_path'];
+
+        $last_slash = strrpos($photo_path, '/');
+        $photo_directory = substr($photo_path, 0, $last_slash);
+        $photo_name = substr($photo_path, $last_slash+1);
 
         // Update profile_pic_path in the users table.
-        $profile_pic_path = "{$data['file_path']}small/{$data['file_name']}";
-        $update_sql = sprintf("UPDATE users SET profile_pic_path = %s " .
-                                "WHERE (user_id = %d) LIMIT 1",
+        $profile_pic_path = "{$photo_directory}/small/{$photo_name}";
+        $update_sql = sprintf("UPDATE users SET profile_pic_path = %s WHERE (user_id = %d) LIMIT 1",
                                 $this->db->escape($profile_pic_path),
                                 $user_id);
         $this->utility_model->run_query($update_sql);

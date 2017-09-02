@@ -87,7 +87,7 @@ class Reply extends CI_Controller
 
         $data['object'] = 'reply';
         $data['reply'] = $reply;
-        $this->load->view('options', $data);
+        $this->load->view('comment-reply-options', $data);
         $this->load->view('common/footer');
     }
 
