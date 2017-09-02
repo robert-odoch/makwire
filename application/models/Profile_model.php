@@ -46,25 +46,6 @@ class Profile_model extends CI_Model
     }
 
     /**
-     * Checks whether a given school exists and is under a specified college.
-     *
-     * @param $college_id the college ID of the school in the schools table.
-     * @param $school_id the ID of the school in the schools table.
-     * @return TRUE if given school exists under specified college.
-     */
-    public function college_and_school_exists($college_id, $school_id)
-    {
-        $school_sql = sprintf("SELECT school_id " .
-                                "FROM schools " .
-                                "WHERE (school_id = %d AND college_id = %d) " .
-                                "LIMIT 1",
-                                $school_id, $college_id);
-        $school_query = $this->utility_model->run_query($school_sql);
-
-        return ($school_query->num_rows() == 1);
-    }
-
-    /**
      * Gets full profile for a user.
      *
      * @param $user_id the ID of the user in the users table.
@@ -81,34 +62,28 @@ class Profile_model extends CI_Model
         $origin_query = $this->utility_model->run_query($origin_sql);
         $data['origin'] = $origin_query->row_array();
 
-        // Get the colleges.
-        $colleges_sql = sprintf("SELECT id, college_id, date_from, date_to, level, " .
-                                "YEAR(date_from) AS start_year, YEAR(date_to) AS end_year " .
-                                "FROM user_colleges " .
-                                "WHERE (user_id = %d) " .
-                                "ORDER BY date_to DESC",
+        // Get the schools.
+        $schools_sql = sprintf("SELECT us.id, us.school_id, us.date_from, us.date_to, us.level, s.school_name,
+                                YEAR(date_from) AS start_year, YEAR(date_to) AS end_year
+                                FROM user_schools us LEFT JOIN schools s ON (us.school_id = s.school_id)
+                                WHERE (us.user_id = %d) ORDER BY date_to DESC",
                                 $user_id);
-        $colleges_query = $this->utility_model->run_query($colleges_sql);
+        $schools_query = $this->utility_model->run_query($schools_sql);
 
-        $data['colleges'] = $colleges_query->result_array();
-        foreach ($data['colleges'] as &$c) {
+        $data['schools'] = $schools_query->result_array();
+        foreach ($data['schools'] as &$s) {
             // Get the college name.
-            $college_sql = sprintf("SELECT college_name " .
-                                    "FROM colleges " .
-                                    "WHERE (college_id = %d)",
-                                    $c['college_id']);
+            $college_sql = sprintf("SELECT college_name FROM colleges c
+                                    LEFT JOIN schools s ON (c.college_id = s.college_id)
+                                    WHERE (s.school_id = %d)",
+                                    $s['school_id']);
             $college_query = $this->utility_model->run_query($college_sql);
-            $c['college_name'] = $college_query->row_array()['college_name'];
-
-            // Get the school.
-            $school_sql = sprintf("SELECT us.id, us.school_id, sch.school_name " .
-                                    "FROM user_schools AS us " .
-                                    "LEFT JOIN schools sch " .
-                                    "ON (us.school_id = sch.school_id) " .
-                                    "WHERE (us.user_college_id = %d)",
-                                    $c['id']);
-            $school = $this->utility_model->run_query($school_sql)->row_array();
-            $c['school'] = $school;
+            if ($college_query->num_rows() == 0) {
+                $s['college_name'] = NULL;
+            }
+            else {
+                $s['college_name'] = $college_query->row_array()['college_name'];
+            }
 
             // Get the programme.
             $programme_sql = sprintf("SELECT up.id, p.programme_name " .
@@ -116,15 +91,15 @@ class Profile_model extends CI_Model
                                     "LEFT JOIN programmes p " .
                                     "ON (up.programme_id = p.programme_id) " .
                                     "WHERE (up.user_school_id = %d)",
-                                    $school['id']);
+                                    $s['id']);
             $programme_query = $this->utility_model->run_query($programme_sql);
-            $c['has_programme'] = FALSE;
+            $s['has_programme'] = FALSE;
             if ($programme_query->num_rows() > 0) {
-                $c['has_programme'] = TRUE;
-                $c['programme'] = $programme_query->row_array();
+                $s['has_programme'] = TRUE;
+                $s['programme'] = $programme_query->row_array();
             }
         }
-        unset($c);
+        unset($s);
 
         // Get the halls.
         $halls_sql = sprintf("SELECT id, date_from, date_to, YEAR(date_from) AS start_year, " .
@@ -149,19 +124,6 @@ class Profile_model extends CI_Model
         $data['hostels'] = $hostels_query->result_array();
 
         return $data;
-    }
-
-    /**
-     * Gets all colleges form the colleges table.
-     *
-     * @return all colleges in the colleges table.
-     */
-    public function get_colleges()
-    {
-        $colleges_sql = sprintf("SELECT college_id, college_name FROM colleges");
-        $colleges_query = $this->utility_model->run_query($colleges_sql);
-
-        return $colleges_query->result_array();
     }
 
     /**
@@ -267,47 +229,15 @@ class Profile_model extends CI_Model
      * @param $user_college_id the ID of the record in the user_colleges table.
      * @return details for a college attended by a user.
      */
-    public function get_user_college($user_id, $user_college_id)
-    {
-        $user_college_sql = sprintf("SELECT c.college_name, uc.id, uc.college_id, " .
-                                    "DAY(uc.date_from) AS start_day, MONTH(uc.date_from) AS start_month, " .
-                                    "YEAR(uc.date_from) AS start_year, DAY(uc.date_to) AS end_day, " .
-                                    "MONTH(uc.date_to) AS end_month, YEAR(uc.date_to) AS end_year " .
-                                    "FROM user_colleges uc " .
-                                    "LEFT JOIN colleges c ON (uc.college_id = c.college_id) " .
-                                    "WHERE (uc.id = %d AND uc.user_id = %d)",
-                                    $user_college_id, $user_id);
-        $user_college_query = $this->utility_model->run_query($user_college_sql);
-
-        if ($user_college_query->num_rows() == 0) {
-            throw new NotFoundException();
-        }
-
-        $user_college = $user_college_query->row_array();
-
-        // Get the school.
-        $school_sql = sprintf("SELECT us.id, us.school_id, s.school_name FROM user_schools us " .
-                                "LEFT JOIN schools s ON (us.school_id = s.school_id) " .
-                                "WHERE (user_college_id = %d)",
-                                $user_college['id']);
-        $school_query = $this->utility_model->run_query($school_sql);
-        $user_college['school'] = $school_query->row_array();
-
-        return $user_college;
-    }
-
-    /**
-     * Gets details for a school attended by a user.
-     *
-     * Throws NotFoundException if no matching record is found.
-     *
-     * @param $user_school_id the ID of the record in the user_schools table.
-     * @return details for a school attended by a user.
-     */
     public function get_user_school($user_id, $user_school_id)
     {
-        $user_school_sql = sprintf("SELECT id, school_id FROM user_schools " .
-                                    "WHERE (id = %d AND user_id = %d)",
+        $user_school_sql = sprintf("SELECT s.school_name, us.id, us.school_id,
+                                    DAY(us.date_from) AS start_day, MONTH(us.date_from) AS start_month,
+                                    YEAR(us.date_from) AS start_year, DAY(us.date_to) AS end_day,
+                                    MONTH(us.date_to) AS end_month, YEAR(us.date_to) AS end_year
+                                    FROM user_schools us
+                                    LEFT JOIN schools s ON (us.school_id = s.school_id)
+                                    WHERE (us.id = %d AND us.user_id = %d)",
                                     $user_school_id, $user_id);
         $user_school_query = $this->utility_model->run_query($user_school_sql);
 
@@ -315,7 +245,8 @@ class Profile_model extends CI_Model
             throw new NotFoundException();
         }
 
-        return $user_school_query->row_array();
+        $user_school = $user_school_query->row_array();
+        return $user_school;
     }
 
     /**
@@ -403,15 +334,13 @@ class Profile_model extends CI_Model
      *
      * @param $data an array of details about the college.
      */
-    public function add_college($user_id, $data)
+    public function add_school($user_id, $data)
     {
-        // First check whether a college already exists in the range of years provided.
+        // First check whether a school already exists in the range of years provided.
         $data_date_from = date_create($data['start_date']);
         $data_date_to = date_create($data['end_date']);
 
-        $dates_sql = sprintf("SELECT date_from, date_to " .
-                                "FROM user_colleges " .
-                                "WHERE (user_id = %d)",
+        $dates_sql = sprintf("SELECT date_from, date_to FROM user_schools WHERE (user_id = %d)",
                                 $user_id);
         $dates_query = $this->utility_model->run_query($dates_sql);
         $dates_results = $dates_query->result_array();
@@ -424,22 +353,13 @@ class Profile_model extends CI_Model
         }
 
         // If we have reached this point, then the years are OK.
-        $add_college_sql = sprintf("INSERT INTO user_colleges " .
-                                    "(user_id, college_id, date_from, date_to) " .
+        $add_college_sql = sprintf("INSERT INTO user_schools " .
+                                    "(user_id, school_id, date_from, date_to) " .
                                     "VALUES (%d, %d, %s, %s)",
-                                    $user_id, $data['college_id'],
+                                    $user_id, $data['school_id'],
                                     $this->db->escape($data['start_date']),
                                     $this->db->escape($data['end_date']));
         $this->utility_model->run_query($add_college_sql);
-
-        // Also add the school.
-        $user_college_id = $this->db->insert_id();
-        $add_school_sql = sprintf("INSERT INTO user_schools " .
-                                    "(user_id, school_id, user_college_id) " .
-                                    "VALUES (%d, %d, %d)",
-                                    $user_id, $data['school_id'],
-                                    $user_college_id);
-        $this->utility_model->run_query($add_school_sql);
 
         return TRUE;
     }
@@ -628,16 +548,15 @@ class Profile_model extends CI_Model
      *
      * @param $data an array of details to be updated.
      */
-    public function update_college($user_id, $data)
+    public function update_school($user_id, $data)
     {
-        // Check whether a college already exists in the range of years provided.
+        // Check whether a school already exists in the range of years provided.
         $data_date_from = date_create($data['start_date']);
         $data_date_to = date_create($data['end_date']);
 
-        $dates_sql = sprintf("SELECT date_from, date_to " .
-                                "FROM user_colleges " .
-                                "WHERE (user_id = %d AND id != %d)",
-                                $user_id, $data['user_college_id']);
+        $dates_sql = sprintf("SELECT date_from, date_to FROM user_schools
+                                WHERE (user_id = %d AND id != %d)",
+                                $user_id, $data['user_school_id']);
         $dates_query = $this->utility_model->run_query($dates_sql);
         $dates_results = $dates_query->result_array();
         foreach ($dates_results as $d) {
@@ -649,13 +568,11 @@ class Profile_model extends CI_Model
         }
 
         // If we have reached this point, then attempt the update.
-        $update_college_sql = sprintf("UPDATE user_colleges " .
-                                        "SET date_from = %s, date_to = %s " .
-                                        "WHERE (id = %d)",
+        $update_school_sql = sprintf("UPDATE user_schools SET date_from = %s, date_to = %s WHERE (id = %d)",
                                         $this->db->escape($data['start_date']),
                                         $this->db->escape($data['end_date']),
-                                        $data['user_college_id']);
-        $this->utility_model->run_query($update_college_sql);
+                                        $data['user_school_id']);
+        $this->utility_model->run_query($update_school_sql);
 
         return TRUE;
     }

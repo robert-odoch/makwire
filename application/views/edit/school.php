@@ -18,29 +18,6 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
     <form action='<?= $form_action ?>' method='post' accept-charset='utf-8' role='form'>
         <fieldset>
             <div class='form-group'>
-                <label for='college'>College</label>
-                <?php if (isset($colleges)) { ?>
-                    <select name='college' id='college' class='form-control' required>
-                        <optgroup>
-                        <?php
-                        foreach ($colleges as $c) {
-                            print "<option value='{$c['college_id']}'";
-                            if (isset($college_id) && ($college_id == $c['college_id'])) {
-                                print ' selected';
-                            }
-                            print ">{$c['college_name']}</option>";
-                        }
-                        ?>
-                        </optgroup>
-                    </select>
-                <?php
-                } else {  // Editing a college.
-                    print "<p>{$user_college['college_name']}</p>";
-                }
-                ?>
-            </div>
-
-            <div class='form-group'>
                 <label for='school'>School</label>
                 <?php if (isset($schools)) { ?>
                     <select name='school' id='school' class='form-control' required>
@@ -57,8 +34,8 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
                         </optgroup>
                     </select>
                 <?php
-                } else {  // Editing a college.
-                    print "<p>{$user_college['school']['school_name']}</p>";
+                } else {  // Editing a school.
+                    print "<p>{$user_school['school_name']}</p>";
                 }
                 ?>
             </div>
@@ -67,13 +44,12 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
         <?php
         require_once(dirname(__FILE__) . '/../common/show-date-input.php');
 
-        // Only show this if the user is  editing an existing college.
-        if (isset($user_college)) {
+        // Only show this if the user is  editing an existing school.
+        if (isset($user_school)) {
         ?>
         <fieldset>
-            <input type='hidden' name='user-college-id' value='<?= $user_college['id']; ?>'>
-            <input type='hidden' name='college-id' value='<?= $user_college['college_id']; ?>'>
-            <input type='hidden' name='school-id' value='<?= $user_college['school']['school_id']; ?>'>
+            <input type='hidden' name='user-school-id' value='<?php echo $user_school['id']; ?>'>
+            <input type='hidden' name='school-id' value='<?= $user_school['school_id']; ?>'>
         </fieldset>
         <?php } ?>
         <input type='submit' value='Save' class='btn btn-sm'>

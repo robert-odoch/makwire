@@ -72,7 +72,7 @@ class Profile extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function add_college()
+    public function add_school()
     {
         $data = [];
 
@@ -99,51 +99,44 @@ class Profile extends CI_Controller
             }
 
             if (!isset($data['error_message'])) {
-                $data['college_id'] = $this->input->post('college');
                 $data['school_id'] = $this->input->post('school');
-
-                // Make sure college and school exist.
-                if (!$this->profile_model->college_and_school_exists($data['college_id'], $data['school_id'])) {
-                    $data['error_message'] = 'Your college and school do not match!<br>Please try again.';
-                }
             }
 
             if (!isset($data['error_message'])) {
                 // Try saving the college and school.
-                if ($this->profile_model->add_college($_SESSION['user_id'], $data)) {
-                    $_SESSION['message'] = 'Your college and school have been succesfully saved.';
+                if ($this->profile_model->add_school($_SESSION['user_id'], $data)) {
+                    $_SESSION['message'] = 'Your school has been succesfully saved.';
                     redirect(base_url('user/success'));
                 }
                 else {
-                    $data['error_message'] = "The years you entered conflict with one of your records.<br>" .
-                                                "You can't be at two colleges or schools at the same time.";
+                    $data['error_message'] = "The years you entered conflict with one of your records.
+                                                Remember, You can't be at two schools at the same time.";
                 }
             }
         }
 
         $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
-        $data['title'] = 'Add your college';
+        $data['title'] = 'Add your school';
         $this->load->view('common/header', $data);
 
         // User reaches here if he has just opened this page, or
         // there is an error in submitted form data.
-        $data['colleges'] = $this->profile_model->get_colleges();
         $data['schools'] = $this->profile_model->get_schools();
 
-        $data['heading'] = 'Add College';
-        $data['form_action'] = base_url('profile/add-college');
-        $this->load->view('edit/college', $data);
+        $data['heading'] = 'Add School';
+        $data['form_action'] = base_url('profile/add-school');
+        $this->load->view('edit/school', $data);
         $this->load->view('common/footer');
     }
 
-    public function edit_college($user_college_id = 0)
+    public function edit_school($user_school_id = 0)
     {
         $data = [];
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // DON'T try to remove this line,
             // $user_college_id useful when re-displaying the form.
-            $user_college_id = $this->input->post('user-college-id');
+            $user_school_id = $this->input->post('user-school-id');
 
             $data['start_day'] = $this->input->post('start-day');
             $data['start_month'] = $this->input->post('start-month');
@@ -167,57 +160,50 @@ class Profile extends CI_Controller
             }
 
             if (!isset($data['error_message'])) {
-                $data['user_college_id'] = $user_college_id;
-                $data['college_id'] = $this->input->post('college-id');
+                $data['user_school_id'] = $user_school_id;
                 $data['school_id'] = $this->input->post('school-id');
-
-                // Check whether college and school exist.
-                if (!$this->profile_model->college_and_school_exists($data['college_id'], $data['school_id'])) {
-                    $data['error_message'] = 'Your college and school do not match!<br>' .
-                                                'Please try again.';
-                }
             }
 
             if (!isset($data['error_message'])) {
-                if ($this->profile_model->update_college($_SESSION['user_id'], $data)) {
+                if ($this->profile_model->update_school($_SESSION['user_id'], $data)) {
                     $_SESSION['message'] = 'Your edits have been succesfully saved.';
                     redirect(base_url('user/success'));
                 }
                 else {
-                    $data['error_message'] = "The years you entered conflict with one of your records.<br>" .
-                                                "You can't be at two colleges or schools at the same time.";
+                    $data['error_message'] = "The years you entered conflict with one of your records.
+                                                Remember, you can't be at two schools at the same time.";
                 }
             }
         }
 
         $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
-        $data['title'] = 'Edit your college';
+        $data['title'] = 'Edit your school';
         $this->load->view('common/header', $data);
 
         try {
-            $user_college = $this->profile_model->get_user_college($_SESSION['user_id'], $user_college_id);
+            $user_school = $this->profile_model->get_user_school($_SESSION['user_id'], $user_school_id);
         }
         catch (NotFoundException $e) {
             show_404();
         }
 
-        $data['user_college'] = $user_college;
+        $data['user_school'] = $user_school;
 
         if (!isset($data['error_message'])) {
             // Use values from the database if visitor is viewing this page
             // for the first time.
-            $data['start_year'] = $user_college['start_year'];
-            $data['start_month'] = $user_college['start_month'];
-            $data['start_day'] = $user_college['start_day'];
+            $data['start_year'] = $user_school['start_year'];
+            $data['start_month'] = $user_school['start_month'];
+            $data['start_day'] = $user_school['start_day'];
 
-            $data['end_year'] = $user_college['end_year'];
-            $data['end_month'] = $user_college['end_month'];
-            $data['end_day'] = $user_college['end_day'];
+            $data['end_year'] = $user_school['end_year'];
+            $data['end_month'] = $user_school['end_month'];
+            $data['end_day'] = $user_school['end_day'];
         }
 
-        $data['heading'] = 'Edit College';
-        $data['form_action'] = base_url('profile/edit-college');
-        $this->load->view('edit/college', $data);
+        $data['heading'] = 'Edit School';
+        $data['form_action'] = base_url('profile/edit-school');
+        $this->load->view('edit/school', $data);
         $this->load->view('common/footer');
     }
 

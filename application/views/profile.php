@@ -14,7 +14,7 @@ require_once("common/secondary-user-nav.php");
     }
 
     // If there is nothing to show.
-    if ($is_visitor && !$profile['colleges'] && !$profile['halls']
+    if ($is_visitor && !$profile['schools'] && !$profile['halls']
         && !$profile['hostels'] && !$profile['origin']) {
         print "<div class='alert alert-info' role='alert'>" .
                 "<span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span> " .
@@ -22,26 +22,28 @@ require_once("common/secondary-user-nav.php");
     }
     else {
     ?>
-        <?php if (!$is_visitor || $profile['colleges']) { ?>
+        <?php if (!$is_visitor || $profile['schools']) { ?>
             <h4>Education</h4>
             <ul class='profile'>
             <?php
-            if ($profile['colleges']) {
-                foreach ($profile['colleges'] as $college) {
-                    print "<span><b>{$college['start_year']} - {$college['end_year']}</b></span>";
-                    print "<li><b>College: </b>{$college['college_name']}";
+            if ($profile['schools']) {
+                foreach ($profile['schools'] as $sch) {
+                    print "<span><b>{$sch['start_year']} - {$sch['end_year']}</b></span>";
+                    if ($sch['college_name']) {
+                        print "<li><b>College: </b>{$sch['college_name']}</li>";
+                    }
+
+                    print "<li><b>School: </b>{$sch['school_name']}";
                     if (!$is_visitor) {
-                        print " <a href='" . base_url("profile/edit-college/{$college['id']}") .
+                        print " <a href='" . base_url("profile/edit-school/{$sch['id']}") .
                             "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Edit</a>";
                     }
                     print "</li>";
 
-                    print "<li><b>School: </b>{$college['school']['school_name']}</li>";
-
-                    if ($college['has_programme']) {
-                        print "<li><b>Programme: </b>{$college['programme']['programme_name']}";
+                    if ($sch['has_programme']) {
+                        print "<li><b>Programme: </b>{$sch['programme']['programme_name']}";
                         if (!$is_visitor) {
-                            print " <a href='" . base_url("profile/edit-programme/{$college['programme']['id']}") .
+                            print " <a href='" . base_url("profile/edit-programme/{$sch['programme']['id']}") .
                                 "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Edit</a>";
                         }
                         print "</li>";
@@ -49,18 +51,18 @@ require_once("common/secondary-user-nav.php");
                     else {
                         if (!$is_visitor) {
                             print "<li><b>Programme: </b> <a href='".
-                                    base_url("profile/add-programme/{$college['school']['id']}") .
+                                    base_url("profile/add-programme/{$sch['id']}") .
                                     "'>Add programme</a></li>";
                         }
                     }
                 }  // End foreach.
 
                 if (!$is_visitor) {
-                    print "<a href='". base_url("profile/add-college") . "'>Add college</a>";
+                    print "<a href='". base_url("profile/add-school") . "'>Add school</a>";
                 }
             }
             elseif (!$is_visitor) {
-                print "<a href='". base_url("profile/add-college") . "'>Add college</a>";
+                print "<a href='". base_url("profile/add-school") . "'>Add school</a>";
             } // ($profile['colleges']).
 
             print "</ul>";
