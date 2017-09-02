@@ -3,11 +3,7 @@
 <div class='wrap-single'>
     <div role='main' class='main'>
         <div class='box'>
-            <?php if (isset($message)) { ?>
-            <h4>Log in to continue</h4>
-            <?php } else { ?>
             <h4>Log In</h4>
-            <?php } ?>
 
             <?php
             if (isset($login_errors) && array_key_exists('login', $login_errors)) {
@@ -15,11 +11,9 @@
                         "<span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span> " .
                         "{$login_errors['login']}</div>";
             }
-            elseif (isset($message)) {
-                print "<div class='alert alert-info' role='alert'>" .
-                        "<span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span> " .
-                        "{$message}</div>";
-                unset($message);
+            elseif (isset($info_message)) {
+                show_message($info_message, 'info');
+                unset($info_message);
             }
             ?>
             <form action='<?= base_url('login'); ?>' method='post' accept-charset='utf-8' role='form'>

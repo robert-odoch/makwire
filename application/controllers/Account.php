@@ -320,6 +320,21 @@ class Account extends CI_Controller
                                     It's so sad that you had to leave too soon, we'll surely miss you.";
             redirect(base_url('success'));
         }
+        
+        // Require the user to first login before continuing.
+        if ($_SERVER['HTTP_REFERER'] != base_url('login')) {
+            $this->load->model('logout_model');
+            $this->logout_model->logout($_SESSION['user_id']);
+
+            session_start();
+            $_SESSION['message'] = [
+                'header'=>'Please login to continue.',
+                'body'=>'You must login again to verity that you are the rightful owner of this account.
+                        Sorry for the inconvenience.'
+            ];
+            $_SESSION['return_uri'] = $_SERVER['REQUEST_URI'];
+            redirect(base_url('login'));
+        }
 
         $this->load->view('settings/account/delete', $data);
         $this->load->view('common/footer');
