@@ -20,11 +20,14 @@ switch ($object) {
 <div class='box'>
     <h4>Options</h4>
     <div class='list-group'>
-        <a href='<?php echo base_url("{$object}/download/{$$object[$object . '_id']}"); ?>' class='list-group-item'>
+        <a href='<?php echo base_url("photo/download/{$photo['photo_id']}"); ?>' class='list-group-item'>
             Download
         </a>
-        <a href='<?php echo base_url("{$object}/make-profile-picture/{$$object[$object . '_id']}"); ?>' class='list-group-item'>
-            Use as profile picture
-        </a>
+
+        <?php if (!$photo['is_profile_pic']): ?>
+            <a href='<?php echo base_url("photo/make-profile-picture/{$photo['photo_id']}"); ?>' class='list-group-item'>
+                Use as profile picture
+            </a>
+        <?php endif; ?>
     </div>
 </div>
