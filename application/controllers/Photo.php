@@ -383,7 +383,7 @@ class Photo extends CI_Controller
 
         $data['object'] = 'photo';
         $data['photo'] = $photo;
-        $this->load->view('item-options', $data);
+        $this->load->view('photo-options', $data);
         $this->load->view('common/footer');
     }
 }
