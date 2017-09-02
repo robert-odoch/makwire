@@ -230,7 +230,8 @@ class Account_model extends CI_Model
         $this->db->query($sql);
     }
 
-    public function get_password_reset_user_data($token) {
+    public function get_password_reset_user_data($token)
+    {
         $sql = sprintf('SELECT email FROM password_reset_token WHERE token = %s',
                         $this->db->escape($token));
         $query = $this->db->query($sql);
@@ -253,6 +254,13 @@ class Account_model extends CI_Model
         ];
 
         return $data;
+    }
+
+    public function get_primary_email($user_id)
+    {
+        $sql = sprintf('SELECT email FROM user_emails WHERE user_id = %d AND is_primary IS TRUE', $user_id);
+        $query = $this->db->query($sql);
+        return $query->row_array()['email'];
     }
 }
 ?>

@@ -91,6 +91,15 @@ class Register extends CI_Controller
     {
         $data = [];
 
+        // Ensure user is visiting this page after activating their email.
+        if (empty($_SESSION['activation_code']) ||
+                $_SESSION['activation_code'] != $activation_code) {
+            show_404();
+        }
+        else {
+            unset($_SESSION['activation_code']);
+        }
+
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $lname = trim(strip_tags($this->input->post('lname')));
             if (strlen($lname) == 0) {
@@ -202,10 +211,18 @@ class Register extends CI_Controller
 
                 $data = array_merge($data, $_SESSION['data']);
                 $user_id = $this->register_model->register_user($data);
+                $subject = 'Welcome to makwire.'
+                $email_address = $this->account_model->get_primary_email($user_id);
+                $email_data['email_heading'] = 'Welcome to makwire.';
+                $email_data['message'] = "<p>Hi there, thanks for joining makwire.</p>
+                                            <p>Take your first steps with makwire, visit makwire.com to edit your profile,
+                                            find friends, post interesting stories, upload photos, or share youtube videos etc.</p>";
+                $email_body = $this->load->view('email', $email_data, true);
+                $this->account_model->send_email('robertelvisodoch@gmail.com', $email_address, $subject, $email_body);
                 unset($_SESSION['data']);
 
                 $_SESSION['user_id'] = $user_id;
-                redirect(base_url('welcome'));
+                redirect(base_url('user/profile'));
             }
         }
         else {
