@@ -325,7 +325,7 @@ class User_model extends CI_Model
         $messages = $query->result_array();
 
         foreach ($messages as &$m) {
-            $m = $this->birthday_message_model->get_message($m['id']);
+            $m = $this->birthday_message_model->get_message($user_id, $m['id']);
         }
         unset($m);
 

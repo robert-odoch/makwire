@@ -45,7 +45,7 @@ class Birthday_message_model extends CI_Model
 
         // Has the user liked this comment?
         $simpleBirthdayMessage = new SimpleBirthdayMessage($message['id'], $message['sender_id']);
-        $message['liked'] = $this->activity_model->isLiked($simpleBirthdayMessage);
+        $message['liked'] = $this->activity_model->isLiked($simpleBirthdayMessage, $visitor_id);
 
         // Get the number of likes.
         $message['num_likes'] = $this->activity_model->getNumLikes($simpleBirthdayMessage);
