@@ -211,7 +211,7 @@ class Register extends CI_Controller
 
                 $data = array_merge($data, $_SESSION['data']);
                 $user_id = $this->register_model->register_user($data);
-                $subject = 'Welcome to makwire.'
+                $subject = 'Welcome to makwire.';
                 $email_address = $this->account_model->get_primary_email($user_id);
                 $email_data['email_heading'] = 'Welcome to makwire.';
                 $email_data['message'] = "<p>Hi there, thanks for joining makwire.</p>
