@@ -15,8 +15,6 @@ class Profile_model extends CI_Model
 
     /**
      * Sets a new profile picture for a user.
-     *
-     * @param $data an array containing details about an uploaded photo.
      */
     public function set_profile_picture($photo_id, $user_id)
     {

@@ -57,11 +57,23 @@ class Photo_model extends CI_Model
         $photo['viewer_is_friend_to_owner'] = $this->user_model->are_friends($visitor_id, $photo['user_id']);
 
         // Check if photo was used as a profile picture.
-        $is_profile_pic_sql = sprintf("SELECT activity_id FROM activities " .
-                                        "WHERE (source_id = %d AND source_type = 'photo' AND activity = 'profile_pic_change')",
+        $was_profile_pic_sql = sprintf("SELECT activity_id FROM activities
+                                        WHERE (source_id = %d AND source_type = 'photo' AND activity = 'profile_pic_change')",
                                         $photo['photo_id']);
-        $photo['is_profile_pic'] = ($this->utility_model->run_query($is_profile_pic_sql)->num_rows() == 1);
-        if ($photo['is_profile_pic']) {
+        $was_profile_pic_query = $this->utility_model->run_query($was_profile_pic_sql);
+        $photo['was_profile_pic'] = ($was_profile_pic_query->num_rows() == 1);
+
+        // Check if photo is the current profile picture.
+        $photo['is_curr_profile_pic'] = FALSE;
+        if ($photo['was_profile_pic']) {
+            $is_curr_profile_pic_sql = sprintf("SELECT source_id FROM activities
+                                                WHERE (source_id = %d AND source_type = 'photo' AND activity = 'profile_pic_change')",
+                                                $photo['photo_id']);
+            $is_curr_profile_pic_query = $this->db->query($is_curr_profile_pic_sql);
+            $photo['is_curr_profile_pic'] = ($is_curr_profile_pic_query->num_rows() == 1);
+        }
+
+        if ($photo['was_profile_pic']) {
             // Get the gender of this user.
             $gender_sql = sprintf("SELECT gender FROM users WHERE (user_id = %d)",
                                    $photo['user_id']);
@@ -271,7 +283,7 @@ class Photo_model extends CI_Model
 
     public function add_photo($data, $user_id)
     {
-        $photo_sql = sprintf("INSERT INTO photos (user_id, image_type, full_path) VALUES (%d, %s, %s)",
+        $photo_sql = sprintf("INSERT INTO photos (user_id, file_type, full_path) VALUES (%d, %s, %s)",
                             $user_id, $this->db->escape($data['file_type']),
                             $this->db->escape($data['full_path']));
         $this->utility_model->run_query($photo_sql);

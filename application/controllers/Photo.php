@@ -386,5 +386,75 @@ class Photo extends CI_Controller
         $this->load->view('photo-options', $data);
         $this->load->view('common/footer');
     }
+
+    public function make_profile_picture($photo_id = 0)
+    {
+        try {
+            $photo = $this->photo_model->get_photo($_SESSION['user_id'], $photo_id);
+        }
+        catch (NotFoundException $e) {
+            show_404();
+        }
+
+        if ($photo['user_id'] != $_SESSION['user_id']) {
+            $_SESSION['title'] = 'Permission Denied';
+            $_SESSION['heading'] = 'Permission Denied!';
+            $_SESSION['message'] = "You dont have the proper permissions to use
+                                    this photo as your profile picture.";
+            redirect(base_url('user/error'));
+        }
+
+        // Create a profile pic thumbnail if it doesn't already exist.
+        $last_slash = strrpos($photo['full_path'], '/');
+        $photo_directory = substr($photo['full_path'], 0, $last_slash);
+        $photo_name = substr($photo['full_path'], $last_slash+1);
+        $filename = "{$photo_directory}/small/{$photo_name}";
+
+        if ( ! file_exists($filename)) {
+            $this->load->library('image_lib');
+            $config['image_library'] = 'gd2';
+            $config['source_image'] = $photo['full_path'];
+            $config['create_thumb'] = TRUE;
+            $config['thumb_marker'] = "";
+            $config['maintain_ratio'] = TRUE;
+            $config['new_image'] = "{$photo_directory}/small";
+            $config['width'] = 60;
+            $config['height'] = 60;
+            $this->image_lib->initialize($config);
+            $this->image_lib->resize();
+        }
+
+        // Record a new instance of this photo in the database.
+        $photo_id = $this->photo_model->add_photo($photo, $_SESSION['user_id']);
+
+        // Make photo profile picture.
+        $this->load->model('profile_model');
+        $this->profile_model->set_profile_picture($photo_id, $_SESSION['user_id']);
+        $_SESSION['title'] = 'You profile picture has been changed';
+        $_SESSION['message'] = 'Your profile picture has been successfully changed.';
+        redirect(base_url('user/success'));
+    }
+
+    public function download($photo_id = 0)
+    {
+        try {
+            $photo = $this->photo_model->get_photo($_SESSION['user_id'], $photo_id);
+        }
+        catch (NotFoundException $e) {
+            show_404();
+        }
+
+        if ($photo['user_id'] != $_SESSION['user_id']) {
+            $_SESSION['title'] = 'Permission Denied';
+            $_SESSION['heading'] = 'Permission Denied!';
+            $_SESSION['message'] = "You dont have the proper permissions to download
+                                    this photo.";
+            redirect(base_url('user/error'));
+        }
+
+        $this->load->helper('download');
+        force_download($photo['full_path'], NULL);
+        redirect(base_url("photo/options/{$photo_id}"));
+    }
 }
 ?>

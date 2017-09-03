@@ -24,7 +24,7 @@ switch ($object) {
             Download
         </a>
 
-        <?php if (!$photo['is_profile_pic']): ?>
+        <?php if (!$photo['is_curr_profile_pic']): ?>
             <a href='<?php echo base_url("photo/make-profile-picture/{$photo['photo_id']}"); ?>' class='list-group-item'>
                 Use as profile picture
             </a>
