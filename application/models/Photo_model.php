@@ -67,10 +67,14 @@ class Photo_model extends CI_Model
         $photo['is_curr_profile_pic'] = FALSE;
         if ($photo['was_profile_pic']) {
             $is_curr_profile_pic_sql = sprintf("SELECT source_id FROM activities
-                                                WHERE (source_id = %d AND source_type = 'photo' AND activity = 'profile_pic_change')",
-                                                $photo['photo_id']);
+                                                WHERE (actor_id = %d AND source_type = 'photo' AND activity = 'profile_pic_change')
+                                                ORDER BY date_entered DESC LIMIT 1",
+                                                $photo['user_id']);
             $is_curr_profile_pic_query = $this->db->query($is_curr_profile_pic_sql);
-            $photo['is_curr_profile_pic'] = ($is_curr_profile_pic_query->num_rows() == 1);
+            if ($is_curr_profile_pic_query->num_rows() == 1) {
+                $result = $is_curr_profile_pic_query->row_array();
+                $photo['is_curr_profile_pic'] = ($result['source_id'] == $photo['photo_id']);
+            }
         }
 
         if ($photo['was_profile_pic']) {
