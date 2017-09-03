@@ -1,9 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 define('PAGE', $page);
-require_once(dirname(__FILE__) . '/../common/user-page-start.php');
+require_once(__DIR__ . '/../common/user-page-start.php');
 if ($page !== 'news-feed') {
-    require_once(dirname(__FILE__) . '/../common/secondary-user-nav.php');
+    require_once(__DIR__ . '/../common/secondary-user-nav.php');
 }
 
 if (!$is_visitor) {
@@ -12,28 +12,9 @@ if (!$is_visitor) {
 
         <?php
         define('STATUS', 'post');
-        require_once(dirname(__FILE__) . '/../common/status-nav.php');
+        require_once(__DIR__ . '/../common/status-nav.php');
+        require_once(__DIR__ . '/../forms/new-post.php');
         ?>
-
-        <form action='<?= base_url('post/new'); ?>' method='post'
-                accept-charset='utf-8' role='form'>
-            <div class='form-group'>
-                <label for='post' class='sr-only'>New Post</label>
-                <textarea name='post' placeholder='Write something...' class='fluid
-                <?php
-                if (isset($post_error)) {
-                    print ' has-error';
-                }
-                ?>' required></textarea>
-                <?php
-                if (isset($post_error)) {
-                    print "<span class='error'>{$post_error}</span>";
-                }
-                ?>
-            </div>
-
-            <input type='submit' value='Post' class='btn btn-sm'>
-        </form>
     </div>
 <?php } // (!$is_visitor) ?>
 

@@ -107,6 +107,7 @@ class User extends CI_Controller
 
         $this->load->view('common/header', $data);
 
+        // Check if there is an error from the previous attemt to post.
         if (isset($_SESSION['post_error']) && !empty($_SESSION['post_error'])) {
             $data['post_error'] = $_SESSION['post_error'];
             unset($_SESSION['post_error']);

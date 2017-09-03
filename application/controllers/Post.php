@@ -18,21 +18,28 @@ class Post extends CI_Controller
 
     public function new()
     {
-        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
-            $_SESSION['title'] = 'Permission Denied!';
-            $_SESSION['heading'] = 'Permission Denied';
-            $_SESSION['message'] = "I won't allow you to do that, baby.";
-            redirect(base_url('user/error'));
-        }
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $post = trim(strip_tags($this->input->post('post')));
+            if (strlen($post) == 0) {
+                $_SESSION['post_error'] = "Post can't be empty!";  // Needed by user/index method.
+                redirect(base_url('post/new'));
+            }
 
-        $post = trim(strip_tags($this->input->post('post')));
-        if (!$post) {
-            $_SESSION['post_error'] = "Post can't be empty!";  // Used and unset by index() method.
+            $this->post_model->post($post, $_SESSION['user_id']);
             redirect(base_url("user/{$_SESSION['user_id']}"));
         }
 
-        $this->post_model->post($post, $_SESSION['user_id']);
-        redirect(base_url("user/{$_SESSION['user_id']}"));
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
+        $data['title'] = 'Write a status post';
+        $this->load->view('common/header', $data);
+
+        if (isset($_SESSION['post_error']) && !empty($_SESSION['post_error'])) {
+            $data['post_error'] = $_SESSION['post_error'];
+            unset($_SESSION['post_error']);
+        }
+
+        $this->load->view('add/post');
+        $this->load->view('common/footer');
     }
 
     public function edit($post_id = 0)

@@ -4,8 +4,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 <ul class='nav nav-tabs'>
     <li role='presentation' <?php if (STATUS == 'post') print "class='active'"; ?>>
-        <a href='<?= base_url("user/{$_SESSION['user_id']}"); ?>'>
-            <span class='glyphicon glyphicon-edit' aria-hidden='true'></span> Status
+        <a href='<?= base_url('post/new'); ?>'>
+            <span class='glyphicon glyphicon-edit' aria-hidden='true'></span> Post
         </a>
     </li>
     <li role='presentation' <?php if (STATUS == 'photo') print "class='active'"; ?>>
