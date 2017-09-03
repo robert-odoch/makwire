@@ -193,9 +193,7 @@ class Account_model extends CI_Model
 
     public function send_email($from, $to, $subject, $body)
     {
-        $this->load->library('email');
         $result = $this->email->from($from)->to($to)->subject($subject)->message($body)->send();
-
         return $result;
     }
 

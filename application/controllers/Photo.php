@@ -68,7 +68,7 @@ class Photo extends CI_Controller
     public function edit($photo_id = 0)
     {
         try {
-            $photo = $this->photo_model->get_photo($_SESSION['user_id'], $photo_id);
+            $photo = $this->photo_model->get_photo($photo_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -103,7 +103,7 @@ class Photo extends CI_Controller
     public function delete($photo_id = 0)
     {
         try {
-            $photo = $this->photo_model->get_photo($_SESSION['user_id'], $photo_id);
+            $photo = $this->photo_model->get_photo($photo_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -111,7 +111,7 @@ class Photo extends CI_Controller
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             try {
-                $this->photo_model->delete_photo($_SESSION['user_id'], $photo);
+                $this->photo_model->delete_photo($photo, $_SESSION['user_id']);
                 $_SESSION['message'] = 'Your photo has been successfully deleted.';
                 redirect(base_url('user/success'));
             }
@@ -156,7 +156,7 @@ class Photo extends CI_Controller
         }
 
         try {
-            $photo = $this->photo_model->get_photo($_SESSION['user_id'], $photo_id);
+            $photo = $this->photo_model->get_photo($photo_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -213,7 +213,7 @@ class Photo extends CI_Controller
         }
 
         try {
-            $photo = $this->photo_model->get_photo($_SESSION['user_id'], $photo_id);
+            $photo = $this->photo_model->get_photo($photo_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -256,7 +256,7 @@ class Photo extends CI_Controller
     public function likes($photo_id = 0, $offset = 0)
     {
         try {
-            $photo = $this->photo_model->get_photo($_SESSION['user_id'], $photo_id);
+            $photo = $this->photo_model->get_photo($photo_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -295,7 +295,7 @@ class Photo extends CI_Controller
     public function comments($photo_id = 0, $offset = 0)
     {
         try {
-            $photo = $this->photo_model->get_photo($_SESSION['user_id'], $photo_id);
+            $photo = $this->photo_model->get_photo($photo_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -322,7 +322,7 @@ class Photo extends CI_Controller
             $data['next_offset'] = ($offset + $limit);
         }
 
-        $data['comments'] = $this->photo_model->get_comments($_SESSION['user_id'], $photo, $offset, $limit);
+        $data['comments'] = $this->photo_model->get_comments($photo, $offset, $limit, $_SESSION['user_id']);
         $data['object'] = 'photo';
         $data['photo'] = $photo;
         $this->load->view('show/comments', $data);
@@ -332,7 +332,7 @@ class Photo extends CI_Controller
     public function shares($photo_id = 0, $offset = 0)
     {
         try {
-            $photo = $this->photo_model->get_photo($_SESSION['user_id'], $photo_id);
+            $photo = $this->photo_model->get_photo($photo_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -371,7 +371,7 @@ class Photo extends CI_Controller
     public function options($photo_id = 0)
     {
         try {
-            $photo = $this->photo_model->get_photo($_SESSION['user_id'], $photo_id);
+            $photo = $this->photo_model->get_photo($photo_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -390,7 +390,7 @@ class Photo extends CI_Controller
     public function make_profile_picture($photo_id = 0)
     {
         try {
-            $photo = $this->photo_model->get_photo($_SESSION['user_id'], $photo_id);
+            $photo = $this->photo_model->get_photo($photo_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -438,7 +438,7 @@ class Photo extends CI_Controller
     public function download($photo_id = 0)
     {
         try {
-            $photo = $this->photo_model->get_photo($_SESSION['user_id'], $photo_id);
+            $photo = $this->photo_model->get_photo($photo_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();

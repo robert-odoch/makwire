@@ -23,7 +23,7 @@ class Photo_model extends CI_Model
      * @param $photo_id the ID of the photo in the photos table.
      * @return the photo with the given ID.
      */
-    public function get_photo($visitor_id, $photo_id)
+    public function get_photo($photo_id, $visitor_id)
     {
         $photo_sql = sprintf("SELECT p.*, u.profile_name AS author FROM photos p " .
                             "LEFT JOIN users u ON(p.user_id = u.user_id) " .
@@ -262,20 +262,20 @@ class Photo_model extends CI_Model
      * @param $limit the maximum number of records to return.
      * @return the comments made on this photo.
      */
-    public function get_comments($visitor_id, &$photo, $offset, $limit)
+    public function get_comments(&$photo, $offset, $limit, $visitor_id)
     {
         return $this->activity_model->getComments(
-            $visitor_id,
             new SimplePhoto($photo['photo_id'], $photo['user_id']),
             $offset,
-            $limit
+            $limit,
+            $visitor_id
         );
     }
 
-    public function delete_photo($user_id, &$photo)
+    public function delete_photo(&$photo, $user_id)
     {
         $simplePhoto = new SimplePhoto($photo['photo_id'], $photo['user_id']);
-        $this->utility_model->delete_item($user_id, $simplePhoto);
+        $this->utility_model->delete_item($simplePhoto, $user_id);
     }
 
     public function update_description($photo_id, $new_description)

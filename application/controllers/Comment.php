@@ -36,7 +36,7 @@ class Comment extends CI_Controller
     public function reply($comment_id = 0)
     {
         try {
-            $comment = $this->comment_model->get_comment($_SESSION['user_id'], $comment_id);
+            $comment = $this->comment_model->get_comment($comment_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -84,7 +84,7 @@ class Comment extends CI_Controller
     public function likes($comment_id = 0, $offset = 0)
     {
         try {
-            $comment = $this->comment_model->get_comment($_SESSION['user_id'], $comment_id);
+            $comment = $this->comment_model->get_comment($comment_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -122,7 +122,7 @@ class Comment extends CI_Controller
     public function replies($comment_id = 0, $offset = 0)
     {
         try {
-            $comment = $this->comment_model->get_comment($_SESSION['user_id'], $comment_id);
+            $comment = $this->comment_model->get_comment($comment_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -149,7 +149,7 @@ class Comment extends CI_Controller
             $data['next_offset'] = ($offset + $limit);
         }
 
-        $data['replies'] = $this->comment_model->get_replies($_SESSION['user_id'], $comment_id, $offset, $limit);
+        $data['replies'] = $this->comment_model->get_replies($comment_id, $offset, $limit, $_SESSION['user_id']);
         $data['object'] = 'comment';
         $data['comment'] = $comment;
         $this->load->view('show/replies', $data);
@@ -159,7 +159,7 @@ class Comment extends CI_Controller
     public function options($comment_id = 0)
     {
         try {
-            $comment = $this->comment_model->get_comment($_SESSION['user_id'], $comment_id);
+            $comment = $this->comment_model->get_comment($comment_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -180,7 +180,7 @@ class Comment extends CI_Controller
         $data = [];
 
         try {
-            $comment = $this->comment_model->get_comment($_SESSION['user_id'], $comment_id);
+            $comment = $this->comment_model->get_comment($comment_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -217,7 +217,7 @@ class Comment extends CI_Controller
     public function delete($comment_id = 0)
     {
         try {
-            $comment = $this->comment_model->get_comment($_SESSION['user_id'], $comment_id);
+            $comment = $this->comment_model->get_comment($comment_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();

@@ -23,7 +23,7 @@ class Birthday_message_model extends CI_Model
      * @param $birthday_message_id the id of the message in the birthday_messages table.
      * @return birthday message with the given ID plus other data.
      */
-    public function get_message($visitor_id, $birthday_message_id)
+    public function get_message($birthday_message_id, $visitor_id)
     {
         $message_sql = sprintf("SELECT b.*, u.profile_name AS sender " .
                                 "FROM birthday_messages b " .

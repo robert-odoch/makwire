@@ -25,7 +25,7 @@ class Post extends CI_Controller
                 redirect(base_url('post/new'));
             }
 
-            $this->post_model->post($post, $_SESSION['user_id']);
+            $this->post_model->publish($post, $_SESSION['user_id']);
             redirect(base_url("user/{$_SESSION['user_id']}"));
         }
 
@@ -47,7 +47,7 @@ class Post extends CI_Controller
         $data = [];
 
         try {
-            $post = $this->post_model->get_post($_SESSION['user_id'], $post_id);
+            $post = $this->post_model->get_post($post_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -83,7 +83,7 @@ class Post extends CI_Controller
     public function delete($post_id = 0)
     {
         try {
-            $post = $this->post_model->get_post($_SESSION['user_id'], $post_id);
+            $post = $this->post_model->get_post($post_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -91,7 +91,7 @@ class Post extends CI_Controller
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             try {
-                $this->post_model->delete_post($_SESSION['user_id'], $post);
+                $this->post_model->delete_post($post, $_SESSION['user_id']);
                 $_SESSION['message'] = 'Your post has been successfully deleted.';
                 redirect(base_url('user/success'));
             }
@@ -153,7 +153,7 @@ class Post extends CI_Controller
         }
 
         try {
-            $post = $this->post_model->get_post($_SESSION['user_id'], $post_id);
+            $post = $this->post_model->get_post($post_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -201,7 +201,7 @@ class Post extends CI_Controller
     public function likes($post_id = 0, $offset = 0)
     {
         try {
-            $post = $this->post_model->get_post($_SESSION['user_id'], $post_id);
+            $post = $this->post_model->get_post($post_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -245,7 +245,7 @@ class Post extends CI_Controller
     public function comments($post_id = 0, $offset = 0)
     {
         try {
-            $post = $this->post_model->get_post($_SESSION['user_id'], $post_id);
+            $post = $this->post_model->get_post($post_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -272,7 +272,7 @@ class Post extends CI_Controller
             $data['next_offset'] = ($offset + $limit);
         }
 
-        $data['comments'] = $this->post_model->get_comments($_SESSION['user_id'], $post, $offset, $limit);
+        $data['comments'] = $this->post_model->get_comments($post, $offset, $limit, $_SESSION['user_id']);
         $post_url = base_url("user/post/{$post_id}");
         $post['post'] = character_limiter(
             $post['post'], 540, "&#8230;<a href='{$post_url}'>view more</a>"
@@ -287,7 +287,7 @@ class Post extends CI_Controller
     public function shares($post_id = 0, $offset = 0)
     {
         try {
-            $post = $this->post_model->get_post($_SESSION['user_id'], $post_id);
+            $post = $this->post_model->get_post($post_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();

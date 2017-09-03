@@ -226,7 +226,7 @@ class Profile_model extends CI_Model
      * @param $user_college_id the ID of the record in the user_colleges table.
      * @return details for a college attended by a user.
      */
-    public function get_user_school($user_id, $user_school_id)
+    public function get_user_school($user_school_id, $user_id)
     {
         $user_school_sql = sprintf("SELECT s.school_name, us.id, us.school_id,
                                     DAY(us.date_from) AS start_day, MONTH(us.date_from) AS start_month,
@@ -254,7 +254,7 @@ class Profile_model extends CI_Model
      * @param $user_programme_id the ID of the record in the user_programmes table.
      * @return details for a programme studied by a user.
      */
-    public function get_user_programme($user_id, $user_programme_id)
+    public function get_user_programme($user_programme_id, $user_id)
     {
         $user_programme_sql = sprintf("SELECT up.id, up.programme_id, up.year_of_study, p.programme_name " .
                                         "FROM user_programmes up " .
@@ -278,7 +278,7 @@ class Profile_model extends CI_Model
      * @param $user_hall_id the ID Of the record in the user_halls table.
      * @return the details for a hall where a user was attached to/resident of.
      */
-    public function get_user_hall($user_id, $user_hall_id)
+    public function get_user_hall($user_hall_id, $user_id)
     {
         $user_hall_sql = sprintf("SELECT id, uh.hall_id,  date_from, date_to, resident, " .
                                     "DAY(date_from) AS start_day, MONTH(date_from) AS start_month, " .
@@ -306,7 +306,7 @@ class Profile_model extends CI_Model
      * @param $user_hostel_id the ID of the record in the user_hostels table.
      * @return details for a hostel where a user stayed at.
      */
-    public function get_user_hostel($user_id, $user_hostel_id)
+    public function get_user_hostel($user_hostel_id, $user_id)
     {
         $user_hostel_sql = sprintf("SELECT id, uh.hostel_id, date_from, date_to, " .
                                     "DAY(date_from) AS start_day, MONTH(date_from) AS start_month, " .

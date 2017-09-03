@@ -24,7 +24,7 @@ class Video_model extends CI_Model
      * @param $video_id the ID of the video in the videos table.
      * @return the video with the given ID.
      */
-    public function get_video($visitor_id, $video_id)
+    public function get_video($video_id, $visitor_id)
     {
         $video_sql = sprintf("SELECT v.*, u.profile_name AS author FROM videos v " .
                             "LEFT JOIN users u ON(v.user_id = u.user_id) " .
@@ -213,20 +213,20 @@ class Video_model extends CI_Model
      * @param $limit the maximum number of records to return.
      * @return the comments made on this video.
      */
-    public function get_comments($visitor_id, &$video, $offset, $limit)
+    public function get_comments(&$video, $offset, $limit, $visitor_id)
     {
         return $this->activity_model->getComments(
-            $visitor_id,
             new SimpleVideo($video['video_id'], $video['user_id']),
             $offset,
-            $limit
+            $limit,
+            $visitor_id
         );
     }
 
-    public function delete_video($user_id, &$video)
+    public function delete_video(&$video, $user_id)
     {
         $simpleVideo = new SimpleVideo($video['video_id'], $video['user_id']);
-        $this->utility_model->delete_item($user_id, $simpleVideo);
+        $this->utility_model->delete_item($simpleVideo, $user_id);
     }
 
     public function update_description($video_id, $new_description)

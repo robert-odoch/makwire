@@ -21,7 +21,7 @@ class Post_model extends CI_Model
      * @param $post_id the ID of the post in the posts table.
      * @return the post with the given ID.
      */
-    public function get_post($visitor_id, $post_id)
+    public function get_post($post_id, $visitor_id)
     {
         $post_sql = sprintf("SELECT p.*, u.profile_name AS author FROM posts p " .
                             "LEFT JOIN users u ON(p.user_id = u.user_id) " .
@@ -67,7 +67,7 @@ class Post_model extends CI_Model
      *
      * @param $post the contents of the post.
      */
-    public function post($post, $user_id)
+    public function publish($post, $user_id)
     {
         // Save the post.
         $post_sql = sprintf("INSERT INTO posts (post, user_id) VALUES (%s, %d)",
@@ -214,13 +214,13 @@ class Post_model extends CI_Model
      * @param $limit the maximum number of records to return.
      * @return the comments made on this post.
      */
-    public function get_comments($visitor_id, &$post, $offset, $limit)
+    public function get_comments(&$post, $offset, $limit, $visitor_id)
     {
         return $this->activity_model->getComments(
-            $visitor_id,
             new SimplePost($post['post_id'], $post['user_id']),
             $offset,
-            $limit
+            $limit,
+            $visitor_id
         );
     }
 
@@ -231,10 +231,10 @@ class Post_model extends CI_Model
         $this->db->query($sql);
     }
 
-    public function delete_post($user_id, &$post)
+    public function delete_post(&$post, $user_id)
     {
         $simplePost = new SimplePost($post['post_id'], $post['user_id']);
-        $this->utility_model->delete_item($user_id, $simplePost);
+        $this->utility_model->delete_item($simplePost, $user_id);
     }
 }
 ?>

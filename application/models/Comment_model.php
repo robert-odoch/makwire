@@ -23,7 +23,7 @@ class Comment_model extends CI_Model
      * @param $comment_id the ID of the comment in the comments table.
      * @return comment with the given ID.
      */
-    public function get_comment($visitor_id, $comment_id)
+    public function get_comment($comment_id, $visitor_id)
     {
         $comment_sql = sprintf("SELECT commenter_id, comment, source_id, source_type, " .
                                 "date_entered, u.profile_name AS commenter " .
@@ -144,7 +144,7 @@ class Comment_model extends CI_Model
      * @param $limit the maximum number of records to return.
      * @return the replies on this comment.
      */
-    public function get_replies($visitor_id, $comment_id, $offset, $limit)
+    public function get_replies($comment_id, $offset, $limit, $visitor_id)
     {
         $replies_sql = sprintf("SELECT comment_id FROM comments " .
                                 "WHERE (source_type = 'comment' AND parent_id = %d) " .

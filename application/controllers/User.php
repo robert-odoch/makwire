@@ -121,7 +121,7 @@ class User extends CI_Controller
             $data['next_offset'] = ($offset + $limit);
         }
 
-        $timeline_items = $this->user_model->get_timeline_items($_SESSION['user_id'], $user_id, $offset, $limit);
+        $timeline_items = $this->user_model->get_timeline_items($user_id, $_SESSION['user_id'], $offset, $limit);
         $data['items'] = $timeline_items;
         $data['page'] = 'timeline';
         $data['user_id'] = $user_id;
@@ -281,7 +281,7 @@ class User extends CI_Controller
     public function post($post_id = 0, $offset = 0)
     {
         try {
-            $post = $this->post_model->get_post($post_id);
+            $post = $this->post_model->get_post($post_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -302,7 +302,7 @@ class User extends CI_Controller
         }
 
         $data['num_prev'] = $offset;
-        $data['comments'] = $this->post_model->get_comments($post, $offset, $limit);
+        $data['comments'] = $this->post_model->get_comments($post, $offset, $limit, $_SESSION['user_id']);
 
         $this->load->view('show/post', $data);
         $this->load->view('common/footer');
@@ -311,7 +311,7 @@ class User extends CI_Controller
     public function photo($photo_id = 0, $offset = 0)
     {
         try {
-            $photo = $this->photo_model->get_photo($photo_id);
+            $photo = $this->photo_model->get_photo($photo_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -332,7 +332,7 @@ class User extends CI_Controller
         }
 
         $data['num_prev'] = $offset;
-        $data['comments'] = $this->photo_model->get_comments($photo, $offset, $limit);
+        $data['comments'] = $this->photo_model->get_comments($photo, $offset, $limit, $_SESSION['user_id']);
 
         $this->load->view('show/photo', $data);
         $this->load->view('common/footer');
@@ -341,7 +341,7 @@ class User extends CI_Controller
     public function video($video_id = 0, $offset = 0)
     {
         try {
-            $video = $this->video_model->get_video($video_id);
+            $video = $this->video_model->get_video($video_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -362,7 +362,7 @@ class User extends CI_Controller
         }
 
         $data['num_prev'] = $offset;
-        $data['comments'] = $this->video_model->get_comments($video, $offset, $limit);
+        $data['comments'] = $this->video_model->get_comments($video, $offset, $limit, $_SESSION['user_id']);
 
         $this->load->view('show/video', $data);
         $this->load->view('common/footer');
@@ -371,7 +371,7 @@ class User extends CI_Controller
     public function link($link_id = 0, $offset = 0)
     {
         try {
-            $link = $this->link_model->get_link($link_id);
+            $link = $this->link_model->get_link($link_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -392,7 +392,7 @@ class User extends CI_Controller
         }
 
         $data['num_prev'] = $offset;
-        $data['comments'] = $this->link_model->get_comments($link, $offset, $limit);
+        $data['comments'] = $this->link_model->get_comments($link, $offset, $limit, $_SESSION['user_id']);
 
         $this->load->view('show/link', $data);
         $this->load->view('common/footer');
@@ -731,7 +731,7 @@ class User extends CI_Controller
             $data['next_offset'] = ($limit + $offset);
         }
 
-        $data['photos'] = $this->user_model->get_photos($_SESSION['user_id'], $user_id, $offset, $limit);
+        $data['photos'] = $this->user_model->get_photos($user_id, $_SESSION['user_id'], $offset, $limit);
         $data['user_id'] = $user_id;  // Used in view more photos.
         $this->load->view('show/photos', $data);
         $this->load->view('common/footer');

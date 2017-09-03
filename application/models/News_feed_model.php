@@ -197,7 +197,7 @@ class News_feed_model extends CI_Model
         foreach ($news_feed_items as &$r) {
             switch ($r['source_type']) {
             case 'post':
-                $r['post'] = $this->post_model->get_post($user_id, $r['source_id']);
+                $r['post'] = $this->post_model->get_post($r['source_id'], $user_id);
 
                 // Get only 540 characters from post if possible.
                 $post_url = base_url("user/post/{$r['post']['post_id']}");
@@ -211,7 +211,7 @@ class News_feed_model extends CI_Model
                 }
                 break;
             case 'photo':
-                $r['photo'] = $this->photo_model->get_photo($user_id, $r['source_id']);
+                $r['photo'] = $this->photo_model->get_photo($r['source_id'], $user_id);
 
                 // Was it shared from another user?
                 $r['photo']['shared'] = FALSE;
@@ -221,7 +221,7 @@ class News_feed_model extends CI_Model
                 }
                 break;
             case 'video':
-                $r['video'] = $this->video_model->get_video($user_id, $r['source_id']);
+                $r['video'] = $this->video_model->get_video($r['source_id'], $user_id);
 
                 // Was it shared from another user?
                 $r['video']['shared'] = FALSE;
@@ -231,7 +231,7 @@ class News_feed_model extends CI_Model
                 }
                 break;
             case 'link':
-                $r['link'] = $this->link_model->get_link($user_id, $r['source_id']);
+                $r['link'] = $this->link_model->get_link($r['source_id'], $user_id);
 
                 // Was it shared from another user?
                 $r['link']['shared'] = FALSE;

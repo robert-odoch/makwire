@@ -38,7 +38,7 @@ class Birthday_message extends CI_Controller
     public function likes($message_id = 0, $offset = 0)
     {
         try {
-            $message = $this->birthday_message_model->get_message($_SESSION['user_id'], $message_id);
+            $message = $this->birthday_message_model->get_message($message_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -90,7 +90,7 @@ class Birthday_message extends CI_Controller
         }
 
         try {
-            $message = $this->birthday_message_model->get_message($_SESSION['user_id'], $message_id);
+            $message = $this->birthday_message_model->get_message($message_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -124,7 +124,7 @@ class Birthday_message extends CI_Controller
     public function replies($message_id = 0, $offset = 0)
     {
         try {
-            $message = $this->birthday_message_model->get_message($_SESSION['user_id'], $message_id);
+            $message = $this->birthday_message_model->get_message($message_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();

@@ -78,7 +78,7 @@ class Utility_model extends CI_Model
         return $ids;
     }
 
-    public function delete_item($user_id, Object $item)
+    public function delete_item(Object $item, $user_id)
     {
         $tables = [
             'post' => [

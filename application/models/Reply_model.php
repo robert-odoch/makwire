@@ -21,7 +21,7 @@ class Reply_model extends CI_Model
      * @param $reply_id the ID of the reply in the comments table.
      * @return the reply with the given ID.
      */
-    public function get_reply($visitor_id, $reply_id)
+    public function get_reply($reply_id, $visitor_id)
     {
         $reply_sql = sprintf("SELECT c.*, u.profile_name AS commenter " .
                                 "FROM comments c " .

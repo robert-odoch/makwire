@@ -36,7 +36,7 @@ class Reply extends CI_Controller
     public function likes($reply_id = 0, $offset = 0)
     {
         try {
-            $reply = $this->reply_model->get_reply($_SESSION['user_id'], $reply_id);
+            $reply = $this->reply_model->get_reply($reply_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -75,7 +75,7 @@ class Reply extends CI_Controller
     public function options($reply_id = 0)
     {
         try {
-            $reply = $this->reply_model->get_reply($_SESSION['user_id'], $reply_id);
+            $reply = $this->reply_model->get_reply($reply_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -96,7 +96,7 @@ class Reply extends CI_Controller
         $data = [];
 
         try {
-            $reply = $this->reply_model->get_reply($_SESSION['user_id'], $reply_id);
+            $reply = $this->reply_model->get_reply($reply_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -133,7 +133,7 @@ class Reply extends CI_Controller
     public function delete($reply_id = 0)
     {
         try {
-            $reply = $this->reply_model->get_reply($_SESSION['user_id'], $reply_id);
+            $reply = $this->reply_model->get_reply($reply_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();

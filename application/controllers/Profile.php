@@ -184,7 +184,7 @@ class Profile extends CI_Controller
         $this->load->view('common/header', $data);
 
         try {
-            $user_school = $this->profile_model->get_user_school($_SESSION['user_id'], $user_school_id);
+            $user_school = $this->profile_model->get_user_school($user_school_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -230,7 +230,7 @@ class Profile extends CI_Controller
         $this->load->view('common/header', $data);
 
         try {
-            $user_school = $this->profile_model->get_user_school($_SESSION['user_id'], $user_school_id);
+            $user_school = $this->profile_model->get_user_school($user_school_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -264,7 +264,7 @@ class Profile extends CI_Controller
         $this->load->view('common/header', $data);
 
         try {
-            $user_programme = $this->profile_model->get_user_programme($_SESSION['user_id'], $user_programme_id);
+            $user_programme = $this->profile_model->get_user_programme($user_programme_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -380,7 +380,7 @@ class Profile extends CI_Controller
         $this->load->view('common/header', $data);
 
         try {
-            $user_hall = $this->profile_model->get_user_hall($_SESSION['user_id'], $user_hall_id);
+            $user_hall = $this->profile_model->get_user_hall($user_hall_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -509,7 +509,7 @@ class Profile extends CI_Controller
         $this->load->view('common/header', $data);
 
         try {
-            $user_hostel = $this->profile_model->get_user_hostel($_SESSION['user_id'], $user_hostel_id);
+            $user_hostel = $this->profile_model->get_user_hostel($user_hostel_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();

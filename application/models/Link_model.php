@@ -24,7 +24,7 @@ class Link_model extends CI_Model
      * @param $link_id the ID of the link in the links table.
      * @return the link with the given ID.
      */
-    public function get_link($visitor_id, $link_id)
+    public function get_link($link_id, $visitor_id)
     {
         $link_sql = sprintf("SELECT v.*, u.profile_name AS author FROM links v " .
                             "LEFT JOIN users u ON(v.user_id = u.user_id) " .
@@ -223,20 +223,20 @@ class Link_model extends CI_Model
      * @param $limit the maximum number of records to return.
      * @return the comments made on this link.
      */
-    public function get_comments($visitor_id, &$link, $offset, $limit)
+    public function get_comments(&$link, $offset, $limit, $visitor_id)
     {
         return $this->activity_model->getComments(
-            $visitor_id,
             new SimpleLink($link['link_id'], $link['user_id']),
             $offset,
-            $limit
+            $limit,
+            $visitor_id
         );
     }
 
-    public function delete_link($user_id, &$link)
+    public function delete_link(&$link, $user_id)
     {
         $simpleLink = new SimpleLink($link['link_id'], $link['user_id']);
-        $this->utility_model->delete_item($user_id, $simpleLink);
+        $this->utility_model->delete_item($simpleLink, $user_id);
     }
 
     public function update_comment($link_id, $new_comment)

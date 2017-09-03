@@ -223,7 +223,7 @@ class User_model extends CI_Model
      * @param $user_id ID of the user to be displayed.
      * @return posts, photos, videos, and links to be displayed.
      */
-    public function get_timeline_items($visitor_id, $user_id, $offset, $limit)
+    public function get_timeline_items($user_id, $visitor_id, $offset, $limit)
     {
         // Get posts, photos, videos, and links posted/shared by this user.
         $timeline_items_sql = sprintf("SELECT * FROM activities " .
@@ -237,7 +237,7 @@ class User_model extends CI_Model
         foreach ($timeline_items as &$r) {
             switch ($r['source_type']) {
                 case 'post':
-                    $r['post'] = $this->post_model->get_post($visitor_id, $r['source_id']);
+                    $r['post'] = $this->post_model->get_post($r['source_id'], $visitor_id);
 
                     // Get only 540 characters from post if possible.
                     $post_url = base_url("user/post/{$r['post']['post_id']}");
@@ -251,7 +251,7 @@ class User_model extends CI_Model
                     }
                     break;
                 case 'photo':
-                    $r['photo'] = $this->photo_model->get_photo($visitor_id, $r['source_id']);
+                    $r['photo'] = $this->photo_model->get_photo($r['source_id'], $visitor_id);
 
                     // Was it shared from another user?
                     $r['photo']['shared'] = FALSE;
@@ -261,7 +261,7 @@ class User_model extends CI_Model
                     }
                     break;
                 case 'video':
-                    $r['video'] = $this->video_model->get_video($visitor_id, $r['source_id']);
+                    $r['video'] = $this->video_model->get_video($r['source_id'], $visitor_id);
 
                     // Was it shared from another user?
                     $r['video']['shared'] = FALSE;
@@ -271,7 +271,7 @@ class User_model extends CI_Model
                     }
                     break;
                 case 'link':
-                    $r['link'] = $this->link_model->get_link($visitor_id, $r['source_id']);
+                    $r['link'] = $this->link_model->get_link($r['source_id'], $visitor_id);
 
                     // Was it shared from another user?
                     $r['link']['shared'] = FALSE;
@@ -325,7 +325,7 @@ class User_model extends CI_Model
         $messages = $query->result_array();
 
         foreach ($messages as &$m) {
-            $m = $this->birthday_message_model->get_message($user_id, $m['id']);
+            $m = $this->birthday_message_model->get_message($m['id'], $user_id);
         }
         unset($m);
 
@@ -501,7 +501,7 @@ class User_model extends CI_Model
      * @param $limit
      * @return photos uploaded by this user.
      */
-    public function get_photos($visitor_id, $user_id, $offset, $limit)
+    public function get_photos($user_id, $visitor_id, $offset, $limit)
     {
         $sql = sprintf("SELECT photo_id FROM photos " .
                         "WHERE (user_id = %d) ORDER BY date_entered DESC " .
@@ -511,7 +511,7 @@ class User_model extends CI_Model
 
         $photos = [];
         foreach ($results as $r) {
-            $photos[] = $this->photo_model->get_photo($visitor_id, $r['photo_id']);
+            $photos[] = $this->photo_model->get_photo($r['photo_id'], $visitor_id);
         }
 
         return $photos;

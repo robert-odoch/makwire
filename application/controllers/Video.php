@@ -53,7 +53,7 @@ class Video extends CI_Controller
     public function edit($video_id = 0)
     {
         try {
-            $video = $this->video_model->get_video($video_id);
+            $video = $this->video_model->get_video($video_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -88,7 +88,7 @@ class Video extends CI_Controller
     public function delete($video_id = 0)
     {
         try {
-            $video = $this->video_model->get_video($video_id);
+            $video = $this->video_model->get_video($video_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -96,7 +96,7 @@ class Video extends CI_Controller
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             try {
-                $this->video_model->delete_video($_SESSION['user_id'], $video);
+                $this->video_model->delete_video($video, $_SESSION['user_id']);
                 $_SESSION['message'] = 'Your video has been successfully deleted.';
                 redirect(base_url('user/success'));
             }
@@ -141,7 +141,7 @@ class Video extends CI_Controller
         }
 
         try {
-            $video = $this->video_model->get_video($video_id);
+            $video = $this->video_model->get_video($video_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -198,7 +198,7 @@ class Video extends CI_Controller
         }
 
         try {
-            $video = $this->video_model->get_video($video_id);
+            $video = $this->video_model->get_video($video_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -241,7 +241,7 @@ class Video extends CI_Controller
     public function likes($video_id = 0, $offset = 0)
     {
         try {
-            $video = $this->video_model->get_video($video_id);
+            $video = $this->video_model->get_video($video_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -280,7 +280,7 @@ class Video extends CI_Controller
     public function comments($video_id = 0, $offset = 0)
     {
         try {
-            $video = $this->video_model->get_video($video_id);
+            $video = $this->video_model->get_video($video_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -307,7 +307,7 @@ class Video extends CI_Controller
             $data['next_offset'] = ($offset + $limit);
         }
 
-        $data['comments'] = $this->video_model->get_comments($_SESSION['user_id'], $video, $offset, $limit);
+        $data['comments'] = $this->video_model->get_comments($video, $offset, $limit, $_SESSION['user_id']);
         $data['object'] = 'video';
         $data['video'] = $video;
         $this->load->view('show/comments', $data);
@@ -317,7 +317,7 @@ class Video extends CI_Controller
     public function shares($video_id = 0, $offset = 0)
     {
         try {
-            $video = $this->video_model->get_video($video_id);
+            $video = $this->video_model->get_video($video_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();

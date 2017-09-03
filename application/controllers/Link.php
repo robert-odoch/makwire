@@ -45,7 +45,7 @@ class Link extends CI_Controller
     public function edit($link_id = 0)
     {
         try {
-            $link = $this->link_model->get_link($_SESSION['user_id'], $link_id);
+            $link = $this->link_model->get_link($link_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -80,7 +80,7 @@ class Link extends CI_Controller
     public function delete($link_id = 0)
     {
         try {
-            $link = $this->link_model->get_link($_SESSION['user_id'], $link_id);
+            $link = $this->link_model->get_link($link_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -88,7 +88,7 @@ class Link extends CI_Controller
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             try {
-                $this->link_model->delete_link($_SESSION['user_id'], $link);
+                $this->link_model->delete_link($link, $_SESSION['user_id']);
                 $_SESSION['message'] = 'Your link has been successfully deleted.';
                 redirect(base_url('user/success'));
             }
@@ -133,7 +133,7 @@ class Link extends CI_Controller
         }
 
         try {
-            $link = $this->link_model->get_link($_SESSION['user_id'], $link_id);
+            $link = $this->link_model->get_link($link_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -190,7 +190,7 @@ class Link extends CI_Controller
         }
 
         try {
-            $link = $this->link_model->get_link($_SESSION['user_id'], $link_id);
+            $link = $this->link_model->get_link($link_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -233,7 +233,7 @@ class Link extends CI_Controller
     public function likes($link_id = 0, $offset = 0)
     {
         try {
-            $link = $this->link_model->get_link($_SESSION['user_id'], $link_id);
+            $link = $this->link_model->get_link($link_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -272,7 +272,7 @@ class Link extends CI_Controller
     public function comments($link_id = 0, $offset = 0)
     {
         try {
-            $link = $this->link_model->get_link($_SESSION['user_id'], $link_id);
+            $link = $this->link_model->get_link($link_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
@@ -299,7 +299,7 @@ class Link extends CI_Controller
             $data['next_offset'] = ($offset + $limit);
         }
 
-        $data['comments'] = $this->link_model->get_comments($_SESSION['user_id'], $link, $offset, $limit);
+        $data['comments'] = $this->link_model->get_comments($link, $offset, $limit, $_SESSION['user_id']);
         $data['object'] = 'link';
         $data['link'] = $link;
         $this->load->view('show/comments', $data);
@@ -309,7 +309,7 @@ class Link extends CI_Controller
     public function shares($link_id = 0, $offset = 0)
     {
         try {
-            $link = $this->link_model->get_link($_SESSION['user_id'], $link_id);
+            $link = $this->link_model->get_link($link_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
             show_404();
