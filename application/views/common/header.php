@@ -29,7 +29,7 @@
     <body>
         <header>
             <nav role='navigation' class='navbar navbar-inverse navbar-fixed-top'>
-                <div class='wrapper'>
+                <div class='wrapper-lg'>
                     <div class='navbar-header'>
                         <button type='button' class='navbar-toggle collapsed' data-toggle='collapse'
                             data-target='#navbar' aria-expanded='false' aria-controls='navbar'>

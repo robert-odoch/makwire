@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 ?>
-<div class='wrap-single'>
+<div class='wrapper-md'>
     <div class='main' role='main'>
         <div class='box'>
             <h4>

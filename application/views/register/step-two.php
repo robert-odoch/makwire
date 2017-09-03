@@ -1,6 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
-<div class='wrap-single'>
+<div class='wrapper-md'>
     <div role='main' class='main'>
         <div class='box'>
             <h4>Sign Up: step 2 of 3</h4>

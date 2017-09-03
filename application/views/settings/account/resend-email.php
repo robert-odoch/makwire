@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 ?>
 
-<div class='wrap-single'>
+<div class='wrapper-md'>
     <div role='main' class='main'>
         <div class='box'>
             <h4>Resend email activation link</h4>

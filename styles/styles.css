@@ -79,34 +79,34 @@ a:focus {
     color: #2E8B57;
 }
 
-.wrap-single {
+.wrapper-md {
     margin: auto;
     width: 40%;
 }
 
-.wrap-single input[type="text"],
-.wrap-single input[type="email"],
-.wrap-single input[type="password"] {
+.wrapper-md input[type="text"],
+.wrapper-md input[type="email"],
+.wrapper-md input[type="password"] {
     width: 70% !important;
 }
 
-.wrapper {
+.wrapper-lg {
     box-sizing: border-box;
     margin: 0 2%;
     padding: 0;
 }
 
-.wrapper .col-large {
+.wrapper-lg .col-large {
     width: 80.5%;
     float: left;
 }
 
-.wrapper .col-large .main {
+.wrapper-lg .col-large .main {
     width: 69.5%;
     float: left;
 }
 
-.wrapper .col-large .suggestions {
+.wrapper-lg .col-large .suggestions {
     box-shadow: 0 0 4px #2E8B57;
     background-color: #fff;
     border-radius: 3px;
@@ -115,7 +115,7 @@ a:focus {
     width: 30%;
 }
 
-.wrapper .col-small {
+.wrapper-lg .col-small {
     box-shadow: 0 0 4px #2E8B57;
     background-color: #fff;
     border-radius: 3px;
@@ -451,7 +451,7 @@ div.box > h4 {
     margin-top: 3px;
 }
 
-div.wrap-single legend {
+div.wrapper-md legend {
     border-bottom: 1px solid #8FBC8F;
     padding-bottom: 5px;
 }
@@ -780,9 +780,9 @@ div#birthday-message img.media-object {
 }
 
 @media (max-width: 380px) {
-    .wrap-single input[type="text"],
-    .wrap-single input[type="email"],
-    .wrap-single input[type="password"] {
+    .wrapper-md input[type="text"],
+    .wrapper-md input[type="email"],
+    .wrapper-md input[type="password"] {
         width: 100% !important;
     }
 }
@@ -803,35 +803,35 @@ div#birthday-message img.media-object {
         width: 100% !important;
     }
 
-    .wrapper .col-large {
+    .wrapper-lg .col-large {
         float: none;
         width: 100% !important;
     }
 
-    .wrapper .col-small {
+    .wrapper-lg .col-small {
         display: none;
     }
 
-    .wrapper .col-large .side-content,
-    .wrapper .col-large .suggestions {
+    .wrapper-lg .col-large .side-content,
+    .wrapper-lg .col-large .suggestions {
         display: none;
     }
 
-    div.wrapper div.col-large div.user-home div.side-content,
-    div.wrapper div.col-large div.group-home div.side-content {
+    .wrapper-lg div.col-large div.user-home div.side-content,
+    .wrapper-lg div.col-large div.group-home div.side-content {
         display: block;
         width: 100%;
         float: none;
         margin-bottom: 5px;
     }
 
-    .wrapper .col-large .main-content,
-    .wrapper .col-large .main {
+    .wrapper-lg .col-large .main-content,
+    .wrapper-lg .col-large .main {
         float: none;
         width: 100%;
     }
 
-    .wrap-single {
+    .wrapper-md {
         width: auto;
         margin: 0 2%;
     }
@@ -938,24 +938,24 @@ div#birthday-message img.media-object {
         display: none;
     }
 
-    .wrapper .col-large {
+    .wrapper-lg .col-large {
         width: 100%;
     }
 
-    .wrapper .col-small {
+    .wrapper-lg .col-small {
         display: none;
     }
 
-    .wrapper .col-large .main,
-    .wrapper .col-large .suggestions {
+    .wrapper-lg .col-large .main,
+    .wrapper-lg .col-large .suggestions {
         width: 100%;
     }
 
-    .wrapper .col-large .suggestions {
+    .wrapper-lg .col-large .suggestions {
         display: none;
     }
 
-    .wrap-single {
+    .wrapper-md {
         width: 60%;
         margin: auto;
     }
@@ -1011,7 +1011,7 @@ div#birthday-message img.media-object {
         padding-bottom: 5px;
     }
 
-    .wrapper .col-large {
+    .wrapper-lg .col-large {
         width: 100%;
     }
 
