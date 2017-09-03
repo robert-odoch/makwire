@@ -676,7 +676,7 @@ class User extends CI_Controller
         }
 
         $data = $this->user_model->initialize_user($_SESSION['user_id']);
-        $data['title'] = "Profile | {$data['primary_user']}";
+        $data['title'] = "Profile - {$data['primary_user']}";
 
         $data['is_visitor'] = ($user_id == $_SESSION['user_id']) ? FALSE : TRUE;
         try {
@@ -688,7 +688,7 @@ class User extends CI_Controller
         $data['su_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
         $data['friendship_status'] = $this->user_model->get_friendship_status($_SESSION['user_id'], $user_id);
         $data['suid'] = $user_id;
-        $data['title'] = "Profile | {$data['secondary_user']}";
+        $data['title'] = "Profile - {$data['secondary_user']}";
 
         $this->load->view('common/header', $data);
         if ($user_id == $_SESSION['user_id']) {

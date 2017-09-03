@@ -21,7 +21,7 @@ class News_feed extends CI_Controller
     public function index($offset = 0)
     {
         $data = $this->user_model->initialize_user($_SESSION['user_id']);
-        $data['title'] = 'Makwire | News Feed';
+        $data['title'] = 'Makwire - News Feed';
         $this->load->view('common/header', $data);
 
         if (isset($_SESSION['post_error']) && !empty($_SESSION['post_error'])) {
