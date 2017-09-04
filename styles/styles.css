@@ -165,9 +165,6 @@ div#secondary-user ul li a {
     padding: 5px;
     color: #000;
 }
-div#secondary-user ul li:first-child a {
-    padding: 5px 5px 5px 0;
-}
 
 div#secondary-user ul li a.active {
     border-bottom: 5px solid #2E8B57;
@@ -330,25 +327,14 @@ div#primary-user img.media-object {
     border-radius: 3px;
 }
 
-div#secondary-user > div:first-child {
-    position: relative;
-    margin-bottom: 10px;
-}
-
 div#secondary-user img {
-    position: absolute;
-    top: 0;
-    left: 5px;
-    z-index: 1000;
     height: 75px;
     width: 75px;
-    border-radius: 3px;
 }
 
 div#secondary-user h4 {
-    margin-left: 85px;
-    display: inline-block;
     font-weight: bold;
+    font-size: 1.5em;
     margin-top: 0;
 }
 
@@ -356,19 +342,10 @@ div#secondary-user h4 a {
     text-decoration: none;
 }
 
-div#secondary-user .btn {
-    margin-left: 20px;
-}
-div#secondary-user a.btn {
-    margin-left: 5px;
-}
-
 div#secondary-user nav {
+    margin-top: 5px;
     background-color: #8FBC8F;
     border-radius: 0 3px 0 3px;
-}
-div#secondary-user nav ul {
-    margin-left: 85px;
 }
 
 small.time {
@@ -852,36 +829,14 @@ div#birthday-message img.media-object {
         width: 100%;
     }
 
-    div#secondary-user > div:first-child {
-        position: static;
-        margin-bottom: 5px;
-    }
-
     div#secondary-user img {
-        position: static;
-        display: block;
         height: 50px;
         width: 50px;
-        float: left;
     }
 
     div#secondary-user h4 {
-        margin-left: 55px;
-        margin-top: auto;
-        display: block;
-        margin-bottom: 5px;
-    }
-
-    div#secondary-user .btn {
-        margin-left: 5px;
-    }
-
-    div#secondary-user nav ul {
-        margin-left: 0;
-    }
-
-    div#secondary-user nav ul li a:first-child {
-        padding-left: 3px;
+        font-size: 1.1em;
+        margin-bottom: 0;
     }
 
     div.likes img.media-object,
@@ -960,34 +915,8 @@ div#birthday-message img.media-object {
         margin: auto;
     }
 
-    div#secondary-user > div:first-child {
-        position: static;
-        margin-bottom: 5px;
-    }
-
-    div#secondary-user img {
-        position: static;
-        display: block;
-        float: left;
-    }
-
     div#secondary-user h4 {
-        margin-left: 85px;
-        margin-top: auto;
-        display: block;
         margin-bottom: 5px;
-    }
-
-    div#secondary-user .btn {
-        margin-left: 10px;
-    }
-
-    div#secondary-user nav ul {
-        margin-left: 0;
-    }
-
-    div#secondary-user nav ul li a:first-child {
-        padding-left: 3px;
     }
 
     article footer > ul > li > a {
