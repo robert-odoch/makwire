@@ -40,9 +40,9 @@
                         }
                         elseif ($friendship_status['fr_sent'] &&
                                 $friendship_status['user_id'] == $_SESSION['user_id']) {
-                            print "<span class='btn btn-xs btn-default'>" .
-                                    "<span class='glyphicon glyphicon-ok-circle' aria-hidden='true'></span> " .
-                                    "Friend Request Sent</span>";
+                            print "<span class='btn btn-xs btn-default'>
+                                    <span class='glyphicon glyphicon-ok' aria-hidden='true'></span>
+                                    Request Sent</span>";
                         }
                         elseif ($suid != $_SESSION['user_id']) {
                             print "<a href='" . base_url("user/add-friend/{$suid}") .
