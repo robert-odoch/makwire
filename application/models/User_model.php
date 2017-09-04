@@ -595,9 +595,9 @@ class User_model extends CI_Model
      * @param $limit
      * @return Array users whose name or email address match the query.
      */
-    public function get_searched_user($user_id, $query, $offset, $limit)
+    public function get_searched_user($query, $visitor_id, $offset, $limit)
     {
-        $friends_ids = $this->get_friends_ids($user_id);
+        $friends_ids = $this->get_friends_ids($visitor_id);
         $friends_ids[] = 0;
         $friends_ids = implode(',', $friends_ids);
 
