@@ -23,6 +23,10 @@ br + br {
     margin: 5px 0;
 }
 
+article p {
+    margin-bottom: 5px;
+}
+
 .navbar-fixed-top {
     border-bottom: 2px solid #f00;
 }
@@ -333,9 +337,9 @@ div#secondary-user img {
 }
 
 div#secondary-user h4 {
-    font-weight: bold;
     font-size: 1.5em;
     margin-top: 0;
+    text-transform: uppercase;
 }
 
 div#secondary-user h4 a {
@@ -465,17 +469,25 @@ article.video .embed-responsive {
     background-color: #000;
 }
 
-article.media.message {
+article.message {
     margin-top: 5px;
+}
+
+article.message h4 .time {
+    margin-left: 5px;
 }
 
 p.reply,
 p.comment,
-p.message,
 article.message p,
+p.birthday-message,
 ul.notifications li a {
     display: inline;
-    margin: 0 10px 0 0;
+    margin-bottom: 0;
+}
+
+ul.notifications li a {
+    margin: 0 5px 0 0;
 }
 
 strong.object {
@@ -499,10 +511,6 @@ div#add-description > .embed-responsive {
     margin-bottom: 5px;
 }
 
-article.message footer {
-    display: inline-block;
-}
-
 article header {
     margin-bottom: 2px;
 }
@@ -515,11 +523,8 @@ article header a:hover {
     text-decoration: none;
 }
 
-article p {
-    margin-bottom: 3px;
-}
 article.photo p {
-    margin-bottom: 0;
+    margin-bottom: 5px;
 }
 
 article p a.more {
@@ -665,9 +670,8 @@ span.help-block {
 }
 
 p.post {
-    text-align: justify;
-    line-height: 1.5;
-    margin: 0;
+    line-height: normal;
+    font-family: sans-serif;
 }
 
 p.post a.more {
@@ -728,6 +732,7 @@ div#birthday-message img.media-object {
 .link-panel {
     line-height: normal;
     border-radius: 2px;
+    font-family: sans-serif;
 }
 .link-panel .panel-body {
     padding: 0;
@@ -752,8 +757,8 @@ div#birthday-message img.media-object {
     margin-bottom: 3px;
 }
 .link-site {
-    font-size: 1em;
-    text-transform: lowercase;
+    font-size: .8em;
+    text-transform: uppercase;
 }
 
 @media (max-width: 380px) {

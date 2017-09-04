@@ -15,7 +15,7 @@
                 </strong>
             </h4>
 
-            <p class='message'><?= htmlspecialchars($message['message']); ?></p>
+            <p class='birthday-message'><?= htmlspecialchars($message['message']); ?></p>
 
             <span>
                 <small class='time'>

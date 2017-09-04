@@ -132,7 +132,7 @@ class Activity_model extends CI_Model
         return $shares;
     }
 
-    public function getReplies(Replyable $object, $offset, $limit)
+    public function getReplies(Replyable $object, $offset, $limit, $visitor_id)
     {
         $replies_sql = sprintf("SELECT comment_id FROM comments " .
                                 "WHERE (source_type = '%s' AND parent_id = %d) " .
@@ -144,7 +144,7 @@ class Activity_model extends CI_Model
         $replies = array();
         foreach ($results as $r) {
             // Get the detailed reply.
-            $reply = $this->reply_model->get_reply($r['comment_id']);
+            $reply = $this->reply_model->get_reply($r['comment_id'], $visitor_id);
             array_push($replies, $reply);
         }
 

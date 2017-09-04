@@ -28,21 +28,17 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
             <div class='media-body'>
                 <header>
                     <h4 class='media-heading'>
-                        <a href='<?= base_url("user/{$m['sender_id']}"); ?>'
+                        <a href='<?= base_url("user/send-message/{$m['sender_id']}"); ?>'
                             title='<?= $m['sender']; ?>'>
                             <?= $m['sender']; ?>
                         </a>
+                        <small class='time'>
+                            <span class='glyphicon glyphicon-time' aria-hidden='true'></span>
+                            <?= $m['timespan']; ?> ago
+                        </small>
                     </h4>
                 </header>
                 <p><?= htmlspecialchars($m['message']); ?></p>
-                <footer>
-                    <small class='time'>
-                        <span class='glyphicon glyphicon-time' aria-hidden='true'></span>
-                        <?= $m['timespan']; ?> ago
-                    </small>
-                    <span> &middot; </span>
-                    <a href='<?= base_url("user/send-message/{$m['sender_id']}"); ?>' title='Reply'>Reply</a>
-                </footer>
             </div>
         </article>
         <?php } ?>

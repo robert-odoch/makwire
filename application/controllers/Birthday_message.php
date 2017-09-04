@@ -151,7 +151,7 @@ class Birthday_message extends CI_Controller
             $data['next_offset'] = ($offset + $limit);
         }
 
-        $data['replies'] = $this->birthday_message_model->get_replies($message, $offset, $limit);
+        $data['replies'] = $this->birthday_message_model->get_replies($message, $offset, $limit, $_SESSION['user_id']);
         $data['object'] = 'birthday-message';
         $data['message'] = $message;
         $this->load->view('show/replies', $data);

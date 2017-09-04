@@ -16,12 +16,7 @@
 
         <footer role='contentinfo' class='footer'>
             <div class='wrapper'>
-                <p id='site-copyright'>&copy; <?php echo date('Y'); ?> makwire</p><span> &middot; </span>
-                <a href='#'>Terms of Use</a><span> &middot; </span>
-                <a href='#'>Privacy Policy</a><span> &middot; </span>
-                <a href='#'>Advertising</a><span> &middot; </span>
-                <a href='#'>About Us</a><span> &middot; </span>
-                <a href='#'>Contact Us</a>
+                <p id='site-copyright'>Copyright &copy; <?php echo date('Y'); ?> makwire</p>
                 <a href='#' class='pull-right'>Back to top</a>
             </div>
         </footer>

@@ -24,15 +24,13 @@ require_once('common/user-page-start.php');
                             <a href='<?= base_url("user/{$m['sender_id']}"); ?>'>
                                 <strong><?= $m['sender']; ?></strong>
                             </a>
+                            <small class='time'>
+                                <span class='glyphicon glyphicon-time' aria-hidden='true'></span>
+                                <?= $m['timespan']; ?> ago
+                            </small>
                         </h4>
                     </header>
                     <p><?= htmlspecialchars($m['message']); ?></p>
-                    <footer>
-                        <small class='time'>
-                            <span class='glyphicon glyphicon-time' aria-hidden='true'></span>
-                            <?= $m['timespan']; ?> ago
-                        </small>
-                    </footer>
                 </div>
             </article>
             <?php } ?>

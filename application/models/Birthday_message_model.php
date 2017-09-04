@@ -134,12 +134,13 @@ class Birthday_message_model extends CI_Model
         );
     }
 
-    public function get_replies(&$message, $offset, $limit)
+    public function get_replies(&$message, $offset, $limit, $visitor_id)
     {
         return $this->activity_model->getReplies(
             new SimpleBirthdayMessage($message['id'], $message['sender_id']),
             $offset,
-            $limit
+            $limit,
+            $visitor_id
         );
     }
 }

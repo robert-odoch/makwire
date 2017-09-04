@@ -81,7 +81,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
                             <strong><?= $msg['sender']; ?></strong>
                         </a>
                     </h4>
-                    <p class='message'><?= $msg['message']; ?></p>
+                    <p class='birthday-message'><?= $msg['message']; ?></p>
 
                     <span>
                         <small class='time'>

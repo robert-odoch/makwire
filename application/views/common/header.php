@@ -113,6 +113,9 @@
                                 </a>
                             </li>
                             <li>
+                                <a href=''><span class='glyphicon glyphicon-question-sign'></span> Help</a>
+                            </li>
+                            <li>
                                 <a href='<?= base_url('logout'); ?>'>
                                     <span class='glyphicon glyphicon-log-out' aria-hidden='true'></span>
                                     Log out
