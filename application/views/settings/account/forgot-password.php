@@ -23,7 +23,7 @@
                         <div class='form-group'>
                             <label for='email'>Email Address</label>
                             <span class='help-block'>
-                                Any of your <strong>makwire verified</strong> email addresses.<br>
+                                Any of your <strong>makwire verified</strong> email addresses.
                                 Instructions for resetting your password will be sent to this email address.
                             </span>
                             <input type='email' name='email' size='30'

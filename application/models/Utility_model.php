@@ -65,8 +65,8 @@ class Utility_model extends CI_Model
         $sharers_ids[] = 0;  // Add extra element for query-safety.
         $sharers_ids_str = implode(',', $sharers_ids);
 
-        $ids_sql = sprintf('SELECT DISTINCT subject_id FROM shares ' .
-                            'WHERE (sharer_id IN(%s) AND subject_type = \'%s\')',
+        $ids_sql = sprintf('SELECT DISTINCT subject_id FROM shares
+                            WHERE (sharer_id IN(%s) AND subject_type = \'%s\')',
                             $sharers_ids_str, $item);
         $ids_results = $this->utility_model->run_query($ids_sql)->result_array();
 
@@ -101,8 +101,8 @@ class Utility_model extends CI_Model
 
         if ($item->getOwnerId() != $user_id) {
             // Check whether this user shared the item.
-            $share_sql = sprintf('SELECT share_id FROM shares ' .
-                                    'WHERE sharer_id = %d AND subject_id = %d AND subject_type = \'%s\'',
+            $share_sql = sprintf('SELECT share_id FROM shares
+                                    WHERE sharer_id = %d AND subject_id = %d AND subject_type = \'%s\'',
                                     $user_id, $item->getId(), $item->getType());
             $share_query = $this->db->query($share_sql);
             if ($share_query->num_rows() == 0) {
@@ -138,8 +138,8 @@ class Utility_model extends CI_Model
 
     private function delete_item_likes(Likeable $item)
     {
-        $likes_sql = sprintf('SELECT like_id FROM likes ' .
-                                'WHERE source_id = %d AND source_type = \'%s\'',
+        $likes_sql = sprintf('SELECT like_id FROM likes
+                                WHERE source_id = %d AND source_type = \'%s\'',
                                 $item->getId(), $item->getType());
         $likes_results = $this->db->query($likes_sql)->result_array();
         foreach ($likes_results as $r) {
@@ -149,8 +149,8 @@ class Utility_model extends CI_Model
 
     private function delete_item_comments(Commentable $item)
     {
-        $comments_sql = sprintf('SELECT comment_id FROM comments ' .
-                                'WHERE source_id = %d AND source_type = \'%s\'',
+        $comments_sql = sprintf('SELECT comment_id FROM comments
+                                WHERE source_id = %d AND source_type = \'%s\'',
                                 $item->getId(), $item->getType());
         $comments_results = $this->db->query($comments_sql)->result_array();
         foreach ($comments_results as $r) {
@@ -160,8 +160,8 @@ class Utility_model extends CI_Model
 
     private function delete_item_shares(Shareable $item)
     {
-        $shares_sql = sprintf('SELECT share_id FROM shares ' .
-                                'WHERE subject_id = %d AND subject_type = \'%s\'',
+        $shares_sql = sprintf('SELECT share_id FROM shares
+                                WHERE subject_id = %d AND subject_type = \'%s\'',
                                 $item->getId(), $item->getType());
         $shares_results = $this->db->query($shares_sql)->result_array();
         foreach ($shares_results as $r) {
@@ -175,8 +175,8 @@ class Utility_model extends CI_Model
      */
     private function un_share_item(Shareable $item, $user_id)
     {
-        $share_sql = sprintf('SELECT share_id FROM shares ' .
-                                'WHERE sharer_id = %d AND subject_id = %d AND subject_type = \'%s\'',
+        $share_sql = sprintf('SELECT share_id FROM shares
+                                WHERE sharer_id = %d AND subject_id = %d AND subject_type = \'%s\'',
                                 $user_id, $item->getId(), $item->getType());
         $share_id = $this->db->query($share_sql)->row_array()['share_id'];
         $this->activity_model->deleteShare($item, $share_id);

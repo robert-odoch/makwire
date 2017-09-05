@@ -25,10 +25,10 @@ class Photo_model extends CI_Model
      */
     public function get_photo($photo_id, $visitor_id)
     {
-        $photo_sql = sprintf("SELECT p.*, u.profile_name AS author FROM photos p " .
-                            "LEFT JOIN users u ON(p.user_id = u.user_id) " .
-                            "WHERE photo_id = %d",
-                            $photo_id);
+        $photo_sql = sprintf("SELECT p.*, u.profile_name AS author FROM photos p
+                                LEFT JOIN users u ON(p.user_id = u.user_id)
+                                WHERE photo_id = %d",
+                                $photo_id);
         $photo_query = $this->utility_model->run_query($photo_sql);
         if ($photo_query->num_rows() == 0) {
             throw new NotFoundException();
@@ -108,9 +108,9 @@ class Photo_model extends CI_Model
         $photo_id = $this->add_photo($data, $user_id);
 
         // Dispatch an activity.
-        $activity_sql = sprintf("INSERT INTO activities " .
-                                "(actor_id, subject_id, source_id, source_type, activity) " .
-                                "VALUES (%d, %d, %d, 'photo', 'photo')",
+        $activity_sql = sprintf("INSERT INTO activities
+                                (actor_id, subject_id, source_id, source_type, activity)
+                                VALUES (%d, %d, %d, 'photo', 'photo')",
                                 $user_id, $user_id, $photo_id);
         $this->utility_model->run_query($activity_sql);
     }
@@ -125,8 +125,7 @@ class Photo_model extends CI_Model
      */
     public function add_description($description, $photo_id)
     {
-        $sql = sprintf("UPDATE photos SET description = %s " .
-                        "WHERE (photo_id = %d)",
+        $sql = sprintf("UPDATE photos SET description = %s WHERE (photo_id = %d)",
                         $this->db->escape($description), $photo_id);
         $this->utility_model->run_query($sql);
     }

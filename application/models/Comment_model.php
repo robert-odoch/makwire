@@ -25,11 +25,11 @@ class Comment_model extends CI_Model
      */
     public function get_comment($comment_id, $visitor_id)
     {
-        $comment_sql = sprintf("SELECT commenter_id, comment, source_id, source_type, " .
-                                "date_entered, u.profile_name AS commenter " .
-                                "FROM comments c " .
-                                "LEFT JOIN users u ON(c.commenter_id = u.user_id) " .
-                                "WHERE (comment_id = %d AND parent_id = 0)",
+        $comment_sql = sprintf("SELECT commenter_id, comment, source_id, source_type,
+                                date_entered, u.profile_name AS commenter
+                                FROM comments c
+                                LEFT JOIN users u ON(c.commenter_id = u.user_id)
+                                WHERE (comment_id = %d AND parent_id = 0)",
                                 $comment_id);
         $comment_query = $this->utility_model->run_query($comment_sql);
         if ($comment_query->num_rows() == 0) {
@@ -146,9 +146,9 @@ class Comment_model extends CI_Model
      */
     public function get_replies($comment_id, $offset, $limit, $visitor_id)
     {
-        $replies_sql = sprintf("SELECT comment_id FROM comments " .
-                                "WHERE (source_type = 'comment' AND parent_id = %d) " .
-                                "LIMIT %d, %d",
+        $replies_sql = sprintf("SELECT comment_id FROM comments
+                                WHERE (source_type = 'comment' AND parent_id = %d)
+                                LIMIT %d, %d",
                                 $comment_id, $offset, $limit);
         $replies_query = $this->utility_model->run_query($replies_sql);
         $results = $replies_query->result_array();

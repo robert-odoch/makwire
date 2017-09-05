@@ -21,9 +21,9 @@ class Register_model extends CI_Model
     {
         // Create the user's account.
         $profile_name = ucfirst($data['lname']) . ' ' . ucwords($data['other_names']);
-        $reg_sql = sprintf("INSERT INTO users " .
-                            "(dob, lname, other_names, gender, uname, passwd, profile_name) " .
-                            "VALUES ('%s', %s, %s, '%s', %s, %s, %s)",
+        $reg_sql = sprintf("INSERT INTO users
+                            (dob, lname, other_names, gender, uname, passwd, profile_name)
+                            VALUES ('%s', %s, %s, '%s', %s, %s, %s)",
                             $data['dob'], $this->db->escape($data['lname']),
                             $this->db->escape($data['other_names']), $data['gender'],
                             $this->db->escape($data['uname']),
@@ -34,8 +34,8 @@ class Register_model extends CI_Model
         $user_id = $this->db->insert_id();
 
         // Update the user_emails table.
-        $update_sql = sprintf("UPDATE user_emails SET user_id = %d, is_primary = 1, is_backup = 0 " .
-                                "WHERE (id = %d)",
+        $update_sql = sprintf("UPDATE user_emails SET user_id = %d, is_primary = 1, is_backup = 0
+                                WHERE (id = %d)",
                                 $user_id, $data['user_email_id']);
         $this->utility_model->run_query($update_sql);
 

@@ -23,9 +23,9 @@ class Post_model extends CI_Model
      */
     public function get_post($post_id, $visitor_id)
     {
-        $post_sql = sprintf("SELECT p.*, u.profile_name AS author FROM posts p " .
-                            "LEFT JOIN users u ON(p.user_id = u.user_id) " .
-                            "WHERE post_id = %d",
+        $post_sql = sprintf("SELECT p.*, u.profile_name AS author FROM posts p
+                            LEFT JOIN users u ON(p.user_id = u.user_id)
+                            WHERE post_id = %d",
                             $post_id);
         $post_query = $this->utility_model->run_query($post_sql);
         if ($post_query->num_rows() == 0){
@@ -75,9 +75,9 @@ class Post_model extends CI_Model
         $this->utility_model->run_query($post_sql);
 
         // Dispatch an activity.
-        $activity_sql = sprintf("INSERT INTO activities " .
-                                "(actor_id, subject_id, source_id, source_type, activity) " .
-                                "VALUES (%d, %d, %d, 'post', 'post')",
+        $activity_sql = sprintf("INSERT INTO activities
+                                (actor_id, subject_id, source_id, source_type, activity)
+                                VALUES (%d, %d, %d, 'post', 'post')",
                                 $user_id, $user_id, $this->db->insert_id());
         $this->utility_model->run_query($activity_sql);
     }

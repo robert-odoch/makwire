@@ -49,8 +49,8 @@ class Account_model extends CI_Model
 
     public function change_name($user_id, $last_name, $other_names)
     {
-        $sql = sprintf("UPDATE users SET lname = %s, other_names = %s, profile_name = %s " .
-                        "WHERE user_id = %d", $this->db->escape($last_name),
+        $sql = sprintf("UPDATE users SET lname = %s, other_names = %s, profile_name = %s
+                        WHERE user_id = %d", $this->db->escape($last_name),
                         $this->db->escape($other_names),
                         $this->db->escape($last_name) . ' ' . $this->db->escape($other_names),
                         $user_id);
@@ -65,9 +65,9 @@ class Account_model extends CI_Model
 
     public function get_emails($user_id)
     {
-        $sql = sprintf("SELECT email, is_primary FROM user_emails " .
-                        "WHERE (user_id = %d AND activation_code IS NULL) " .
-                        "ORDER BY is_primary DESC, is_backup DESC",
+        $sql = sprintf("SELECT email, is_primary FROM user_emails
+                        WHERE (user_id = %d AND activation_code IS NULL)
+                        ORDER BY is_primary DESC, is_backup DESC",
                         $user_id);
         $query = $this->utility_model->run_query($sql);
 
@@ -77,13 +77,13 @@ class Account_model extends CI_Model
     public function set_primary_email($user_id, $email_address)
     {
         // Make all emails for this user non-primary.
-        $sql = sprintf("UPDATE user_emails SET is_primary = FALSE, is_backup = TRUE " .
-                        "WHERE (user_id = %d)", $user_id);
+        $sql = sprintf("UPDATE user_emails SET is_primary = FALSE, is_backup = TRUE
+                        WHERE (user_id = %d)", $user_id);
         $this->utility_model->run_query($sql);
 
         // Set the primary email address.
-        $sql = sprintf("UPDATE user_emails SET is_primary = TRUE, is_backup = FALSE " .
-                        "WHERE (user_id = %d AND email = '%s')",
+        $sql = sprintf("UPDATE user_emails SET is_primary = TRUE, is_backup = FALSE
+                        WHERE (user_id = %d AND email = '%s')",
                         $user_id, $email_address);
         $this->utility_model->run_query($sql);
     }
@@ -92,20 +92,20 @@ class Account_model extends CI_Model
     {
         // Make all emails for this user non-backup.
         // This also carters for 'allow only primary email address' i.e., 'none'.
-        $sql = sprintf("UPDATE user_emails SET is_backup = FALSE " .
-                        "WHERE (user_id = %d AND is_primary IS FALSE)",
+        $sql = sprintf("UPDATE user_emails SET is_backup = FALSE
+                        WHERE (user_id = %d AND is_primary IS FALSE)",
                         $user_id);
         $this->utility_model->run_query($sql);
 
         // Set backup email address(es).
         if ($email_address == 'all') {
-            $sql = sprintf("UPDATE user_emails SET is_backup = TRUE " .
-                            "WHERE (user_id = %d AND is_primary IS FALSE)",
+            $sql = sprintf("UPDATE user_emails SET is_backup = TRUE
+                            WHERE (user_id = %d AND is_primary IS FALSE)",
                             $user_id);
         }
         else {
-            $sql = sprintf("UPDATE user_emails SET is_backup = TRUE " .
-                            "WHERE (user_id = %d AND email = '%s')",
+            $sql = sprintf("UPDATE user_emails SET is_backup = TRUE
+                            WHERE (user_id = %d AND email = '%s')",
                             $user_id, $email_address);
         }
 
@@ -121,14 +121,14 @@ class Account_model extends CI_Model
     {
         if ($user_id !== NULL) {
             // Existing user adding another email address.
-            $sql = sprintf("INSERT INTO user_emails (user_id, email, activation_code) " .
-                            "VALUES (%d, '%s', '%s')",
+            $sql = sprintf("INSERT INTO user_emails (user_id, email, activation_code)
+                            VALUES (%d, '%s', '%s')",
                             $user_id, $email, $activation_code);
         }
         else {
             // New user registering.
-            $sql = sprintf("INSERT INTO user_emails (email, activation_code) " .
-                            "VALUES ('%s', '%s')", $email, $activation_code);
+            $sql = sprintf("INSERT INTO user_emails (email, activation_code)
+                            VALUES ('%s', '%s')", $email, $activation_code);
         }
         $this->utility_model->run_query($sql);
     }
@@ -141,8 +141,7 @@ class Account_model extends CI_Model
      */
     public function is_registered_email($email)
     {
-        $email_sql = sprintf("SELECT id FROM  user_emails " .
-                                "WHERE (email = %s) LIMIT 1",
+        $email_sql = sprintf("SELECT id FROM  user_emails WHERE (email = %s) LIMIT 1",
                                 $this->db->escape($email));
         $email_query = $this->utility_model->run_query($email_sql);
 
@@ -151,9 +150,9 @@ class Account_model extends CI_Model
 
     public function is_activated_email($email)
     {
-        $sql = sprintf("SELECT id FROM user_emails " .
-                        "WHERE (email = '%s' AND activation_code IS NULL) " .
-                        "LIMIT 1", $email);
+        $sql = sprintf("SELECT id FROM user_emails
+                        WHERE (email = '%s' AND activation_code IS NULL)
+                        LIMIT 1", $email);
         $query = $this->utility_model->run_query($sql);
         return ($query->num_rows() == 1);
     }

@@ -19,8 +19,8 @@ class News_feed_model extends CI_Model
         $friends_ids[] = 0;  // Add extra element for query-safety.
         $friends_ids_str = implode(',', $friends_ids);
 
-        $user_ids_sql = sprintf('SELECT DISTINCT sharer_id FROM shares s1 ' .
-                                'WHERE (sharer_id IN(%s) AND subject_type = \'%s\' AND date_shared = (%s))',
+        $user_ids_sql = sprintf('SELECT DISTINCT sharer_id FROM shares s1
+                                WHERE (sharer_id IN(%s) AND subject_type = \'%s\' AND date_shared = (%s))',
                                 $friends_ids_str, $item, $latest_share_date_sql);
         $user_ids_results = $this->utility_model->run_query($user_ids_sql)->result_array();
 
@@ -66,30 +66,30 @@ class News_feed_model extends CI_Model
         $friends_ids[] = 0;  // Add extra element for query-safety.
         $friends_ids_str = implode(',', $friends_ids);
 
-        $num_posts_sql = sprintf('SELECT COUNT(source_id) FROM activities ' .
-                                 'WHERE (actor_id IN(%s) AND source_id NOT IN(%s) AND activity = \'post\')',
+        $num_posts_sql = sprintf('SELECT COUNT(source_id) FROM activities
+                                 WHERE (actor_id IN(%s) AND source_id NOT IN(%s) AND activity = \'post\')',
                                  $friends_ids_str, $shared_posts_ids_str);
         $num_posts = $this->utility_model->run_query($num_posts_sql)->row_array()['COUNT(source_id)'];
 
-        $num_photos_sql = sprintf('SELECT COUNT(source_id) FROM activities ' .
-                                    'WHERE (actor_id IN(%s) AND source_id NOT IN(%s) AND ' .
-                                            'activity IN(\'photo\',\'profile_pic_change\'))',
+        $num_photos_sql = sprintf('SELECT COUNT(source_id) FROM activities
+                                    WHERE (actor_id IN(%s) AND source_id NOT IN(%s) AND
+                                            activity IN(\'photo\',\'profile_pic_change\'))',
                                     $friends_ids_str, $shared_photos_ids_str);
         $num_photos = $this->utility_model->run_query($num_photos_sql)->row_array()['COUNT(source_id)'];
 
-        $num_videos_sql = sprintf('SELECT COUNT(source_id) FROM activities ' .
-                                    'WHERE (actor_id IN(%s) AND source_id NOT IN(%s) AND activity = \'video\')',
+        $num_videos_sql = sprintf('SELECT COUNT(source_id) FROM activities
+                                    WHERE (actor_id IN(%s) AND source_id NOT IN(%s) AND activity = \'video\')',
                                  $friends_ids_str, $shared_videos_ids_str);
         $num_videos = $this->utility_model->run_query($num_videos_sql)->row_array()['COUNT(source_id)'];
 
-        $num_links_sql = sprintf('SELECT COUNT(source_id) FROM activities ' .
-                                 'WHERE (actor_id IN(%s) AND source_id NOT IN(%s) AND activity = \'link\')',
+        $num_links_sql = sprintf('SELECT COUNT(source_id) FROM activities
+                                 WHERE (actor_id IN(%s) AND source_id NOT IN(%s) AND activity = \'link\')',
                                  $friends_ids_str, $shared_links_ids_str);
         $num_links = $this->utility_model->run_query($num_links_sql)->row_array()['COUNT(source_id)'];
 
-        $num_shared_items_sql = sprintf('SELECT COUNT(source_id) FROM activities ' .
-                                        'WHERE (actor_id IN(%s) AND activity = \'share\' AND ' .
-                                            'source_type IN(\'post\',\'photo\',\'video\',\'link\') AND subject_id != %d)',
+        $num_shared_items_sql = sprintf('SELECT COUNT(source_id) FROM activities
+                                        WHERE (actor_id IN(%s) AND activity = \'share\' AND
+                                            source_type IN(\'post\',\'photo\',\'video\',\'link\') AND subject_id != %d)',
                                         $friends_ids_str, $user_id);
         $num_shared_items = $this->utility_model->run_query($num_shared_items_sql)->row_array()['COUNT(source_id)'];
 
@@ -136,11 +136,11 @@ class News_feed_model extends CI_Model
 
         // If the last user to share an item is the current viewer of the page,
         // then we pick the second last user who shared the same item.
-        $latest_share_date_sql = sprintf("SELECT MAX(date_shared) FROM shares s2 " .
-                                        "WHERE (s1.subject_id = s2.subject_id AND " .
-                                        "s1.subject_type = s2.subject_type AND " .
-                                        "s2.sharer_id != %d)",
-                                        $user_id);
+        $latest_share_date_sql = sprintf("SELECT MAX(date_shared) FROM shares s2
+                                            WHERE (s1.subject_id = s2.subject_id AND
+                                            s1.subject_type = s2.subject_type AND
+                                            s2.sharer_id != %d)",
+                                            $user_id);
 
         /// Latest shared posts user IDs.
         $latest_shared_posts_user_ids = $this->get_latest_shared_items_user_ids('post', $friends_ids, $latest_share_date_sql);
@@ -168,21 +168,21 @@ class News_feed_model extends CI_Model
         $friends_ids_str = implode(',', $friends_ids);
 
         /// Get combined news feed items.
-        $news_feed_items_sql = sprintf("SELECT * FROM activities " .
-                                        "WHERE ((actor_id IN(%s) AND activity = 'post' AND source_id NOT IN(%s)) OR " .
-                                                "(actor_id IN(%s) AND activity IN('photo', 'profile_pic_change') AND " .
-                                                    "source_id NOT IN(%s)) OR " .
-                                                "(actor_id IN(%s) AND activity = 'video' AND source_id NOT IN(%s)) OR " .
-                                                "(actor_id IN(%s) AND activity = 'link' AND source_id NOT IN(%s)) OR " .
-                                                "(actor_id IN(%s) AND actor_id IN(%s) AND activity = 'share' AND " .
-                                                    "source_type = 'post' AND subject_id != %d) OR " .
-                                                "(actor_id IN(%s) AND actor_id IN(%s) AND activity = 'share' AND " .
-                                                    "source_type = 'photo' AND subject_id != %d) OR " .
-                                                "(actor_id IN(%s) AND actor_id IN(%s) AND activity = 'share' AND " .
-                                                    "source_type = 'video' AND subject_id != %d) OR " .
-                                                "(actor_id IN(%s) AND actor_id IN(%s) AND activity = 'share' AND " .
-                                                    "source_type = 'link' AND subject_id != %d)) " .
-                                        "ORDER BY date_entered DESC LIMIT %d, %d",
+        $news_feed_items_sql = sprintf("SELECT * FROM activities
+                                        WHERE ((actor_id IN(%s) AND activity = 'post' AND source_id NOT IN(%s)) OR
+                                                (actor_id IN(%s) AND activity IN('photo', 'profile_pic_change') AND
+                                                    source_id NOT IN(%s)) OR
+                                                (actor_id IN(%s) AND activity = 'video' AND source_id NOT IN(%s)) OR
+                                                (actor_id IN(%s) AND activity = 'link' AND source_id NOT IN(%s)) OR
+                                                (actor_id IN(%s) AND actor_id IN(%s) AND activity = 'share' AND
+                                                    source_type = 'post' AND subject_id != %d) OR
+                                                (actor_id IN(%s) AND actor_id IN(%s) AND activity = 'share' AND
+                                                    source_type = 'photo' AND subject_id != %d) OR
+                                                (actor_id IN(%s) AND actor_id IN(%s) AND activity = 'share' AND
+                                                    source_type = 'video' AND subject_id != %d) OR
+                                                (actor_id IN(%s) AND actor_id IN(%s) AND activity = 'share' AND
+                                                    source_type = 'link' AND subject_id != %d))
+                                        ORDER BY date_entered DESC LIMIT %d, %d",
                                         $friends_ids_str, $shared_posts_ids_str,
                                         $friends_ids_str, $shared_photos_ids_str,
                                         $friends_ids_str, $shared_videos_ids_str,

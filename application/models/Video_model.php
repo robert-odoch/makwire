@@ -26,10 +26,10 @@ class Video_model extends CI_Model
      */
     public function get_video($video_id, $visitor_id)
     {
-        $video_sql = sprintf("SELECT v.*, u.profile_name AS author FROM videos v " .
-                            "LEFT JOIN users u ON(v.user_id = u.user_id) " .
-                            "WHERE video_id = %d",
-                            $video_id);
+        $video_sql = sprintf("SELECT v.*, u.profile_name AS author FROM videos v
+                                LEFT JOIN users u ON(v.user_id = u.user_id)
+                                WHERE video_id = %d",
+                                $video_id);
         $video_query = $this->utility_model->run_query($video_sql);
         if ($video_query->num_rows() == 0) {
             throw new NotFoundException();
@@ -71,9 +71,9 @@ class Video_model extends CI_Model
         $video_id = $this->db->insert_id();
 
         // Dispatch an activity.
-        $activity_sql = sprintf('INSERT INTO activities ' .
-                                '(actor_id, subject_id, source_id, source_type, activity) ' .
-                                'VALUES (%d, %d, %d, "video", "video")',
+        $activity_sql = sprintf('INSERT INTO activities
+                                (actor_id, subject_id, source_id, source_type, activity)
+                                VALUES (%d, %d, %d, "video", "video")',
                                 $user_id, $user_id, $video_id);
         $this->utility_model->run_query($activity_sql);
     }

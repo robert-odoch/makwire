@@ -23,10 +23,9 @@ class Reply_model extends CI_Model
      */
     public function get_reply($reply_id, $visitor_id)
     {
-        $reply_sql = sprintf("SELECT c.*, u.profile_name AS commenter " .
-                                "FROM comments c " .
-                                "LEFT JOIN users u ON(c.commenter_id = u.user_id) " .
-                                "WHERE (comment_id = %d AND parent_id != 0)",
+        $reply_sql = sprintf("SELECT c.*, u.profile_name AS commenter FROM comments c
+                                LEFT JOIN users u ON(c.commenter_id = u.user_id)
+                                WHERE (comment_id = %d AND parent_id != 0)",
                                 $reply_id);
         $reply_query = $this->utility_model->run_query($reply_sql);
         if ($reply_query->num_rows() == 0) {
@@ -66,9 +65,7 @@ class Reply_model extends CI_Model
      */
     public function like($reply_id, $user_id)
     {
-        $owner_sql = sprintf("SELECT commenter_id " .
-                            "FROM comments " .
-                            "WHERE comment_id = %d",
+        $owner_sql = sprintf("SELECT commenter_id FROM comments WHERE comment_id = %d",
                             $reply_id);
         $owner_query = $this->utility_model->run_query($owner_sql);
         if ($owner_query->num_rows() == 0) {

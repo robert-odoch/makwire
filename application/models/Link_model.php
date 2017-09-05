@@ -26,9 +26,9 @@ class Link_model extends CI_Model
      */
     public function get_link($link_id, $visitor_id)
     {
-        $link_sql = sprintf("SELECT v.*, u.profile_name AS author FROM links v " .
-                            "LEFT JOIN users u ON(v.user_id = u.user_id) " .
-                            "WHERE link_id = %d",
+        $link_sql = sprintf("SELECT v.*, u.profile_name AS author FROM links v
+                            LEFT JOIN users u ON(v.user_id = u.user_id)
+                            WHERE link_id = %d",
                             $link_id);
         $link_query = $this->utility_model->run_query($link_sql);
         if ($link_query->num_rows() == 0) {
@@ -65,8 +65,8 @@ class Link_model extends CI_Model
     public function publish($link_data, $user_id)
     {
         // Record link data in the links table.
-        $link_sql = sprintf('INSERT INTO links (user_id, url, title, description, image, site) ' .
-                            'VALUES (%d, %s, %s, %s, %s, %s) ',
+        $link_sql = sprintf('INSERT INTO links (user_id, url, title, description, image, site)
+                            VALUES (%d, %s, %s, %s, %s, %s) ',
                             $user_id, $this->db->escape($link_data['url']),
                             $this->db->escape($link_data['title']), $this->db->escape($link_data['description']),
                             $this->db->escape($link_data['image']), $this->db->escape($link_data['site']));
@@ -74,9 +74,9 @@ class Link_model extends CI_Model
         $link_id = $this->db->insert_id();
 
         // Dispatch an activity.
-        $activity_sql = sprintf('INSERT INTO activities ' .
-                                '(actor_id, subject_id, source_id, source_type, activity) ' .
-                                'VALUES (%d, %d, %d, "link", "link")',
+        $activity_sql = sprintf('INSERT INTO activities
+                                (actor_id, subject_id, source_id, source_type, activity)
+                                VALUES (%d, %d, %d, "link", "link")',
                                 $user_id, $user_id, $link_id);
         $this->utility_model->run_query($activity_sql);
     }

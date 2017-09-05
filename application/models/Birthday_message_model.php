@@ -25,10 +25,10 @@ class Birthday_message_model extends CI_Model
      */
     public function get_message($birthday_message_id, $visitor_id)
     {
-        $message_sql = sprintf("SELECT b.*, u.profile_name AS sender " .
-                                "FROM birthday_messages b " .
-                                "LEFT JOIN users u ON(b.sender_id = u.user_id) " .
-                                "WHERE (id = %d)",
+        $message_sql = sprintf("SELECT b.*, u.profile_name AS sender
+                                FROM birthday_messages b
+                                LEFT JOIN users u ON(b.sender_id = u.user_id)
+                                WHERE (id = %d)",
                                 $birthday_message_id);
         $message_query = $this->utility_model->run_query($message_sql);
         if ($message_query->num_rows() == 0) {
@@ -71,8 +71,7 @@ class Birthday_message_model extends CI_Model
     public function like($birthday_message_id, $user_id)
     {
         // Get the id of the user who sent the message.
-        $owner_sql = sprintf("SELECT user_id, sender_id " .
-                            "FROM birthday_messages WHERE id = %d",
+        $owner_sql = sprintf("SELECT user_id, sender_id FROM birthday_messages WHERE id = %d",
                             $birthday_message_id);
         $owner_query = $this->utility_model->run_query($owner_sql);
         if ($owner_query->num_rows() == 0) {

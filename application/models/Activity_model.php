@@ -20,15 +20,15 @@ class Activity_model extends CI_Model
             return;
         }
 
-        $like_sql = sprintf("INSERT INTO likes (liker_id, source_id, source_type) " .
-                            "VALUES (%d, %d, '%s')",
+        $like_sql = sprintf("INSERT INTO likes (liker_id, source_id, source_type)
+                            VALUES (%d, %d, '%s')",
                             $user_id, $object->getId(), $object->getType());
         $this->utility_model->run_query($like_sql);
 
         // Dispatch an activity.
-        $activity_sql = sprintf("INSERT INTO activities " .
-                                "(actor_id, subject_id, source_id, source_type, activity) " .
-                                "VALUES (%d, %d, %d, '%s', '%s')",
+        $activity_sql = sprintf("INSERT INTO activities
+                                (actor_id, subject_id, source_id, source_type, activity)
+                                VALUES (%d, %d, %d, '%s', '%s')",
                                 $user_id, $object->getOwnerId(), $object->getId(),
                                 $object->getType(), 'like');
         $this->utility_model->run_query($activity_sql);
@@ -41,15 +41,15 @@ class Activity_model extends CI_Model
         }
 
         // Insert it into the shares table.
-        $share_sql = sprintf("INSERT INTO shares (subject_id, sharer_id, subject_type) " .
-                                "VALUES (%d, %d, '%s')",
+        $share_sql = sprintf("INSERT INTO shares (subject_id, sharer_id, subject_type)
+                                VALUES (%d, %d, '%s')",
                                 $object->getId(), $user_id, $object->getType());
         $this->utility_model->run_query($share_sql);
 
         // Dispatch an activity.
-        $activity_sql = sprintf("INSERT INTO activities " .
-                                "(actor_id, subject_id, source_id, source_type, activity) " .
-                                "VALUES (%d, %d, %d, '%s', '%s')",
+        $activity_sql = sprintf("INSERT INTO activities
+                                (actor_id, subject_id, source_id, source_type, activity)
+                                VALUES (%d, %d, %d, '%s', '%s')",
                                 $user_id, $object->getOwnerId(), $object->getId(),
                                 $object->getType(), 'share');
         $this->utility_model->run_query($activity_sql);
@@ -58,17 +58,17 @@ class Activity_model extends CI_Model
     public function reply(Replyable $object, $reply, $user_id)
     {
         // Record the reply.
-        $reply_sql = sprintf("INSERT INTO comments " .
-                                "(commenter_id, parent_id, source_id, source_type, comment) " .
-                                "VALUES (%d, %d, %d, '%s', %s)",
+        $reply_sql = sprintf("INSERT INTO comments
+                                (commenter_id, parent_id, source_id, source_type, comment)
+                                VALUES (%d, %d, %d, '%s', %s)",
                                 $user_id, $object->getId(), $object->getId(),
                                 $object->getType(), $this->db->escape($reply));
         $this->utility_model->run_query($reply_sql);
 
         // Dispatch an activity.
-        $activity_sql = sprintf("INSERT INTO activities " .
-                                "(actor_id, subject_id, source_id, source_type, activity) " .
-                                "VALUES (%d, %d, %d, '%s', '%s')",
+        $activity_sql = sprintf("INSERT INTO activities
+                                (actor_id, subject_id, source_id, source_type, activity)
+                                VALUES (%d, %d, %d, '%s', '%s')",
                                 $user_id, $object->getOwnerId(),
                                 $object->getId(), $object->getType(), 'reply');
         $this->utility_model->run_query($activity_sql);
@@ -77,17 +77,17 @@ class Activity_model extends CI_Model
     public function comment(Commentable $object, $comment, $user_id)
     {
         // Record the comment.
-        $comment_sql = sprintf("INSERT INTO comments " .
-                                "(commenter_id, parent_id, source_id, source_type, comment) " .
-                                "VALUES (%d, %d, %d, '%s', %s)",
+        $comment_sql = sprintf("INSERT INTO comments
+                                (commenter_id, parent_id, source_id, source_type, comment)
+                                VALUES (%d, %d, %d, '%s', %s)",
                                 $user_id, 0, $object->getId(), $object->getType(),
                                 $this->db->escape($comment));
         $this->utility_model->run_query($comment_sql);
 
         // Dispatch an activity.
-        $activity_sql = sprintf("INSERT INTO activities " .
-                                "(actor_id, subject_id, source_id, source_type, activity) " .
-                                "VALUES (%d, %d, %d, '%s', '%s')",
+        $activity_sql = sprintf("INSERT INTO activities
+                                (actor_id, subject_id, source_id, source_type, activity)
+                                VALUES (%d, %d, %d, '%s', '%s')",
                                 $user_id, $object->getOwnerId(), $object->getId(),
                                 $object->getType(), 'comment');
         $this->utility_model->run_query($activity_sql);
@@ -95,11 +95,11 @@ class Activity_model extends CI_Model
 
     public function getLikes(Likeable $object, $offset, $limit)
     {
-        $likes_sql = sprintf("SELECT l.*, u.profile_name AS liker FROM likes l " .
-                            "LEFT JOIN users u ON(liker_id = u.user_id) " .
-                            "WHERE (source_type = '%s' AND source_id = %d) " .
-                            "LIMIT %d, %d",
-                            $object->getType(), $object->getId(), $offset, $limit);
+        $likes_sql = sprintf("SELECT l.*, u.profile_name AS liker FROM likes l
+                                LEFT JOIN users u ON(liker_id = u.user_id)
+                                WHERE (source_type = '%s' AND source_id = %d)
+                                LIMIT %d, %d",
+                                $object->getType(), $object->getId(), $offset, $limit);
         $likes_query = $this->utility_model->run_query($likes_sql);
 
         $likes = $likes_query->result_array();
@@ -114,12 +114,12 @@ class Activity_model extends CI_Model
 
     public function getShares(Shareable $object, $offset, $limit)
     {
-        $shares_sql = sprintf("SELECT sharer_id, date_shared, u.profile_name AS sharer " .
-                            "FROM shares s " .
-                            "LEFT JOIN users u ON(sharer_id = u.user_id) " .
-                            "WHERE (subject_id = %d AND subject_type = '%s') " .
-                            "LIMIT %d, %d",
-                            $object->getId(), $object->getType(), $offset, $limit);
+        $shares_sql = sprintf("SELECT sharer_id, date_shared, u.profile_name AS sharer
+                                FROM shares s
+                                LEFT JOIN users u ON(sharer_id = u.user_id)
+                                WHERE (subject_id = %d AND subject_type = '%s')
+                                LIMIT %d, %d",
+                                $object->getId(), $object->getType(), $offset, $limit);
         $shares_query = $this->utility_model->run_query($shares_sql);
 
         $shares = $shares_query->result_array();
@@ -134,9 +134,9 @@ class Activity_model extends CI_Model
 
     public function getReplies(Replyable $object, $offset, $limit, $visitor_id)
     {
-        $replies_sql = sprintf("SELECT comment_id FROM comments " .
-                                "WHERE (source_type = '%s' AND parent_id = %d) " .
-                                "LIMIT %d, %d",
+        $replies_sql = sprintf("SELECT comment_id FROM comments
+                                WHERE (source_type = '%s' AND parent_id = %d)
+                                LIMIT %d, %d",
                                 $object->getType(), $object->getId(), $offset, $limit);
         $replies_query = $this->utility_model->run_query($replies_sql);
         $results = $replies_query->result_array();
@@ -155,9 +155,9 @@ class Activity_model extends CI_Model
     {
         $this->load->model('comment_model');
 
-        $comments_sql = sprintf("SELECT comment_id FROM comments " .
-                                "WHERE (source_type = '%s' AND source_id = %d AND parent_id = %d) " .
-                                "LIMIT %d, %d",
+        $comments_sql = sprintf("SELECT comment_id FROM comments
+                                WHERE (source_type = '%s' AND source_id = %d AND parent_id = %d)
+                                LIMIT %d, %d",
                                 $object->getType(), $object->getId(), 0, $offset, $limit);
         $comments_query = $this->utility_model->run_query($comments_sql);
         $results = $comments_query->result_array();
@@ -174,8 +174,8 @@ class Activity_model extends CI_Model
 
     public function getNumLikes(Likeable $object)
     {
-        $likes_sql = sprintf("SELECT COUNT(like_id) FROM likes " .
-                                "WHERE (source_id = %d AND source_type = '%s')",
+        $likes_sql = sprintf("SELECT COUNT(like_id) FROM likes
+                                WHERE (source_id = %d AND source_type = '%s')",
                                 $object->getId(), $object->getType());
         $likes_query = $this->utility_model->run_query($likes_sql);
 
@@ -184,8 +184,8 @@ class Activity_model extends CI_Model
 
     public function getNumShares(Shareable $object)
     {
-        $shares_sql = sprintf("SELECT COUNT(share_id) FROM shares " .
-                                "WHERE (subject_id = %d AND subject_type = '%s')",
+        $shares_sql = sprintf("SELECT COUNT(share_id) FROM shares
+                                WHERE (subject_id = %d AND subject_type = '%s')",
                                 $object->getId(), $object->getType());
         $shares_query = $this->utility_model->run_query($shares_sql);
 
@@ -194,8 +194,8 @@ class Activity_model extends CI_Model
 
     public function getNumReplies(Replyable $object)
     {
-        $replies_sql = sprintf("SELECT COUNT(comment_id) FROM comments " .
-                                "WHERE (source_type = '%s' AND parent_id = %d)",
+        $replies_sql = sprintf("SELECT COUNT(comment_id) FROM comments
+                                WHERE (source_type = '%s' AND parent_id = %d)",
                                 $object->getType(), $object->getId());
         $replies_query = $this->utility_model->run_query($replies_sql);
 
@@ -204,8 +204,8 @@ class Activity_model extends CI_Model
 
     public function getNumComments(Commentable $object)
     {
-        $comments_sql = sprintf("SELECT COUNT(comment_id) FROM comments " .
-                                "WHERE (source_type = '%s' AND source_id = %d AND parent_id = %d)",
+        $comments_sql = sprintf("SELECT COUNT(comment_id) FROM comments
+                                WHERE (source_type = '%s' AND source_id = %d AND parent_id = %d)",
                                 $object->getType(), $object->getId(), 0);
         $comments_query = $this->utility_model->run_query($comments_sql);
 
@@ -220,9 +220,9 @@ class Activity_model extends CI_Model
         }
 
         // Check whether this user has already liked the object.
-        $like_sql = sprintf("SELECT like_id FROM likes " .
-                            "WHERE (source_id = %d AND source_type = '%s' AND liker_id = %d) " .
-                            "LIMIT %d",
+        $like_sql = sprintf("SELECT like_id FROM likes
+                            WHERE (source_id = %d AND source_type = '%s' AND liker_id = %d)
+                            LIMIT %d",
                             $object->getId(), $object->getType(), $user_id, 1);
         $like_query = $this->utility_model->run_query($like_sql);
 
@@ -237,9 +237,9 @@ class Activity_model extends CI_Model
         }
 
         // Check whether this user has already shared the object.
-        $share_sql = sprintf("SELECT share_id FROM shares " .
-                                "WHERE (subject_id = %d AND sharer_id = %d AND subject_type='%s') " .
-                                "LIMIT %d",
+        $share_sql = sprintf("SELECT share_id FROM shares
+                                WHERE (subject_id = %d AND sharer_id = %d AND subject_type='%s')
+                                LIMIT %d",
                                 $object->getId(), $user_id, $object->getType(), 1);
         $share_query = $this->utility_model->run_query($share_sql);
 
@@ -264,8 +264,8 @@ class Activity_model extends CI_Model
         $comment = new SimpleComment($comment_id, $comment_result['commenter_id']);
 
         // Delete likes for this comment.
-        $likes_sql = sprintf('SELECT like_id FROM likes ' .
-                                'WHERE source_id = %d AND source_type = \'comment\'',
+        $likes_sql = sprintf('SELECT like_id FROM likes
+                                WHERE source_id = %d AND source_type = \'comment\'',
                                 $comment_id);
         $likes_results = $this->db->query($likes_sql)->result_array();
         foreach ($likes_results as $r) {
@@ -273,8 +273,8 @@ class Activity_model extends CI_Model
         }
 
         // Delete replies to this comment.
-        $replies_sql = sprintf('SELECT comment_id FROM comments ' .
-                                'WHERE source_id = %d AND source_type = \'comment\'',
+        $replies_sql = sprintf('SELECT comment_id FROM comments
+                                WHERE source_id = %d AND source_type = \'comment\'',
                                 $comment_id);
         $replies_results = $this->db->query($replies_sql)->result_array();
         foreach ($replies_results as $r) {
@@ -298,8 +298,8 @@ class Activity_model extends CI_Model
         $reply = new SimpleReply($reply_id, $reply_result['commenter_id']);
 
         // Delete likes for this reply.
-        $likes_sql = sprintf('SELECT like_id FROM likes ' .
-                                'WHERE source_id = %d AND source_type = \'reply\'',
+        $likes_sql = sprintf('SELECT like_id FROM likes
+                                WHERE source_id = %d AND source_type = \'reply\'',
                                 $reply_id);
         $likes_results = $this->db->query($likes_sql)->result_array();
         foreach ($likes_results as $r) {
@@ -327,9 +327,9 @@ class Activity_model extends CI_Model
 
     public function delete_activity(Object $object, $activity)
     {
-        $activity_sql = sprintf('DELETE FROM activities ' .
-                                'WHERE source_id = %d AND source_type = \'%s\' AND ' .
-                                'activity = \'%s\' LIMIT 1',
+        $activity_sql = sprintf('DELETE FROM activities
+                                WHERE source_id = %d AND source_type = \'%s\' AND
+                                activity = \'%s\' LIMIT 1',
                                 $object->getId(), $object->getType(), $activity);
         $this->db->query($activity_sql);
     }
