@@ -1,6 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed') ?>
 
-<div class='wrapper'>
+<div class='wrapper-lg'>
     <div class='col-large'>
         <div role='main' class='main user-home'>
             <?php
