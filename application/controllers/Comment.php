@@ -29,7 +29,7 @@ class Comment extends CI_Controller
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = $e->getMessage();
-            redirect(base_url('user/error'));
+            redirect(base_url('error'));
         }
     }
 
@@ -46,7 +46,7 @@ class Comment extends CI_Controller
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = "You don't have the proper permissions to reply to this comment.";
-            redirect(base_url('user/error'));
+            redirect(base_url('error'));
         }
 
         // Only allow a user to reply to his comment if there is atleast one reply.
@@ -55,7 +55,7 @@ class Comment extends CI_Controller
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = "For you to reply to your own comment, atleast one of your friends must have replied.";
-            redirect(base_url('user/error'));
+            redirect(base_url('error'));
         }
 
         $data = [];
@@ -190,7 +190,7 @@ class Comment extends CI_Controller
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = "You don't have the proper permissions to edit this comment.";
-            redirect(base_url('user/error'));
+            redirect(base_url('error'));
         }
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -227,13 +227,13 @@ class Comment extends CI_Controller
             try {
                 $this->comment_model->delete_comment($comment_id, $_SESSION['user_id']);
                 $_SESSION['message'] = 'Your comment has been successfully deleted.';
-                redirect(base_url('user/success'));
+                redirect(base_url('success'));
             }
             catch (IllegalAccessException $e) {
                 $_SESSION['title'] = 'Permission Denied!';
                 $_SESSION['heading'] = 'Permission Denied';
                 $_SESSION['message'] = $e->getMessage();
-                redirect(base_url('user/error'));
+                redirect(base_url('error'));
             }
         }
 

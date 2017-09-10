@@ -11,76 +11,6 @@ class Account extends CI_Controller
         $this->load->model(['user_model', 'account_model']);
     }
 
-    public function success()
-    {
-        // Defaults.
-        $title = 'Success! - Makwire';
-
-        // Allow calls to override.
-        if (!empty($_SESSION['title'])) {
-            $title = $_SESSION['title'];
-            unset($_SESSION['title']);
-        }
-
-        if (empty($_SESSION['heading']) || empty($_SESSION['message'])) {
-            redirect(base_url('account/error'));
-        }
-        else {
-            $heading = $_SESSION['heading'];
-            unset($_SESSION['heading']);
-
-            $message = $_SESSION['message'];
-            unset($_SESSION['message']);
-        }
-
-        $data['title'] = $title;
-        $data['heading'] = $heading;
-        $data['message'] = $message;
-
-        $this->load->view('common/header', $data);
-        $this->load->view('show/success', $data);
-        $this->load->view('common/external-page-footer');
-    }
-
-    public function error()
-    {
-        if (empty($_SESSION['user_id'])) {
-            $data = [];
-        }
-        else {
-            $data = $this->user_model->initialize_user($_SESSION['user_id']);
-        }
-
-        // Defaults.
-        $title = 'Error! - Makwire';
-        $heading = 'Something isn\'t right';
-        $message = 'Oh dear, I don\'t know how you ended up here.';
-
-        // Allow calls to override.
-        if (!empty($_SESSION['title'])) {
-            $title = $_SESSION['title'];
-            unset($_SESSION['title']);
-        }
-
-        if (!empty($_SESSION['heading'])) {
-            $heading = $_SESSION['heading'];
-            unset($_SESSION['heading']);
-        }
-
-        if (!empty($_SESSION['message'])) {
-            $message = $_SESSION['message'];
-            unset($_SESSION['message']);
-        }
-
-        $data['title'] = $title;
-        $data['heading'] = $heading;
-        $data['message'] = $message;
-
-        $this->load->view('common/header', $data);
-        $this->load->view('show/error', $data);
-        $this->load->view('common/external-page-footer');
-    }
-
     public function forgot_password($token = NULL)
     {
         if (isset($_SESSION['user_id'])) {
@@ -175,7 +105,7 @@ class Account extends CI_Controller
         $this->load->view('common/header', $data);
 
         $this->load->view('settings/account/forgot-password', $data);
-        $this->load->view('common/external-page-footer');
+        $this->load->view('common/footer');
     }
 
     public function change_password()
@@ -224,7 +154,7 @@ class Account extends CI_Controller
             if (empty($error_messages)) {
                 $this->account_model->change_password($_SESSION['user_id'], $new_passwd);
                 $_SESSION['message'] = 'Your password has been successfully changed.';
-                redirect(base_url('user/success'));
+                redirect(base_url('success'));
             }
             else {
                 $data['error_messages'] = $error_messages;
@@ -250,7 +180,7 @@ class Account extends CI_Controller
             if (strlen($prefered_name) != 0) {
                 $this->account_model->set_prefered_profile_name($_SESSION['user_id'], $prefered_name);
                 $_SESSION['message'] = "Your profile name has been successfully changed to ${prefered_name}.";
-                redirect(base_url('user/success'));
+                redirect(base_url('success'));
             }
         }
 
@@ -320,7 +250,7 @@ class Account extends CI_Controller
                                     It's so sad that you had to leave too soon, we'll surely miss you.";
             redirect(base_url('success'));
         }
-        
+
         // Require the user to first login before continuing.
         if ($_SERVER['HTTP_REFERER'] != base_url('login')) {
             $this->load->model('logout_model');
@@ -404,7 +334,7 @@ class Account extends CI_Controller
 
         $data['form_action'] = base_url("account/resend-email");
         $this->load->view('settings/account/resend-email', $data);
-        $this->load->view('common/external-page-footer');
+        $this->load->view('common/footer');
     }
 
     public function activate_email($activation_code)
@@ -422,7 +352,7 @@ class Account extends CI_Controller
                         $this->account_model->activate_email($email, $activation_code);
                         if ($this->account_model->email_has_user($email)) {
                             $_SESSION['message'] = 'Your email address has been successfully activated. Enjoy!';
-                            redirect(base_url('user/success'));
+                            redirect(base_url('success'));
                         }
                         else {
                             $_SESSION['activation_code'] = $activation_code;
@@ -452,7 +382,7 @@ class Account extends CI_Controller
 
         $data['form_action'] = base_url("account/activate-email/{$activation_code}");
         $this->load->view('settings/account/activate-email', $data);
-        $this->load->view('common/external-page-footer');
+        $this->load->view('common/footer');
     }
 
     private function ensure_user_is_logged_in()

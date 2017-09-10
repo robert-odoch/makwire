@@ -29,7 +29,7 @@ class Reply extends CI_Controller
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = $e->getMessage();
-            redirect(base_url('user/error'));
+            redirect(base_url('error'));
         }
     }
 
@@ -106,7 +106,7 @@ class Reply extends CI_Controller
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = "You don't have the proper permissions to edit this reply.";
-            redirect(base_url('user/error'));
+            redirect(base_url('error'));
         }
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -143,13 +143,13 @@ class Reply extends CI_Controller
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = "You don't have the proper permissions to delete this reply.";
-            redirect(base_url('user/error'));
+            redirect(base_url('error'));
         }
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $this->reply_model->delete_reply($reply_id);
             $_SESSION['message'] = 'Your reply has been successfully deleted.';
-            redirect(base_url('user/success'));
+            redirect(base_url('success'));
         }
 
         $data = $this->user_model->initialize_user($_SESSION['user_id']);

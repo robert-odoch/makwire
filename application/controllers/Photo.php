@@ -78,7 +78,7 @@ class Photo extends CI_Controller
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = "You don't have the proper permissions to edit this photo.";
-            redirect(base_url('user/error'));
+            redirect(base_url('error'));
         }
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -113,13 +113,13 @@ class Photo extends CI_Controller
             try {
                 $this->photo_model->delete_photo($photo, $_SESSION['user_id']);
                 $_SESSION['message'] = 'Your photo has been successfully deleted.';
-                redirect(base_url('user/success'));
+                redirect(base_url('success'));
             }
             catch (IllegalAccessException $e) {
                 $_SESSION['title'] = 'Permission Denied!';
                 $_SESSION['heading'] = 'Permission Denied';
                 $_SESSION['message'] = $e->getMessage();
-                redirect(base_url('user/error'));
+                redirect(base_url('error'));
             }
         }
 
@@ -166,7 +166,7 @@ class Photo extends CI_Controller
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = 'You don\'t have the proper permissions.';
-            redirect(base_url('user/error'));
+            redirect(base_url('error'));
         }
 
         $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
@@ -193,7 +193,7 @@ class Photo extends CI_Controller
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = $e->getMessage();
-            redirect(base_url('user/error'));
+            redirect(base_url('error'));
         }
     }
 
@@ -223,7 +223,7 @@ class Photo extends CI_Controller
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = 'You don\'t have the proper permissions to comment on this photo.';
-            redirect(base_url('user/error'));
+            redirect(base_url('error'));
         }
 
         $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
@@ -249,7 +249,7 @@ class Photo extends CI_Controller
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = $e->getMessage();
-            redirect(base_url('user/error'));
+            redirect(base_url('error'));
         }
     }
 
@@ -401,7 +401,7 @@ class Photo extends CI_Controller
             $_SESSION['heading'] = 'Permission Denied!';
             $_SESSION['message'] = "You dont have the proper permissions to use
                                     this photo as your profile picture.";
-            redirect(base_url('user/error'));
+            redirect(base_url('error'));
         }
 
         // Create a profile pic thumbnail if it doesn't already exist.
@@ -432,7 +432,7 @@ class Photo extends CI_Controller
         $this->profile_model->set_profile_picture($photo_id, $_SESSION['user_id']);
         $_SESSION['title'] = 'You profile picture has been changed';
         $_SESSION['message'] = 'Your profile picture has been successfully changed.';
-        redirect(base_url('user/success'));
+        redirect(base_url('success'));
     }
 
     public function download($photo_id = 0)
@@ -449,7 +449,7 @@ class Photo extends CI_Controller
             $_SESSION['heading'] = 'Permission Denied!';
             $_SESSION['message'] = "You dont have the proper permissions to download
                                     this photo.";
-            redirect(base_url('user/error'));
+            redirect(base_url('error'));
         }
 
         $this->load->helper('download');

@@ -84,7 +84,7 @@ class Register extends CI_Controller
         $this->load->view('common/header', $data);
 
         $this->load->view('register/step-one', $data);
-        $this->load->view('common/external-page-footer');
+        $this->load->view('common/footer');
     }
 
     public function step_two($activation_code = 0)
@@ -156,7 +156,7 @@ class Register extends CI_Controller
         $this->load->view('common/header', $data);
 
         $this->load->view('register/step-two', $data);
-        $this->load->view('common/external-page-footer');
+        $this->load->view('common/footer');
     }
 
     public function step_three($access_code = 0)
@@ -238,7 +238,7 @@ class Register extends CI_Controller
         $this->load->view('common/header', $data);
 
         $this->load->view('register/step-three', $data);
-        $this->load->view('common/external-page-footer');
+        $this->load->view('common/footer');
     }
 }
 ?>

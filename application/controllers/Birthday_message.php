@@ -31,7 +31,7 @@ class Birthday_message extends CI_Controller
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = $e->getMessage();
-            redirect(base_url('user/error'));
+            redirect(base_url('error'));
         }
     }
 
@@ -102,14 +102,14 @@ class Birthday_message extends CI_Controller
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = 'For you to reply to your own message, atleast one of your friends must have replied.';
-            redirect(base_url('user/error'));
+            redirect(base_url('error'));
         }
 
         if (!$message['viewer_is_friend_to_owner']) {
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = "You don't have the proper permissions to reply to this message.";
-            redirect(base_url('user/error'));
+            redirect(base_url('error'));
         }
 
         $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));

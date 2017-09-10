@@ -32,7 +32,7 @@ class Request_admin extends CI_Controller
                 // TODO: code to submit the request.
                 $_SESSION['message'] = "Your request to add the district <em><b>{$district}</b></em> has been submitted.<br>" .
                                         "The administrator will reply as soon as he sees it.";
-                redirect(base_url('user/success'));
+                redirect(base_url('success'));
             }
         }
 
@@ -58,7 +58,7 @@ class Request_admin extends CI_Controller
                 // TODO: code to submit the request.
                 $_SESSION['message'] = "Your request to add the country <em><b>{$country}</b></em> has been submitted.<br>" .
                                         "The administrator will reply as soon as he sees it.";
-                redirect(base_url('user/success'));
+                redirect(base_url('success'));
             }
         }
 

@@ -28,7 +28,7 @@ class Login_model extends CI_Model
         }
         else {
             $user_sql = sprintf("SELECT user_id, passwd FROM users WHERE uname = %s",
-                                $this->db->escape($username));
+                                    $this->db->escape($identifier));
         }
         $user_query = $this->utility_model->run_query($user_sql);
 
@@ -37,12 +37,12 @@ class Login_model extends CI_Model
         }
 
         if (password_verify($password, $user_query->row()->passwd)) {
-            $login_sql = sprintf("UPDATE users SET logged_in=1 WHERE uname = %s LIMIT 1",
-                                    $this->db->escape($username));
-
+            $user_id = $user_query->row()->user_id;
+            $login_sql = sprintf("UPDATE users SET logged_in=1 WHERE user_id = %d LIMIT 1",
+                                    $user_id);
             $this->utility_model->run_query($login_sql);
 
-            return $user_query->row()->user_id;
+            return $user_id;
         }
         else {
             return FALSE;

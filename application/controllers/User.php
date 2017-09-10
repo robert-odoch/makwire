@@ -19,74 +19,6 @@ class User extends CI_Controller
         ]);
     }
 
-    public function success()
-    {
-        $data = $this->user_model->initialize_user($_SESSION['user_id']);
-
-        // Defaults.
-        $title = 'Success! - Makwire';
-        $heading = 'Success';
-        $message = 'Hi there, thanks for passing by.';
-
-        // Allow calls to override.
-        if (!empty($_SESSION['title'])) {
-            $title = $_SESSION['title'];
-            unset($_SESSION['title']);
-        }
-
-        if (!empty($_SESSION['heading'])) {
-            $heading = $_SESSION['heading'];
-            unset($_SESSION['heading']);
-        }
-
-        if (!empty($_SESSION['message'])) {
-            $message = $_SESSION['message'];
-            unset($_SESSION['message']);
-        }
-
-        $data['title'] = $title;
-        $data['heading'] = $heading;
-        $data['message'] = $message;
-
-        $this->load->view('common/header', $data);
-        $this->load->view('show/user-success', $data);
-        $this->load->view('common/footer');
-    }
-
-    public function error()
-    {
-        $data = $this->user_model->initialize_user($_SESSION['user_id']);
-
-        // Defaults.
-        $title = 'Error! - Makwire';
-        $heading = 'Something isn\'t right';
-        $message = 'Oh dear, I don\'t know how you ended up here.';
-
-        // Allow calls to override.
-        if (!empty($_SESSION['title'])) {
-            $title = $_SESSION['title'];
-            unset($_SESSION['title']);
-        }
-
-        if (!empty($_SESSION['heading'])) {
-            $heading = $_SESSION['heading'];
-            unset($_SESSION['heading']);
-        }
-
-        if (!empty($_SESSION['message'])) {
-            $message = $_SESSION['message'];
-            unset($_SESSION['message']);
-        }
-
-        $data['title'] = $title;
-        $data['heading'] = $heading;
-        $data['message'] = $message;
-
-        $this->load->view('common/header', $data);
-        $this->load->view('show/user-error', $data);
-        $this->load->view('common/footer');
-    }
-
     public function index($user_id = 0, $offset = 0)
     {
         $data = $this->user_model->initialize_user($_SESSION['user_id']);
@@ -139,7 +71,7 @@ class User extends CI_Controller
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = "You don't have the proper permissions.";
-            redirect(base_url('user/error'));
+            redirect(base_url('error'));
         }
 
         $data = $this->user_model->initialize_user($_SESSION['user_id']);
@@ -177,7 +109,7 @@ class User extends CI_Controller
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = "You don't have the proper permissions.";
-            redirect(base_url('user/error'));
+            redirect(base_url('error'));
         }
 
         $message = trim(strip_tags($this->input->post('birthday-message')));
@@ -255,7 +187,7 @@ class User extends CI_Controller
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = "You can't send a message to yourself.";
-            redirect(base_url('user/error'));
+            redirect(base_url('error'));
         }
 
         $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
@@ -270,7 +202,7 @@ class User extends CI_Controller
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = "You don't have the proper permissions to send a message to this user.";
-            redirect(base_url('user/error'));
+            redirect(base_url('error'));
         }
 
         $data['suid'] = $receiver_id;
@@ -558,7 +490,7 @@ class User extends CI_Controller
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = $e->getMessage();
-            redirect(base_url('user/error'));
+            redirect(base_url('error'));
         }
     }
 
@@ -572,7 +504,7 @@ class User extends CI_Controller
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = $e->getMessage();
-            redirect(base_url('user/error'));
+            redirect(base_url('error'));
         }
     }
 
@@ -597,7 +529,7 @@ class User extends CI_Controller
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = $e->getMessage();
-            redirect(base_url('user/error'));
+            redirect(base_url('error'));
         }
     }
 

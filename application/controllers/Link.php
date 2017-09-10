@@ -55,7 +55,7 @@ class Link extends CI_Controller
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = "You don't have the proper permissions to edit this link.";
-            redirect(base_url('user/error'));
+            redirect(base_url('error'));
         }
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -90,13 +90,13 @@ class Link extends CI_Controller
             try {
                 $this->link_model->delete_link($link, $_SESSION['user_id']);
                 $_SESSION['message'] = 'Your link has been successfully deleted.';
-                redirect(base_url('user/success'));
+                redirect(base_url('success'));
             }
             catch (IllegalAccessException $e) {
                 $_SESSION['title'] = 'Permission Denied!';
                 $_SESSION['heading'] = 'Permission Denied';
                 $_SESSION['message'] = $e->getMessage();
-                redirect(base_url('user/error'));
+                redirect(base_url('error'));
             }
         }
 
@@ -143,7 +143,7 @@ class Link extends CI_Controller
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = 'You don\'t have the proper permissions.';
-            redirect(base_url('user/error'));
+            redirect(base_url('error'));
         }
 
         $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
@@ -170,7 +170,7 @@ class Link extends CI_Controller
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = $e->getMessage();
-            redirect(base_url('user/error'));
+            redirect(base_url('error'));
         }
     }
 
@@ -200,7 +200,7 @@ class Link extends CI_Controller
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = 'You don\'t have the proper permissions to comment on this link.';
-            redirect(base_url('user/error'));
+            redirect(base_url('error'));
         }
 
         $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
@@ -226,7 +226,7 @@ class Link extends CI_Controller
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = $e->getMessage();
-            redirect(base_url('user/error'));
+            redirect(base_url('error'));
         }
     }
 

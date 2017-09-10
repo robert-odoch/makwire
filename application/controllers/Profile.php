@@ -109,7 +109,7 @@ class Profile extends CI_Controller
                 // Try saving the college and school.
                 if ($this->profile_model->add_school($_SESSION['user_id'], $data)) {
                     $_SESSION['message'] = 'Your school has been succesfully saved.';
-                    redirect(base_url('user/success'));
+                    redirect(base_url('success'));
                 }
                 else {
                     $data['error_message'] = "The years you entered conflict with one of your records.
@@ -170,7 +170,7 @@ class Profile extends CI_Controller
             if (!isset($data['error_message'])) {
                 if ($this->profile_model->update_school($_SESSION['user_id'], $data)) {
                     $_SESSION['message'] = 'Your edits have been succesfully saved.';
-                    redirect(base_url('user/success'));
+                    redirect(base_url('success'));
                 }
                 else {
                     $data['error_message'] = "The years you entered conflict with one of your records.
@@ -222,7 +222,7 @@ class Profile extends CI_Controller
 
             $this->profile_model->add_programme($_SESSION['user_id'], $data);
             $_SESSION['message'] = 'Your programme details have been successfully saved.';
-            redirect(base_url('user/success'));
+            redirect(base_url('success'));
         }
 
         $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
@@ -256,7 +256,7 @@ class Profile extends CI_Controller
 
             $this->profile_model->update_programme($data);
             $_SESSION['message'] = 'Your edits have been successfully saved.';
-            redirect(base_url('user/success'));
+            redirect(base_url('success'));
         }
 
         $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
@@ -309,7 +309,7 @@ class Profile extends CI_Controller
             if (!isset($data['error_message'])) {
                 if ($this->profile_model->add_hall($_SESSION['user_id'], $data)) {
                     $_SESSION['message'] = 'Your hall details have been successfully saved.';
-                    redirect(base_url('user/success'));
+                    redirect(base_url('success'));
                 }
                 else {
                     $data['error_message'] = 'The years you entered either conflict with one of your records.<br>' .
@@ -366,7 +366,7 @@ class Profile extends CI_Controller
             if (!isset($data['error_message'])) {
                 if ($this->profile_model->update_hall($_SESSION['user_id'], $data)) {
                     $_SESSION['message'] = 'Your edits have been successfully saved.';
-                    redirect(base_url('user/success'));
+                    redirect(base_url('success'));
                 }
                 else {
                     $data['error_message'] = 'The years you entered conflict with one of your records.<br>' .
@@ -439,7 +439,7 @@ class Profile extends CI_Controller
             if (!isset($data['error_message'])) {
                 if ($this->profile_model->add_hostel($_SESSION['user_id'], $data)) {
                     $_SESSION['message'] = 'Your hostel details have been successfully saved.';
-                    redirect(base_url('user/success'));
+                    redirect(base_url('success'));
                 }
                 else {
                     $data['error_message'] = 'The hostel you entered conflicts with one of your records.<br>' .
@@ -494,7 +494,7 @@ class Profile extends CI_Controller
             if (!isset($data['error_message'])) {
                 if ($this->profile_model->update_hostel($_SESSION['user_id'], $data)) {
                     $_SESSION['message'] = 'Your edits have been successfully saved.';
-                    redirect(base_url('user/success'));
+                    redirect(base_url('success'));
                 }
                 else {
                     $data['error_message'] = 'The hostel you entered conflicts with one of your records.<br>' .
@@ -549,7 +549,7 @@ class Profile extends CI_Controller
             else {
                 $this->profile_model->add_country($_SESSION['user_id'], $country_id);
                 $_SESSION['message'] = 'Your country details have been successfully saved.';
-                redirect(base_url('user/success'));
+                redirect(base_url('success'));
             }
         }
 
@@ -578,10 +578,10 @@ class Profile extends CI_Controller
         elseif ($district_id) {
             if ($this->profile_model->add_district($_SESSION['user_id'], $district_id)) {
                 $_SESSION['message'] = 'Your district details have been successfully updated.';
-                redirect(base_url('user/success'));
+                redirect(base_url('success'));
             }
             else {
-                redirect(base_url('user/error'));
+                redirect(base_url('error'));
             }
         }
 

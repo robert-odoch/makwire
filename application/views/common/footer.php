@@ -1,18 +1,25 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
+
+        <?php if (!empty($_SESSION['user_id'])): ?>
                     </div><!-- .main-content -->
+        <?php endif; ?>
+
                 </div><!-- main -->
 
+        <?php if (!empty($_SESSION['user_id'])): ?>
                 <div class='suggestions'>
                 <?php require_once('suggested-users.php'); ?>
                 </div>
-            </div>
+            </div> <!-- .col-large -->
 
             <div class='col-small'>
                 <?php require_once('active-users.php'); ?>
             </div>
+        <?php endif; ?>
+
             <span class='clearfix'></span>
-        </div> <!-- #wrapper -->
+        </div> <!-- #wrapper-* -->
 
         <footer role='contentinfo' class='footer'>
             <div class='wrapper'>
