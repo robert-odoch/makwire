@@ -212,8 +212,28 @@ class User extends CI_Controller
             $data['next_offset'] = ($offset + $limit);
         }
 
-        $this->load->view('chat', $data);
+        $this->load->view('chat-users', $data);
         $this->load->view('common/footer');
+    }
+
+    public function get_chat_users($offset = 0)
+    {
+        $data['chat_users'] = $this->user_model->get_chat_users($_SESSION['user_id'], TRUE);
+        $view = $this->load->view('common/active-users', $data);
+    }
+
+    public function get_chat_user($user_id = 0, $offset = 0)
+    {
+        $data['sender']['profile_pic_path'] = $this->user_model->get_profile_pic_path($_SESSION['user_id']);
+
+        $data['receiver']['user_id'] = $user_id;
+        $data['receiver']['profile_name'] = $this->user_model->get_profile_name($user_id);
+        $data['receiver']['profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
+
+        $limit = 10;
+        $data['messages'] = $this->user_model->get_conversation($_SESSION['user_id'], $user_id, $offset, $limit);
+
+        $view = $this->load->view('chat-user', $data);
     }
 
     public function send_message($receiver_id = 0, $offset = 0)

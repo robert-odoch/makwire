@@ -96,12 +96,12 @@ a:focus {
 
 .wrapper-lg {
     box-sizing: border-box;
-    margin: 0 2%;
+    margin: 0 1%;
     padding: 0;
 }
 
 .wrapper-lg .col-large {
-    width: 80.5%;
+    width: 74.5%;
     float: left;
 }
 
@@ -125,7 +125,7 @@ a:focus {
     border-radius: 3px;
     padding: 5px;
     float: right;
-    width: 19%;
+    width: 25%;
 }
 
 .profile-pic {
@@ -952,4 +952,54 @@ div#birthday-message img.media-object {
     div.col-small {
         display: none;
     }
+}
+
+/* Chat sidebar */
+.chat {
+    border: 1px solid #8FBC8F;
+}
+.chat .receiver {
+    background-color: #8FBC8F;
+    padding: 5px;
+    color: #fff;
+    border-bottom: 2px solid #2E8B57;
+}
+.chat .receiver a {
+    color: #fff;
+}
+.chat img {
+    border-radius: 50%;
+}
+.chat table td:first-child {
+    width: 90%;
+    padding-right: 5px
+}
+.chat input.fluid {
+    height: 30px;
+}
+.chat-content img {
+    width: 35px;
+    height: 35px;
+}
+.chat-content p {
+    padding: 5px;
+    margin-bottom: 0;
+    border-radius: 5px;
+    border: 1px solid green;
+}
+.chat-content .message {
+    padding: 5px;
+}
+.chat-content .message.sent p {
+    margin-right: 45px;
+}
+.chat-content .message.received p,
+.chat-content .message.received small {
+    margin-left: 45px;
+}
+.new-message {
+    margin: 5px;
+}
+.back-btn {
+    margin-top: 5px;
 }

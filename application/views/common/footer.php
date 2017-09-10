@@ -9,7 +9,7 @@
             </div>
 
             <div class='col-small'>
-            <?php require_once('active-users.php'); ?>
+                <?php require_once('active-users.php'); ?>
             </div>
             <span class='clearfix'></span>
         </div> <!-- #wrapper -->
@@ -29,5 +29,8 @@
 
         <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
         <script src='<?php echo base_url('scripts/ie10-viewport-bug-workaround.js'); ?>'></script>
+
+        <!-- And then our very own. -->
+        <script src='<?php echo base_url('scripts/site.js'); ?>'></script>
     </body>
 </html>
