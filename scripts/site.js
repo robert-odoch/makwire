@@ -5,6 +5,8 @@ $('.col-small').on('click', '.active-users a', function(event) {
     var userID = href.substring(href.lastIndexOf('/')+1);
     var url = 'http://localhost/makwire/user/get-chat-user/' + userID;
     $('.col-small').load(url);
+
+    // TODO: Scoll to the last message.
 });
 
 $('.col-small').on('click', '.back-btn', function(event) {
