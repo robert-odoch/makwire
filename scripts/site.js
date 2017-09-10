@@ -1,9 +1,7 @@
 $('.col-small').on('click', '.active-users a', function(event) {
     event.preventDefault();
 
-    var href = $(this).attr('href');
-    var userID = href.substring(href.lastIndexOf('/')+1);
-    var url = 'http://localhost/makwire/user/get-chat-user/' + userID;
+    var url = $(this).attr('href');
     $('.col-small').load(url);
 
     // TODO: Scoll to the last message.
@@ -12,7 +10,7 @@ $('.col-small').on('click', '.active-users a', function(event) {
 $('.col-small').on('click', '.back-btn', function(event) {
     event.preventDefault();
 
-    var url = 'http://localhost/makwire/user/get_chat_users';
+    var url = $(this).attr('href');
     $('.col-small').load(url);
 });
 

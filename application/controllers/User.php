@@ -125,6 +125,12 @@ class User extends CI_Controller
 
     public function chat($offset = 0)
     {
+        if (is_ajax_request()) {
+            $data['chat_users'] = $this->user_model->get_chat_users($_SESSION['user_id'], TRUE);
+            $this->load->view('common/active-users', $data);
+            return;
+        }
+
         $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'Chat With Friends';
         $this->load->view('common/header', $data);
@@ -148,34 +154,21 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function get_chat_users($offset = 0)
-    {
-        $data['chat_users'] = $this->user_model->get_chat_users($_SESSION['user_id'], TRUE);
-        $view = $this->load->view('common/active-users', $data);
-    }
-
-    public function get_chat_user($user_id = 0, $offset = 0)
-    {
-        $data['sender']['profile_pic_path'] = $this->user_model->get_profile_pic_path($_SESSION['user_id']);
-
-        $data['receiver']['user_id'] = $user_id;
-        $data['receiver']['profile_name'] = $this->user_model->get_profile_name($user_id);
-        $data['receiver']['profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
-
-        $limit = 10;
-        $data['messages'] = $this->user_model->get_conversation($_SESSION['user_id'], $user_id, $offset, $limit);
-
-        $view = $this->load->view('chat-user', $data);
-    }
-
     public function send_message($receiver_id = 0, $offset = 0)
     {
         $data = [];
+        $limit = 10;  // Maximum number of previous messages to show.
         $data['sender']['profile_pic_path'] = $this->user_model->get_profile_pic_path($_SESSION['user_id']);
 
         $data['receiver']['user_id'] = $receiver_id;
         $data['receiver']['profile_name'] = $this->user_model->get_profile_name($receiver_id);
         $data['receiver']['profile_pic_path'] = $this->user_model->get_profile_pic_path($receiver_id);
+
+        if (is_ajax_request()) {
+            $data['messages'] = $this->user_model->get_conversation($_SESSION['user_id'], $receiver_id, $offset, $limit);
+            $this->load->view('chat-user', $data);
+            return;
+        }
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $message = trim(strip_tags($this->input->post('message')));
@@ -214,7 +207,6 @@ class User extends CI_Controller
         $data['title'] = "Send a message to {$data['secondary_user']}";
         $this->load->view('common/header', $data);
 
-        $limit = 5;  // Maximum number of previous messages to show.
         if ($offset != 0) {
             $data['has_prev'] = TRUE;
             $data['prev_offset'] = 0;
