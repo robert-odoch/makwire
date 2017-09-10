@@ -35,20 +35,20 @@
                 </div>
             <?php endif; ?>
         <?php endforeach; ?>
-    </div>
-    <div class='new-message'>
-        <form action='<?= base_url("user/send-message/{$receiver['user_id']}"); ?>' method='post'>
-            <table style='width: 100%'>
-                <tbody>
-                    <tr>
-                        <td>
-                            <input type='text' name='message' class='fluid' placeholder='new message...'>
-                        </td>
-                        <td><input type='submit' value='Send' class='btn btn-sm'></td>
-                    </tr>
-                </tbody>
-            </table>
-        </form>
+        <div class='new-message'>
+            <form action='<?= base_url("user/send-message/{$receiver['user_id']}"); ?>' method='post'>
+                <table style='width: 100%'>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type='text' name='message' class='fluid' placeholder='new message...'>
+                            </td>
+                            <td><input type='submit' value='Send' class='btn btn-sm'></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
     </div>
 </div>
 <a href='<?= base_url('user/chat'); ?>' class='btn btn-default btn-block back-btn'>&laquo; Active Users</a>
