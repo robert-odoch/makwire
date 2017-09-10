@@ -171,6 +171,11 @@ class User extends CI_Controller
     public function send_message($receiver_id = 0, $offset = 0)
     {
         $data = [];
+        $data['sender']['profile_pic_path'] = $this->user_model->get_profile_pic_path($_SESSION['user_id']);
+
+        $data['receiver']['user_id'] = $receiver_id;
+        $data['receiver']['profile_name'] = $this->user_model->get_profile_name($receiver_id);
+        $data['receiver']['profile_pic_path'] = $this->user_model->get_profile_pic_path($receiver_id);
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $message = trim(strip_tags($this->input->post('message')));

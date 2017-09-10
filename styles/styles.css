@@ -776,7 +776,7 @@ div#birthday-message img.media-object {
 
     body {
         font-size: 1.3em;
-        margin-bottom: 80px;
+        margin-bottom: 55px;
     }
 
     form input[type="text"],
@@ -887,7 +887,7 @@ div#birthday-message img.media-object {
 
 @media (min-width: 481px) and (max-width: 767px) {
     body {
-        margin-bottom: 65px;
+        margin-bottom: 60px;
     }
 
     .hidden-xs {
@@ -956,6 +956,7 @@ div#birthday-message img.media-object {
 
 /* Chat sidebar */
 .chat {
+    border-radius: 3px;
     border: 1px solid #8FBC8F;
 }
 .chat .receiver {
@@ -979,7 +980,7 @@ div#birthday-message img.media-object {
 }
 
 .chat-content {
-    max-height: 200px;
+    max-height: 280px;
     overflow-y: auto;
 }
 .chat-content img {
