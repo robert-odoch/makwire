@@ -52,7 +52,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] = 'news_feed';
 $route['user/(:num)(/:num)?'] = 'user/index/$1$2';
 $route['news-feed/(:num)'] = 'news-feed/index/$1';
-$route['success'] = 'makwire/success';
-$route['error'] = 'makwire/error';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = TRUE;
+
+// Define routes for the Makwiere controller.
+$route['help'] = 'makwire/help';
+$route['error'] = 'makwire/error';
+$route['success'] = 'makwire/success';
+$route['welcome'] = 'makwire/welcome';

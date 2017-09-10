@@ -9,6 +9,11 @@ class Makwire extends CI_Controller
         session_start();
     }
 
+    public function help()
+    {
+        
+    }
+
     public function error()
     {
         if (empty($_SESSION['user_id'])) {
