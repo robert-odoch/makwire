@@ -19,22 +19,22 @@
             <form action='<?= base_url('login'); ?>' method='post' accept-charset='utf-8' role='form'>
                 <fieldset>
                     <div class='form-group'>
-                        <label for='username'>Username</label>
-                        <input type='text' name='username' id='username' class='fluid
+                        <label for='identifier'>Username or email</label>
+                        <input type='text' name='identifier' id='identifier' class='fluid
                         <?php
-                        if (isset($login_errors) && array_key_exists('username', $login_errors)) {
+                        if (isset($login_errors) && array_key_exists('identifier', $login_errors)) {
                             print " has-error";
                         }
                         ?>'
 
                         <?php
-                        if (isset($username)) {
-                            print " value='{$username}'";
+                        if (isset($identifier)) {
+                            print " value='{$identifier}'";
                         }
                         ?> required>
                         <?php
-                        if (isset($login_errors) && array_key_exists('username', $login_errors)) {
-                            print "<span class='error'>{$login_errors['username']}</span>\n";
+                        if (isset($login_errors) && array_key_exists('identifier', $login_errors)) {
+                            print "<span class='error'>{$login_errors['identifier']}</span>\n";
                         }
                         ?>
                     </div>

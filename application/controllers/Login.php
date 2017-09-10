@@ -20,23 +20,26 @@ class Login extends CI_Controller
         $data = [];
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            if (empty(trim($this->input->post('username')))) {
-                $data['login_errors']['username'] = 'Please enter a username!';
-            }
-            else {
-                $username = $this->input->post('username');
-                $data['username'] = $username;
+            $identifier = trim($this->input->post('identifier'));
+            if (strlen($identifier) == 0) {
+                $data['login_errors']['identifier'] = 'Please enter a username or email address!';
             }
 
-            if (empty(trim($this->input->post('password')))) {
+            // Check if user is trying to login using an email address.
+            if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
+                $this->load->model('account_model');
+                if (!$this->account_model->is_activated_email($identifier)) {
+                    $data['login_errors']['identifier'] = "Sorry, makwire doesn't recognise that email address.";
+                }
+            }
+
+            $password = trim($this->input->post('password'));
+            if (strlen($password) == 0) {
                 $data['login_errors']['password'] = 'Please enter a password!';
             }
-            else {
-                $password = $this->input->post('password');
-            }
 
-            if (!isset($data['login_errors'])) {
-                if ($user_id = $this->login_model->is_valid_login($username, $password)) {
+            if (empty($data['login_errors'])) {
+                if ($user_id = $this->login_model->is_valid_login($identifier, $password)) {
                     session_start();
                     session_regenerate_id(TRUE);
                     $_SESSION['user_id'] = $user_id;
@@ -53,8 +56,11 @@ class Login extends CI_Controller
                     }
                 }
                 else {
-                    $data['login_errors']['login'] = 'Invalid username/password combination';
+                    $data['login_errors']['login'] = 'Invalid login, please try again.';
                 }
+            }
+            else {
+                $data['identifier'] = $identifier;
             }
         }
 

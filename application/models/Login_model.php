@@ -15,14 +15,21 @@ class Login_model extends CI_Model
     /**
      * Checks whether the given username and password matches a record.
      *
-     * @param $username the username supplied by the user.
-     * @param $password the password supplied by the user.
-     * @return true if the given username and password exists on record.
+     * @param $identifier Username or email address for user.
+     * @param $password Password.
+     * @return true if the given credentials combination exists on record.
      */
-    public function is_valid_login($username, $password)
+    public function is_valid_login($identifier, $password)
     {
-        $user_sql = sprintf("SELECT user_id, passwd FROM users WHERE uname = %s",
+        if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
+            $user_sql = sprintf("SELECT u.user_id, u.passwd FROM users u
+                                 LEFT JOIN user_emails ue ON (u.user_id = ue.user_id)
+                                 WHERE (ue.email = %s)", $this->db->escape($identifier));
+        }
+        else {
+            $user_sql = sprintf("SELECT user_id, passwd FROM users WHERE uname = %s",
                                 $this->db->escape($username));
+        }
         $user_query = $this->utility_model->run_query($user_sql);
 
         if ($user_query->num_rows() == 0) {
