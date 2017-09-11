@@ -38,6 +38,7 @@
         <script src='<?php echo base_url('scripts/ie10-viewport-bug-workaround.js'); ?>'></script>
 
         <!-- And then our very own. -->
+        <script src='<?php echo base_url('scripts/plugins/jquery.scrollTo-2.1.2/jquery.scrollTo.min.js'); ?>'></script>
         <script src='<?php echo base_url('scripts/site.js'); ?>'></script>
     </body>
 </html>

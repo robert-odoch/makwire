@@ -1,10 +1,13 @@
+// Always scroll to the end of the messages.
+$('.chat-content').scrollTo('100%', 1000);
+
 $('.col-small').on('click', '.active-users a', function(event) {
     event.preventDefault();
 
     var url = $(this).attr('href');
-    $('.col-small').load(url);
-
-    // TODO: Scoll to the last message.
+    $('.col-small').load(url, function() {
+        $('.col-small .chat-content').scrollTo('100%', 1000);
+    });
 });
 
 $('.col-small').on('click', '.back-btn', function(event) {
