@@ -233,6 +233,63 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
+    public function edit_message($message_id)
+    {
+        $data = [];
+
+        try {
+            $message = $this->user_model->get_message($message_id);
+        }
+        catch (NotFoundException $e) {
+            show_404();
+        }
+
+        if ($message['sender_id'] != $_SESSION['user_id']) {
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = "You don't have the proper permissions to edit this message.";
+            redirect(base_url('error'));
+        }
+
+        if ($this->user_model->is_message_replied($message_id)) {
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = "You can only edit a message if it hasn't yet been replied.";
+            redirect(base_url('error'));
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $new_message = $this->input->post('message');
+            if (strlen($new_message) == 0) {
+                $data['error'] = "Oh no! I won't accept that.";
+            }
+            else {
+                if ($this->user_model->update_message($message_id, $new_message)) {
+                    redirect(base_url("user/send-message/{$message['receiver_id']}"));
+                }
+                else {
+                    $_SESSION['title'] = 'Failed to update message';
+                    $_SESSION['heading'] = 'Failed to update message';
+
+                    $receiver = $this->user_model->get_profile_name($message['receiver_id']);
+                    $_SESSION['message'] = "It seems {$receiver} just replied while we were editing, and so,
+                                            this message can't be edited now. <a href='" .
+                                            base_url("user/send-message/{$message['receiver_id']}") .
+                                            "'>view reply</a>";
+                    redirect(base_url('error'));
+                }
+            }
+        }
+
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
+        $data['title'] = 'Edit message';
+        $this->load->view('common/header', $data);
+
+        $data['message'] = $message;
+        $this->load->view('edit/message', $data);
+        $this->load->view('common/footer', $data);
+    }
+
     public function post($post_id = 0, $offset = 0)
     {
         try {

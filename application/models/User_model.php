@@ -1452,6 +1452,29 @@ class User_model extends CI_Model
         return $message_id;
     }
 
+    public function is_message_replied($message_id)
+    {
+        $message = $this->get_message($message_id);
+        $sql = sprintf("SELECT message_id FROM messages
+                        WHERE sender_id = %d AND receiver_id = %d AND date_sent > '%s'",
+                        $message['receiver_id'], $message['sender_id'], $message['date_sent']);
+        $query = $this->db->query($sql);
+        return ($query->num_rows() > 0);
+    }
+
+    public function update_message($message_id, $new_message)
+    {
+        // Check one last time if message hasn't been replied.
+        if ($this->is_message_replied($message_id)) {
+            return FALSE;
+        }
+
+        $sql = sprintf("UPDATE messages SET message = %s WHERE message_id = %d",
+                        $this->db->escape($new_message), $message_id);
+        $this->db->query($sql);
+        return TRUE;
+    }
+
     /**
      * Gets the number of chat messages that exists between two users.
      *
