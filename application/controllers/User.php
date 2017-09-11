@@ -157,7 +157,15 @@ class User extends CI_Controller
     public function send_message($receiver_id = 0, $offset = 0)
     {
         $data = [];
-        $limit = 10;  // Maximum number of previous messages to show.
+
+        $limit = 1;  // Maximum number of previous messages to show.
+        $num_convo = $this->user_model->get_num_conversation($_SESSION['user_id'], $receiver_id);
+        $data['has_prev'] = FALSE;
+        if (($num_convo - $offset) > $limit) {
+            $data['has_prev'] = TRUE;
+            $data['prev_offset'] = ($offset + $limit);
+        }
+
         $data['sender']['profile_pic_path'] = $this->user_model->get_profile_pic_path($_SESSION['user_id']);
 
         $data['receiver']['user_id'] = $receiver_id;
@@ -165,9 +173,17 @@ class User extends CI_Controller
         $data['receiver']['profile_pic_path'] = $this->user_model->get_profile_pic_path($receiver_id);
 
         if (is_ajax_request()) {
-            $data['messages'] = $this->user_model->get_conversation($_SESSION['user_id'], $receiver_id, $offset, $limit);
-            $this->load->view('chat-user', $data);
-            return;
+            if ($offset > 0) {
+                $data['messages'] = $this->user_model->get_conversation($_SESSION['user_id'], $receiver_id, $offset, $limit);
+                $html = $this->load->view('chat-messages', $data, TRUE);
+                echo $html;
+                return;
+            }
+            else {
+                $data['messages'] = $this->user_model->get_conversation($_SESSION['user_id'], $receiver_id, $offset, $limit);
+                $this->load->view('chat-user', $data);
+                return;
+            }
         }
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -206,21 +222,6 @@ class User extends CI_Controller
         $data['suid'] = $receiver_id;
         $data['title'] = "Send a message to {$data['secondary_user']}";
         $this->load->view('common/header', $data);
-
-        if ($offset != 0) {
-            $data['has_prev'] = TRUE;
-            $data['prev_offset'] = 0;
-            if ($offset > $limit) {
-                $data['prev_offset'] = ($offset - $limit);
-            }
-        }
-
-        $num_convo = $this->user_model->get_num_conversation($_SESSION['user_id'], $receiver_id);
-        $data['has_next'] = FALSE;
-        if (($num_convo - $offset) > $limit) {
-            $data['has_next'] = TRUE;
-            $data['next_offset'] = ($offset + $limit);
-        }
 
         $data['messages'] = $this->user_model->get_conversation($_SESSION['user_id'], $receiver_id, $offset, $limit);
         $this->load->view('message', $data);

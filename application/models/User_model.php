@@ -1465,7 +1465,7 @@ class User_model extends CI_Model
         $sql = sprintf("SELECT * FROM messages
                         WHERE (receiver_id = %d AND sender_id = %d) OR
                             (receiver_id = %d AND sender_id = %d)
-                        ORDER BY date_sent ASC LIMIT %d, %d",
+                        ORDER BY date_sent DESC LIMIT %d, %d",
                         $other_id, $user_id,
                         $user_id, $other_id,
                         $offset, $limit);
@@ -1494,7 +1494,8 @@ class User_model extends CI_Model
         }
         unset($msg);
 
-        return $messages;
+        // Reverse the messages so that the latest messages are shown last.
+        return array_reverse($messages);
     }
 }
 ?>

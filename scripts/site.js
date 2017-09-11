@@ -10,13 +10,7 @@ $('.col-small').on('click', '.active-users a', function(event) {
     });
 });
 
-$('.col-small').on('click', '.back-btn', function(event) {
-    event.preventDefault();
-
-    var url = $(this).attr('href');
-    $('.col-small').load(url);
-});
-
+// Sending a message.
 $('.col-small').on('submit', 'form', function(event) {
     event.preventDefault();
 
@@ -37,3 +31,29 @@ $('.col-small').on('submit', 'form', function(event) {
         $('.col-small').load(url);
     }
 });
+
+// Returning back to active users.
+$('.col-small').on('click', '.back-btn', function(event) {
+    event.preventDefault();
+
+    var url = $(this).attr('href');
+    $('.col-small').load(url);
+});
+
+// Viewing previous messages.
+function previousMessages(event) {
+    event.preventDefault();
+
+    var url = $(this).attr('href');
+    $.get(url, function(data) {
+        // Remove the link for viewing previous messages.
+        $('.chat-content .previous').remove();
+
+        // Insert the returned HTML at the beginning of the div.
+        var html = $.parseHTML(data);
+        $(html).prependTo('.chat-content');
+    });
+}
+
+$('.chat-content').on('click', '.previous', previousMessages);
+$('.col-small').on('click', '.previous', previousMessages);
