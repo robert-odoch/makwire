@@ -191,7 +191,7 @@ class Comment extends CI_Controller
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $new_comment = $this->input->post('comment');
             if (strlen($new_comment) == 0) {
-                $data['error_message'] = "Comment can't be empty.";
+                $data['error'] = "Comment can't be empty.";
             }
             else {
                 $this->comment_model->update_comment($comment_id, $new_comment);

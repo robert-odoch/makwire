@@ -107,7 +107,7 @@ class Reply extends CI_Controller
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $new_reply = $this->input->post('reply');
             if (strlen($new_reply) == 0) {
-                $data['error_message'] = "Reply can't be empty.";
+                $data['error'] = "Reply can't be empty.";
             }
             else {
                 $this->reply_model->update_reply($reply_id, $new_reply);

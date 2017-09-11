@@ -12,6 +12,7 @@ require_once(dirname(__FILE__) . '/../common/comment-or-reply.php');
             <label for='<?php echo $object; ?>'><?php echo $object; ?></label>
             <input type='text' name='<?php echo $object; ?>'  class='fluid'
                     value='<?php echo $$object['comment']; ?>' autofocus required>
+            <?php if (!empty($error)) { echo "<span class='error'>{$error}</span>"; } ?>
         </div>
 
         <input type='submit' value='Save' class='btn btn-sm'>
