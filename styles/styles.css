@@ -761,6 +761,26 @@ div#birthday-message img.media-object {
     text-transform: uppercase;
 }
 
+
+
+/*** Make these divs stick to their positions ***/
+div.side-content {
+    position: fixed;
+    width: 15.222585%;  /* (((30 / 100) *69.5) / 100) * 74.5) / 100) * 98 */
+}
+
+.wrapper-lg .col-small {
+    position: fixed;
+    width: 24.5%;  /* (25 /100) * 98 */
+    right: 1%;
+}
+
+.wrapper-lg .col-large .suggestions {
+    position: fixed;
+    width: 21.903%; /* ((30 / 100) * 74.5) / 100) * 98 */
+    right: 26%;
+}
+
 @media (max-width: 380px) {
     .wrapper-md input[type="text"],
     .wrapper-md input[type="email"],
