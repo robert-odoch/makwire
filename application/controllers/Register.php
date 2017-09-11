@@ -94,7 +94,7 @@ class Register extends CI_Controller
         // Ensure user is visiting this page after activating their email.
         if (empty($_SESSION['activation_code']) ||
                 $_SESSION['activation_code'] != $activation_code) {
-            show_404();
+            redirect(base_url('register/step-one'));
         }
         else {
             unset($_SESSION['activation_code']);
@@ -103,7 +103,10 @@ class Register extends CI_Controller
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $lname = trim(strip_tags($this->input->post('lname')));
             if (strlen($lname) == 0) {
-                $error_messages['lname'] = "Last name can't be empty!";
+                $error_messages['lname'] = "Please enter your last name.";
+            }
+            elseif (!preg_match('/^[A-Za-z]+$/', $lname)) {
+                $error_messages['lname'] = "Name must contain only letters of the alphabet.";
             }
             else {
                 $data['lname'] = $lname;
@@ -111,7 +114,10 @@ class Register extends CI_Controller
 
             $other_names = trim(strip_tags($this->input->post('other_names')));
             if (strlen($lname) == 0) {
-                $error_messages['other_names'] = "Other names can't be empty!";
+                $error_messages['other_names'] = "Please enter your other names.";
+            }
+            elseif (!preg_match('/^[A-Za-z]+$/', $other_names)) {
+                $error_messages['other_names'] = "Name must contain only letters of the alphabet.";
             }
             else {
                 $data['other_names'] = $other_names;

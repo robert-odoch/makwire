@@ -206,10 +206,16 @@ class Account extends CI_Controller
             if (strlen($lname) == 0) {
                 $error_messages['lname'] = "Please enter your last name.";
             }
+            elseif (!preg_match('/^[A-Za-z]+$/', $lname)) {
+                $error_messages['lname'] = "Name must contain only letters of the alphabet.";
+            }
 
             $other_names = trim(strip_tags($this->input->post('other_names')));
             if (strlen($other_names) == 0) {
                 $error_messages['other_names'] = "Please enter your other names.";
+            }
+            elseif (!preg_match('/^[A-Za-z]+$/', $other_names)) {
+                $error_messages['other_names'] = "Name must contain only letters of the alphabet.";
             }
 
             if (empty($error_messages)) {
