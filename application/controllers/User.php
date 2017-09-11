@@ -153,7 +153,7 @@ class User extends CI_Controller
     {
         $data = [];
 
-        $limit = 1;  // Maximum number of previous messages to show.
+        $limit = 5;  // Maximum number of previous messages to show.
         $num_convo = $this->user_model->get_num_conversation($_SESSION['user_id'], $receiver_id);
         $data['has_prev'] = FALSE;
         if (($num_convo - $offset) > $limit) {
