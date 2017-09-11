@@ -167,27 +167,37 @@ class User extends CI_Controller
         $data['receiver']['profile_name'] = $this->user_model->get_profile_name($receiver_id);
         $data['receiver']['profile_pic_path'] = $this->user_model->get_profile_pic_path($receiver_id);
 
-        if (is_ajax_request()) {
-            if ($offset > 0) {
-                $data['messages'] = $this->user_model->get_conversation($_SESSION['user_id'], $receiver_id, $offset, $limit);
-                $html = $this->load->view('chat-messages', $data, TRUE);
-                echo $html;
-                return;
-            }
-            else {
-                $data['messages'] = $this->user_model->get_conversation($_SESSION['user_id'], $receiver_id, $offset, $limit);
-                $this->load->view('chat-user', $data);
-                return;
-            }
-        }
-
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $message = trim(strip_tags($this->input->post('message')));
             if (strlen($message) == 0) {
                 $data['message_error'] = "Please enter your message.";
             }
             else {
-                $this->user_model->send_message($_SESSION['user_id'], $receiver_id, $message);
+                $message_id = $this->user_model->send_message($_SESSION['user_id'], $receiver_id, $message);
+                if (is_ajax_request()) {
+                    try {
+                        $data['message'] = $this->user_model->get_message($message_id);
+                    }
+                    catch (NotFoundException $e) {
+                        // Do nothing for now...
+                    }
+                    $html = $this->load->view('chat-message', $data, TRUE);
+                    echo $html;
+                    return;
+                }
+            }
+        }
+        elseif (is_ajax_request()) {
+            if ($offset > 0) {  // Viewing previous messages.
+                $data['messages'] = $this->user_model->get_conversation($_SESSION['user_id'], $receiver_id, $offset, $limit);
+                $html = $this->load->view('chat-messages', $data, TRUE);
+                echo $html;
+                return;
+            }
+            else {  // Visiting chat for the first time.
+                $data['messages'] = $this->user_model->get_conversation($_SESSION['user_id'], $receiver_id, $offset, $limit);
+                $this->load->view('chat-user', $data);
+                return;
             }
         }
 

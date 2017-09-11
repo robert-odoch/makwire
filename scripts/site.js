@@ -21,14 +21,16 @@ $('.col-small').on('submit', 'form', function(event) {
         $messageField.parents('form').append("<span class='error'>Message can't be empty!</span>");
     }
     else {  // Send the message.
-        var action = $(this).attr('action');
-        var data = $(this).serialize();
-        $.post(action, data);
+        var url = $(this).attr('action');
+        var params = $(this).serialize();
+        $.post(url, params, function(data) {
+            // Insert the message immediately above the form.
+            var html = $.parseHTML(data);
+            $(html).insertBefore('.chat-content .new-message');
 
-        // Re-display messages.
-        var userID = action.substring(action.lastIndexOf('/')+1);
-        var url = 'http://localhost/makwire/user/get-chat-user/' + userID;
-        $('.col-small').load(url);
+            // Scroll the form into view.
+            $('.chat-content').scrollTo('100%', 1000);
+        });
     }
 });
 

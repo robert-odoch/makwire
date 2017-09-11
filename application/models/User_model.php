@@ -418,6 +418,20 @@ class User_model extends CI_Model
         return $messages;
     }
 
+    public function get_message($message_id)
+    {
+        $sql = sprintf("SELECT u.profile_name AS sender, m.* FROM messages m
+                        LEFT JOIN users u ON (m.sender_id = u.user_id)
+                        WHERE m.message_id = %d", $message_id);
+        $query = $this->db->query($sql);
+        if ($query->num_rows() == 0) {
+            throw new NotFoundException();
+        }
+
+        $message = $query->row_array();
+        return $message;
+    }
+
     /**
      * Gets the number of friends for a user.
      *
@@ -1424,6 +1438,7 @@ class User_model extends CI_Model
      *
      * @param $message the message to be sent.
      * @param $receiver_id ID the receiver
+     * @return ID of the message.
      */
     public function send_message($sender_id, $receiver_id, $message)
     {
@@ -1432,6 +1447,9 @@ class User_model extends CI_Model
                                 $sender_id, $receiver_id,
                                 $this->db->escape($message));
         $this->utility_model->run_query($message_sql);
+        $message_id = $this->db->insert_id();
+
+        return $message_id;
     }
 
     /**
