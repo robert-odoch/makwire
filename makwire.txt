@@ -1,6 +1,7 @@
 #Personal note
 - Check for php code being ouput near search box on mubali
 - purple background color [#830396]
+- blue background color [#0C426F]
 - Visual Studio Code website:: body {
 	font-family: wf_segoe-ui_normal,HelveticaNeue-Light,Helvetica Neue Light,Helvetica Neue,Helvetica,Arial,sans-serif;
 	color: #444;
@@ -10,7 +11,7 @@
 	word-wrap: break-word;
 }
 - Research on ads by yahoo
-- Useful shortcut: pressing spacebar for pgDown and pgUP.
+- useful shortcut: pressing spacebar for pgDown and pgUP.
 
 # Dev feature tracker.
 - System that might be help full in software development {
@@ -24,6 +25,24 @@
 - Facebook message: I was just feeling so horny at that time, but I'm now okay.
 - news.mak.ac.ug { font-family: 'montserrat', sans-serif; }
 - facebook page view on external sites (screenshot in pictures directory).
+- Creating activation code md5(uniqid(rand(), true)).
+- Using affected_rows for validation other than first selecting from the db.
+- ob_end_clean();
+- Logging out a user {
+    $_SESSION = array( );
+    session_destroy( );
+    setcookie (session_name( ), '', time( ) - 3600);
+}
+- Message box on linux mint -> blockquote {
+	border: solid 1px #BBE693;
+	margin: 10px 10px 10px 50px;
+	padding: 5px 5px 5px 41px;
+	background-color: #E2F5D1;
+	background-image: url('/images/PostQuote.png');
+	background-position: left top;
+	background-repeat: no-repeat;
+}
+- Green color on linux mint -> #5B9722
 
 #Ajax candidates.
 - news feed, timeline.
@@ -37,22 +56,12 @@
 - settings.
 
 #TODO
-- Improve on the security of parameters passed in the link for email confirmation.
-- Make access to register/step-three more secure.
-- Test registration.
-- Secure link for re-send email.
-- Re-send email for registration incase a user doesn't receive.
-- re-setting forgotten password.
-- Add code for deleting an account.
-- edit/delete comment, reply.
-- Viewing friendship.
-- let users select a school to add to their profile and get the college automatically.
-- Send welcome email to users upon completing registration.
+- Allow users to edit a message if it hasn't yet been replied.
+- Look for fonts Adobe Minion Pro(text)
 - Use bootstrap's error classes for form inputs.
 - Go through the code and remove duplicate code.
-- Document the code.
-- Enhance the user interface (consider revising Bootstrap).
 - Read through the stylesheet and remove duplicate code.
+- Document the code.
 
 #Unchecked activities.
 - A youtube video not loading.
@@ -61,6 +70,7 @@
 #IMPROVEMENTS
 - Ensure that every page has a link for viewing more items.
 - Show birthday.
+- active users.
 - chat sidebar.
 - get[_num]_notifications.
 - Profile questions.
@@ -69,10 +79,10 @@
         margin: 0 5px 15px;
 })
 - For conditionals that have no else or default clause, log a warning/error message.
-- Invite friends by email.
 - Minimize memory consumption by unsetting no longer required variables.
 - Optimize get_num_* functions so that they select just on more than $limit.
 - Consider replacing isset() with !empty().
+- Enhance the user interface (consider revising Bootstrap).
 
 ================================================================================
 - Hunt for bugs.
@@ -93,6 +103,8 @@
 - Wish users MERRY CHRISTMAS, Happy Easter, etc.
 - Allow users to upload files (powerpoint, pdf, odt, word, excel, access)
 - Group chat should use threads.
+- Surveys.
+- Invite friends by email.
 ________________________________________________________________________________
 
 #DONE
@@ -159,7 +171,7 @@ ________________________________________________________________________________
     dimensions.
 - Add description for photo uploaded by a user.
 - Check the purpose of are_friends variable in show(friends,timeline,photos,about)
-- Create view for showing user's photos. 150x100
+- Create view for showing user's photos. 150x100*
 - Search for friends by name or email address.
 - Determine a user's closest friends.*
 - Suggest friends for a user.
@@ -225,6 +237,39 @@ ________________________________________________________________________________
 - Style the HTML email sent.
 - Link notifications for likes to user/item
 - Add foreign key contraints.
+- edit/delete comment, reply.
+- Add code for deleting an account.
+- Improve on the security of parameters passed in the link for email confirmation.
+- Show photos from a users page as full posts and not a collection of thumbnails.
+- Use nl2br() for outputing text (posts/comments/descriptions/...).
+- Make access to register/step-three more secure.
+- Ask for email address again when user follows and email activation link e.g., {
+    That reminds me of something. What is your email address again?
+}
+- Pass user_id to model functions other than just using user_id in $_SESSION.
+- Secure link for re-send email (hint: only allow specific pages to refer to this page).
+- Remove require statements and replace them with an autoloader.
+- Create one controller called item and route requests to this controller. *
+- Create an item model and use it to create more specialized models. *
+- Re-send email for registration incase a user doesn't receive.
+- Viewing friendship. *
+- re-setting forgotten password.
+- Test registration.
+- let users select a school to add to their profile and get the college automatically.
+- Send welcome email to users upon completing registration.
+- If password changes email the user about the change. *
+- Secure delete account.
+- create and use classes (wrapper-sm, wrapper-md, wrapper-lg).
+- Add option for using an existing photo as profile picture.
+- Add option for downloading photo.
+- Show a certain max num of messages (preferably 3) and show scrollbar.
+- Allow users to login with either username or email.
+- Create a makwire controller (succes, error, help, welcome).
+- Show link for sending message when viewing friends list.
+- Restrict names to letters of the alphabet.
+- Autofocus field for replying a message.
+- Make side content, suggestions, and chat fixed for large screens.
+- Show link for viewing previous conversation messages.
 
             ^^^^^^ The ones marked with * were foregone. ^^^^^^
             ^^^^^^ Take some time later to re-consider them. ^^^^^

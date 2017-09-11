@@ -1,6 +1,7 @@
+/*** Sending a message. ***/
+
 // Always scroll to the end of the messages.
 $('.chat-content').scrollTo('100%', 1000);
-
 $('.col-small').on('click', '.active-users a', function(event) {
     event.preventDefault();
 
@@ -10,7 +11,6 @@ $('.col-small').on('click', '.active-users a', function(event) {
     });
 });
 
-// Sending a message.
 $('.col-small').on('submit', 'form', function(event) {
     event.preventDefault();
 
@@ -32,7 +32,7 @@ $('.col-small').on('submit', 'form', function(event) {
     }
 });
 
-// Returning back to active users.
+/*** Returning back to active users. ***/
 $('.col-small').on('click', '.back-btn', function(event) {
     event.preventDefault();
 
@@ -40,7 +40,7 @@ $('.col-small').on('click', '.back-btn', function(event) {
     $('.col-small').load(url);
 });
 
-// Viewing previous messages.
+/*** Viewing previous messages. ***/
 function previousMessages(event) {
     event.preventDefault();
 
