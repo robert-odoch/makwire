@@ -810,11 +810,7 @@ div.side-content {
         width: 100% !important;
     }
 
-    .wrapper-lg .col-small {
-        display: none;
-    }
-
-    .wrapper-lg .col-large .side-content,
+    .wrapper-lg .col-small,
     .wrapper-lg .col-large .suggestions {
         display: none;
     }
@@ -825,6 +821,7 @@ div.side-content {
         width: 100%;
         float: none;
         margin-bottom: 5px;
+        position: static;
     }
 
     .wrapper-lg .col-large .main-content,
@@ -922,17 +919,18 @@ div.side-content {
         width: 100%;
     }
 
-    .wrapper-lg .col-small {
+    div.side-content {
+        position: static;
+        width: 30%;
+    }
+
+    .wrapper-lg .col-small,
+    .wrapper-lg .col-large .suggestions {
         display: none;
     }
 
-    .wrapper-lg .col-large .main,
-    .wrapper-lg .col-large .suggestions {
+    .wrapper-lg .col-large .main {
         width: 100%;
-    }
-
-    .wrapper-lg .col-large .suggestions {
-        display: none;
     }
 
     .wrapper-md {
@@ -951,12 +949,6 @@ div.side-content {
     footer.footer {
         height: auto;
     }
-
-    footer.footer a.pull-right {
-        display: block;
-        margin-bottom: 5px;
-        float: none !important;
-    }
 }
 
 @media (min-width: 768px) and (max-width: 971px) {
@@ -967,6 +959,16 @@ div.side-content {
 
     .wrapper-lg .col-large {
         width: 100%;
+    }
+
+    div.side-content {
+        position: static;
+        width: 30%;
+    }
+
+    .wrapper-lg .col-large .suggestions {
+        position: static;
+        width: 30%;
     }
 
     div.col-small {
