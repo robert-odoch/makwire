@@ -6,13 +6,8 @@ class User extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-
         session_start();
-        if (empty($_SESSION['user_id'])) {
-            $_SESSION['return_uri'] = $_SERVER['REQUEST_URI'];
-            redirect(base_url('login'));
-        }
-
+        ensure_user_is_logged_in();
         $this->load->model([
             'user_model', 'post_model', 'profile_model', 'photo_model',
             'link_model', 'utility_model'

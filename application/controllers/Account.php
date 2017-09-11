@@ -110,7 +110,7 @@ class Account extends CI_Controller
 
     public function change_password()
     {
-        $this->ensure_user_is_logged_in();
+        ensure_user_is_logged_in();
 
         $data = [];
 
@@ -171,7 +171,7 @@ class Account extends CI_Controller
 
     public function set_prefered_name()
     {
-        $this->ensure_user_is_logged_in();
+        ensure_user_is_logged_in();
 
         $data = [];
 
@@ -195,7 +195,7 @@ class Account extends CI_Controller
 
     public function change_name()
     {
-        $this->ensure_user_is_logged_in();
+        ensure_user_is_logged_in();
 
         $data = [];
 
@@ -239,7 +239,7 @@ class Account extends CI_Controller
 
     public function delete()
     {
-        $this->ensure_user_is_logged_in();
+        ensure_user_is_logged_in();
 
         $data = [];
 
@@ -389,14 +389,6 @@ class Account extends CI_Controller
         $data['form_action'] = base_url("account/activate-email/{$activation_code}");
         $this->load->view('settings/account/activate-email', $data);
         $this->load->view('common/footer');
-    }
-
-    private function ensure_user_is_logged_in()
-    {
-        if (empty($_SESSION['user_id'])) {
-            $_SESSION['return_uri'] = $_SERVER['REQUEST_URI'];
-            redirect(base_url('login'));
-        }
     }
 
 }

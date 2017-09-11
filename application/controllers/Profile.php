@@ -6,12 +6,8 @@ class Profile extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-
         session_start();
-        if (empty($_SESSION['user_id'])) {
-            $_SESSION['return_uri'] = $_SERVER['REQUEST_URI'];
-            redirect(base_url('login'));
-        }
+        ensure_user_is_logged_in();
 
         // Set up and load the upload library.
         $config['upload_path'] = 'uploads';

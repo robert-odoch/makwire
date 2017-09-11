@@ -6,16 +6,9 @@ class News_feed extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-
         session_start();
-        if (empty($_SESSION['user_id'])) {
-            $_SESSION['return_uri'] = $_SERVER['REQUEST_URI'];
-            redirect(base_url('login'));
-        }
-
-        $this->load->model([
-            'user_model', 'news_feed_model'
-        ]);
+        ensure_user_is_logged_in();
+        $this->load->model(['user_model', 'news_feed_model']);
     }
 
     public function index($offset = 0)
