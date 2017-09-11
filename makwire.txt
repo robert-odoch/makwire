@@ -56,7 +56,6 @@
 - settings.
 
 #TODO
-- Allow users to edit a message if it hasn't yet been replied.
 - Look for fonts Adobe Minion Pro(text)
 - Use bootstrap's error classes for form inputs.
 - Go through the code and remove duplicate code.
@@ -69,9 +68,8 @@
 
 #IMPROVEMENTS
 - Ensure that every page has a link for viewing more items.
-- Show birthday.
+- Show birthday (if user viewing the page is the celebrant).
 - active users.
-- chat sidebar.
 - get[_num]_notifications.
 - Profile questions.
 - Add separators for logical groupings(hint {
@@ -81,8 +79,8 @@
 - For conditionals that have no else or default clause, log a warning/error message.
 - Minimize memory consumption by unsetting no longer required variables.
 - Optimize get_num_* functions so that they select just on more than $limit.
-- Consider replacing isset() with !empty().
-- Enhance the user interface (consider revising Bootstrap).
+- Replace isset() with !empty().
+- Enhance the user interface (Revise Bootstrap).
 
 ================================================================================
 - Hunt for bugs.
@@ -95,12 +93,9 @@
 - Add options for marking a group as favorite.
 - Group posts should not be shared.
 - consider creating table events to store upcoming events.
-- If you allow users to delete posts and photos, then also delete the 
-    corresponding values in activities, notification_read, shares, likes and comments.
-    (This can be automated by putting foreign key constraints)
 - Allow users to add links to other social networks.
 - Integrate news from external sources.
-- Wish users MERRY CHRISTMAS, Happy Easter, etc.
+- Wish users MERRY CHRISTMAS, Happy Easter, Happy New Year etc.
 - Allow users to upload files (powerpoint, pdf, odt, word, excel, access)
 - Group chat should use threads.
 - Surveys.
@@ -270,6 +265,11 @@ ________________________________________________________________________________
 - Autofocus field for replying a message.
 - Make side content, suggestions, and chat fixed for large screens.
 - Show link for viewing previous conversation messages.
+- If you allow users to delete posts and photos, then also delete the 
+    corresponding values in activities, notification_read, shares, likes and comments.
+    (This can be automated by putting foreign key constraints)
+- Improve on the chat sidebar.
+- Allow users to edit a message if it hasn't yet been replied. *
 
             ^^^^^^ The ones marked with * were foregone. ^^^^^^
             ^^^^^^ Take some time later to re-consider them. ^^^^^
