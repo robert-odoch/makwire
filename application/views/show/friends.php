@@ -27,6 +27,13 @@ require_once(dirname(__FILE__) . '/../common/secondary-user-nav.php');
                         <?= $fr['profile_name']; ?>
                     </a>
                 </h4>
+
+                <?php  // Show link for sending message.
+                if ($suid == $_SESSION['user_id']) {
+                    echo "<a href='" . base_url("user/send-message/{$fr['friend_id']}") .
+                         "' title='Send message'><span class='glyphicon glyphicon-envelope'></span></a>";
+                }
+                ?>
             </div>
         </div>
         <?php } ?>
