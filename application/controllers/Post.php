@@ -33,7 +33,7 @@ class Post extends CI_Controller
         $data['title'] = 'Write a status post';
         $this->load->view('common/header', $data);
 
-        if (isset($_SESSION['post_error']) && !empty($_SESSION['post_error'])) {
+        if (isset($_SESSION['post_error']) && ! empty($_SESSION['post_error'])) {
             $data['post_error'] = $_SESSION['post_error'];
             unset($_SESSION['post_error']);
         }
@@ -159,7 +159,7 @@ class Post extends CI_Controller
             show_404();
         }
 
-        if (!$this->user_model->are_friends($_SESSION['user_id'], $post['user_id'])) {
+        if ( ! $this->user_model->are_friends($_SESSION['user_id'], $post['user_id'])) {
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = "You don't have the proper permissions to comment on this post.";

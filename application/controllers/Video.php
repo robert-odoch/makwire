@@ -24,7 +24,7 @@ class Video extends CI_Controller
             $youtube_video_url = $this->input->post('video_url');
             if (strlen($youtube_video_url) == 0) {
                 $error_message = 'Please enter a URL.';
-            } elseif (!preg_match('/^(http:\/\/|https:\/\/)?(www.)?((youtube.com|youtu.be)\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/', $youtube_video_url)) {
+            } elseif ( ! preg_match('/^(http:\/\/|https:\/\/)?(www.)?((youtube.com|youtu.be)\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/', $youtube_video_url)) {
                 $error_message = 'Please enter a valid YouTube video URL.';
             }
 
@@ -188,8 +188,8 @@ class Video extends CI_Controller
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $comment = trim(strip_tags($this->input->post('comment')));
-            if (!$comment) {
-                $data['comment_error'] = 'Please enter a comment.';
+            if (strlen($comment) == 0) {
+                $data['comment_error'] = 'Please enter your comment.';
             }
             else {
                 $this->video_model->comment($video_id, $comment, $_SESSION['user_id']);
@@ -204,10 +204,10 @@ class Video extends CI_Controller
             show_404();
         }
 
-        if (!$this->user_model->are_friends($_SESSION['user_id'], $video['user_id'])) {
+        if ( ! $this->user_model->are_friends($_SESSION['user_id'], $video['user_id'])) {
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
-            $_SESSION['message'] = 'You don\'t have the proper permissions to comment on this video.';
+            $_SESSION['message'] = "You don't have the proper permissions to comment on this video.";
             redirect(base_url('error'));
         }
 

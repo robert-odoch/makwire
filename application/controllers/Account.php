@@ -17,7 +17,7 @@ class Account extends CI_Controller
             redirect(base_url('news-feed'));
         }
 
-        if (!empty($token)) {
+        if ( ! empty($token)) {
             $user_data = $this->account_model->get_password_reset_user_data($token);
             if (empty($user_data)) {
                 redirect(base_url('error'));
@@ -58,7 +58,7 @@ class Account extends CI_Controller
                 if (strlen($email_address) == 0) {
                     $error_message['header'] = 'Please enter an email address.';
                 }
-                elseif (!filter_var($email_address, FILTER_VALIDATE_EMAIL)) {
+                elseif ( ! filter_var($email_address, FILTER_VALIDATE_EMAIL)) {
                     $error_message['header'] = 'Please enter a valid email address.';
                 }
                 elseif ( ! $this->account_model->is_activated_email($email_address)) {
@@ -122,7 +122,7 @@ class Account extends CI_Controller
                 $error_messages['oldpasswd'] = 'Please enter your old password.';
             }
             // Check if there exists a user with this password.
-            elseif (! $this->account_model->user_exists($_SESSION['user_id'], $oldpasswd)) {
+            elseif ( ! $this->account_model->user_exists($_SESSION['user_id'], $oldpasswd)) {
                 $error_messages['oldpasswd'] = 'Incorrect password, please try again.';
             }
             else {
@@ -133,7 +133,7 @@ class Account extends CI_Controller
                 elseif (strlen($passwd1) < 6) {
                     $error_messages['passwd1'] = 'Password must be atleast 6 characters long!';
                 }
-                elseif (!preg_match('/^(\w*(?=\w*\d)(?=\w*[a-z])(?=\w*[A-Z])\w*){6,}$/', $passwd1)) {
+                elseif ( ! preg_match('/^(\w*(?=\w*\d)(?=\w*[a-z])(?=\w*[A-Z])\w*){6,}$/', $passwd1)) {
                         $error_messages['passwd1'] = 'Please ensure that your password meets ' .
                                                         'the above requirements.';
                 }
@@ -206,7 +206,7 @@ class Account extends CI_Controller
             if (strlen($lname) == 0) {
                 $error_messages['lname'] = "Please enter your last name.";
             }
-            elseif (!preg_match('/^[A-Za-z]+$/', $lname)) {
+            elseif ( ! preg_match('/^[A-Za-z]+$/', $lname)) {
                 $error_messages['lname'] = "Name must contain only letters of the alphabet.";
             }
 
@@ -214,7 +214,7 @@ class Account extends CI_Controller
             if (strlen($other_names) == 0) {
                 $error_messages['other_names'] = "Please enter your other names.";
             }
-            elseif (!preg_match('/^[A-Za-z]+$/', $other_names)) {
+            elseif ( ! preg_match('/^[A-Za-z]+$/', $other_names)) {
                 $error_messages['other_names'] = "Name must contain only letters of the alphabet.";
             }
 
@@ -332,7 +332,7 @@ class Account extends CI_Controller
             }
         }
 
-        if (!empty($_SESSION['user_id'])) {
+        if ( ! empty($_SESSION['user_id'])) {
             $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         }
         $data['title'] = 'Resend email activation link';
@@ -380,7 +380,7 @@ class Account extends CI_Controller
             }
         }
 
-        if (!empty($_SESSION['user_id'])) {
+        if ( ! empty($_SESSION['user_id'])) {
             $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         }
         $data['title'] = 'Activate your email address';

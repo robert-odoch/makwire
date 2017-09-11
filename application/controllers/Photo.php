@@ -32,7 +32,7 @@ class Photo extends CI_Controller
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // Upload the file.
-            if (!$this->upload->do_upload('userfile')) {
+            if ( ! $this->upload->do_upload('userfile')) {
                 $data['error'] = $this->upload->display_errors();
             }
             else {
@@ -203,8 +203,8 @@ class Photo extends CI_Controller
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $comment = trim(strip_tags($this->input->post('comment')));
-            if (!$comment) {
-                $data['comment_error'] = "Comment can't be empty";
+            if (strlen($comment) == 0) {
+                $data['comment_error'] = "Please enter your comment.";
             }
             else {
                 $this->photo_model->comment($photo_id, $comment, $_SESSION['user_id']);
@@ -219,10 +219,10 @@ class Photo extends CI_Controller
             show_404();
         }
 
-        if (!$this->user_model->are_friends($_SESSION['user_id'], $photo['user_id'])) {
+        if ( ! $this->user_model->are_friends($_SESSION['user_id'], $photo['user_id'])) {
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
-            $_SESSION['message'] = 'You don\'t have the proper permissions to comment on this photo.';
+            $_SESSION['message'] = "You don't have the proper permissions to comment on this photo.";
             redirect(base_url('error'));
         }
 
@@ -399,7 +399,7 @@ class Photo extends CI_Controller
         if ($photo['user_id'] != $_SESSION['user_id']) {
             $_SESSION['title'] = 'Permission Denied';
             $_SESSION['heading'] = 'Permission Denied!';
-            $_SESSION['message'] = "You dont have the proper permissions to use
+            $_SESSION['message'] = "You don't have the proper permissions to use
                                     this photo as your profile picture.";
             redirect(base_url('error'));
         }

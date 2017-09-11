@@ -28,7 +28,7 @@ class Login extends CI_Controller
             // Check if user is trying to login using an email address.
             if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
                 $this->load->model('account_model');
-                if (!$this->account_model->is_activated_email($identifier)) {
+                if ( ! $this->account_model->is_activated_email($identifier)) {
                     $data['login_errors']['identifier'] = "Sorry, makwire doesn't recognise that email address.";
                 }
             }
@@ -67,7 +67,7 @@ class Login extends CI_Controller
         $data['title'] = 'Log in to your account';
         $this->load->view('common/header', $data);
 
-        if (isset($_SESSION['message']) && !empty($_SESSION['message'])) {
+        if (isset($_SESSION['message']) && ! empty($_SESSION['message'])) {
             $data['info_message'] = $_SESSION['message'];
             unset($_SESSION['message']);
         }

@@ -11,7 +11,7 @@ class Makwire extends CI_Controller
 
     public function help()
     {
-        
+
     }
 
     public function error()
@@ -30,17 +30,17 @@ class Makwire extends CI_Controller
         $message = 'Oh dear, I don\'t know how you ended up here.';
 
         // Allow calls to override.
-        if (!empty($_SESSION['title'])) {
+        if ( ! empty($_SESSION['title'])) {
             $title = $_SESSION['title'];
             unset($_SESSION['title']);
         }
 
-        if (!empty($_SESSION['heading'])) {
+        if ( ! empty($_SESSION['heading'])) {
             $heading = $_SESSION['heading'];
             unset($_SESSION['heading']);
         }
 
-        if (!empty($_SESSION['message'])) {
+        if ( ! empty($_SESSION['message'])) {
             $message = $_SESSION['message'];
             unset($_SESSION['message']);
         }
@@ -68,17 +68,17 @@ class Makwire extends CI_Controller
         $title = 'Success! - Makwire';
 
         // Allow calls to override.
-        if (!empty($_SESSION['title'])) {
+        if ( ! empty($_SESSION['title'])) {
             $title = $_SESSION['title'];
             unset($_SESSION['title']);
         }
 
-        if (!empty($_SESSION['heading'])) {
+        if ( ! empty($_SESSION['heading'])) {
             $heading = $_SESSION['heading'];
             unset($_SESSION['heading']);
         }
 
-        if (!empty($_SESSION['message'])) {
+        if ( ! empty($_SESSION['message'])) {
             $message = $_SESSION['message'];
             unset($_SESSION['message']);
         }

@@ -24,7 +24,7 @@ class Register extends CI_Controller
             if (strlen($email) == 0) {
                 $data['error_message'] = 'Please enter an email address!';
             }
-            elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            elseif ( ! filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $data['error_message'] = 'Please enter a valid email address!';
             }
             else {
@@ -44,7 +44,7 @@ class Register extends CI_Controller
                     }
                 }
 
-                if (!$is_valid_mak_email) {
+                if ( ! $is_valid_mak_email) {
                     $data['error_message'] = 'Please enter a Mak email address!';
                 }
                 elseif ($this->account_model->is_activated_email($email)) {
@@ -105,7 +105,7 @@ class Register extends CI_Controller
             if (strlen($lname) == 0) {
                 $error_messages['lname'] = "Please enter your last name.";
             }
-            elseif (!preg_match('/^[A-Za-z]+$/', $lname)) {
+            elseif ( ! preg_match('/^[A-Za-z]+$/', $lname)) {
                 $error_messages['lname'] = "Name must contain only letters of the alphabet.";
             }
             else {
@@ -116,7 +116,7 @@ class Register extends CI_Controller
             if (strlen($lname) == 0) {
                 $error_messages['other_names'] = "Please enter your other names.";
             }
-            elseif (!preg_match('/^[A-Za-z]+$/', $other_names)) {
+            elseif ( ! preg_match('/^[A-Za-z]+$/', $other_names)) {
                 $error_messages['other_names'] = "Name must contain only letters of the alphabet.";
             }
             else {
@@ -124,7 +124,7 @@ class Register extends CI_Controller
             }
 
             $gender = trim($this->input->post('gender'));
-            if (!in_array($gender, ['male', 'female'])) {
+            if ( ! in_array($gender, ['male', 'female'])) {
                 $error_messages['gender'] = 'Please select your gender.';
             }
             else {
@@ -134,8 +134,8 @@ class Register extends CI_Controller
             $day = $this->input->post('day');
             $month = $this->input->post('month');
             $year = $this->input->post('year');
-            if (!checkdate($month, $day, $year)) {
-                $error_messages['dob'] = 'Invalid date of birth!';
+            if ( ! checkdate($month, $day, $year)) {
+                $error_messages['dob'] = 'Please enter a valid date of birth.';
             }
             else {
                 $data['dob'] = "{$year}-{$month}-{$day}";
@@ -174,7 +174,7 @@ class Register extends CI_Controller
             if (strlen($uname) < 3) {
                 $error_messages['uname'] = 'Username must be atleast 3 characters long!';
             }
-            elseif (!preg_match('/^[A-Za-z0-9]{3,}$/', $uname)) {
+            elseif ( ! preg_match('/^[A-Za-z0-9]{3,}$/', $uname)) {
                 $error_messages['uname'] = 'Please ensure that your username meets ' .
                                             'the above requirements.';
             }
@@ -189,7 +189,7 @@ class Register extends CI_Controller
             elseif (strlen($passwd1) < 6) {
                 $error_messages['passwd1'] = 'Password must be atleast 6 characters long!';
             }
-            elseif (!preg_match('/^(\w*(?=\w*\d)(?=\w*[a-z])(?=\w*[A-Z])\w*){6,}$/', $passwd1)) {
+            elseif ( ! preg_match('/^(\w*(?=\w*\d)(?=\w*[a-z])(?=\w*[A-Z])\w*){6,}$/', $passwd1)) {
                     $error_messages['passwd1'] = 'Please ensure that your password meets ' .
                                                     'the above requirements.';
             }

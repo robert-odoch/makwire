@@ -47,17 +47,17 @@ class Settings extends CI_Controller
                 if (strlen($email) == 0) {
                     $data['error_message'] = "Please enter an email address.";
                 }
-                elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                elseif (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
                     $data['error_message'] = "Please enter a valid email address.";
                 }
                 elseif ($this->account_model->is_activated_email($email)) {
                     $data['error_message'] = "This email address is already registered.";
                 }
                 elseif ($this->account_model->is_registered_email($email)) {
-                    $data['info_message'] = "Please use the link in the email sent to " .
-                                            "<strong>{$email}</strong> to activate your " .
-                                            "email address. If you can't find the email, then we can " .
-                                            "<a href='" . base_url("account/resend-email") .
+                    $data['info_message'] = "Please use the link in the email sent to
+                                            <strong>{$email}</strong> to activate your
+                                            email address. If you can't find the email, then we can
+                                            <a href='" . base_url("account/resend-email") .
                                             "'>resend the email.</a>";
                 }
                 else {
@@ -68,16 +68,15 @@ class Settings extends CI_Controller
                                 base_url("account/activate-email/${activation_code}") .
                                 '">this link</a> to activate your email address.';
                     if ( ! $this->account_model->send_email('robertelvisodoch@gmail.com', $email, $subject, $message)) {
-                        $data['info_message'] = "Sorry, we couldn't send your activation email.<br>" .
-                                                "The admin has been notified about the issue " .
-                                                "and will fix it as soon as possible.<br>" .
-                                                "Please try again later.";
+                        $data['info_message'] = "Sorry, we couldn't send your activation email.<br>
+                                                The admin has been notified about the issue
+                                                and will fix it as soon as possible.<br>
+                                                Please try again later.";
                     }
                     else {
-                        $data['success_message'] = "An email has been sent to " .
-                                                    "<strong>{$email}</strong>, please " .
-                                                    "use the link in that email to activate " .
-                                                    "your email address.";
+                        $data['success_message'] = "An email has been sent to <strong>{$email}</strong>, please
+                                                    use the link in that email to activate
+                                                    your email address.";
                     }
                 }
             }

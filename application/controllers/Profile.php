@@ -30,7 +30,7 @@ class Profile extends CI_Controller
         $data = [];
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            if (!$this->upload->do_upload('userfile')) {
+            if ( ! $this->upload->do_upload('userfile')) {
                 $data['error'] = $this->upload->display_errors();
             }
             else {
@@ -101,11 +101,11 @@ class Profile extends CI_Controller
                 $data['error_message'] = 'Invalid dates entered! Please check the dates and try again.';
             }
 
-            if (!isset($data['error_message'])) {
+            if (empty($data['error_message'])) {
                 $data['school_id'] = $this->input->post('school');
             }
 
-            if (!isset($data['error_message'])) {
+            if (empty($data['error_message'])) {
                 // Try saving the college and school.
                 if ($this->profile_model->add_school($_SESSION['user_id'], $data)) {
                     $_SESSION['message'] = 'Your school has been succesfully saved.';
@@ -162,12 +162,12 @@ class Profile extends CI_Controller
                 $data['error_message'] = 'Invalid dates entered! Please check the dates and try again.';
             }
 
-            if (!isset($data['error_message'])) {
+            if (empty($data['error_message'])) {
                 $data['user_school_id'] = $user_school_id;
                 $data['school_id'] = $this->input->post('school-id');
             }
 
-            if (!isset($data['error_message'])) {
+            if (empty($data['error_message'])) {
                 if ($this->profile_model->update_school($_SESSION['user_id'], $data)) {
                     $_SESSION['message'] = 'Your edits have been succesfully saved.';
                     redirect(base_url('success'));
@@ -192,7 +192,7 @@ class Profile extends CI_Controller
 
         $data['user_school'] = $user_school;
 
-        if (!isset($data['error_message'])) {
+        if (empty($data['error_message'])) {
             // Use values from the database if visitor is viewing this page
             // for the first time.
             $data['start_year'] = $user_school['start_year'];
@@ -306,7 +306,7 @@ class Profile extends CI_Controller
                 $data['error_message'] = 'Invalid dates entered! Please check the dates and try again.';
             }
 
-            if (!isset($data['error_message'])) {
+            if (empty($data['error_message'])) {
                 if ($this->profile_model->add_hall($_SESSION['user_id'], $data)) {
                     $_SESSION['message'] = 'Your hall details have been successfully saved.';
                     redirect(base_url('success'));
@@ -363,7 +363,7 @@ class Profile extends CI_Controller
                 $data['error_message'] = 'Invalid dates entered! Please check the dates and try again.';
             }
 
-            if (!isset($data['error_message'])) {
+            if (empty($data['error_message'])) {
                 if ($this->profile_model->update_hall($_SESSION['user_id'], $data)) {
                     $_SESSION['message'] = 'Your edits have been successfully saved.';
                     redirect(base_url('success'));
@@ -387,7 +387,7 @@ class Profile extends CI_Controller
         }
 
         $data['user_hall'] = $user_hall;
-        if (!isset($data['error_message'])) {
+        if (empty($data['error_message'])) {
             // Use values from the database if the visitor is viewing
             // this page for the first time.
             $data['resident'] = $user_hall['resident'];
@@ -436,7 +436,7 @@ class Profile extends CI_Controller
                 $data['error_message'] = 'Invalid dates entered! Please check the dates and try again.';
             }
 
-            if (!isset($data['error_message'])) {
+            if (empty($data['error_message'])) {
                 if ($this->profile_model->add_hostel($_SESSION['user_id'], $data)) {
                     $_SESSION['message'] = 'Your hostel details have been successfully saved.';
                     redirect(base_url('success'));
@@ -491,7 +491,7 @@ class Profile extends CI_Controller
                 $data['error_message'] = 'Invalid dates entered! Please check the dates and try again.';
             }
 
-            if (!isset($data['error_message'])) {
+            if (empty($data['error_message'])) {
                 if ($this->profile_model->update_hostel($_SESSION['user_id'], $data)) {
                     $_SESSION['message'] = 'Your edits have been successfully saved.';
                     redirect(base_url('success'));
@@ -516,7 +516,7 @@ class Profile extends CI_Controller
         }
 
         $data['user_hostel'] = $user_hostel;
-        if (!isset($data['error_message'])) {  // So that we may retain the dates entered in the form.
+        if (empty($data['error_message'])) {  // So that we may retain the dates entered in the form.
             $data['start_day'] = $user_hostel['start_day'];
             $data['start_month'] = $user_hostel['start_month'];
             $data['start_year'] = $user_hostel['start_year'];

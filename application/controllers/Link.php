@@ -22,8 +22,8 @@ class Link extends CI_Controller
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $link_url = $this->input->post('link_url');
-            if (!filter_var($link_url, FILTER_VALIDATE_URL) ||
-                !preg_match('/^(http[s]?:\/\/)/', $link_url)) {
+            if ( ! filter_var($link_url, FILTER_VALIDATE_URL) ||
+                    !preg_match('/^(http[s]?:\/\/)/', $link_url)) {
                 $data['link_url'] = $link_url;
                 $data['error_message'] = 'Please enter a valid URL.';
             }
@@ -358,13 +358,13 @@ class Link extends CI_Controller
         /// Fetch Open Graph metas.
         $og_metas = $this->fetch_og($url);
 
-        if (!empty($og_metas['title'])) {
+        if ( ! empty($og_metas['title'])) {
             $data['title'] = $og_metas['title'];
         }
-        if (!empty($og_metas['description'])) {
+        if ( ! empty($og_metas['description'])) {
             $data['description'] = $og_metas['description'];
         }
-        if (!empty($og_metas['image'])) {
+        if ( ! empty($og_metas['image'])) {
             $data['image'] = $og_metas['image'];
         }
 
@@ -374,13 +374,13 @@ class Link extends CI_Controller
         $meta_tags = get_meta_tags($url);
 
         if (empty($data['title']) && empty($data['description'] && empty($data['image']))) {
-            if (!empty($meta_tags['twitter:title'])) {
+            if ( ! empty($meta_tags['twitter:title'])) {
                 $data['title'] = $meta_tags['twitter:title'];
             }
-            if (!empty($meta_tags['twitter:description'])) {
+            if ( ! empty($meta_tags['twitter:description'])) {
                 $data['description'] = $meta_tags['twitter:description'];
             }
-            if (!empty($meta_tags['twitter:image'])) {
+            if ( ! empty($meta_tags['twitter:image'])) {
                 $data['image'] = $meta_tags['twitter:image'];
             }
         }
@@ -397,7 +397,7 @@ class Link extends CI_Controller
             $title = $metas[0]->textContent;
             $data['title'] = $title;
 
-            if (!empty($meta_tags['description'])) {
+            if ( ! empty($meta_tags['description'])) {
                 $data['description'] = $meta_tags['description'];
             }
         }

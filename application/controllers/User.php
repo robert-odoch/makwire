@@ -63,11 +63,11 @@ class User extends CI_Controller
 
     public function birthday($user_id = 0, $age = 0, $offset = 0)
     {
-        if (!$this->user_model->can_view_birthday($user_id, $age)) {
+        if ( ! $this->user_model->can_view_birthday($user_id, $age)) {
             show_404();
         }
 
-        if (!$this->user_model->are_friends($_SESSION['user_id'], $user_id)) {
+        if ( ! $this->user_model->are_friends($_SESSION['user_id'], $user_id)) {
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = "You don't have the proper permissions.";
@@ -113,8 +113,8 @@ class User extends CI_Controller
         }
 
         $message = trim(strip_tags($this->input->post('birthday-message')));
-        if (!$message) {
-            $_SESSION['error_message'] = "Message can't be empty!";
+        if (strlen($message) == 0) {
+            $_SESSION['error_message'] = "Please enter your message.";
         }
         else {
             $this->user_model->send_birthday_message($_SESSION['user_id'], $message, $receiver_id, $age);
@@ -188,8 +188,8 @@ class User extends CI_Controller
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $message = trim(strip_tags($this->input->post('message')));
-            if (!$message) {
-                $data['message_error'] = "Message can't be empty!";
+            if (strlen($message) == 0) {
+                $data['message_error'] = "Please enter your message.";
             }
             else {
                 $this->user_model->send_message($_SESSION['user_id'], $receiver_id, $message);
@@ -212,7 +212,7 @@ class User extends CI_Controller
             show_404();
         }
 
-        if (!$this->user_model->are_friends($_SESSION['user_id'], $receiver_id)) {
+        if ( ! $this->user_model->are_friends($_SESSION['user_id'], $receiver_id)) {
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
             $_SESSION['message'] = "You don't have the proper permissions to send a message to this user.";
@@ -413,11 +413,11 @@ class User extends CI_Controller
                 $query = trim(strip_tags($this->input->post('query')));
             }
 
-            if (!$query) {
-                $data['error'] = "Query can't be empty!";
+            if (strlen($query) == 0) {
+                $data['error'] = "Please enter your query.";
             }
             else {
-                if (!isset($_SESSION['search_results'])) {
+                if (empty($_SESSION['search_results'])) {
                     $_SESSION['query'] = $query;
                     $_SESSION['search_results'] = TRUE;
                 }
