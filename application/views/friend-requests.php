@@ -9,7 +9,7 @@ require_once('common/user-page-start.php');
         <div class='media'>
             <div class='media-left'>
                 <img class='media-object' src='<?= $friend_request['profile_pic_path'] ?>'
-                        alt="<?= $friend_request['profile_name']; ?>">
+                        alt='<?= $friend_request['profile_name']; ?>'>
             </div>
             <div class='media-body'>
                 <h4 class='media-heading'>
@@ -36,7 +36,7 @@ require_once('common/user-page-start.php');
                 <?php foreach($friend_requests as $fr) { ?>
                 <div class='media'>
                     <div class='media-left'>
-                        <img class='media-object" src="<?= $fr['profile_pic_path'] ?>'
+                        <img class='media-object' src='<?= $fr['profile_pic_path'] ?>'
                                 alt='<?= $fr['profile_name']; ?>'>
                     </div>
                     <div class='media-body'>
@@ -47,7 +47,7 @@ require_once('common/user-page-start.php');
                                 class='btn btn-xs'>Confirm</a>
                         <a href='<?= base_url("user/delete-friend-request/{$fr['user_id']}"); ?>'
                             class='btn btn-xs btn-default'>
-                            <span class='glyphicon glyphicon-trash'></span> Delete request
+                            <span class='glyphicon glyphicon-trash'></span> Delete
                         </a>
                     </div>
                 </div>
