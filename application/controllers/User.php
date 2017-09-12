@@ -228,6 +228,10 @@ class User extends CI_Controller
         $data['title'] = "Send a message to {$data['secondary_user']}";
         $this->load->view('common/header', $data);
 
+        if ($offset > 0) {  // Use wants to view older messages.
+            $limit += $offset;
+            $offset = 0;  // To select all new messages plus older messages.
+        }
         $data['messages'] = $this->user_model->get_conversation($_SESSION['user_id'], $receiver_id, $offset, $limit);
         $this->load->view('message', $data);
         $this->load->view('common/footer');
