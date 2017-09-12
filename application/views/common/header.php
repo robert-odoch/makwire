@@ -86,7 +86,7 @@
                             </li>
                             <li class='hidden-sm hidden-md hidden-lg'>
                                 <a href='<?= base_url('user/find-friends'); ?>'>
-                                    <span class='glyphicon glyphicon-user' aria-hidden='true'></span> Find Friends
+                                    <span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Find Friends
                                 </a>
                             </li>
                             <li class='hidden-sm hidden-md hidden-lg'>
