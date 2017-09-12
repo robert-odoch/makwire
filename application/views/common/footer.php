@@ -24,7 +24,6 @@
         <footer role='contentinfo' class='footer'>
             <div class='wrapper'>
                 <p id='site-copyright'>Copyright &copy; <?php echo date('Y'); ?> makwire</p>
-                <a href='#' class='pull-right'>Back to top</a>
             </div>
         </footer>
 

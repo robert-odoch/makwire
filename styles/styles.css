@@ -386,12 +386,6 @@ p#site-copyright {
     margin-bottom: 0;
 }
 
-footer.footer a {
-    text-decoration: underline;
-    display: inline-block;
-    color: #fff;
-}
-
 div.main-content {
     border-radius: 3px;
     float: right;
@@ -886,10 +880,6 @@ div.side-content {
     }
     p#site-copyright + span {
         display: none;
-    }
-
-    footer.footer a.pull-right {
-        float: none !important;
     }
 
     article footer ul li a {
