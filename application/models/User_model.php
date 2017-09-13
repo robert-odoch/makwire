@@ -288,70 +288,6 @@ class User_model extends CI_Model
     }
 
     /**
-    * Gets the number of messages sent to a user on his birthday.
-    *
-    * @param $user_id ID of the user who had a birthday.
-    * @param $age the age he had reached on his birthday.
-    * @return number of messages sent to a user on his birthday.
-    */
-    public function get_num_birthday_messages($user_id, $age)
-    {
-        $sql = sprintf("SELECT COUNT(id) FROM birthday_messages WHERE (user_id = %d AND age = %d)",
-                        $user_id, $age);
-        $query = $this->utility_model->run_query($sql);
-
-        return $query->row_array()['COUNT(id)'];
-    }
-
-    /**
-    * Gets the messages that were sent to a user on his birthday.
-    *
-    * @param $user_id ID of the user who had a birthday.
-    * @param $age the age he had reached on his birthday.
-    * @param $offset
-    * @param $limit
-    */
-    public function get_birthday_messages($user_id, $age, $offset, $limit)
-    {
-        $sql = sprintf("SELECT id FROM birthday_messages WHERE (user_id = %d AND age = %d)
-                        LIMIT %d, %d",
-                        $user_id, $age, $offset, $limit);
-        $query = $this->utility_model->run_query($sql);
-        $messages = $query->result_array();
-
-        foreach ($messages as &$m) {
-            $m = $this->birthday_message_model->get_message($m['id'], $user_id);
-        }
-        unset($m);
-
-        return $messages;
-    }
-
-    /**
-     * Sends a birthday message to a user.
-     *
-     * @param $message the message to be sent.
-     * @param $receiver_id ID of the user to send the message to.
-     * @param $age the age he had reached on his birthday.
-     */
-    public function send_birthday_message($sender_id, $message, $receiver_id, $age)
-    {
-        // Record the message.
-        $sql = sprintf("INSERT INTO birthday_messages (user_id, sender_id, message, age)
-                        VALUES (%d, %d, %s, %d)",
-                        $receiver_id, $sender_id,
-                        $this->db->escape($message), $age);
-        $this->utility_model->run_query($sql);
-
-        // Dispatch an activity.
-        $activity_sql = sprintf("INSERT INTO activities
-                                (actor_id, subject_id, source_id, source_type, activity)
-                                VALUES (%d, %d, %d, 'user', 'message')",
-                                $sender_id, $receiver_id, $receiver_id);
-        $this->utility_model->run_query($activity_sql);
-    }
-
-    /**
      * Gets the number of messages sent to a user from chat.
      *
      * @param $filter whether to return only unread messages.
@@ -382,14 +318,12 @@ class User_model extends CI_Model
     public function get_messages($user_id, $offset, $limit, $filter = TRUE)
     {
         if ($filter) {
-            $sql = sprintf("SELECT DISTINCT sender_id
-                            FROM messages WHERE (receiver_id = %d AND seen IS FALSE)
+            $sql = sprintf("SELECT * FROM messages WHERE (receiver_id = %d AND seen IS FALSE)
                             ORDER BY date_sent DESC LIMIT %d, %d",
                             $user_id, $offset, $limit);
         }
         else {
-            $sql = sprintf("SELECT DISTINCT sender_id
-                            FROM messages WHERE (receiver_id = %d)
+            $sql = sprintf("SELECT * FROM messages WHERE (receiver_id = %d)
                             ORDER BY date_sent DESC LIMIT %d, %d",
                             $user_id, $offset, $limit);
         }
@@ -397,13 +331,6 @@ class User_model extends CI_Model
 
         $messages = $query->result_array();
         foreach ($messages as &$msg) {
-            $message_sql = sprintf("SELECT message_id, message, seen, date_sent FROM messages
-                                    WHERE (receiver_id = %d AND sender_id = %d)
-                                    ORDER BY date_sent DESC LIMIT 1",
-                                    $user_id, $msg['sender_id']);
-            $message_query = $this->utility_model->run_query($message_sql);
-            $msg = array_merge($msg, $message_query->row_array());
-
             if (!$msg['seen']) {
                 $update_sql = sprintf("UPDATE messages SET seen = 1 WHERE (message_id = %d) LIMIT 1",
                                         $msg['message_id']);
@@ -505,8 +432,7 @@ class User_model extends CI_Model
     {
         $sql = sprintf("SELECT photo_id FROM photos
                         WHERE (user_id = %d) ORDER BY date_entered DESC
-                        LIMIT %d, %d",
-                        $user_id, $offset, $limit);
+                        LIMIT %d, %d", $user_id, $offset, $limit);
         $results = $this->utility_model->run_query($sql)->result_array();
 
         $photos = [];
@@ -595,20 +521,20 @@ class User_model extends CI_Model
      * @param $limit
      * @return Array users whose name or email address match the query.
      */
-    public function get_searched_user($query, $visitor_id, $offset, $limit)
+    public function get_searched_user($search_query, $visitor_id, $offset, $limit)
     {
         $friends_ids = $this->get_friends_ids($visitor_id);
         $friends_ids[] = 0;
-        $friends_ids = implode(',', $friends_ids);
+        $friends_ids_str = implode(',', $friends_ids);
 
-        if (filter_var($query, FILTER_VALIDATE_EMAIL)) {
+        if (filter_var($search_query, FILTER_VALIDATE_EMAIL)) {
             $sql = sprintf("SELECT ue.user_id, u.profile_name FROM user_emails ue
                             LEFT JOIN users u ON(ue.user_id = u.user_id)
                             WHERE (ue.email = '%s' AND ue.user_id NOT IN(%s))",
-                            $query, $friends_ids);
+                            $search_query, $friends_ids_str);
         }
         else {
-            $keywords = preg_split("/[\s,]+/", $query);
+            $keywords = preg_split("/[\s,]+/", $search_query);
             foreach ($keywords as &$keyword) {
                 $keyword = strtolower("+{$keyword}");
 
@@ -621,7 +547,7 @@ class User_model extends CI_Model
             $sql = sprintf("SELECT user_id, profile_name FROM users
                             WHERE MATCH(profile_name) AGAINST (%s IN BOOLEAN MODE) AND
                                     user_id NOT IN(%s)
-                            LIMIT %d, %d", $this->db->escape($key), $friends_ids,
+                            LIMIT %d, %d", $this->db->escape($key), $friends_ids_str,
                             $offset, $limit);
         }
 
@@ -1140,10 +1066,7 @@ class User_model extends CI_Model
                             $user_id, $other_id,
                             $other_id, $user_id);
         $fr_query = $this->utility_model->run_query($fr_sql);
-        $data['are_friends'] = FALSE;
-        if ($fr_query->num_rows() == 1) {
-            $data['are_friends'] = TRUE;
-        }
+        $data['are_friends'] = ($fr_query->num_rows() == 1) ? TRUE : FALSE;
 
         if ($data['are_friends']) {
             $data['fr_sent'] = TRUE;
@@ -1151,11 +1074,9 @@ class User_model extends CI_Model
         else {
             // Check to see if a friend request has already been sent.
             $req_sql = sprintf("SELECT user_id, target_id FROM friend_requests
-                                WHERE (user_id = %d AND target_id = %d) OR
-                                        (user_id = %d AND target_id = %d)
+                                WHERE (user_id = IN(%d, %d) AND target_id IN (%d, %d))
                                 LIMIT 1",
-                                $user_id, $other_id,
-                                $other_id, $user_id);
+                                $user_id, $other_id, $user_id, $other_id);
             $req_query = $this->utility_model->run_query($req_sql);
 
             $data['fr_sent'] = FALSE;
@@ -1170,6 +1091,25 @@ class User_model extends CI_Model
     }
 
     /**
+     * @return IDs of user who haven't yet confirmed a user's friend request.
+     */
+    public function get_pending_fr_user_ids($user_id)
+    {
+        $sql = sprintf("SELECT user_id, target_id FROM friend_requests
+                        WHERE (user_id = %d OR target_id = %d) AND confirmed IS FALSE",
+                        $user_id, $user_id);
+        $query = $this->utility_model->run_query($sql);
+        $results = $query->result_array();
+
+        $user_ids =  [];
+        foreach ($results as $pr) {
+            $user_ids[] = ($pr['user_id'] == $user_id) ? $pr['target_id'] : $pr['user_id'];
+        }
+
+        return $user_ids;
+    }
+
+    /**
      * Gets users whom the current logged user might be knowing.
      *
      * @param $offset
@@ -1180,41 +1120,26 @@ class User_model extends CI_Model
     {
         $friends_ids = $this->get_friends_ids($user_id);
         $friends_ids[] = 0;
-        $friends_ids = implode(',', $friends_ids);
+        $friends_ids_str = implode(',', $friends_ids);
 
         // Get users IDs from pending friend requests.
-        $pending_fr_sql = sprintf("SELECT user_id, target_id FROM friend_requests
-                                    WHERE (user_id = %d OR target_id = %d) AND
-                                        confirmed IS FALSE
-                                    LIMIT 1",
-                                    $user_id, $user_id);
-        $pending_fr_query = $this->utility_model->run_query($pending_fr_sql);
-        $pending_fr_results = $pending_fr_query->result_array();
+        $pending_fr_user_ids = $this->get_pending_fr_user_ids($user_id);
+        $pending_fr_user_ids[] = 0;
+        $pending_fr_user_ids_str = implode(',', $pending_fr_user_ids);
 
-        $pending_fr_user_ids =  [0];
-        foreach ($pending_fr_results as $pr) {
-            if ($pr['user_id'] == $user_id)
-                $pending_fr_user_ids[] = $pr['target_id'];
-            else
-                $pending_fr_user_ids[] = $pr['user_id'];
-        }
-        unset($pending_fr_sql, $pending_fr_query, $pending_fr_results);
-        $pending_fr_user_ids = implode(',', $pending_fr_user_ids);
-
-        $sql = sprintf("SELECT u.user_id, COUNT(*) FROM users AS u
+        $sql = sprintf("SELECT u.user_id, u.profile_name, COUNT(*) FROM users AS u
                         LEFT JOIN friends AS f
                             ON (u.user_id = f.user_id OR u.user_id = f.friend_id)
                         WHERE u.user_id NOT IN (%s) AND u.user_id NOT IN(%s) AND u.user_id != %d AND
                             (f.friend_id IN(%s) OR f.user_id IN (%s))
                         GROUP BY u.user_id ORDER BY COUNT(*) DESC LIMIT %d, %d",
-                        $friends_ids, $pending_fr_user_ids, $user_id,
-                        $friends_ids, $friends_ids,
+                        $friends_ids_str, $pending_fr_user_ids_str, $user_id,
+                        $friends_ids_str, $friends_ids_str,
                         $offset, $limit);
 
         $users = $this->utility_model->run_query($sql)->result_array();
         foreach ($users as &$user) {
             $user['profile_pic_path'] = $this->get_profile_pic_path($user['user_id']);
-            $user['profile_name'] = $this->get_profile_name($user['user_id']);
         }
         unset($user);
 
@@ -1252,7 +1177,8 @@ class User_model extends CI_Model
      */
     public function get_friend_requests($user_id, $offset, $limit)
     {
-        $req_sql = sprintf("SELECT user_id, seen FROM friend_requests
+        $req_sql = sprintf("SELECT f.user_id, seen, u.profile_name FROM friend_requests f
+                            LEFT JOIN users u ON (f.user_id = u.user_id)
                             WHERE (target_id = %d AND confirmed IS FALSE)
                             ORDER BY date_entered DESC LIMIT %d, %d",
                             $user_id, $offset, $limit);
@@ -1267,7 +1193,6 @@ class User_model extends CI_Model
                 $this->utility_model->run_query($update_sql);
             }
 
-            $fr['profile_name'] = $this->get_profile_name($fr['user_id']);
             $fr['profile_pic_path'] = $this->get_profile_pic_path($fr['user_id']);
         }
         unset($fr);

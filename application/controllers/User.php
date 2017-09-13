@@ -58,6 +58,8 @@ class User extends CI_Controller
 
     public function birthday($user_id = 0, $age = 0, $offset = 0)
     {
+        $this->load->model('birthday_message_model');
+
         if ( ! $this->user_model->can_view_birthday($user_id, $age)) {
             show_404();
         }
@@ -77,7 +79,7 @@ class User extends CI_Controller
         $this->load->view('common/header', $data);
 
         $limit = 10;
-        $num_birthday_messages = $this->user_model->get_num_birthday_messages($user_id, $age);
+        $num_birthday_messages = $this->birthday_message_model->get_num_birthday_messages($user_id, $age);
         $data['has_next'] = FALSE;
         if (($num_birthday_messages - $offset) > $limit) {
             $data['has_next'] = TRUE;
@@ -89,7 +91,7 @@ class User extends CI_Controller
             unset($_SESSION['error_message']);
         }
 
-        $data['birthday_messages'] = $this->user_model->get_birthday_messages($user_id, $age, $offset, $limit);
+        $data['birthday_messages'] = $this->birthday_message_model->get_birthday_messages($user_id, $age, $offset, $limit);
         $data['user_id'] = $user_id;
         $data['user_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
         $data['dob'] = $this->user_model->get_dob($user_id);
@@ -112,7 +114,7 @@ class User extends CI_Controller
             $_SESSION['error_message'] = "Please enter your message.";
         }
         else {
-            $this->user_model->send_birthday_message($_SESSION['user_id'], $message, $receiver_id, $age);
+            $this->birthday_message_model->send_birthday_message($_SESSION['user_id'], $message, $receiver_id, $age);
         }
 
         redirect($_SERVER['HTTP_REFERER']);

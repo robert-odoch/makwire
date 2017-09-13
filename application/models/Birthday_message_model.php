@@ -142,5 +142,69 @@ class Birthday_message_model extends CI_Model
             $visitor_id
         );
     }
+
+    /**
+    * Gets the number of messages sent to a user on his birthday.
+    *
+    * @param $user_id ID of the user who had a birthday.
+    * @param $age the age he had reached on his birthday.
+    * @return number of messages sent to a user on his birthday.
+    */
+    public function get_num_birthday_messages($user_id, $age)
+    {
+        $sql = sprintf("SELECT COUNT(id) FROM birthday_messages WHERE (user_id = %d AND age = %d)",
+                        $user_id, $age);
+        $query = $this->utility_model->run_query($sql);
+
+        return $query->row_array()['COUNT(id)'];
+    }
+
+    /**
+    * Gets the messages that were sent to a user on his birthday.
+    *
+    * @param $user_id ID of the user who had a birthday.
+    * @param $age the age he had reached on his birthday.
+    * @param $offset
+    * @param $limit
+    */
+    public function get_birthday_messages($user_id, $age, $offset, $limit)
+    {
+        $sql = sprintf("SELECT id FROM birthday_messages WHERE (user_id = %d AND age = %d)
+                        LIMIT %d, %d",
+                        $user_id, $age, $offset, $limit);
+        $query = $this->utility_model->run_query($sql);
+        $messages = $query->result_array();
+
+        foreach ($messages as &$m) {
+            $m = $this->birthday_message_model->get_message($m['id'], $user_id);
+        }
+        unset($m);
+
+        return $messages;
+    }
+
+    /**
+     * Sends a birthday message to a user.
+     *
+     * @param $message the message to be sent.
+     * @param $receiver_id ID of the user to send the message to.
+     * @param $age the age he had reached on his birthday.
+     */
+    public function send_birthday_message($sender_id, $message, $receiver_id, $age)
+    {
+        // Record the message.
+        $sql = sprintf("INSERT INTO birthday_messages (user_id, sender_id, message, age)
+                        VALUES (%d, %d, %s, %d)",
+                        $receiver_id, $sender_id,
+                        $this->db->escape($message), $age);
+        $this->utility_model->run_query($sql);
+
+        // Dispatch an activity.
+        $activity_sql = sprintf("INSERT INTO activities
+                                (actor_id, subject_id, source_id, source_type, activity)
+                                VALUES (%d, %d, %d, 'user', 'message')",
+                                $sender_id, $receiver_id, $receiver_id);
+        $this->utility_model->run_query($activity_sql);
+    }
 }
 ?>
