@@ -178,6 +178,9 @@ class Register extends CI_Controller
                 $error_messages['uname'] = 'Please ensure that your username meets ' .
                                             'the above requirements.';
             }
+            elseif ($this->account_model->is_username_taken($uname)) {
+                $error_messages['uname'] = 'That username is already taken.';
+            }
             else {
                 $data['uname'] = $uname;
             }

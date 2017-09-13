@@ -10,6 +10,14 @@ class Account_model extends CI_Model
         $this->load->model(['utility_model']);
     }
 
+    public function is_username_taken($username)
+    {
+        $sql = sprintf('SELECT user_id FROM users WHERE uname = %s',
+                        $this->db->escape($username));
+        $query = $this->db->query($username);
+        return ($query->num_rows() == 1);
+    }
+
     public function user_exists($user_id, $password)
     {
         $sql = sprintf("SELECT passwd FROM users WHERE user_id = %d", $user_id);
