@@ -24,6 +24,9 @@ $('.col-small').on('submit', 'form', function(event) {
         var url = $(this).attr('action');
         var params = $(this).serialize();
         $.post(url, params, function(data) {
+            // Clear the input field.
+            $messageField.val('');
+
             // Insert the message immediately above the form.
             var html = $.parseHTML(data);
             $(html).insertBefore('.chat-content .new-message');
