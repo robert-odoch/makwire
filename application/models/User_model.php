@@ -1333,27 +1333,19 @@ class User_model extends CI_Model
      */
     public function confirm_friend_request($user_id, $friend_id)
     {
-        // First check whether a friend request actually exist.
-        $id_sql = sprintf("SELECT request_id FROM friend_requests
-                            WHERE (target_id = %d AND user_id = %d AND confirmed IS FALSE)",
-                            $user_id, $friend_id);
-        $id_query = $this->utility_model->run_query($id_sql);
-        if ($id_query->num_rows() == 0) {
-            throw new IllegalAccessException(
-                "This user didn't send you a friend request."
-            );
-        }
-
-        // Add the user to the list of friends.
-        $fr_sql = sprintf("INSERT INTO friends (user_id, friend_id) VALUES (%d, %d)",
-                            $user_id, $friend_id);
-        $this->utility_model->run_query($fr_sql);
-
         // Update the friend_requests table.
         $update_sql = sprintf("UPDATE friend_requests SET confirmed = 1
                                 WHERE (user_id = %d AND target_id = %d)",
                                 $friend_id, $user_id);
         $this->utility_model->run_query($update_sql);
+        if ($this->db->affected_rows() == 0) {
+            throw new IllegalAccessException("This user didn't send you a friend request.");
+        }
+        
+        // Add the user to the list of friends.
+        $fr_sql = sprintf("INSERT INTO friends (user_id, friend_id) VALUES (%d, %d)",
+                            $user_id, $friend_id);
+        $this->utility_model->run_query($fr_sql);
 
         // Dispatch an activity.
         $activity_sql = sprintf("INSERT INTO activities
