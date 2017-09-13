@@ -1341,7 +1341,7 @@ class User_model extends CI_Model
         if ($this->db->affected_rows() == 0) {
             throw new IllegalAccessException("This user didn't send you a friend request.");
         }
-        
+
         // Add the user to the list of friends.
         $fr_sql = sprintf("INSERT INTO friends (user_id, friend_id) VALUES (%d, %d)",
                             $user_id, $friend_id);
@@ -1357,72 +1357,50 @@ class User_model extends CI_Model
 
     public function delete_friend_request($user_id, $requesting_user_id)
     {
-        // Get friend request ID for deleting this activity from activities table.
-        $request_id_sql = sprintf("SELECT request_id FROM friend_requests
-                                    WHERE (user_id = %d AND target_id = %d) OR
-                                    (user_id = %d AND target_id = %d) LIMIT 1",
-                                    $user_id, $requesting_user_id,
-                                    $requesting_user_id, $user_id);
-        $request_id_query = $this->utility_model->run_query($request_id_sql);
-        if ($request_id_query->num_rows() == 0) {
+        // Delete the friend request.
+        $fr_sql = sprintf("DELETE from friend_requests
+                            WHERE (user_id = %d AND target_id = %d)  LIMIT 1",
+                            $requesting_user_id, $user_id);
+        $this->utility_model->run_query($fr_sql);
+        if ($this->db->affected_rows() == 0) {
             throw new NotFoundException();
         }
-        $request_id = $request_id_query->row_array()['request_id'];
 
         // Delete the activity.
         $activity_sql = sprintf("DELETE FROM activities
-                                WHERE source_type = 'friend_request' AND source_id = %d
+                                WHERE (actor_id = %d AND subject_id = %d AND activity = 'friend_request')
                                 LIMIT 1",
-                                $request_id);
+                                $requesting_user_id, $user_id);
         $this->utility_model->run_query($activity_sql);
-
-        // Delete the friend request.
-        $fr_sql = sprintf("DELETE from friend_requests
-                            WHERE (user_id = %d AND target_id = %d) OR
-                            (user_id = %d AND target_id = %d) LIMIT 1",
-                            $user_id, $requesting_user_id,
-                            $requesting_user_id, $user_id);
-        $this->utility_model->run_query($fr_sql);
     }
 
     public function unfriend_user($user_id, $friend_id)
     {
-        if ( ! $this->are_friends($user_id, $friend_id)) {
-            throw new IllegalAccessException(
-                "This user is not your friend."
-            );
+        // Un-friend the user.
+        $unfr_sql = sprintf("DELETE FROM friends
+                            WHERE (user_id IN(%d, %d) AND friend_id IN (%d, %d))
+                            LIMIT 1",
+                            $user_id, $friend_id, $user_id, $friend_id);
+        $this->utility_model->run_query($unfr_sql);
+        if ($this->db->affected_rows() == 0) {
+            throw new IllegalAccessException("This user is not your friend.");
         }
 
-        // Get friend request ID for deleting this activity from activities table.
-        $request_id_sql = sprintf("SELECT request_id FROM friend_requests
-                                    WHERE (user_id = %d AND target_id = %d) OR
-                                    (user_id = %d AND target_id = %d) LIMIT 1",
-                                    $user_id, $friend_id,
-                                    $friend_id, $user_id);
-        $request_id_query = $this->utility_model->run_query($request_id_sql);
-        $request_id = $request_id_query->row_array()['request_id'];
+        // Delete the friend request.
+        try {
+            $this->delete_friend_request($user_id, $friend_id);
+        }
+        catch (NotFoundException $e) {
+            $this->delete_friend_request($friend_id, $user_id);
+        }
 
         // Delete the activity.
         $activity_sql = sprintf("DELETE FROM activities
-                                WHERE source_type = 'friend_request' AND source_id = %d
+                                WHERE actor_id IN (%d, %d) AND subject_id IN (%d, %d) AND
+                                    activity = 'confirmed_friend_request'
                                 LIMIT 1",
-                                $request_id);
+                                $user_id, $friend_id, $user_id, $friend_id);
         $this->utility_model->run_query($activity_sql);
-
-        // Delete the friend request.
-        $fr_sql = sprintf("DELETE from friend_requests
-                            WHERE (user_id = %d AND target_id = %d) OR
-                            (user_id = %d AND target_id = %d) LIMIT 1",
-                            $user_id, $friend_id,
-                            $friend_id, $user_id);
-        $this->utility_model->run_query($fr_sql);
-
-        // Un-friend the user.
-        $unfr_sql = sprintf("DELETE FROM friends WHERE (user_id = %d AND friend_id = %d) OR
-                            (user_id = %d AND friend_id = %d) LIMIT 1",
-                            $user_id, $friend_id,
-                            $friend_id, $user_id);
-        $this->utility_model->run_query($unfr_sql);
     }
 
     /**
@@ -1453,10 +1431,8 @@ class User_model extends CI_Model
     public function get_num_conversation($user_id, $other_id)
     {
         $sql = sprintf("SELECT COUNT(message_id) FROM messages
-                        WHERE (receiver_id = %d AND sender_id = %d) OR
-                                (receiver_id = %d AND sender_id = %d)",
-                        $other_id, $user_id,
-                        $user_id, $other_id);
+                        WHERE sender_id IN(%d, %d) AND receiver_id IN (%d, %d)",
+                        $user_id, $other_id, $user_id, $other_id);
         $query = $this->utility_model->run_query($sql);
 
         return $query->row_array()['COUNT(message_id)'];
@@ -1473,11 +1449,9 @@ class User_model extends CI_Model
     public function get_conversation($user_id, $other_id, $offset, $limit)
     {
         $sql = sprintf("SELECT * FROM messages
-                        WHERE (receiver_id = %d AND sender_id = %d) OR
-                            (receiver_id = %d AND sender_id = %d)
+                        WHERE sender_id IN(%d, %d) AND receiver_id IN (%d, %d)
                         ORDER BY date_sent DESC LIMIT %d, %d",
-                        $other_id, $user_id,
-                        $user_id, $other_id,
+                        $user_id, $other_id, $user_id, $other_id,
                         $offset, $limit);
         $query = $this->utility_model->run_query($sql);
 
