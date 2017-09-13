@@ -155,6 +155,22 @@ class User extends CI_Controller
     {
         $data = [];
 
+        // Prevent a user from sending a message to himself.
+        if ($receiver_id === $_SESSION['user_id']) {
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = "You can't send a message to yourself.";
+            redirect(base_url('error'));
+        }
+
+        // Users can only exchange messages if they are friends.
+        if ( ! $this->user_model->are_friends($_SESSION['user_id'], $receiver_id)) {
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = "You don't have the proper permissions to send a message to this user.";
+            redirect(base_url('error'));
+        }
+
         $limit = 5;  // Maximum number of previous messages to show.
         $num_convo = $this->user_model->get_num_conversation($_SESSION['user_id'], $receiver_id);
         $data['has_prev'] = FALSE;
@@ -198,8 +214,9 @@ class User extends CI_Controller
             }
             elseif ($refresh) {  // User wants to see if there are new messages.
                 $html = '';
-                $messages = $this->user_model->get_messages($_SESSION['user_id'], $offset, $limit, TRUE);
+                $messages = $this->user_model->get_messages($_SESSION['user_id'], $offset, $limit);
                 foreach ($messages as $m) {
+                    // get_messages returns all new messages from friends. Filter it!
                     if ($m['sender_id'] == $receiver_id) {
                         $data['message'] = $m;
                         $html .= $this->load->view('chat-message', $data, TRUE);
@@ -216,27 +233,13 @@ class User extends CI_Controller
             }
         }
 
-        // Prevent a user from sending a message to himself.
-        if ($receiver_id === $_SESSION['user_id']) {
-            $_SESSION['title'] = 'Permission Denied!';
-            $_SESSION['heading'] = 'Permission Denied';
-            $_SESSION['message'] = "You can't send a message to yourself.";
-            redirect(base_url('error'));
-        }
-
+        // No AJAX.
         $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         try {
             $data['secondary_user'] = $this->user_model->get_profile_name($receiver_id);
         }
         catch (NotFoundException $e) {
             show_404();
-        }
-
-        if ( ! $this->user_model->are_friends($_SESSION['user_id'], $receiver_id)) {
-            $_SESSION['title'] = 'Permission Denied!';
-            $_SESSION['heading'] = 'Permission Denied';
-            $_SESSION['message'] = "You don't have the proper permissions to send a message to this user.";
-            redirect(base_url('error'));
         }
 
         $data['suid'] = $receiver_id;
