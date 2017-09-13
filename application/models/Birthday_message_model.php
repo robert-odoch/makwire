@@ -81,7 +81,7 @@ class Birthday_message_model extends CI_Model
         $owner_result = $owner_query->row_array();
         $owner_id = $owner_result['sender_id'];
 
-        if (! $this->user_model->are_friends($user_id, $owner_id)) {
+        if ( ! $this->user_model->are_friends($user_id, $owner_id)) {
             throw new IllegalAccessException(
                 "You don't have the proper permissions to like this message."
             );
@@ -176,7 +176,7 @@ class Birthday_message_model extends CI_Model
         $messages = $query->result_array();
 
         foreach ($messages as &$m) {
-            $m = $this->birthday_message_model->get_message($m['id'], $user_id);
+            $m = $this->get_message($m['id'], $user_id);
         }
         unset($m);
 
