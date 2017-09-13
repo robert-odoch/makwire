@@ -6,9 +6,16 @@
             <img src='<?= $receiver['profile_pic_path']; ?>' class='media-object'>
         </div>
         <div class='media-body'>
-            <a href='<?= base_url("user/{$receiver['user_id']}"); ?>'>
-                <?= $receiver['profile_name']; ?>
-            </a>
+            <h4 class='media-heading'>
+                <a href='<?= base_url("user/{$receiver['user_id']}"); ?>'>
+                    <?= $receiver['profile_name']; ?>
+                </a>
+            </h4>
+            <div class='media-footer'>
+                <a href='<?php echo base_url("user/send-message/{$receiver['user_id']}/0/1"); ?>' class='refresh-chat'>
+                    <span class='glyphicon glyphicon-refresh'></span>
+                </a>
+            </div>
         </div>
     </div>
     <div class='chat-content'>

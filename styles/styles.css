@@ -975,10 +975,18 @@ div.side-content {
     background-color: #8FBC8F;
     padding: 5px;
     color: #fff;
+    position: relative;
     border-bottom: 2px solid #2E8B57;
 }
+
 .chat .receiver a {
     color: #fff;
+}
+
+.chat .refresh-chat {
+    position: absolute;
+    top: 15px;
+    right: 15px;
 }
 .chat img {
     border-radius: 50%;

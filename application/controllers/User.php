@@ -151,7 +151,7 @@ class User extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function send_message($receiver_id = 0, $offset = 0)
+    public function send_message($receiver_id = 0, $offset = 0, $refresh = FALSE)
     {
         $data = [];
 
@@ -190,13 +190,26 @@ class User extends CI_Controller
             }
         }
         elseif (is_ajax_request()) {
-            if ($offset > 0) {  // Viewing previous messages.
+            if ($offset > 0) {  // User wants to view previous messages.
                 $data['messages'] = $this->user_model->get_conversation($_SESSION['user_id'], $receiver_id, $offset, $limit);
                 $html = $this->load->view('chat-messages', $data, TRUE);
                 echo $html;
                 return;
             }
-            else {  // Visiting chat for the first time.
+            elseif ($refresh) {  // User wants to see if there are new messages.
+                $html = '';
+                $messages = $this->user_model->get_messages($_SESSION['user_id'], $offset, $limit, TRUE);
+                foreach ($messages as $m) {
+                    if ($m['sender_id'] == $receiver_id) {
+                        $data['message'] = $m;
+                        $html .= $this->load->view('chat-message', $data, TRUE);
+                    }
+                }
+
+                echo $html;
+                return;
+            }
+            else {  // User wants to chat with a friend.
                 $data['messages'] = $this->user_model->get_conversation($_SESSION['user_id'], $receiver_id, $offset, $limit);
                 $this->load->view('chat-user', $data);
                 return;
@@ -560,7 +573,7 @@ class User extends CI_Controller
         $data['has_next'] = FALSE;
         if ($data['num_new_messages'] > 0) {  // There are new messages.
             // First show only the new messages.
-            $data['messages'] = $this->user_model->get_messages($_SESSION['user_id'], $offset, $limit, TRUE);
+            $data['messages'] = $this->user_model->get_messages($_SESSION['user_id'], $offset, $limit);
             if (($data['num_new_messages'] - $offset) > $limit) {
                 $data['has_next'] = TRUE;
                 $data['next_offset'] = ($offset + $limit);

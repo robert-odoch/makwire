@@ -34,12 +34,21 @@ $('.col-small').on('submit', 'form', function(event) {
     }
 });
 
-/*** Returning back to active users. ***/
-$('.col-small').on('click', '.back-btn', function(event) {
+/*** Refreshing messages. ***/
+$('body').on('click', '.refresh-chat', function(event) {
     event.preventDefault();
 
     var url = $(this).attr('href');
-    $('.col-small').load(url);
+    $.get(url, function(data) {
+        var html = $.parseHTML(data);
+        if (html !== null) {
+            // Insert the message immediately above the form.
+            $(html).insertBefore('.chat-content .new-message');
+
+            // Scroll the form into view.
+            $('.chat-content').scrollTo('100%', 1000);
+        }
+    });
 });
 
 /*** Viewing previous messages. ***/
@@ -59,3 +68,11 @@ function previousMessages(event) {
 
 $('.chat-content').on('click', '.previous', previousMessages);
 $('.col-small').on('click', '.previous', previousMessages);
+
+/*** Returning back to active users. ***/
+$('.col-small').on('click', '.back-btn', function(event) {
+    event.preventDefault();
+
+    var url = $(this).attr('href');
+    $('.col-small').load(url);
+});
