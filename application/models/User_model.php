@@ -524,14 +524,16 @@ class User_model extends CI_Model
     public function get_searched_user($search_query, $visitor_id, $offset, $limit)
     {
         $friends_ids = $this->get_friends_ids($visitor_id);
-        $friends_ids[] = 0;
-        $friends_ids_str = implode(',', $friends_ids);
+        $pending_fr_user_ids = $this->get_pending_fr_user_ids($visitor_id);
+        $exclude_user_ids = array_merge($friends_ids, $pending_fr_user_ids);
+        $exclude_user_ids[] = 0;
+        $exclude_user_ids_str = implode(',', $exclude_user_ids);
 
         if (filter_var($search_query, FILTER_VALIDATE_EMAIL)) {
             $sql = sprintf("SELECT ue.user_id, u.profile_name FROM user_emails ue
                             LEFT JOIN users u ON(ue.user_id = u.user_id)
                             WHERE (ue.email = '%s' AND ue.user_id NOT IN(%s))",
-                            $search_query, $friends_ids_str);
+                            $search_query, $exclude_user_ids_str);
         }
         else {
             $keywords = preg_split("/[\s,]+/", $search_query);
@@ -547,7 +549,7 @@ class User_model extends CI_Model
             $sql = sprintf("SELECT user_id, profile_name FROM users
                             WHERE MATCH(profile_name) AGAINST (%s IN BOOLEAN MODE) AND
                                     user_id NOT IN(%s)
-                            LIMIT %d, %d", $this->db->escape($key), $friends_ids_str,
+                            LIMIT %d, %d", $this->db->escape($key), $exclude_user_ids_str,
                             $offset, $limit);
         }
 
