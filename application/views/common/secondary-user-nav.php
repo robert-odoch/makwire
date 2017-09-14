@@ -19,16 +19,15 @@
                 <div class='btn-group btn-group-xs'>
                     <?php
                     if ($friendship_status['are_friends']) {
-                        print "<button class='btn btn-xs btn-default'>
-                                <span class='glyphicon glyphicon-ok' aria-hidden='true'></span> Friends
-                                </button>
-
-                                <a href='" . base_url("user/send-message/{$suid}") .
+                        print "<a href='" . base_url("user/send-message/{$suid}") .
                                 "' class='btn btn-xs btn-default'>
                                 <span class='glyphicon glyphicon-envelope'></span> Message</a>
 
+                                <a href='" . base_url("user/unfollow/{$suid}") .
+                                "' class='btn btn-xs btn-default' title='unfollow'>Unfollow</a>
+
                                 <a href='" . base_url("user/unfriend/{$suid}") .
-                                "' class='btn btn-xs btn-default'>Unfriend</a>";
+                                "' class='btn btn-xs btn-default' title='unfriend'>Unfriend</a>";
                     }
                     elseif ($friendship_status['fr_sent'] &&
                             $friendship_status['target_id'] == $_SESSION['user_id']) {
