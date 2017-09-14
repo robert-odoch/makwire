@@ -1074,7 +1074,7 @@ class User_model extends CI_Model
         else {
             // Check to see if a friend request has already been sent.
             $req_sql = sprintf("SELECT user_id, target_id FROM friend_requests
-                                WHERE (user_id = IN(%d, %d) AND target_id IN (%d, %d))
+                                WHERE (user_id IN(%d, %d) AND target_id IN (%d, %d))
                                 LIMIT 1",
                                 $user_id, $other_id, $user_id, $other_id);
             $req_query = $this->utility_model->run_query($req_sql);
