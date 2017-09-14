@@ -34,18 +34,31 @@
                     elseif ($friendship_status['fr_sent'] &&
                             $friendship_status['target_id'] == $_SESSION['user_id']) {
                         print "<a href='" . base_url("user/accept-friend/{$suid}") .
-                                "' class='btn btn-xs'>Confirm Friend</a>";
+                                "' class='btn btn-xs'>Confirm Friend</a>
+
+                                <a href='" . base_url("user/delete-friend-request/{$suid}") . "'
+                                    class='btn btn-xs btn-default'>
+                                    <span class='glyphicon glyphicon-trash'></span> Delete Request
+                                </a>";
                     }
                     elseif ($friendship_status['fr_sent'] &&
                             $friendship_status['user_id'] == $_SESSION['user_id']) {
                         print "<span class='btn btn-xs btn-default'>
                                 <span class='glyphicon glyphicon-ok' aria-hidden='true'></span>
-                                Request Sent</span>";
+                                Request Sent</span>
+
+                                <a href='" . base_url("user/delete-friend-request/{$suid}") . "'
+                                    class='btn btn-xs btn-default'>
+                                    <span class='glyphicon glyphicon-trash' aria-hidden='true'></span>
+                                    Delete Request
+                                </a>";
                     }
                     elseif ($suid != $_SESSION['user_id']) {
                         print "<a href='" . base_url("user/add-friend/{$suid}") .
-                                "' class='btn btn-xs'>
-                                <span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Add Friend</a>";
+                                    "' class='btn btn-xs'>
+                                    <span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span>
+                                    Add Friend
+                                </a>";
                     }
                     ?>
                 </div>

@@ -1281,12 +1281,12 @@ class User_model extends CI_Model
         $this->utility_model->run_query($activity_sql);
     }
 
-    public function delete_friend_request($user_id, $requesting_user_id)
+    public function delete_friend_request($user_id, $other_id)
     {
         // Delete the friend request.
         $fr_sql = sprintf("DELETE from friend_requests
-                            WHERE (user_id = %d AND target_id = %d)  LIMIT 1",
-                            $requesting_user_id, $user_id);
+                            WHERE (user_id IN(%d, %d) AND target_id IN(%d, %d))  LIMIT 1",
+                            $user_id, $other_id, $user_id, $other_id);
         $this->utility_model->run_query($fr_sql);
         if ($this->db->affected_rows() == 0) {
             throw new NotFoundException();
@@ -1294,9 +1294,9 @@ class User_model extends CI_Model
 
         // Delete the activity.
         $activity_sql = sprintf("DELETE FROM activities
-                                WHERE (actor_id = %d AND subject_id = %d AND activity = 'friend_request')
+                                WHERE (actor_id IN(%d, %d) AND subject_id IN(%d, %d) AND activity = 'friend_request')
                                 LIMIT 1",
-                                $requesting_user_id, $user_id);
+                                $user_id, $other_id, $user_id, $other_id);
         $this->utility_model->run_query($activity_sql);
     }
 
@@ -1317,7 +1317,7 @@ class User_model extends CI_Model
             $this->delete_friend_request($user_id, $friend_id);
         }
         catch (NotFoundException $e) {
-            $this->delete_friend_request($friend_id, $user_id);
+            // Do nothing for now...
         }
 
         // Delete the activity.
