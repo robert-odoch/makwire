@@ -12,7 +12,8 @@
                 </a>
             </h4>
             <div class='media-footer'>
-                <a href='<?php echo base_url("user/send-message/{$receiver['user_id']}/0/1"); ?>' class='refresh-chat'>
+                <a href='<?php echo base_url("user/send-message/{$receiver['user_id']}/0/1"); ?>'
+                    class='refresh-chat' title='Refresh'>
                     <span class='glyphicon glyphicon-refresh'></span>
                 </a>
             </div>
