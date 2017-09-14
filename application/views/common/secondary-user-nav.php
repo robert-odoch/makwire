@@ -24,10 +24,12 @@
                                 <span class='glyphicon glyphicon-envelope'></span> Message</a>
 
                                 <a href='" . base_url("user/unfollow/{$suid}") .
-                                "' class='btn btn-xs btn-default' title='unfollow'>Unfollow</a>
+                                "' class='btn btn-xs btn-default' title='unfollow'>
+                                <span class='glyphicon glyphicon-eye-close'></span> Unfollow</a>
 
                                 <a href='" . base_url("user/unfriend/{$suid}") .
-                                "' class='btn btn-xs btn-default' title='unfriend'>Unfriend</a>";
+                                "' class='btn btn-xs btn-default' title='unfriend'>
+                                <span class='glyphicon glyphicon-minus-sign'></span> Unfriend</a>";
                     }
                     elseif ($friendship_status['fr_sent'] &&
                             $friendship_status['target_id'] == $_SESSION['user_id']) {
