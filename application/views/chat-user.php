@@ -28,7 +28,7 @@
                     <tbody>
                         <tr>
                             <td>
-                                <input type='text' name='message' class='fluid' placeholder='new message...'>
+                                <input type='text' name='message' class='fluid' placeholder='new message...' autofocus>
                             </td>
                             <td><input type='submit' value='Send' class='btn btn-sm'></td>
                         </tr>

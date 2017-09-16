@@ -29,13 +29,13 @@ require_once(dirname(__FILE__) . '/helper functions/show_notifications_functions
                 switch ($notif['activity']) {
                 case 'friend_request':
                     print "<li><a href='" . base_url("user/friend-requests/0/{$notif['source_id']}") .
-                            "'><strong class='object'>{$notif['actor']}</strong> sent you a friend request.</a> " .
-                            " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
+                            "'><strong class='object'>{$notif['actor']}</strong> sent you a friend request.</a>
+                            <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
                     break;
                 case 'confirmed_friend_request':
                     print "<li><a href='" . base_url("user/{$notif['actor_id']}") .
-                            "'><strong class='object'>{$notif['actor']}</strong> accepted your friend request.</a> " .
-                            " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
+                            "'><strong class='object'>{$notif['actor']}</strong> accepted your friend request.</a>
+                            <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
                     break;
                 case 'like':
                     if (in_array($notif['source_type'], ['post', 'photo', 'video', 'link'])) {
@@ -64,25 +64,27 @@ require_once(dirname(__FILE__) . '/helper functions/show_notifications_functions
                         date_create(($dob_array[0]+$notif['age']) . "-{$dob_array[1]}-{$dob_array[2]}")) {
                         print("<li><a href='" . base_url("user/birthday/{$notif['actor_id']}/{$notif['age']}") .
                                 "'>Today is <strong class='object'>" .
-                                format_name($notif['actor'], '</strong>') . " birthday.</a></li>");
+                                format_name($notif['actor'], '</strong>') . " birthday.</a>
+                                <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>");
                     }
                     else {
                         $birthday = date_create(($dob_array[0] + $notif['age']) . "-{$dob_array[1]}-{$dob_array[2]}");
                         $birthday = $birthday->format('F jS, Y');
                         print("<li><a href='" . base_url("user/birthday/{$notif['actor_id']}/{$notif['age']}") .
                                 "'><strong class='object'>" .
-                                format_name($notif['actor'], '</strong>') . " birthday was on {$birthday}.</a></li>");
+                                format_name($notif['actor'], '</strong>') . " birthday was on {$birthday}.</a>
+                                <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>");
                     }
                     break;
                 case 'profile_pic_change':
                     print("<li><a href='" . base_url("user/photo/{$notif['source_id']}") .
-                            "'><strong class='object'>{$notif['actor']}</strong> updated his profile picture.</a>" .
-                            " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>");
+                            "'><strong class='object'>{$notif['actor']}</strong> updated his profile picture.</a>
+                            <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>");
                     break;
                 case 'message':
                     print "<li><a href='" . base_url("user/birthday/{$notif['subject_id']}/{$notif['age']}") .
-                            "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} sent you a birthday message.</a>" .
-                            " <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
+                            "'><strong class='object'>{$notif['actor']}</strong>{$notif['others']} sent you a birthday message.</a>
+                            <small class='time'><span class='glyphicon glyphicon-time' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
                     break;
                 }
             }

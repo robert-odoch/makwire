@@ -15,10 +15,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
     <?php } else {
         if (isset($has_prev)) {
             $url = 'user/messages';
-            if ($prev_offset != 0) {
-                $url .= "/{$prev_offset}";
-            }
-
+            $url .= ($prev_offset == 0) ? '' : "/{$prev_offset}";
             print "<a href='" . base_url($url) . "' class='previous'>Show previous messages</a>";
         }
     ?>
@@ -26,19 +23,19 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
         <?php foreach ($messages as $m) { ?>
         <article class='media message'>
             <div class='media-body'>
-                <header>
-                    <h4 class='media-heading'>
-                        <a href='<?= base_url("user/send-message/{$m['sender_id']}"); ?>'
-                            title='<?= $m['sender']; ?>'>
-                            <?= $m['sender']; ?>
-                        </a>
-                        <small class='time'>
-                            <span class='glyphicon glyphicon-time' aria-hidden='true'></span>
-                            <?= $m['timespan']; ?> ago
-                        </small>
-                    </h4>
-                </header>
-                <p><?= htmlspecialchars($m['message']); ?></p>
+                <p>
+                    <strong class='object'>
+                    <a href='<?= base_url("user/send-message/{$m['sender_id']}"); ?>'
+                        title='<?= $m['sender']; ?>' class='send-message'>
+                        <?= $m['sender']; ?>
+                    </a>
+                    </strong>
+                    <?= htmlspecialchars($m['message']); ?>
+                </p>
+                <small class='time'>
+                    <span class='glyphicon glyphicon-time' aria-hidden='true'></span>
+                    <?= $m['timespan']; ?> ago
+                </small>
             </div>
         </article>
         <?php } ?>
