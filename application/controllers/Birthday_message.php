@@ -8,6 +8,7 @@ class Birthday_message extends CI_Controller
         parent::__construct();
         session_start();
         ensure_user_is_logged_in();
+
         $this->load->model([
             'user_model', 'birthday_message_model', 'utility_model'
         ]);

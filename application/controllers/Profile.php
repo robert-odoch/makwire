@@ -18,6 +18,7 @@ class Profile extends CI_Controller
 
         $this->load->library('image_lib');
         $this->load->helper(['form']);
+
         $this->load->model(['user_model', 'profile_model']);
     }
 

@@ -8,6 +8,7 @@ class Post extends CI_Controller
         parent::__construct();
         session_start();
         ensure_user_is_logged_in();
+
         $this->load->model(['post_model', 'user_model', 'utility_model']);
     }
 

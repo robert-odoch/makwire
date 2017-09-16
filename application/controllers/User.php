@@ -8,6 +8,7 @@ class User extends CI_Controller
         parent::__construct();
         session_start();
         ensure_user_is_logged_in();
+
         $this->load->model([
             'user_model', 'post_model', 'profile_model', 'photo_model',
             'link_model', 'utility_model'

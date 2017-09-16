@@ -38,10 +38,6 @@ class Login_model extends CI_Model
 
         if (password_verify($password, $user_query->row()->passwd)) {
             $user_id = $user_query->row()->user_id;
-            $login_sql = sprintf("UPDATE users SET logged_in=1 WHERE user_id = %d LIMIT 1",
-                                    $user_id);
-            $this->utility_model->run_query($login_sql);
-
             return $user_id;
         }
         else {

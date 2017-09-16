@@ -10,6 +10,10 @@ class User_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
+        if ( ! empty($_SESSION['user_id'])) {
+            $this->update_last_activity($_SESSION['user_id']);
+        }
+
         $this->load->model([
             'utility_model', 'post_model', 'photo_model',
             'video_model', 'birthday_message_model'
@@ -30,19 +34,11 @@ class User_model extends CI_Model
         };
     }
 
-    /**
-     * Checks whether a user is currently logged in.
-     *
-     * @param $user_id ID of the user to check for.
-     * @return TRUE if this user is logged in.
-     */
-    public function active($user_id)
+    private function update_last_activity($user_id)
     {
-        $logged_in_sql = sprintf("SELECT logged_in FROM users WHERE user_id = %d LIMIT 1",
-                                    $user_id);
-        $query = $this->utility_model->run_query($logged_in_sql);
-
-        return $query->row_array()['logged_in'];
+        $sql = sprintf('UPDATE users SET last_activity = CURRENT_TIMESTAMP() WHERE user_id = %d',
+                        $user_id);
+        $this->db->query($sql);
     }
 
     /**
@@ -444,33 +440,6 @@ class User_model extends CI_Model
     }
 
     /**
-     * Gets all friends for a user.
-     *
-     * @param $user_id ID of user whose friends are required.
-     * @return all friends for user with ID $user_id.
-     */
-    public function get_all_friends($user_id)
-    {
-        $sql = sprintf("SELECT user_id, friend_id FROM friends
-                        WHERE (user_id = %d) OR (friend_id = %d)",
-                        $user_id, $user_id);
-        $query = $this->utility_model->run_query($sql);
-
-        $friends = $query->result_array();
-        foreach ($friends as &$f) {
-            if ($f['friend_id'] == $user_id) {
-                $f['friend_id'] = $f['user_id'];
-            }
-
-            // Get this friend's name.
-            $f['profile_name'] = $this->get_profile_name($f['friend_id']);
-        }
-        unset($f);
-
-        return $friends;
-    }
-
-    /**
      * Gets the number of friends who are currently logged in.
      *
      * @param $filter whether to count only logged in users.
@@ -478,7 +447,15 @@ class User_model extends CI_Model
      */
     public function get_num_chat_users($user_id, $filter = TRUE)
     {
-        return count($this->get_chat_users($user_id, TRUE));
+        $friends_ids = $this->get_friends_ids($user_id);
+        $friends_ids[] = 0;
+        $friends_ids_str = implode(',', $friends_ids);
+
+        $sql = sprintf('SELECT COUNT(user_id) FROM `users`
+                        WHERE last_activity > DATE_SUB(NOW(), INTERVAL 15 MINUTE) AND user_id IN(%s)',
+                        $friends_ids_str);
+        $query = $this->db->query($sql);
+        return $query->row_array()['COUNT(user_id)'];
     }
 
     /**
@@ -489,26 +466,19 @@ class User_model extends CI_Model
      */
     public function get_chat_users($user_id, $filter = TRUE)
     {
-        $chat_users = array();
+        $friends_ids = $this->get_friends_ids($user_id);
+        $friends_ids[] = 0;
+        $friends_ids_str = implode(',', $friends_ids);
 
-        // Get this user's friends.
-        $friends = $this->get_all_friends($user_id);
-
-        if ($filter) {
-            // Get the active friends.
-            foreach ($friends as $friend) {
-                if ($this->active($friend['friend_id'])) {
-                    $friend['active'] = TRUE;
-                    $friend['profile_pic_path'] = $this->get_profile_pic_path($friend['friend_id']);
-                    array_push($chat_users, $friend);
-                }
-            }
+        $sql = sprintf('SELECT user_id, profile_name FROM `users`
+                        WHERE last_activity > DATE_SUB(NOW(), INTERVAL 15 MINUTE) AND user_id IN(%s)',
+                        $friends_ids_str);
+        $query = $this->db->query($sql);
+        $chat_users = $query->result_array();
+        foreach ($chat_users as &$user) {
+            $user['profile_pic_path'] = $this->get_profile_pic_path($user['user_id']);
         }
-        else {
-            // TODO
-            // Do some thing else like display the users she has previously
-            // chatted with.
-        }
+        unset($user);
 
         return $chat_users;
     }

@@ -8,6 +8,7 @@ class Comment extends CI_Controller
         parent::__construct();
         session_start();
         ensure_user_is_logged_in();
+
         $this->load->model(['user_model', 'comment_model', 'utility_model']);
     }
 
