@@ -547,98 +547,59 @@ class User_model extends CI_Model
         $combined_notifs_str = "'message', 'like', 'comment', 'reply', 'share'";
         $atomic_notifs_str = "'birthday', 'profile_pic_change', 'friend_request',
                                 'join_group_request', 'confirmed_friend_request',
-                                'confirmed_join_group_request', 'added_photo'";
+                                'confirmed_join_group_request'";
 
         // Get the ID's of all this user's friends.
         $friends_ids = $this->get_friends_ids($user_id);
         $friends_ids[] = 0;  // Add an extra lement for query-safety.
         $friends_ids_str = implode(',', $friends_ids);
 
+        // ID of the last notification read by this user.
+        $last_read_notif_id = $this->get_last_read_notif_id($user_id);
+
         // WHERE clause for notifications having this user as a direct target.
         $primary_notifs_clause = sprintf("subject_id = %d AND actor_id != %d",
                                          $user_id, $user_id);
 
+        // Query to get activities that were performed by this user..
+        $acted_on_sql = sprintf("SELECT DISTINCT source_id FROM activities
+                                 WHERE (actor_id = %d AND subject_id != %d AND
+                                         activity IN('share', 'comment', 'reply'))",
+                                 $user_id, $user_id);
+
+        // WHERE clause for notifications from other sources like profile_pic_change, comment, reply and birthday.
+        // Only applies to users with friends.
+        $other_notifs_clause = sprintf("subject_id IN(%s) AND actor_id IN(%s) AND
+                                        ((source_id IN(%s) AND activity IN('comment', 'reply')) OR
+                                        activity IN('profile_pic_change', 'birthday'))",
+                                        $friends_ids_str, $friends_ids_str, $acted_on_sql);
+
+        // Query to get the latest notification from a group of activities
+        // performed on the same object.
+        $latest_notif_sql = sprintf("SELECT MAX(date_entered) FROM activities a2
+                                        WHERE ((%s) OR (%s)) AND activity IN(%s) AND a1.subject_id = a2.subject_id AND
+                                                a1.source_id = a2.source_id AND
+                                                a1.source_type = a2.source_type AND
+                                                a1.activity = a2.activity",
+                                        $primary_notifs_clause, $other_notifs_clause, $combined_notifs_str);
+
         if ($filter) {
-            // Query to get the last time the user read a notification.
-            $last_read_date_sql = sprintf("SELECT date_read FROM notification_read
-                                            WHERE (user_id = %d) ORDER BY date_read DESC
-                                            LIMIT 1",
-                                            $user_id);
-            $last_read_date_query = $this->utility_model->run_query($last_read_date_sql);
-            if ($last_read_date_query->num_rows() == 0) {
-
-                // User has'nt read any notifications before,
-                // use his account creation date.
-                $last_read_date_sql = sprintf("SELECT date_created FROM users WHERE (user_id = %d)",
-                                                $user_id);
-            }
-
-            // Query to get activities that were performed by this user..
-            $acted_on_sql = sprintf("SELECT DISTINCT source_id FROM activities
-                                        WHERE (actor_id = %d AND subject_id != %d AND
-                                                activity IN('share', 'comment', 'reply'))",
-                                        $user_id, $user_id);
-
-            // WHERE clause for notifications from other sources like profile_pic_change, comment and reply.
-            // Only applies to users with friends.
-            $other_notifs_clause = sprintf("subject_id IN(%s) AND actor_id IN(%s) AND
-                                            ((source_id IN(%s) AND activity IN('comment', 'reply')) OR
-                                            activity = 'profile_pic_change')",
-                                            $friends_ids_str, $friends_ids_str, $acted_on_sql);
-
-            // Query to get the latest notification from a group of activities
-            // performed on the same object.
-            $latest_notif_sql = sprintf("SELECT MAX(date_entered) FROM activities a2
-                                            WHERE (((%s) OR (%s)) AND activity IN(%s)
-                                                    AND a1.subject_id = a2.subject_id AND
-                                                    a1.source_id = a2.source_id AND
-                                                    a1.source_type = a2.source_type AND
-                                                    a1.activity = a2.activity AND date_entered > (%s))",
-                                            $primary_notifs_clause, $other_notifs_clause, $combined_notifs_str,
-                                            $last_read_date_sql);
-
             // Query to get all notifications from activities.
     		$notifs_sql = sprintf("SELECT activity_id, subject_id, activity FROM activities a1
-                                    WHERE (date_entered = (%s) OR (((%s) OR (%s)) AND
-                                    activity IN(%s) AND date_entered > (%s)))",
-                				    $latest_notif_sql, $primary_notifs_clause, $other_notifs_clause,
-                                    $atomic_notifs_str, $last_read_date_sql);
+                                    WHERE ((%s) OR (%s)) AND (activity IN(%s) OR date_entered = (%s)) AND activity_id > %d",
+                                    $primary_notifs_clause, $other_notifs_clause, $atomic_notifs_str, $latest_notif_sql,
+                                    $last_read_notif_id);
 
-            // Get Birthday notifications.
+            // Get today's birthdays.
             $birthdays_sql = sprintf("SELECT user_id FROM users
                                         WHERE user_id IN(%s) AND DAY(dob) = %d AND MONTH(dob) = %d",
                                         $friends_ids_str, date('d'), date('m'));
         }
         else {
-            // Query to get activities that were performed by this user..
-            $acted_on_sql = sprintf("SELECT DISTINCT source_id FROM activities
-                                    WHERE (actor_id = %d AND subject_id != %d AND
-                                    activity IN('share', 'comment', 'reply'))",
-                                    $user_id, $user_id);
-
-            // WHERE clause for notifications from other sources like profile_pic_change, comment, reply and birthday.
-            // Only applies to users with friends.
-            $other_notifs_clause = sprintf("subject_id IN(%s) AND actor_id IN(%s) AND
-                                            ((source_id IN(%s) AND activity IN('comment', 'reply')) OR
-                                            activity IN('profile_pic_change','birthday'))",
-                                            $friends_ids_str, $friends_ids_str, $acted_on_sql);
-
-            // Query to get the latest notification from a group of activities
-            // performed on the same object.
-            $latest_notif_sql = sprintf("SELECT MAX(date_entered) FROM activities a2
-                                        WHERE (((%s) OR (%s)) AND activity IN(%s)
-                                        AND a1.subject_id = a2.subject_id AND
-                                        a1.source_id = a2.source_id AND
-                                        a1.source_type = a2.source_type AND
-                                        a1.activity = a2.activity)",
-                                        $primary_notifs_clause, $other_notifs_clause,
-                                        $combined_notifs_str);
-
             // Query to get all notifications from activities.
             $notifs_sql = sprintf("SELECT activity_id, subject_id, activity FROM activities a1
-                                    WHERE (date_entered = (%s) OR (((%s) OR (%s)) AND activity IN(%s)))",
-                                    $latest_notif_sql, $primary_notifs_clause, $other_notifs_clause,
-                                    $atomic_notifs_str);
+                                    WHERE ((%s) OR (%s)) AND (activity IN(%s) OR date_entered = (%s))",
+                                    $primary_notifs_clause, $other_notifs_clause, $atomic_notifs_str, $latest_notif_sql);
         }
 
         $notifs_query = $this->utility_model->run_query($notifs_sql);
@@ -649,14 +610,17 @@ class User_model extends CI_Model
             $num_results = count($notifs_results);
             for ($i = 0; $i < $num_results; ++$i) {
                 if ($notifs_results[$i]['activity'] == 'friend_request') {
-                    $source_sql = sprintf("SELECT source_id FROM  activities WHERE activity_id = %d",
+                    $users_sql = sprintf("SELECT actor_id, subject_id FROM  activities WHERE activity_id = %d",
                                             $notifs_results[$i]['activity_id']);
-                    $source_result = $this->utility_model->run_query($source_sql)->row_array();
+                    $users_result = $this->utility_model->run_query($users_sql)->row_array();
 
-                    $fr_seen_sql = sprintf("SELECT seen FROM friend_requests WHERE request_id = %d",
-                                            $source_result['source_id']);
+                    $fr_seen_sql = sprintf("SELECT seen FROM friend_requests WHERE user_id = %d AND target_id = %d",
+                                            $users_result['actor_id'], $users_result['subject_id']);
                     $fr_seen_result = $this->utility_model->run_query($fr_seen_sql)->row_array();
                     if ($fr_seen_result['seen']) {
+                        if ($notifs_results[$i]['activity_id'] > $last_read_notif_id) {
+                            $this->update_notification_read($user_id, $notifs_results[$i]['activity_id']);
+                        }
                         unset($notifs_results[$i]);
                     }
                 }
@@ -677,15 +641,17 @@ class User_model extends CI_Model
                 $query = $this->utility_model->run_query($sql);
 
                 if ($query->num_rows() == 0) {
-                    // It is a brand new birthday.
+                    // It hasn't been recorded in activities table, add it.
+                    $activity_sql = sprintf("INSERT INTO activities
+                                            (actor_id, subject_id, source_id, source_type, activity)
+                                            VALUES (%d, %d, %d, 'user', 'birthday')",
+                                            $bd['user_id'], $bd['user_id'], $bd['user_id']);
+                    $this->db->query($activity_sql);
                     ++$num_notifications;
                 }
                 else {
                     // Not so new, but check whether this user has seen it.
-                    $seen_sql = sprintf("SELECT user_id FROM notification_read
-                                        WHERE (user_id = %d AND activity_id = %d)",
-                                        $user_id, $query->row_array()['activity_id']);
-                    if ($this->utility_model->run_query($seen_sql)->num_rows() == 0) {
+                    if ($query->row()->activity_id > $last_read_notif_id) {
                         // Hasn't seen.
                         ++$num_notifications;
                     }
@@ -713,102 +679,57 @@ class User_model extends CI_Model
         $combined_notifs_str = "'message', 'like', 'comment', 'reply', 'share'";
         $atomic_notifs_str = "'birthday', 'profile_pic_change', 'friend_request', " .
                                 "'join_group_request', 'confirmed_friend_request', " .
-                                "'confirmed_join_group_request', 'added_photo'";
+                                "'confirmed_join_group_request'";
 
         // Get the ID's of all this user's friends.
         $friends_ids = $this->get_friends_ids($user_id);
         $friends_ids[] = 0;  // Add an extra element for query-safety.
         $friends_ids_str = implode(',', $friends_ids);
 
+        // ID of the last notification read by this user.
+        $last_read_notif_id = $this->get_last_read_notif_id($user_id);
+
         // WHERE clause for notifications having this user as a direct target.
-        $primary_notifs_clause = sprintf("subject_id = %d AND actor_id != %d",
-                                         $user_id, $user_id);
+        $primary_notifs_clause = sprintf("subject_id = %d AND actor_id != %d", $user_id, $user_id);
 
-        if ($filter) {
-            // Query to get the last time the user read a notification.
-            $last_read_date_sql = sprintf("SELECT date_read FROM notification_read
-                                            WHERE (user_id = %d) ORDER BY date_read DESC
-                                            LIMIT 1",
-                                            $user_id);
-            $last_read_date_query = $this->utility_model->run_query($last_read_date_sql);
-            if ($last_read_date_query->num_rows() == 0) {
-                // User has'nt read any notifications before, use his account creation date.
-                $last_read_date_sql = sprintf("SELECT date_created FROM users WHERE (user_id = %d)",
-                                                $user_id);
-            }
-
-            // Query to get activities that were performed by this user..
-            $acted_on_sql = sprintf("SELECT DISTINCT source_id FROM activities
+        // Query to get activities that were performed by this user..
+        $acted_on_sql = sprintf("SELECT DISTINCT source_id FROM activities
                                     WHERE (actor_id = %d AND subject_id != %d AND
                                             activity IN('share', 'comment', 'reply'))",
                                     $user_id, $user_id);
 
-            // WHERE clause for notifications from other sources like profile_pic_change, comment and reply.
-            // Only applies to users with friends.
-            $other_notifs_clause = sprintf("subject_id IN(%s) AND actor_id IN(%s) AND
-                                            ((source_id IN(%s) AND activity IN('comment', 'reply'))  OR
-                                            activity = 'profile_pic_change')",
-                                            $friends_ids_str, $friends_ids_str, $acted_on_sql);
+        // WHERE clause for notifications from other sources
+        // like profile_pic_change, comment, reply and birthday.
+        // Only applies to users with friends.
+        $other_notifs_clause = sprintf("subject_id IN(%s) AND actor_id IN(%s) AND
+                                        ((source_id IN(%s) AND activity IN('comment', 'reply')) OR
+                                        activity IN('profile_pic_change','birthday'))",
+                                        $friends_ids_str, $friends_ids_str, $acted_on_sql);
 
-            // Query to get the latest notification from a group of activities
-            // performed on the same object.
-            $latest_notif_sql = sprintf("SELECT MAX(date_entered) FROM activities a2
-                                        WHERE (((%s) OR (%s)) AND activity IN(%s)
-                                        AND a1.subject_id = a2.subject_id AND
-                                        a1.source_id = a2.source_id AND
-                                        a1.source_type = a2.source_type AND
-                                        a1.activity = a2.activity AND date_entered > (%s))",
-                                        $primary_notifs_clause, $other_notifs_clause,
-                                        $combined_notifs_str, $last_read_date_sql);
+        // Query to get the latest notification from a group of activities
+        // performed on the same object.
+        $latest_notif_sql = sprintf("SELECT MAX(date_entered) FROM activities a2
+                                    WHERE (((%s) OR (%s)) AND activity IN(%s) AND
+                                    a1.subject_id = a2.subject_id AND
+                                    a1.source_id = a2.source_id AND
+                                    a1.source_type = a2.source_type AND
+                                    a1.activity = a2.activity)",
+                                    $primary_notifs_clause, $other_notifs_clause, $combined_notifs_str);
 
+        if ($filter) {
             // Query to get all notifications from activities.
     		$notifs_sql = sprintf("SELECT * FROM activities a1
-                                    WHERE (date_entered = (%s) OR (((%s) OR (%s)) AND
-                                    activity IN(%s) AND date_entered > (%s)))
+                                    WHERE ((%s) OR (%s)) AND (activity IN(%s) OR date_entered = (%s)) AND activity_id > %d
                                     ORDER BY date_entered DESC LIMIT %d, %d",
-                				    $latest_notif_sql, $primary_notifs_clause,
-                                    $other_notifs_clause, $atomic_notifs_str, $last_read_date_sql,
-                                    $offset, $limit);
-
-            // Get Birthday notifications.
-            $birthdays_sql = sprintf("SELECT user_id, dob, CONCAT(dob, ' 00:00:00') as date_entered
-                                        FROM users
-                                        WHERE (user_id IN (%s) AND DAY(dob) = %d and MONTH(dob) = %d)",
-                                        $friends_ids_str, date('d'), date('m'));
+                                    $primary_notifs_clause, $other_notifs_clause, $atomic_notifs_str, $latest_notif_sql,
+                                    $last_read_notif_id, $offset, $limit);
         }
         else {
-            // Query to get activities that were performed by this user..
-            $acted_on_sql = sprintf("SELECT DISTINCT source_id FROM activities
-                                        WHERE (actor_id = %d AND subject_id != %d AND
-                                                activity IN('share', 'comment', 'reply'))",
-                                        $user_id, $user_id);
-
-            // WHERE clause for notifications from other sources
-            // like profile_pic_change, comment, reply and birthday.
-            // Only applies to users with friends.
-            $other_notifs_clause = sprintf("subject_id IN(%s) AND actor_id IN(%s) AND
-                                            ((source_id IN(%s) AND activity IN('comment', 'reply')) OR
-                                            activity IN('profile_pic_change','birthday'))",
-                                            $friends_ids_str, $friends_ids_str, $acted_on_sql);
-
-            // Query to get the latest notification from a group of activities
-            // performed on the same object.
-            $latest_notif_sql = sprintf("SELECT MAX(date_entered) FROM activities a2
-                                            WHERE (((%s) OR (%s)) AND activity IN(%s)
-                                                AND a1.subject_id = a2.subject_id AND
-                                                a1.source_id = a2.source_id AND
-                                                a1.source_type = a2.source_type AND
-                                                a1.activity = a2.activity)",
-                                            $primary_notifs_clause, $other_notifs_clause,
-                                            $combined_notifs_str);
-
             // Query to get all notifications from activities.
             $notifs_sql = sprintf("SELECT * FROM activities a1
-                                    WHERE (date_entered = (%s) OR (((%s) OR (%s)) AND
-                                    activity IN(%s))) ORDER BY date_entered DESC
-                                    LIMIT %d, %d",
-                                    $latest_notif_sql, $primary_notifs_clause,
-                                    $other_notifs_clause, $atomic_notifs_str,
+                                    WHERE ((%s) OR (%s)) AND (activity IN(%s) OR date_entered = (%s))
+                                    ORDER BY date_entered DESC LIMIT %d, %d",
+                                    $primary_notifs_clause, $other_notifs_clause, $atomic_notifs_str, $latest_notif_sql,
                                     $offset, $limit);
         }
 
@@ -865,13 +786,12 @@ class User_model extends CI_Model
                 // Get the number of times an activity was performed on the same object.
                 if ($filter) {
                     $num_actors_sql = sprintf("SELECT DISTINCT actor_id FROM activities
-                                                WHERE (source_id = %d AND source_type = '%s' AND
+                                                WHERE (activity_id > %d AND source_id = %d AND source_type = '%s' AND
                                                 activity = '%s' AND subject_id = %d AND
-                                                activity_id != %d AND actor_id NOT IN(%d, %d) AND
-                                                date_entered > (%s))",
-                                                $n['source_id'], $n['source_type'], $n['activity'],
-                                                $n['subject_id'], $n['activity_id'], $n['actor_id'],
-                                                $user_id, $last_read_date_sql);
+                                                activity_id != %d AND actor_id NOT IN(%d, %d))",
+                                                $last_read_notif_id, $n['source_id'], $n['source_type'],
+                                                $n['activity'], $n['subject_id'], $n['activity_id'],
+                                                $n['actor_id'], $user_id);
                 }
                 else {
                     $num_actors_sql = sprintf("SELECT DISTINCT actor_id FROM activities
@@ -888,67 +808,8 @@ class User_model extends CI_Model
         }
         unset($n);
 
-        if (isset($birthdays_sql)) {
-            $birthdays = $this->utility_model->run_query($birthdays_sql)->result_array();
-            foreach ($birthdays as &$bd) {
-                // Get the activity_id.
-                $sql = sprintf("SELECT activity_id FROM activities
-                                WHERE (actor_id = %d AND activity = 'birthday' AND
-                                YEAR(date_entered) = %d)",
-                                $bd['user_id'], date('Y'));
-                $query = $this->utility_model->run_query($sql);
-
-                if ($query->num_rows() == 0) {
-                    // It hasn't been recorded in activities table, add it.
-                    $activity_sql = sprintf("INSERT INTO activities
-                                            (actor_id, subject_id, source_id, source_type, activity)
-                                            VALUES (%d, %d, %d, 'user', 'birthday')",
-                                            $bd['user_id'], $bd['user_id'], $bd['user_id']);
-                    $this->utility_model->run_query($activity_sql);
-
-                    $bd['activity_id'] = $this->db->insert_id();
-                    $bd['activity'] = "birthday";
-                    $bd['subject_id'] = $bd['user_id'];
-                    $bd['actor_id'] = $bd['user_id'];
-                    $bd['date_entered'] = date_format(date_create(), 'Y-m-d H:i:s');
-                }
-                else {
-                    $activity_id = $query->row()->activity_id;
-
-                    // Check whether this user has seen it before.
-                    $seen_sql = sprintf("SELECT user_id FROM notification_read
-                                        WHERE (user_id = %d AND activity_id = %d)",
-                                        $user_id, $activity_id);
-                    if ($this->utility_model->run_query($seen_sql)->num_rows() == 0) {
-
-                        // Hasn't seen.
-                        $bd['activity_id'] = $activity_id;
-                        $bd['activity'] = "birthday";
-                        $bd['subject_id'] = $bd['user_id'];
-                        $bd['actor_id'] = $bd['user_id'];
-                        $bd['date_entered'] = $query->row_array()['date_entered'];
-                    }
-                }
-            }
-            unset($bd);
-
-            $notifications = array_merge($notifications, $birthdays);
-        }
-
-        // Sort the results by date entered and get the first $limit.
-        usort($notifications, $this->build_sorter('date_entered'));
-        $notifications = array_slice($notifications, 0, $limit);
-
-        if ($filter) {
-            // Update notification_read to reflect that it has been seen.
-            foreach ($notifications as &$r) {
-                $sql = sprintf("INSERT INTO notification_read (user_id, activity_id, date_read)
-                                VALUES (%d, %d, '%s')",
-                                $user_id, $r['activity_id'],
-                                $r['date_entered']);
-                $this->utility_model->run_query($sql);
-            }
-            unset($r);
+        if ($filter && count($notifications) > 0) {
+            $this->update_notification_read($user_id, $notifications[0]['activity_id']);
         }
 
         foreach ($notifications as &$notif) {
@@ -1376,6 +1237,34 @@ class User_model extends CI_Model
 
         // Reverse the messages so that the latest messages are shown last.
         return array_reverse($messages);
+    }
+
+    private function get_last_read_notif_id($user_id)
+    {
+        $sql = sprintf("SELECT activity_id FROM notification_read WHERE (user_id = %d)",
+                        $user_id);
+        $query = $this->db->query($sql);
+
+        $last_read_notif_id = 0;  // Default if user hasn't read any notifications before.
+        if ($query->num_rows() == 1) {
+            $last_read_notif_id = $query->row_array()['activity_id'];
+        }
+
+        return $last_read_notif_id;
+    }
+
+    private function update_notification_read($user_id, $activity_id)
+    {
+        // Update notification_read.
+        $sql = sprintf("UPDATE notification_read SET activity_id = %d WHERE user_id = %d",
+                        $activity_id, $user_id);
+        $this->db->query($sql);
+        if ($this->db->affected_rows() == 0) {
+            // User han't read any notification before.
+            $sql = sprintf("INSERT INTO notification_read (user_id, activity_id) VALUES (%d, %d)",
+                            $user_id, $activity_id);
+            $this->db->query($sql);
+        }
     }
 }
 ?>

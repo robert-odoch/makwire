@@ -378,9 +378,7 @@ class User extends CI_Controller
 
     public function notifications($offset = 0)
     {
-        $data = $this->user_model->initialize_user($_SESSION['user_id']);
-        $data['title'] = 'Notifications';
-        $this->load->view('common/header', $data);
+        $data = [];
 
         $limit = 10;  // Maximum number of notifications to show.
         if ($offset != 0) {
@@ -392,10 +390,11 @@ class User extends CI_Controller
         }
 
 		$data['has_next'] = FALSE;
-		if ($data['num_new_notifs'] > 0) {
+        $num_new_notifs = $this->user_model->get_num_notifications($_SESSION, TRUE);
+		if ($num_new_notifs > 0) {
 		    // First show only the new notifications.
 			$data['notifications'] = $this->user_model->get_notifications($_SESSION['user_id'], $offset, $limit, TRUE);
-			if (($data['num_new_notifs'] - $offset) > $limit) {
+			if (($num_new_notifs - $offset) > $limit) {
 				$data['has_next'] = TRUE;
 				$data['next_offset'] = ($offset + $limit);
 			}
@@ -405,11 +404,11 @@ class User extends CI_Controller
                 // Here, we are determining if there are older notifications.
                 // And if they are there, get the correct offset to use
                 // in the view older notifications link.
-			    if (($num_notifications - ($offset + $data['num_new_notifs'])) > 0) {
+			    if (($num_notifications - ($offset + $num_new_notifs)) > 0) {
 			        $data['has_next'] = TRUE;
                     // To indicate the the notifications that follow are older.
                     $data['older'] = TRUE;
-			        $data['next_offset'] = ($offset + $data['num_new_notifs']);
+			        $data['next_offset'] = ($offset + $num_new_notifs);
 			    }
 			}
 		}
@@ -421,6 +420,10 @@ class User extends CI_Controller
 		        $data['next_offset'] = ($offset + $limit);
 		    }
 		}
+
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
+        $data['title'] = 'Notifications';
+        $this->load->view('common/header', $data);
 
         $this->load->view('show/notifications', $data);
         $this->load->view('common/footer');
@@ -479,9 +482,7 @@ class User extends CI_Controller
 
     public function friend_requests($offset = 0, $request_id = 0)
     {
-        $data = $this->user_model->initialize_user($_SESSION['user_id']);
-        $data['title'] = 'Friend Requests';
-        $this->load->view('common/header', $data);
+        $data = [];
 
         $limit = 10;
         $data['has_next'] = FALSE;
@@ -500,6 +501,10 @@ class User extends CI_Controller
             }
             $data['friend_requests'] = $this->user_model->get_friend_requests($_SESSION['user_id'], $offset, $limit);
         }
+
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
+        $data['title'] = 'Friend Requests';
+        $this->load->view('common/header', $data);
 
         $this->load->view('friend-requests', $data);
         $this->load->view('common/footer');
@@ -560,9 +565,7 @@ class User extends CI_Controller
 
     public function messages($offset = 0)
     {
-        $data = $this->user_model->initialize_user($_SESSION['user_id']);
-        $data['title'] = 'Messages';
-        $this->load->view('common/header', $data);
+        $data = [];
 
         $limit = 10;  // Maximum number of messages to show.
         if ($offset != 0) {
@@ -574,10 +577,11 @@ class User extends CI_Controller
         }
 
         $data['has_next'] = FALSE;
-        if ($data['num_new_messages'] > 0) {  // There are new messages.
+        $num_new_messages = $this->user_model->get_num_messages($_SESSION['user_id'], TRUE);
+        if ($num_new_messages > 0) {  // There are new messages.
             // First show only the new messages.
             $data['messages'] = $this->user_model->get_messages($_SESSION['user_id'], $offset, $limit);
-            if (($data['num_new_messages'] - $offset) > $limit) {
+            if (($num_new_messages - $offset) > $limit) {
                 $data['has_next'] = TRUE;
                 $data['next_offset'] = ($offset + $limit);
             }
@@ -587,12 +591,12 @@ class User extends CI_Controller
                 // Here, we are determining if there are older messages.
                 // And if they are there, get the correct offset to use
                 // in the view older messages link.
-                if (($num_messages - ($offset + $data['num_new_messages'])) > 0) {
+                if (($num_messages - ($offset + $num_new_messages)) > 0) {
                     $data['has_next'] = TRUE;
 
                     // To indicate that we are showing older messages.
                     $data['older'] = TRUE;
-                    $data['next_offset'] = ($offset + $data['num_new_messages']);
+                    $data['next_offset'] = ($offset + $num_new_messages);
                 }
             }
         }
@@ -604,6 +608,10 @@ class User extends CI_Controller
                 $data['next_offset'] = ($offset + $limit);
             }
         }
+
+        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
+        $data['title'] = 'Messages';
+        $this->load->view('common/header', $data);
 
         $this->load->view('show/messages', $data);
         $this->load->view('common/footer');
