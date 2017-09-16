@@ -393,7 +393,6 @@ class User extends CI_Controller
 
 		$data['has_next'] = FALSE;
 		if ($data['num_new_notifs'] > 0) {
-
 		    // First show only the new notifications.
 			$data['notifications'] = $this->user_model->get_notifications($_SESSION['user_id'], $offset, $limit, TRUE);
 			if (($data['num_new_notifs'] - $offset) > $limit) {
@@ -401,7 +400,7 @@ class User extends CI_Controller
 				$data['next_offset'] = ($offset + $limit);
 			}
 			else {
-			    $num_notifications = $this->user_model->get_num_notifications(FALSE);
+			    $num_notifications = $this->user_model->get_num_notifications($_SESSION['user_id'], FALSE);
 
                 // Here, we are determining if there are older notifications.
                 // And if they are there, get the correct offset to use
@@ -415,7 +414,7 @@ class User extends CI_Controller
 			}
 		}
 		else {
-		    $num_notifications = $this->user_model->get_num_notifications(FALSE);
+		    $num_notifications = $this->user_model->get_num_notifications($_SESSION['user_id'], FALSE);
 		    $data['notifications'] = $this->user_model->get_notifications($_SESSION['user_id'], $offset, $limit, FALSE);
 		    if (($num_notifications - $offset) > $limit) {
 		        $data['has_next'] = TRUE;
@@ -489,7 +488,7 @@ class User extends CI_Controller
         $num_friend_requests = $this->user_model->get_num_friend_requests($_SESSION['user_id'], FALSE);
         if ($num_friend_requests == 0 && $request_id != 0) {
             try {
-                $data['friend_request'] = $this->user_model->get_friend_request($_SESSION['user_id'], $request_id);
+                $data['friend_requests'][] = $this->user_model->get_friend_request($_SESSION['user_id'], $request_id);
             } catch (NotFoundException $e) {
                 $data['friend_requests'] = [];
             }
