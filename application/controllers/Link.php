@@ -29,6 +29,12 @@ class Link extends CI_Controller
             }
         }
 
+        if (is_ajax_request()) {
+            $html = $this->load->view('forms/new-link', [], TRUE);
+            echo $html;
+            return;
+        }
+
         $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Add link to a resource from another website';
         $this->load->view('common/header', $data);

@@ -1,3 +1,25 @@
+/*** Status updates ***/
+$('#status-nav li a').click(function(event) {
+    event.preventDefault();
+
+    var $this = $(this);
+    var url = $this.attr('href');
+    $.get(url, function(data) {
+        var html = $.parseHTML(data);
+        var $box = $this.parents('div.box');
+
+        // Move the active class to the li parent for this link.
+        $box.find('.active').removeClass('active');
+        $this.parents('li').addClass('active');
+
+        // Remove the old form.
+        $box.find('form').remove();
+
+        // Show the new form.
+        $(html).appendTo($box);
+    });
+});
+
 /*** Sending a message. ***/
 
 // Always scroll to the end of the messages.

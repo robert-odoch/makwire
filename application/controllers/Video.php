@@ -37,6 +37,12 @@ class Video extends CI_Controller
             }
         }
 
+        if (is_ajax_request()) {
+            $html = $this->load->view('forms/new-video', [], TRUE);
+            echo $html;
+            return;
+        }
+
         $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Add YouTube video';
         $this->load->view('common/header', $data);

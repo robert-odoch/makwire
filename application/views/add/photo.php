@@ -18,16 +18,5 @@ require_once(__DIR__ . '/../common/user-page-start.php');
     </div>
     <?php } ?>
 
-    <div class='panel panel-success' style='border-radius: 0 0 3px 3px;'>
-        <div class='panel-body'>
-            <form action='<?= base_url('photo/new'); ?>' method='post'
-                    enctype='multipart/form-data' role='form'>
-                <div class='form-group'>
-                    <label for='userfile'>Choose a photo:</label>
-                    <input type='file' name='userfile' id='userfile' required>
-                </div>
-                <input type='submit' name='submit' value='Upload' class='btn btn-sm'>
-            </form>
-        </div>
-    </div>
+    <?php require_once(__DIR__ . '/../forms/new-photo.php'); ?>
 </div>

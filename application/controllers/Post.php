@@ -24,6 +24,12 @@ class Post extends CI_Controller
             redirect(base_url("user/{$_SESSION['user_id']}"));
         }
 
+        if (is_ajax_request()) {
+            $html = $this->load->view('forms/new-post', [], TRUE);
+            echo $html;
+            return;
+        }
+
         $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'Write a status post';
         $this->load->view('common/header', $data);

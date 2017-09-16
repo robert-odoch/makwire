@@ -1,4 +1,5 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed') ?>
+
 <form action='<?= base_url('post/new'); ?>' method='post'
         accept-charset='utf-8' role='form'>
     <div class='form-group'>
