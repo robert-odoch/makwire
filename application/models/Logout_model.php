@@ -20,10 +20,6 @@ class Logout_model extends CI_Model
         $_SESSION = array();
         session_destroy();
         setcookie(session_name(), '', time()-300);
-
-        $login_sql = sprintf("UPDATE users SET logged_in = 0 WHERE user_id = %d",
-                                $user_id);
-        $this->utility_model->run_query($login_sql);
     }
 }
 ?>
