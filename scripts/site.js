@@ -56,6 +56,9 @@ $('body').on('submit', 'form.send-message', function(event) {
 
         // Show the new error message.
         $this.append("<span class='error'>Message can't be empty!</span>");
+
+        // Scroll the form into view.
+        $('.chat-content').scrollTo('100%', 1000);
     }
     else {  // Send the message.
         var url = $(this).attr('action');
@@ -67,11 +70,11 @@ $('body').on('submit', 'form.send-message', function(event) {
             // Insert the message immediately above the form.
             var html = $.parseHTML(data);
             $(html).insertBefore('.chat-content .new-message');
+
+            // Scroll the form into view.
+            $('.chat-content').scrollTo('100%', 1000);
         });
     }
-
-    // Scroll the form into view.
-    $('.chat-content').scrollTo('100%', 1000);
 
     // Focus the message input field.
     $messageField.focus();
