@@ -2,24 +2,38 @@
 
 // Always scroll to the end of the messages.
 $('.chat-content').scrollTo('100%', 1000);
-$('body').on('click', '.send-message', function(event) {
+$('.new-message').find(':input:text').focus();
+
+// Chat sidebar.
+$('body').on('click', 'a.send-message', function(event) {
+    if ($(window).width() < 972) {
+        // Chat sidebar hidden...
+        return;
+    }
+
     event.preventDefault();
 
     var url = $(this).attr('href');
     $('.col-small').load(url, function() {
         $('.col-small .chat-content').scrollTo('100%', 1000);
-        $('.col-small').find(':input:text').focus();
+        $('.new-message').find(':input:text').focus();
     });
 });
 
-$('.col-small').on('submit', 'form', function(event) {
+$('body').on('submit', 'form.send-message', function(event) {
     event.preventDefault();
 
-    var $messageField = $(this).find(':input:text');
+    var $this = $(this);
+    var $messageField = $this.find(':input:text');
     var message = $messageField.val();
     if (message.length == 0) {  // Show an error message.
         $messageField.addClass('has-error');
-        $messageField.parents('form').append("<span class='error'>Message can't be empty!</span>");
+
+        // Remove any previous error messages if any.
+        $this.children('span.error').remove();
+
+        // Show the new error message.
+        $this.append("<span class='error'>Message can't be empty!</span>");
     }
     else {  // Send the message.
         var url = $(this).attr('action');
@@ -31,14 +45,14 @@ $('.col-small').on('submit', 'form', function(event) {
             // Insert the message immediately above the form.
             var html = $.parseHTML(data);
             $(html).insertBefore('.chat-content .new-message');
-
-            // Scroll the form into view.
-            $('.chat-content').scrollTo('100%', 1000);
-
-            // Focus the message input field.
-            $messageField.focus();
         });
     }
+
+    // Scroll the form into view.
+    $('.chat-content').scrollTo('100%', 1000);
+
+    // Focus the message input field.
+    $messageField.focus();
 });
 
 /*** Refreshing messages. ***/
@@ -57,7 +71,7 @@ $('body').on('click', '.refresh-chat', function(event) {
         }
 
         // Focus the message input field.
-        $('.chat-content').find(':input:text').focus();
+        $('.new-message').find(':input:text').focus();
     });
 });
 

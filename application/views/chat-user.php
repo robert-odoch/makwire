@@ -23,7 +23,7 @@
         <?php require_once(__DIR__ . '/chat-messages.php'); ?>
 
         <div class='new-message'>
-            <form action='<?= base_url("user/send-message/{$receiver['user_id']}"); ?>' method='post'>
+            <form action='<?= base_url("user/send-message/{$receiver['user_id']}"); ?>' method='post' class='send-message'>
                 <table style='width: 100%'>
                     <tbody>
                         <tr>
