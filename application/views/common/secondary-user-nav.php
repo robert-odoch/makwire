@@ -20,7 +20,7 @@
                     <?php
                     if ($friendship_status['are_friends']) {
                         print "<a href='" . base_url("user/send-message/{$suid}") .
-                                "' class='btn btn-xs btn-default'>
+                                "' class='btn btn-xs btn-default send-message'>
                                 <span class='glyphicon glyphicon-envelope'></span> Message</a>
 
                                 <a href='" . base_url("user/unfollow/{$suid}") .

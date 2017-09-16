@@ -10,7 +10,7 @@
                 </div>
                 <div class='media-body'>
                     <h4 class='media-heading'>
-                        <a href='<?= base_url("user/send-message/{$chat_user['friend_id']}"); ?>'>
+                        <a href='<?= base_url("user/send-message/{$chat_user['friend_id']}"); ?>' class='send-message'>
                             <?= $chat_user['profile_name']; ?>
                         </a>
                     </h4>

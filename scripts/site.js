@@ -2,12 +2,13 @@
 
 // Always scroll to the end of the messages.
 $('.chat-content').scrollTo('100%', 1000);
-$('.col-small').on('click', '.active-users a', function(event) {
+$('body').on('click', '.send-message', function(event) {
     event.preventDefault();
 
     var url = $(this).attr('href');
     $('.col-small').load(url, function() {
         $('.col-small .chat-content').scrollTo('100%', 1000);
+        $('.col-small').find(':input:text').focus();
     });
 });
 
@@ -33,6 +34,9 @@ $('.col-small').on('submit', 'form', function(event) {
 
             // Scroll the form into view.
             $('.chat-content').scrollTo('100%', 1000);
+
+            // Focus the message input field.
+            $messageField.focus();
         });
     }
 });
@@ -51,6 +55,9 @@ $('body').on('click', '.refresh-chat', function(event) {
             // Scroll the form into view.
             $('.chat-content').scrollTo('100%', 1000);
         }
+
+        // Focus the message input field.
+        $('.chat-content').find(':input:text').focus();
     });
 });
 

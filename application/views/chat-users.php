@@ -21,7 +21,7 @@ require_once('common/user-page-start.php');
                                 alt="<?= $cu['profile_name']; ?>">
                     </div>
                     <div class='media-body'>
-                        <a href='<?= base_url("user/send-message/{$cu['friend_id']}"); ?>'>
+                        <a href='<?= base_url("user/send-message/{$cu['friend_id']}"); ?>' class='send-message'>
                             <?= $cu['profile_name']; ?>
                         </a>
                         <span class='logged-in'></span>
