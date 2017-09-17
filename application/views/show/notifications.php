@@ -10,7 +10,7 @@ require_once(dirname(__FILE__) . '/helper functions/show_notifications_functions
     <div class='alert alert-info' role='alert'>
         <p>
             <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
-            No notifications to show.
+            No new notifications to show.
         </p>
     </div>
     <?php } else {
