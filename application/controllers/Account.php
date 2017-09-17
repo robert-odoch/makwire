@@ -307,10 +307,10 @@ class Account extends CI_Controller
                         $activation_code = $this->account_model->gen_email_verification_code();
                         $subject = 'Makwire: Please verify your email address.';
                         if ($this->account_model->email_has_user($email)) {
-                            $email_body = $this->account_model->get_formatted_email($activation_code);
+                            $email_body = email_verification_message($activation_code);
                         }
                         else {
-                            $email_body = $this->register_model->get_formatted_email($activation_code);
+                            $email_body = registration_email_message($activation_code);
                         }
 
                         $this->account_model->send_email('robertelvisodoch@gmail.com', $email, $subject, $email_body);

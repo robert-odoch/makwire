@@ -204,30 +204,6 @@ class Account_model extends CI_Model
         return $result;
     }
 
-    public function get_formatted_email($activation_code)
-    {
-        $data['email_heading'] = 'makwire email settings';
-        $data['message'] = "<p>
-                                Hi there, thanks for using <a href='http://www.makwire.com'>makwire</a>.
-                            </p>
-                            <p>Please use the link below to verify your email address.</p>
-                            <a href='" .
-                                base_url("account/activate-email/{$activation_code}") . "'
-                                style='color: #fff; margin: 5px 0; padding: 10px; display: block; text-align: center; border-radius: 2px;
-                                    border-color: #46b8da; text-decoration: none; box-sizing: border-box; font-variant: small-caps;
-                                    background-color: #5bc0de;'>Verify your email address</a>
-
-                            <hr>
-                            <p>
-                                You’re receiving this email because you recently tried to
-                                add this email address in settings. If this wasn’t you, please ignore this email.
-                            </p>";
-
-        $body = $this->load->view('email', $data, TRUE);
-
-        return $body;
-    }
-
     public function save_password_reset_token($email, $token)
     {
         $sql = sprintf("INSERT INTO password_reset_token VALUES (%s, %s)",

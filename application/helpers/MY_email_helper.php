@@ -118,3 +118,61 @@ if (!function_exists('name_email_format')) {
     }
 
 }
+
+if (!function_exists('email_verification_message')) {
+
+    function email_verification_message($activation_code)
+    {
+        $data['email_heading'] = 'makwire email settings';
+        $data['message'] = "<p>
+                                Hi there, thanks for using <a href='" .base_url() . "'>makwire</a>.
+                            </p>
+                            <p>Please use the link below to verify your email address.</p>
+                            <a href='" .
+                                base_url("account/activate-email/{$activation_code}") . "'
+                                style='color: #fff; margin: 5px 0; padding: 10px; display: block; text-align: center; border-radius: 2px;
+                                    border-color: #46b8da; text-decoration: none; box-sizing: border-box; font-variant: small-caps;
+                                    background-color: #5bc0de;'>Verify your email address</a>
+
+                            <hr>
+                            <p>
+                                You’re receiving this email because you recently tried to
+                                add this email address in settings. If this wasn’t you, please ignore this email.
+                            </p>";
+
+        $body = $this->load->view('email', $data, TRUE);
+        return $body;
+    }
+
+}
+
+if (!function_exists('registration_email_message')) {
+
+    function registration_email_message($activation_code)
+    {
+        $email_data['email_heading'] = 'makwire account creation';
+        $email_data['message'] = "<p>
+                                    Hi there, thanks for your interest in joining
+                                    <a href='" . base_url() . "'>makwire</a>.
+                                </p>
+                                <p>
+                                  Please use the link below to verify your email
+                                  address and continue with the registration process.
+                                </p>
+                                <a href='" .
+                                    base_url("account/activate-email/{$activation_code}") . "'
+                                    style='color: #fff; margin: 5px 0; padding: 10px; display: block; text-align: center; border-radius: 2px;
+                                        border-color: #46b8da; text-decoration: none; box-sizing: border-box; font-variant: small-caps;
+                                        background-color: #5bc0de;'>Verify your email address</a>
+
+                                <hr>
+                                <p>
+                                    You’re receiving this email because you recently tried to create
+                                    a new <b>makwire</b> account. If this wasn’t you, please ignore this email.
+                                </p>";
+
+        $email_body = $this->load->view('email', $email_data, TRUE);
+        return $email_body;
+    }
+
+}
