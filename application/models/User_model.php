@@ -157,7 +157,7 @@ class User_model extends CI_Model
             throw new NotFoundException();
         }
 
-        return ucfirst($query->row_array()['profile_name']);
+        return $query->row_array()['profile_name'];
     }
 
     /**

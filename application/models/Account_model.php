@@ -49,8 +49,8 @@ class Account_model extends CI_Model
         $lname = $result['lname'];
         $other_names = $result['other_names'];
         return [
-            ucfirst($lname) . ' ' . ucfirst($other_names),
-            ucfirst($other_names) . ' ' . ucfirst($lname)
+            "{$lname} {$other_names}",
+            "{$other_names} {$lname}"
         ];
 
         return $name_combinations;
@@ -66,9 +66,9 @@ class Account_model extends CI_Model
     public function change_name($user_id, $last_name, $other_names)
     {
         $sql = sprintf("UPDATE users SET lname = %s, other_names = %s, profile_name = %s
-                        WHERE user_id = %d", $this->db->escape($last_name),
-                        $this->db->escape($other_names),
-                        $this->db->escape($last_name) . ' ' . $this->db->escape($other_names),
+                        WHERE user_id = %d", $this->db->escape(ucwords($last_name)),
+                        $this->db->escape(ucwords($other_names)),
+                        $this->db->escape(ucwords($last_name)) . ' ' . $this->db->escape(ucwords($other_names)),
                         $user_id);
         $this->utility_model->run_query($sql);
     }
