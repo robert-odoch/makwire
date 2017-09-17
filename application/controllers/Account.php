@@ -228,6 +228,11 @@ class Account extends CI_Controller
                 $data['other_names'] = $other_names;
             }
         }
+        else {
+            $name = $this->account_model->get_name($_SESSION['user_id']);
+            $data['lname'] = $name['lname'];
+            $data['other_names'] = $name['other_names'];
+        }
 
         $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Change your name';

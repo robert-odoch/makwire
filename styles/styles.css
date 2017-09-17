@@ -182,6 +182,9 @@ nav.user-nav {
 .user-nav p {
     margin-bottom: 5px;
 }
+.user-nav a {
+    text-decoration: none;
+}
 nav.user-nav ul li a.active {
     background-color: #2E8B57;
 }

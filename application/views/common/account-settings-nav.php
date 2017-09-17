@@ -21,7 +21,9 @@
 
     <nav class='user-nav' role='navigation'>
         <p>
-            <span class='glyphicon glyphicon-cog btn btn-sm' aria-hidden='true'></span>
+            <a href='<?= base_url('settings/account'); ?>'>
+                <span class='glyphicon glyphicon-cog btn btn-sm' aria-hidden='true'></span>
+            </a>
             <b>Settings</b>
         </p>
         <ul>

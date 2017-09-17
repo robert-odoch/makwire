@@ -50,6 +50,6 @@
                             </div>
                         </fieldset>
 
-                        <input type='submit' name='submit' value='Save changes' class='btn btn-sm'>
+                        <input type='submit' name='submit' value='Save' class='btn btn-sm'>
                     </form>
                 </div>
