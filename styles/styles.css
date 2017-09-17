@@ -179,6 +179,9 @@ div#secondary-user ul li a.active {
 nav.user-nav {
     margin-top: 5px;
 }
+.user-nav p {
+    margin-bottom: 5px;
+}
 nav.user-nav ul li a.active {
     background-color: #2E8B57;
 }
