@@ -40,6 +40,7 @@ class Settings extends CI_Controller
 
             $email = $this->input->post('email');
             if ($email !== NULL) {
+                $data['email'] = $email;
                 if (strlen($email) == 0) {
                     $data['error_message'] = "Please enter an email address.";
                 }

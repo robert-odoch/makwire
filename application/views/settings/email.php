@@ -83,7 +83,8 @@
                                 <label for='email' class='sr-only'>Email address</label>
                                 <p class='help-block'>Any email address is allowed.</p>
                                 <input type='email' name='email' id='email' class='fluid
-                                <?php if (isset($error_message)) print " has-error"; ?>' required>
+                                <?php if (isset($error_message)) print " has-error"; ?>'
+                                <?php if(isset($email)) print " value='{$email}'"; ?> required>
                                 <?php if (isset($error_message)) print "<span class='error'>{$error_message}"; ?>
                             </div>
 
