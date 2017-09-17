@@ -390,7 +390,7 @@ class User extends CI_Controller
         }
 
 		$data['has_next'] = FALSE;
-        $num_new_notifs = $this->user_model->get_num_notifications($_SESSION, TRUE);
+        $num_new_notifs = $this->user_model->get_num_notifications($_SESSION['user_id'], TRUE);
 		if ($num_new_notifs > 0) {
 		    // First show only the new notifications.
 			$data['notifications'] = $this->user_model->get_notifications($_SESSION['user_id'], $offset, $limit, TRUE);
