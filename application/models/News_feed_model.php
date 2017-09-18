@@ -4,6 +4,8 @@ require_once 'autoload.php';
 
 class News_feed_model extends CI_Model
 {
+    private $unfollowed_user_ids;
+
     public function __construct()
     {
         parent::__construct();
@@ -12,6 +14,21 @@ class News_feed_model extends CI_Model
             'post_model', 'photo_model',
             'video_model', 'link_model'
         ]);
+    }
+
+    private function get_unfollowed_user_ids($user_id)
+    {
+        $sql = sprintf('SELECT user_id FROM user_unfollow WHERE follower_id = %d',
+                        $user_id);
+        $query = $this->db->query($sql);
+        $results = $query->result_array();
+
+        $user_ids = [];
+        foreach ($results as $r) {
+            $user_ids[] = $r['user_id'];
+        }
+
+        return $user_ids;
     }
 
     private function get_latest_shared_items_user_ids($item, $friends_ids, $latest_share_date_sql)
@@ -40,6 +57,16 @@ class News_feed_model extends CI_Model
     public function get_num_news_feed_items($user_id)
     {
         $friends_ids = $this->user_model->get_friends_ids($user_id);
+        $this->unfollowed_user_ids = $this->get_unfollowed_user_ids($user_id);
+
+        // Remove IDs of friends who have been unfollowed.
+        $friends_ids = array_filter($friends_ids, function($friend_id) {
+            return !in_array($friend_id, $this->unfollowed_user_ids);
+        });
+
+        // Add extra element for query-safety.
+        $friends_ids[] = 0;
+        $friends_ids_str = implode(',', $friends_ids);
 
         /* Get IDs of shared posts, photos, videos, and links. */
         /// IDS of shared posts.
@@ -63,9 +90,6 @@ class News_feed_model extends CI_Model
         $shared_links_ids_str = implode(',', $shared_links_ids);
 
         /* *** */
-        $friends_ids[] = 0;  // Add extra element for query-safety.
-        $friends_ids_str = implode(',', $friends_ids);
-
         $num_posts_sql = sprintf('SELECT COUNT(source_id) FROM activities
                                  WHERE (actor_id IN(%s) AND source_id NOT IN(%s) AND activity = \'post\')',
                                  $friends_ids_str, $shared_posts_ids_str);
@@ -79,7 +103,7 @@ class News_feed_model extends CI_Model
 
         $num_videos_sql = sprintf('SELECT COUNT(source_id) FROM activities
                                     WHERE (actor_id IN(%s) AND source_id NOT IN(%s) AND activity = \'video\')',
-                                 $friends_ids_str, $shared_videos_ids_str);
+                                    $friends_ids_str, $shared_videos_ids_str);
         $num_videos = $this->utility_model->run_query($num_videos_sql)->row_array()['COUNT(source_id)'];
 
         $num_links_sql = sprintf('SELECT COUNT(source_id) FROM activities
@@ -106,6 +130,12 @@ class News_feed_model extends CI_Model
     public function get_news_feed_items($user_id, $offset, $limit)
     {
         $friends_ids = $this->user_model->get_friends_ids($user_id);
+        $this->unfollowed_user_ids = $this->get_unfollowed_user_ids($user_id);
+
+        // Remove IDs of friends who have been unfollowed.
+        $friends_ids = array_filter($friends_ids, function($friend_id) {
+            return !in_array($friend_id, $this->unfollowed_user_ids);
+        });
 
         /* Get IDs of shared items. */
         /// IDs are got seperately b'se many items may share the same ID
@@ -167,9 +197,12 @@ class News_feed_model extends CI_Model
         $friends_ids[] = 0;  // Add extra element for query-safety.
         $friends_ids_str = implode(',', $friends_ids);
 
+        $this->unfollowed_user_ids[] = 0;
+        $unfollowed_user_ids_str = implode(',', $this->unfollowed_user_ids);
+
         /// Get combined news feed items.
         $news_feed_items_sql = sprintf("SELECT * FROM activities
-                                        WHERE ((actor_id IN(%s) AND activity = 'post' AND source_id NOT IN(%s)) OR
+                                        WHERE (((actor_id IN(%s) AND activity = 'post' AND source_id NOT IN(%s)) OR
                                                 (actor_id IN(%s) AND activity IN('photo', 'profile_pic_change') AND
                                                     source_id NOT IN(%s)) OR
                                                 (actor_id IN(%s) AND activity = 'video' AND source_id NOT IN(%s)) OR
@@ -181,7 +214,8 @@ class News_feed_model extends CI_Model
                                                 (actor_id IN(%s) AND actor_id IN(%s) AND activity = 'share' AND
                                                     source_type = 'video' AND subject_id != %d) OR
                                                 (actor_id IN(%s) AND actor_id IN(%s) AND activity = 'share' AND
-                                                    source_type = 'link' AND subject_id != %d))
+                                                    source_type = 'link' AND subject_id != %d)) AND
+                                                    subject_id NOT IN(%s))
                                         ORDER BY date_entered DESC LIMIT %d, %d",
                                         $friends_ids_str, $shared_posts_ids_str,
                                         $friends_ids_str, $shared_photos_ids_str,
@@ -191,7 +225,7 @@ class News_feed_model extends CI_Model
                                         $friends_ids_str, $latest_shared_photos_user_ids_str, $user_id,
                                         $friends_ids_str, $latest_shared_videos_user_ids_str, $user_id,
                                         $friends_ids_str, $latest_shared_links_user_ids_str, $user_id,
-                                        $offset, $limit);
+                                        $unfollowed_user_ids_str, $offset, $limit);
         $news_feed_items = $this->utility_model->run_query($news_feed_items_sql)->result_array();
 
         foreach ($news_feed_items as &$r) {
