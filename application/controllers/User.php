@@ -31,6 +31,7 @@ class User extends CI_Controller
         $data['suid'] = $user_id;
         $data['su_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
         $data['friendship_status'] = $this->user_model->get_friendship_status($_SESSION['user_id'], $user_id);
+        $data['following'] = $this->user_model->is_following($_SESSION['user_id'], $user_id);
         $data['title'] = format_name($data['secondary_user']) . ' posts';
 
         $this->load->view('common/header', $data);
@@ -563,6 +564,34 @@ class User extends CI_Controller
         }
     }
 
+    public function follow($user_id)
+    {
+        try {
+            $this->user_model->follow_user($_SESSION['user_id'], $user_id);
+            redirect(base_url("user/{$user_id}"));
+        }
+        catch (IllegalAccessException $e) {
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = $e->getMessage();
+            redirect(base_url('error'));
+        }
+    }
+
+    public function unfollow($user_id = 0)
+    {
+        try {
+            $this->user_model->unfollow_user($_SESSION['user_id'], $user_id);
+            redirect(base_url("user/{$user_id}"));
+        }
+        catch (IllegalAccessException $e) {
+            $_SESSION['title'] = 'Permission Denied!';
+            $_SESSION['heading'] = 'Permission Denied';
+            $_SESSION['message'] = $e->getMessage();
+            redirect(base_url('error'));
+        }
+    }
+
     public function messages($offset = 0)
     {
         $data = [];
@@ -636,6 +665,7 @@ class User extends CI_Controller
 
         $data['su_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
         $data['friendship_status'] = $this->user_model->get_friendship_status($_SESSION['user_id'], $user_id);
+        $data['following'] = $this->user_model->is_following($_SESSION['user_id'], $user_id);
         $data['suid'] = $user_id;
         $data['title'] = format_name($data['secondary_user']) . ' friends';
 
@@ -672,6 +702,7 @@ class User extends CI_Controller
         }
         $data['su_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
         $data['friendship_status'] = $this->user_model->get_friendship_status($_SESSION['user_id'], $user_id);
+        $data['following'] = $this->user_model->is_following($_SESSION['user_id'], $user_id);
         $data['suid'] = $user_id;
         $data['title'] = "Profile - {$data['secondary_user']}";
 
@@ -703,6 +734,7 @@ class User extends CI_Controller
 
         $data['su_profile_pic_path'] = $this->user_model->get_profile_pic_path($user_id);
         $data['friendship_status'] = $this->user_model->get_friendship_status($_SESSION['user_id'], $user_id);
+        $data['following'] = $this->user_model->is_following($_SESSION['user_id'], $user_id);
         $data['suid'] = $user_id;
         $data['title'] = format_name($data['secondary_user']) . ' photos';
 

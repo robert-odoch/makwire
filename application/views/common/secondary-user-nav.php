@@ -21,13 +21,20 @@
                     if ($friendship_status['are_friends']) {
                         print "<a href='" . base_url("user/send-message/{$suid}") .
                                 "' class='btn btn-xs btn-default send-message'>
-                                <span class='glyphicon glyphicon-envelope'></span> Message</a>
+                                <span class='glyphicon glyphicon-envelope'></span> Message</a>";
 
-                                <a href='" . base_url("user/unfollow/{$suid}") .
-                                "' class='btn btn-xs btn-default' title='unfollow'>
-                                <span class='glyphicon glyphicon-eye-close'></span> Unfollow</a>
+                        if ($following) {
+                            print "<a href='" . base_url("user/unfollow/{$suid}") .
+                                    "' class='btn btn-xs btn-default' title='unfollow'>
+                                    <span class='glyphicon glyphicon-eye-close'></span> Unfollow</a>";
+                        }
+                        else {
+                            print "<a href='" . base_url("user/follow/{$suid}") .
+                                    "' class='btn btn-xs btn-default' title='follow'>
+                                    <span class='glyphicon glyphicon-eye-open'></span> Follow</a>";
+                        }
 
-                                <a href='" . base_url("user/unfriend/{$suid}") .
+                        print "<a href='" . base_url("user/unfriend/{$suid}") .
                                 "' class='btn btn-xs btn-default' title='unfriend'>
                                 <span class='glyphicon glyphicon-minus-sign'></span> Unfriend</a>";
                     }

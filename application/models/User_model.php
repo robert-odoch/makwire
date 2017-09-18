@@ -1160,6 +1160,47 @@ class User_model extends CI_Model
         $this->utility_model->run_query($activity_sql);
     }
 
+    public function is_following($follower_id, $user_id)
+    {
+        if ( ! $this->are_friends($follower_id, $user_id)) {
+            return FALSE;
+        }
+
+        // Check if the user wasn't unfollowed.
+        $sql = sprintf('SELECT id FROM user_unfollow WHERE follower_id = %d AND user_id = %d',
+                        $follower_id, $user_id);
+        $query = $this->db->query($sql);
+        return ($query->num_rows() == 0);
+    }
+
+    public function unfollow_user($follower_id, $user_id)
+    {
+        if ( ! $this->is_following($follower_id, $user_id)) {
+            throw new IllegalAccessException('You are not following this user.');
+        }
+
+        // Unfollow user.
+        $sql = sprintf('INSERT INTO user_unfollow (follower_id, user_id) VALUES (%d, %d)',
+                        $follower_id, $user_id);
+        $this->db->query($sql);
+    }
+
+    public function follow_user($follower_id, $user_id)
+    {
+        if ( ! $this->are_friends($follower_id, $user_id)) {
+            throw new IllegalAccessException('This user is not your friend.');
+        }
+
+        if ($this->is_following($follower_id, $user_id)) {
+            return;
+        }
+
+        // Delete preivious unfollow.
+        $sql = sprintf('DELETE FROM user_unfollow WHERE follower_id = %d AND user_id = %d',
+                        $follower_id, $user_id);
+        $this->db->query($sql);
+    }
+
     /**
      * Sends a chat message to a user.
      *
