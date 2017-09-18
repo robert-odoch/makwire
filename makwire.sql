@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 05, 2017 at 08:52 PM
+-- Generation Time: Sep 18, 2017 at 03:07 PM
 -- Server version: 10.1.10-MariaDB
 -- PHP Version: 7.0.2
 
@@ -214,13 +214,25 @@ CREATE TABLE `notification_read` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `password_reset_token`
+--
+
+CREATE TABLE `password_reset_token` (
+  `email` varchar(80) NOT NULL,
+  `token` varchar(40) NOT NULL,
+  `date_entered` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `photos`
 --
 
 CREATE TABLE `photos` (
   `photo_id` bigint(20) UNSIGNED NOT NULL,
   `user_id` int(11) UNSIGNED NOT NULL,
-  `image_type` varchar(15) NOT NULL,
+  `file_type` varchar(15) NOT NULL,
   `full_path` varchar(200) NOT NULL,
   `description` text,
   `date_entered` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -295,23 +307,8 @@ CREATE TABLE `users` (
   `passwd` char(255) NOT NULL,
   `profile_name` varchar(80) NOT NULL,
   `profile_pic_path` varchar(200) DEFAULT NULL,
-  `logged_in` tinyint(1) UNSIGNED NOT NULL,
+  `last_activity` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `date_created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `user_colleges`
---
-
-CREATE TABLE `user_colleges` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `user_id` int(11) UNSIGNED NOT NULL,
-  `college_id` int(11) UNSIGNED NOT NULL,
-  `date_from` date NOT NULL,
-  `date_to` date NOT NULL,
-  `level` enum('undergraduate','postgraduate') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -397,7 +394,23 @@ CREATE TABLE `user_schools` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `user_id` int(11) UNSIGNED NOT NULL,
   `school_id` int(11) UNSIGNED NOT NULL,
-  `user_college_id` bigint(20) UNSIGNED DEFAULT NULL
+  `date_from` date NOT NULL,
+  `date_to` date NOT NULL,
+  `level` enum('undergraduate','graduate') NOT NULL,
+  `date_entered` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_unfollow`
+--
+
+CREATE TABLE `user_unfollow` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `follower_id` int(11) UNSIGNED NOT NULL,
+  `user_id` int(11) UNSIGNED NOT NULL,
+  `date_entered` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -564,15 +577,6 @@ ALTER TABLE `users`
 ALTER TABLE `users` ADD FULLTEXT KEY `profile_name` (`profile_name`);
 
 --
--- Indexes for table `user_colleges`
---
-ALTER TABLE `user_colleges`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `college_id` (`college_id`),
-  ADD KEY `user_id_2` (`user_id`,`college_id`);
-
---
 -- Indexes for table `user_emails`
 --
 ALTER TABLE `user_emails`
@@ -618,9 +622,16 @@ ALTER TABLE `user_programmes`
 --
 ALTER TABLE `user_schools`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `user_college_id` (`user_college_id`),
-  ADD KEY `user_id` (`user_id`,`school_id`,`user_college_id`),
+  ADD KEY `user_id` (`user_id`,`school_id`),
   ADD KEY `school_id` (`school_id`);
+
+--
+-- Indexes for table `user_unfollow`
+--
+ALTER TABLE `user_unfollow`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `follower_id` (`follower_id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `videos`
@@ -734,11 +745,6 @@ ALTER TABLE `shares`
 ALTER TABLE `users`
   MODIFY `user_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT for table `user_colleges`
---
-ALTER TABLE `user_colleges`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
---
 -- AUTO_INCREMENT for table `user_emails`
 --
 ALTER TABLE `user_emails`
@@ -767,6 +773,11 @@ ALTER TABLE `user_programmes`
 -- AUTO_INCREMENT for table `user_schools`
 --
 ALTER TABLE `user_schools`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `user_unfollow`
+--
+ALTER TABLE `user_unfollow`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `videos`
@@ -840,7 +851,6 @@ ALTER TABLE `messages`
 -- Constraints for table `notification_read`
 --
 ALTER TABLE `notification_read`
-  ADD CONSTRAINT `notification_read_ibfk_1` FOREIGN KEY (`activity_id`) REFERENCES `activities` (`activity_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `notification_read_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
@@ -865,20 +875,13 @@ ALTER TABLE `programmes`
 -- Constraints for table `schools`
 --
 ALTER TABLE `schools`
-  ADD CONSTRAINT `schools_ibfk_1` FOREIGN KEY (`college_id`) REFERENCES `colleges` (`college_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `schools_ibfk_1` FOREIGN KEY (`college_id`) REFERENCES `colleges` (`college_id`);
 
 --
 -- Constraints for table `shares`
 --
 ALTER TABLE `shares`
   ADD CONSTRAINT `shares_ibfk_1` FOREIGN KEY (`sharer_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `user_colleges`
---
-ALTER TABLE `user_colleges`
-  ADD CONSTRAINT `user_colleges_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `user_colleges_ibfk_2` FOREIGN KEY (`college_id`) REFERENCES `colleges` (`college_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `user_emails`
@@ -921,8 +924,14 @@ ALTER TABLE `user_programmes`
 --
 ALTER TABLE `user_schools`
   ADD CONSTRAINT `user_schools_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `user_schools_ibfk_2` FOREIGN KEY (`school_id`) REFERENCES `schools` (`school_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `user_schools_ibfk_3` FOREIGN KEY (`user_college_id`) REFERENCES `user_colleges` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `user_schools_ibfk_2` FOREIGN KEY (`school_id`) REFERENCES `schools` (`school_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `user_unfollow`
+--
+ALTER TABLE `user_unfollow`
+  ADD CONSTRAINT `user_unfollow_ibfk_1` FOREIGN KEY (`follower_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `user_unfollow_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `videos`
