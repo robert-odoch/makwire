@@ -109,6 +109,21 @@ class User_model extends CI_Model
         return $friends;
     }
 
+    public function get_unfollowed_user_ids($user_id)
+    {
+        $sql = sprintf('SELECT user_id FROM user_unfollow WHERE follower_id = %d',
+                        $user_id);
+        $query = $this->db->query($sql);
+        $results = $query->result_array();
+
+        $user_ids = [];
+        foreach ($results as $r) {
+            $user_ids[] = $r['user_id'];
+        }
+
+        return $user_ids;
+    }
+
     /**
      * Gets the date of birth for a user.
      *
@@ -197,14 +212,18 @@ class User_model extends CI_Model
      */
     public function get_num_timeline_items($user_id)
     {
+        $unfollowed_user_ids = $this->get_unfollowed_user_ids($user_id);
+        $unfollowed_user_ids[] = 0;
+        $unfollowed_user_ids_str = implode(',', $unfollowed_user_ids);
+
         // Get number of posts, photos, videos, and links posted by this user
         // and those shared by this user that are by friends
         // to the user viewing the page.
         $num_timeline_items_sql = sprintf("SELECT COUNT(activity_id) FROM activities
                                             WHERE ((actor_id = %d AND
                                             activity IN('post','photo','video','link','profile_pic_change')) OR
-                                            (actor_id = %d AND activity = 'share'))",
-                                            $user_id, $user_id);
+                                            (actor_id = %d AND activity = 'share' AND subject_id NOT IN(%s)))",
+                                            $user_id, $user_id, $unfollowed_user_ids_str);
         $query = $this->utility_model->run_query($num_timeline_items_sql);
 
         return $query->row_array()['COUNT(activity_id)'];
@@ -218,13 +237,17 @@ class User_model extends CI_Model
      */
     public function get_timeline_items($user_id, $visitor_id, $offset, $limit)
     {
+        $unfollowed_user_ids = $this->get_unfollowed_user_ids($user_id);
+        $unfollowed_user_ids[] = 0;
+        $unfollowed_user_ids_str = implode(',', $unfollowed_user_ids);
+
         // Get posts, photos, videos, and links posted/shared by this user.
         $timeline_items_sql = sprintf("SELECT * FROM activities
                                         WHERE ((actor_id = %d AND
                                                 activity IN('post','photo','video','link','profile_pic_change')) OR
-                                                (actor_id = %d AND activity = 'share'))
+                                                (actor_id = %d AND activity = 'share' AND subject_id NOT IN(%s)))
                                         ORDER BY date_entered DESC LIMIT %d, %d",
-                                        $user_id, $user_id, $offset, $limit);
+                                        $user_id, $user_id, $unfollowed_user_ids_str, $offset, $limit);
         $timeline_items = $this->utility_model->run_query($timeline_items_sql)->result_array();
 
         foreach ($timeline_items as &$r) {

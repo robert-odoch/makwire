@@ -16,39 +16,6 @@ class News_feed_model extends CI_Model
         ]);
     }
 
-    private function get_unfollowed_user_ids($user_id)
-    {
-        $sql = sprintf('SELECT user_id FROM user_unfollow WHERE follower_id = %d',
-                        $user_id);
-        $query = $this->db->query($sql);
-        $results = $query->result_array();
-
-        $user_ids = [];
-        foreach ($results as $r) {
-            $user_ids[] = $r['user_id'];
-        }
-
-        return $user_ids;
-    }
-
-    private function get_latest_shared_items_user_ids($item, $friends_ids, $latest_share_date_sql)
-    {
-        $friends_ids[] = 0;  // Add extra element for query-safety.
-        $friends_ids_str = implode(',', $friends_ids);
-
-        $user_ids_sql = sprintf('SELECT DISTINCT sharer_id FROM shares s1
-                                WHERE (sharer_id IN(%s) AND subject_type = \'%s\' AND date_shared = (%s))',
-                                $friends_ids_str, $item, $latest_share_date_sql);
-        $user_ids_results = $this->utility_model->run_query($user_ids_sql)->result_array();
-
-        $user_ids = [];
-        foreach ($user_ids_results as $r) {
-            $user_ids[] = $r['sharer_id'];
-        }
-
-        return $user_ids;
-    }
-
     /**
      * Gets number of posts, photos, videos, and links on a user's news feed.
      *
@@ -57,7 +24,7 @@ class News_feed_model extends CI_Model
     public function get_num_news_feed_items($user_id)
     {
         $friends_ids = $this->user_model->get_friends_ids($user_id);
-        $this->unfollowed_user_ids = $this->get_unfollowed_user_ids($user_id);
+        $this->unfollowed_user_ids = $this->user_model->get_unfollowed_user_ids($user_id);
 
         // Remove IDs of friends who have been unfollowed.
         $friends_ids = array_filter($friends_ids, function($friend_id) {
@@ -130,7 +97,7 @@ class News_feed_model extends CI_Model
     public function get_news_feed_items($user_id, $offset, $limit)
     {
         $friends_ids = $this->user_model->get_friends_ids($user_id);
-        $this->unfollowed_user_ids = $this->get_unfollowed_user_ids($user_id);
+        $this->unfollowed_user_ids = $this->user_model->get_unfollowed_user_ids($user_id);
 
         // Remove IDs of friends who have been unfollowed.
         $friends_ids = array_filter($friends_ids, function($friend_id) {
@@ -282,6 +249,24 @@ class News_feed_model extends CI_Model
         unset($r);
 
         return $news_feed_items;
+    }
+
+    private function get_latest_shared_items_user_ids($item, $friends_ids, $latest_share_date_sql)
+    {
+        $friends_ids[] = 0;  // Add extra element for query-safety.
+        $friends_ids_str = implode(',', $friends_ids);
+
+        $user_ids_sql = sprintf('SELECT DISTINCT sharer_id FROM shares s1
+                                WHERE (sharer_id IN(%s) AND subject_type = \'%s\' AND date_shared = (%s))',
+                                $friends_ids_str, $item, $latest_share_date_sql);
+        $user_ids_results = $this->utility_model->run_query($user_ids_sql)->result_array();
+
+        $user_ids = [];
+        foreach ($user_ids_results as $r) {
+            $user_ids[] = $r['sharer_id'];
+        }
+
+        return $user_ids;
     }
 }
 
