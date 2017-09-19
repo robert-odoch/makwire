@@ -68,7 +68,7 @@ class Account_model extends CI_Model
         $sql = sprintf("UPDATE users SET lname = %s, other_names = %s, profile_name = %s
                         WHERE user_id = %d", $this->db->escape(ucwords($last_name)),
                         $this->db->escape(ucwords($other_names)),
-                        $this->db->escape(ucwords($last_name)) . ' ' . $this->db->escape(ucwords($other_names)),
+                        $this->db->escape(ucwords("{$last_name} {$other_names}")),
                         $user_id);
         $this->utility_model->run_query($sql);
     }
