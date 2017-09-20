@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 18, 2017 at 03:07 PM
+-- Generation Time: Sep 20, 2017 at 02:30 PM
 -- Server version: 10.1.10-MariaDB
 -- PHP Version: 7.0.2
 
@@ -89,6 +89,13 @@ CREATE TABLE `countries` (
   `country_name` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `countries`
+--
+
+INSERT INTO `countries` (`country_id`, `country_name`) VALUES
+(1, 'Uganda');
+
 -- --------------------------------------------------------
 
 --
@@ -97,9 +104,101 @@ CREATE TABLE `countries` (
 
 CREATE TABLE `districts` (
   `district_id` int(11) UNSIGNED NOT NULL,
+  `region_id` tinyint(1) UNSIGNED NOT NULL,
   `country_id` int(11) UNSIGNED NOT NULL,
   `district_name` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `districts`
+--
+
+INSERT INTO `districts` (`district_id`, `region_id`, `country_id`, `district_name`) VALUES
+(1, 1, 1, 'Soroti'),
+(2, 1, 1, 'Bududa'),
+(3, 1, 1, 'Bugiri'),
+(4, 1, 1, 'Busia'),
+(5, 1, 1, 'Butaleja'),
+(6, 1, 1, 'Iganga'),
+(7, 1, 1, 'Jinja'),
+(8, 1, 1, 'Kamuli'),
+(9, 1, 1, 'Kapchorwa'),
+(10, 1, 1, 'Katakwi'),
+(11, 1, 1, 'Kayunga'),
+(12, 1, 1, 'Kibuku'),
+(13, 1, 1, 'Kumi'),
+(14, 1, 1, 'Luuka'),
+(15, 1, 1, 'Manafwa'),
+(16, 1, 1, 'Mayuge'),
+(17, 1, 1, 'Mbale'),
+(18, 1, 1, 'Namatumba'),
+(19, 1, 1, 'Ngora'),
+(20, 1, 1, 'Pallisa'),
+(21, 1, 1, 'Tororo'),
+(22, 2, 1, 'Butambala'),
+(23, 2, 1, 'Buvuma'),
+(24, 2, 1, 'Buikwe'),
+(25, 2, 1, 'Mukono'),
+(26, 2, 1, 'Nakaseke'),
+(27, 2, 1, 'Mubende'),
+(28, 2, 1, 'Kalangala'),
+(29, 2, 1, 'Rakai'),
+(30, 2, 1, 'Kampala'),
+(31, 2, 1, 'Mityana'),
+(32, 2, 1, 'Luwero'),
+(33, 2, 1, 'Mpigi'),
+(34, 2, 1, 'Wakiso'),
+(35, 2, 1, 'Kalungu'),
+(36, 2, 1, 'Lyantonde'),
+(37, 2, 1, 'Masaka'),
+(38, 3, 1, 'Bushenyi'),
+(39, 3, 1, 'Kabarole'),
+(40, 3, 1, 'Kasese'),
+(41, 3, 1, 'Bundibugyo'),
+(42, 3, 1, 'Ibanda'),
+(43, 3, 1, 'Mbarara'),
+(44, 3, 1, 'Kisoro'),
+(45, 3, 1, 'Kiruhura'),
+(46, 3, 1, 'Kanungu'),
+(47, 3, 1, 'Isingiro'),
+(48, 3, 1, 'Kyenjojo'),
+(49, 3, 1, 'Rukungiri'),
+(50, 3, 1, 'Kabale'),
+(51, 3, 1, 'Ntungamo'),
+(52, 3, 1, 'Kamwenge'),
+(53, 3, 1, 'Ntoroko'),
+(54, 3, 1, 'Sheema'),
+(55, 3, 1, 'Kyegegwa'),
+(56, 4, 1, 'Agago'),
+(57, 4, 1, 'Pader'),
+(58, 4, 1, 'Lira'),
+(59, 4, 1, 'Alebtong'),
+(60, 4, 1, 'Otuke'),
+(61, 4, 1, 'Amuru'),
+(62, 4, 1, 'Nwoya'),
+(63, 4, 1, 'Kitgum'),
+(64, 4, 1, 'Apac'),
+(65, 4, 1, 'Kole'),
+(66, 4, 1, 'Gulu'),
+(67, 4, 1, 'Amolatar'),
+(68, 4, 1, 'Dokolo'),
+(69, 4, 1, 'Oyam'),
+(70, 4, 1, 'Kaberamaido'),
+(71, 4, 1, 'Kaabong'),
+(72, 4, 1, 'Kotido'),
+(73, 5, 1, 'Moyo'),
+(74, 5, 1, 'Buliisa'),
+(75, 5, 1, 'Kibaale'),
+(76, 5, 1, 'Yumbe'),
+(77, 5, 1, 'Nakasongola'),
+(78, 5, 1, 'Hoima'),
+(79, 5, 1, 'Masindi'),
+(80, 5, 1, 'Kiryandongo'),
+(81, 5, 1, 'Arua'),
+(82, 5, 1, 'Kiboga'),
+(83, 5, 1, 'Nebbi'),
+(84, 5, 1, 'Koboko'),
+(85, 5, 1, 'Zombo');
 
 -- --------------------------------------------------------
 
@@ -137,8 +236,24 @@ CREATE TABLE `friend_requests` (
 
 CREATE TABLE `halls` (
   `hall_id` int(11) UNSIGNED NOT NULL,
-  `hall_name` varchar(30) NOT NULL
+  `hall_name` varchar(30) NOT NULL,
+  `gender` enum('M','F') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `halls`
+--
+
+INSERT INTO `halls` (`hall_id`, `hall_name`, `gender`) VALUES
+(1, 'Africa Hall', 'F'),
+(2, 'Complex Hall', 'F'),
+(3, 'Livingstone Hall', 'M'),
+(4, 'Lumumba Hall', 'M'),
+(5, 'Mary Stuart Hall', 'F'),
+(6, 'Mitchell Hall', 'M'),
+(7, 'Nkrumah Hall', 'M'),
+(8, 'Nsibirwa Hall', 'M'),
+(9, 'University Hall', 'M');
 
 -- --------------------------------------------------------
 
@@ -294,6 +409,28 @@ CREATE TABLE `shares` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `uganda_regions`
+--
+
+CREATE TABLE `uganda_regions` (
+  `id` tinyint(1) UNSIGNED NOT NULL,
+  `region` varchar(25) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `uganda_regions`
+--
+
+INSERT INTO `uganda_regions` (`id`, `region`) VALUES
+(1, 'Eastern'),
+(2, 'Central'),
+(3, 'South Western'),
+(4, 'Northern'),
+(5, 'Western');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -307,6 +444,7 @@ CREATE TABLE `users` (
   `passwd` char(255) NOT NULL,
   `profile_name` varchar(80) NOT NULL,
   `profile_pic_path` varchar(200) DEFAULT NULL,
+  `district_id` int(10) UNSIGNED DEFAULT NULL,
   `last_activity` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `date_created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -353,19 +491,6 @@ CREATE TABLE `user_hostels` (
   `hostel_id` int(11) UNSIGNED NOT NULL,
   `date_from` date NOT NULL,
   `date_to` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `user_profile`
---
-
-CREATE TABLE `user_profile` (
-  `profile_id` int(11) UNSIGNED NOT NULL,
-  `user_id` int(11) UNSIGNED NOT NULL,
-  `district_id` int(11) UNSIGNED DEFAULT NULL,
-  `country_id` int(11) UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -472,7 +597,8 @@ ALTER TABLE `countries`
 ALTER TABLE `districts`
   ADD PRIMARY KEY (`district_id`),
   ADD KEY `district_name` (`district_name`),
-  ADD KEY `country_id` (`country_id`);
+  ADD KEY `country_id` (`country_id`),
+  ADD KEY `region_id` (`region_id`);
 ALTER TABLE `districts` ADD FULLTEXT KEY `district_name_2` (`district_name`);
 
 --
@@ -570,10 +696,17 @@ ALTER TABLE `shares`
   ADD KEY `sharer_id` (`sharer_id`);
 
 --
+-- Indexes for table `uganda_regions`
+--
+ALTER TABLE `uganda_regions`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
-  ADD PRIMARY KEY (`user_id`);
+  ADD PRIMARY KEY (`user_id`),
+  ADD KEY `district_id` (`district_id`);
 ALTER TABLE `users` ADD FULLTEXT KEY `profile_name` (`profile_name`);
 
 --
@@ -598,15 +731,6 @@ ALTER TABLE `user_hostels`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`,`hostel_id`),
   ADD KEY `hostel_id` (`hostel_id`);
-
---
--- Indexes for table `user_profile`
---
-ALTER TABLE `user_profile`
-  ADD PRIMARY KEY (`profile_id`),
-  ADD KEY `user_id` (`user_id`,`district_id`,`country_id`),
-  ADD KEY `district_id` (`district_id`),
-  ADD KEY `country_id` (`country_id`);
 
 --
 -- Indexes for table `user_programmes`
@@ -740,6 +864,11 @@ ALTER TABLE `schools`
 ALTER TABLE `shares`
   MODIFY `share_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT for table `uganda_regions`
+--
+ALTER TABLE `uganda_regions`
+  MODIFY `id` tinyint(1) UNSIGNED NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
@@ -759,11 +888,6 @@ ALTER TABLE `user_halls`
 --
 ALTER TABLE `user_hostels`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `user_profile`
---
-ALTER TABLE `user_profile`
-  MODIFY `profile_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `user_programmes`
 --
@@ -812,7 +936,8 @@ ALTER TABLE `comments`
 -- Constraints for table `districts`
 --
 ALTER TABLE `districts`
-  ADD CONSTRAINT `districts_ibfk_1` FOREIGN KEY (`country_id`) REFERENCES `countries` (`country_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `districts_ibfk_1` FOREIGN KEY (`country_id`) REFERENCES `countries` (`country_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `districts_ibfk_2` FOREIGN KEY (`region_id`) REFERENCES `uganda_regions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `friends`
@@ -902,14 +1027,6 @@ ALTER TABLE `user_halls`
 ALTER TABLE `user_hostels`
   ADD CONSTRAINT `user_hostels_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `user_hostels_ibfk_2` FOREIGN KEY (`hostel_id`) REFERENCES `hostels` (`hostel_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `user_profile`
---
-ALTER TABLE `user_profile`
-  ADD CONSTRAINT `user_profile_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `user_profile_ibfk_2` FOREIGN KEY (`district_id`) REFERENCES `districts` (`district_id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `user_profile_ibfk_3` FOREIGN KEY (`country_id`) REFERENCES `countries` (`country_id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `user_programmes`
