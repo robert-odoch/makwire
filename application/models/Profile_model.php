@@ -51,9 +51,9 @@ class Profile_model extends CI_Model
     public function get_profile($user_id)
     {
         // Get the country and district.
-        $origin_sql = sprintf("SELECT country_name, district_name FROM user_profile up
-                                LEFT JOIN countries c ON (up.country_id = c.country_id)
-                                LEFT JOIN districts d ON (up.district_id = d.district_id)
+        $origin_sql = sprintf("SELECT country_name, district_name FROM users u
+                                LEFT JOIN districts d ON (u.district_id = d.district_id)
+                                LEFT JOIN countries c ON (d.country_id = c.country_id)
                                 WHERE (user_id = %d)",
                                 $user_id);
         $origin_query = $this->utility_model->run_query($origin_sql);
@@ -174,19 +174,6 @@ class Profile_model extends CI_Model
         $hostels_query = $this->utility_model->run_query($hostels_sql);
 
         return $hostels_query->result_array();
-    }
-
-    /**
-     * Gets all countries from the countries table.
-     *
-     * @return all countries in the countries table.
-     */
-    public function get_countries()
-    {
-        $countries_sql = sprintf("SELECT country_id, country_name FROM countries");
-        $countries_query = $this->utility_model->run_query($countries_sql);
-
-        return $countries_query->result_array();
     }
 
     /**
@@ -475,34 +462,24 @@ class Profile_model extends CI_Model
     }
 
     /**
-     * Adds a user's country of origin to his profile.
-     *
-     * @param $country_id the ID of the country in the countries table.
-     */
-    public function add_country($user_id, $country_id)
-    {
-        $profile_sql = sprintf("UPDATE user_profile SET country_id = %d WHERE user_id = %d",
-                                $country_id, $user_id);
-        $this->utility_model->run_query($profile_sql);
-    }
-
-    /**
      * Adds a district where a user if from to his profile.
      *
      * @param $district_id the ID of the district in the districts table.
      */
     public function add_district($user_id, $district_id)
     {
-        // First check if a district with that id exists.
-        $district_sql = sprintf("SELECT district_name FROM districts WHERE (district_id = %d)",
+        // Get the country ID.
+        $country_sql = sprintf('SELECT country_id FROM districts WHERE district_id = %d',
                                 $district_id);
-        $district_query = $this->utility_model->run_query($district_sql);
-        if ($district_query->num_rows() == 0) {
+        $country_query = $this->db->query($country_sql);
+        if ($country_query->num_rows() == 0) {
             return FALSE;
         }
 
+        $country_id = $country_query->row()->country_id;
+
         // Next check if this user hasn't added district already.
-        $profile_sql = sprintf("SELECT district_id FROM user_profile
+        $profile_sql = sprintf("SELECT district_id FROM users
                                 WHERE (user_id = %d AND district_id IS NOT NULL)",
                                 $user_id);
         $profile_query = $this->utility_model->run_query($profile_sql);
@@ -510,7 +487,7 @@ class Profile_model extends CI_Model
             return FALSE;
         }
 
-        $profile_sql = sprintf("UPDATE user_profile SET district_id = %d WHERE user_id = %d",
+        $profile_sql = sprintf("UPDATE users SET district_id = %d WHERE user_id = %d",
                                 $district_id, $user_id);
         $this->utility_model->run_query($profile_sql);
 

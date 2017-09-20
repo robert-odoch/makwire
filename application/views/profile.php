@@ -129,44 +129,24 @@ require_once("common/secondary-user-nav.php");
                 <?php
                 if (!$is_visitor) {
                     if ($profile['origin']['district_name']) {
-                        print "<li><b>District:</b> {$profile['origin']['district_name']}";
-                        print " <a href='" . base_url("profile/edit-district") .
-                                "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Edit</a>";
-                        print "</li>";
+                        print "<li><b>District:</b> {$profile['origin']['district_name']}
+                                <a href='" . base_url("profile/edit-district") .
+                                "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Edit</a>
+                                </li>";
+
+                        print "<li><b>Country:</b> {$profile['origin']['country_name']}</li>";
                     }
                     else {
                         print "<li><b>District:</b> <a href='" . base_url("profile/add-district") .
                                 "'>Add district</a></li>";
-                    }
-
-                    if ($profile['origin']['country_name']) {
-                        print "<li><b>Country:</b> {$profile['origin']['country_name']}";
-                        print " <a href='" . base_url("profile/edit-country") .
-                                "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Edit</a>";
-                        print "</li>";
-                    }
-                    else {
-                        print "<li><b>Country:</b> <a href='" . base_url("profile/add-country") .
-                                "'>Add country</a></li>";
                     }
                 } else {
                 ?>
                     <li>From
                     <?php
                     if ($profile['origin']['district_name']) {
-                        print " {$profile['origin']['district_name']}";
+                        print " {$profile['origin']['district_name']}, {$profile['origin']['country_name']}.";
                     }
-
-                    if ($profile['origin']['country_name'] && $profile['origin']['district_name']) {
-                        print ", {$profile['origin']['country_name']}.";
-                    }
-                    elseif ($profile['origin']['country_name']) {
-                        print " {$profile['origin']['country_name']}.";
-                    }
-                    elseif ($profile['origin']['district_name']) {
-                        print ".";
-                    }
-                    print "</li>";
                     ?>
                     </li>
                 <?php } // (!$is_visitor) ?>

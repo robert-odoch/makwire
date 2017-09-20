@@ -532,33 +532,6 @@ class Profile extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function add_country()
-    {
-        $data = [];
-
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $country_id = trim(strip_tags($this->input->post('country')));
-            if ($country_id == 'none') {
-                // Display a form allowing the user to enter his/her country
-                // and notifiy the admin.
-                redirect(base_url('request-admin/add-country'));
-            }
-            else {
-                $this->profile_model->add_country($_SESSION['user_id'], $country_id);
-                $_SESSION['message'] = 'Your country details have been successfully saved.';
-                redirect(base_url('success'));
-            }
-        }
-
-        $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
-        $data['title'] = 'Add your country of origin';
-        $this->load->view('common/header', $data);
-
-        $data['countries'] = $this->profile_model->get_countries();
-        $this->load->view('edit/country', $data);
-        $this->load->view('common/footer');
-    }
-
     public function add_district($district_id = 0)
     {
         $data = [];
