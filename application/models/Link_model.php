@@ -30,7 +30,7 @@ class Link_model extends CI_Model
                             LEFT JOIN users u ON(v.user_id = u.user_id)
                             WHERE link_id = %d",
                             $link_id);
-        $link_query = $this->utility_model->run_query($link_sql);
+        $link_query = $this->db->query($link_sql);
         if ($link_query->num_rows() == 0) {
             throw new NotFoundException();
         }
@@ -70,7 +70,7 @@ class Link_model extends CI_Model
                             $user_id, $this->db->escape($link_data['url']),
                             $this->db->escape($link_data['title']), $this->db->escape($link_data['description']),
                             $this->db->escape($link_data['image']), $this->db->escape($link_data['site']));
-        $this->utility_model->run_query($link_sql);
+        $this->db->query($link_sql);
         $link_id = $this->db->insert_id();
 
         // Dispatch an activity.
@@ -78,7 +78,7 @@ class Link_model extends CI_Model
                                 (actor_id, subject_id, source_id, source_type, activity)
                                 VALUES (%d, %d, %d, "link", "link")',
                                 $user_id, $user_id, $link_id);
-        $this->utility_model->run_query($activity_sql);
+        $this->db->query($activity_sql);
     }
 
     /**
@@ -93,7 +93,7 @@ class Link_model extends CI_Model
     {
         $sql = sprintf('UPDATE links SET comment = %s WHERE (link_id = %d)',
                         $this->db->escape($comment), $link_id);
-        $this->utility_model->run_query($sql);
+        $this->db->query($sql);
     }
 
     /**
@@ -109,7 +109,7 @@ class Link_model extends CI_Model
     {
         // Get the id of the owner of this link.
         $owner_sql = sprintf('SELECT user_id FROM links WHERE link_id = %d', $link_id);
-        $owner_query = $this->utility_model->run_query($owner_sql);
+        $owner_query = $this->db->query($owner_sql);
         if ($owner_query->num_rows() == 0) {
             throw new NotFoundException();
         }
@@ -141,7 +141,7 @@ class Link_model extends CI_Model
     public function share($link_id, $user_id)
     {
         $owner_sql = sprintf('SELECT user_id FROM links WHERE link_id = %d', $link_id);
-        $owner_query = $this->utility_model->run_query($owner_sql);
+        $owner_query = $this->db->query($owner_sql);
         if ($owner_query->num_rows() == 0) {
             throw new NotFoundException();
         }
@@ -170,7 +170,7 @@ class Link_model extends CI_Model
     {
         // Get the ID of the owner of this link.
         $owner_sql = sprintf('SELECT user_id FROM links WHERE link_id = %d', $link_id);
-        $owner_result = $this->utility_model->run_query($owner_sql)->row_array();
+        $owner_result = $this->db->query($owner_sql)->row_array();
         $owner_id = $owner_result['user_id'];
 
         // Record the comment.

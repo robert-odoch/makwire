@@ -9,7 +9,6 @@ class Login_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('utility_model');
     }
 
     /**
@@ -30,7 +29,7 @@ class Login_model extends CI_Model
             $user_sql = sprintf("SELECT user_id, passwd FROM users WHERE uname = %s",
                                     $this->db->escape($identifier));
         }
-        $user_query = $this->utility_model->run_query($user_sql);
+        $user_query = $this->db->query($user_sql);
 
         if ($user_query->num_rows() == 0) {
             return FALSE;

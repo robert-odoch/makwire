@@ -7,7 +7,6 @@ class Account_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
-        $this->load->model(['utility_model']);
     }
 
     public function is_username_taken($username)
@@ -21,7 +20,7 @@ class Account_model extends CI_Model
     public function user_exists($user_id, $password)
     {
         $sql = sprintf("SELECT passwd FROM users WHERE user_id = %d", $user_id);
-        $query = $this->utility_model->run_query($sql);
+        $query = $this->db->query($sql);
         return password_verify($password, $query->row()->passwd);
     }
 
@@ -29,7 +28,7 @@ class Account_model extends CI_Model
     {
         $sql = sprintf("UPDATE users SET passwd = '%s' WHERE user_id = %d",
                         password_hash($new_password, PASSWORD_BCRYPT), $user_id);
-        $this->utility_model->run_query($sql);
+        $this->db->query($sql);
     }
 
     public function get_name($user_id)
@@ -43,7 +42,7 @@ class Account_model extends CI_Model
     public function get_name_combinations($user_id)
     {
         $sql = sprintf("SELECT lname, other_names FROM users WHERE user_id = %d", $user_id);
-        $query = $this->utility_model->run_query($sql);
+        $query = $this->db->query($sql);
         $result = $query->row_array();
 
         $lname = $result['lname'];
@@ -60,7 +59,7 @@ class Account_model extends CI_Model
     {
         $sql = sprintf("UPDATE users SET profile_name = %s WHERE user_id = %d",
                         $this->db->escape($name), $user_id);
-        $this->utility_model->run_query($sql);
+        $this->db->query($sql);
     }
 
     public function change_name($user_id, $last_name, $other_names)
@@ -70,7 +69,7 @@ class Account_model extends CI_Model
                         $this->db->escape(ucwords($other_names)),
                         $this->db->escape(ucwords("{$last_name} {$other_names}")),
                         $user_id);
-        $this->utility_model->run_query($sql);
+        $this->db->query($sql);
     }
 
     public function delete_account($user_id)
@@ -85,7 +84,7 @@ class Account_model extends CI_Model
                         WHERE (user_id = %d AND activation_code IS NULL)
                         ORDER BY is_primary DESC, is_backup DESC",
                         $user_id);
-        $query = $this->utility_model->run_query($sql);
+        $query = $this->db->query($sql);
 
         return $query->result_array();
     }
@@ -95,13 +94,13 @@ class Account_model extends CI_Model
         // Make all emails for this user non-primary.
         $sql = sprintf("UPDATE user_emails SET is_primary = FALSE, is_backup = TRUE
                         WHERE (user_id = %d)", $user_id);
-        $this->utility_model->run_query($sql);
+        $this->db->query($sql);
 
         // Set the primary email address.
         $sql = sprintf("UPDATE user_emails SET is_primary = TRUE, is_backup = FALSE
                         WHERE (user_id = %d AND email = '%s')",
                         $user_id, $email_address);
-        $this->utility_model->run_query($sql);
+        $this->db->query($sql);
     }
 
     public function set_backup_email($user_id, $email_address)
@@ -111,7 +110,7 @@ class Account_model extends CI_Model
         $sql = sprintf("UPDATE user_emails SET is_backup = FALSE
                         WHERE (user_id = %d AND is_primary IS FALSE)",
                         $user_id);
-        $this->utility_model->run_query($sql);
+        $this->db->query($sql);
 
         // Set backup email address(es).
         if ($email_address == 'all') {
@@ -125,7 +124,7 @@ class Account_model extends CI_Model
                             $user_id, $email_address);
         }
 
-        $this->utility_model->run_query($sql);
+        $this->db->query($sql);
     }
 
     /**
@@ -146,7 +145,7 @@ class Account_model extends CI_Model
             $sql = sprintf("INSERT INTO user_emails (email, activation_code)
                             VALUES ('%s', '%s')", $email, $activation_code);
         }
-        $this->utility_model->run_query($sql);
+        $this->db->query($sql);
     }
 
     /**
@@ -159,7 +158,7 @@ class Account_model extends CI_Model
     {
         $email_sql = sprintf("SELECT id FROM  user_emails WHERE (email = %s) LIMIT 1",
                                 $this->db->escape($email));
-        $email_query = $this->utility_model->run_query($email_sql);
+        $email_query = $this->db->query($email_sql);
 
         return ($email_query->num_rows() === 1);
     }
@@ -169,7 +168,7 @@ class Account_model extends CI_Model
         $sql = sprintf("SELECT id FROM user_emails
                         WHERE (email = '%s' AND activation_code IS NULL)
                         LIMIT 1", $email);
-        $query = $this->utility_model->run_query($sql);
+        $query = $this->db->query($sql);
         return ($query->num_rows() == 1);
     }
 

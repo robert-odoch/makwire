@@ -29,7 +29,7 @@ class Photo_model extends CI_Model
                                 LEFT JOIN users u ON(p.user_id = u.user_id)
                                 WHERE photo_id = %d",
                                 $photo_id);
-        $photo_query = $this->utility_model->run_query($photo_sql);
+        $photo_query = $this->db->query($photo_sql);
         if ($photo_query->num_rows() == 0) {
             throw new NotFoundException();
         }
@@ -60,7 +60,7 @@ class Photo_model extends CI_Model
         $was_profile_pic_sql = sprintf("SELECT activity_id FROM activities
                                         WHERE (source_id = %d AND source_type = 'photo' AND activity = 'profile_pic_change')",
                                         $photo['photo_id']);
-        $was_profile_pic_query = $this->utility_model->run_query($was_profile_pic_sql);
+        $was_profile_pic_query = $this->db->query($was_profile_pic_sql);
         $photo['was_profile_pic'] = ($was_profile_pic_query->num_rows() == 1);
 
         // Check if photo is the current profile picture.
@@ -81,7 +81,7 @@ class Photo_model extends CI_Model
             // Get the gender of this user.
             $gender_sql = sprintf("SELECT gender FROM users WHERE (user_id = %d)",
                                    $photo['user_id']);
-            $photo['user_gender'] = ($this->utility_model->run_query($gender_sql)->row_array()['gender'] == 'M')? 'his': 'her';
+            $photo['user_gender'] = ($this->db->query($gender_sql)->row_array()['gender'] == 'M')? 'his': 'her';
         }
 
         $simplePhoto = new SimplePhoto($photo['photo_id'], $photo['user_id']);
@@ -112,7 +112,7 @@ class Photo_model extends CI_Model
                                 (actor_id, subject_id, source_id, source_type, activity)
                                 VALUES (%d, %d, %d, 'photo', 'photo')",
                                 $user_id, $user_id, $photo_id);
-        $this->utility_model->run_query($activity_sql);
+        $this->db->query($activity_sql);
     }
 
     /**
@@ -127,7 +127,7 @@ class Photo_model extends CI_Model
     {
         $sql = sprintf("UPDATE photos SET description = %s WHERE (photo_id = %d)",
                         $this->db->escape($description), $photo_id);
-        $this->utility_model->run_query($sql);
+        $this->db->query($sql);
     }
 
     /**
@@ -144,7 +144,7 @@ class Photo_model extends CI_Model
         // Get the id of the owner of this photo.
         $owner_sql = sprintf("SELECT user_id FROM photos WHERE photo_id = %d",
                             $photo_id);
-        $owner_query = $this->utility_model->run_query($owner_sql);
+        $owner_query = $this->db->query($owner_sql);
         if ($owner_query->num_rows() == 0) {
             throw new NotFoundException();
         }
@@ -177,7 +177,7 @@ class Photo_model extends CI_Model
     {
         $owner_sql = sprintf("SELECT user_id FROM photos WHERE photo_id = %d",
                             $photo_id);
-        $owner_query = $this->utility_model->run_query($owner_sql);
+        $owner_query = $this->db->query($owner_sql);
         if ($owner_query->num_rows() == 0) {
             throw new NotFoundException();
 
@@ -208,7 +208,7 @@ class Photo_model extends CI_Model
         // Get the ID of the owner of this photo.
         $owner_sql = sprintf("SELECT user_id FROM photos WHERE photo_id = %d",
                             $photo_id);
-        $owner_result = $this->utility_model->run_query($owner_sql)->row_array();
+        $owner_result = $this->db->query($owner_sql)->row_array();
         $owner_id = $owner_result['user_id'];
 
         // Record the comment.
@@ -289,7 +289,7 @@ class Photo_model extends CI_Model
         $photo_sql = sprintf("INSERT INTO photos (user_id, file_type, full_path) VALUES (%d, %s, %s)",
                             $user_id, $this->db->escape($data['file_type']),
                             $this->db->escape($data['full_path']));
-        $this->utility_model->run_query($photo_sql);
+        $this->db->query($photo_sql);
         $photo_id = $this->db->insert_id();
 
         return $photo_id;

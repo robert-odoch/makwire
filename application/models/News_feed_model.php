@@ -60,29 +60,29 @@ class News_feed_model extends CI_Model
         $num_posts_sql = sprintf('SELECT COUNT(source_id) FROM activities
                                  WHERE (actor_id IN(%s) AND source_id NOT IN(%s) AND activity = \'post\')',
                                  $friends_ids_str, $shared_posts_ids_str);
-        $num_posts = $this->utility_model->run_query($num_posts_sql)->row_array()['COUNT(source_id)'];
+        $num_posts = $this->db->query($num_posts_sql)->row_array()['COUNT(source_id)'];
 
         $num_photos_sql = sprintf('SELECT COUNT(source_id) FROM activities
                                     WHERE (actor_id IN(%s) AND source_id NOT IN(%s) AND
                                             activity IN(\'photo\',\'profile_pic_change\'))',
                                     $friends_ids_str, $shared_photos_ids_str);
-        $num_photos = $this->utility_model->run_query($num_photos_sql)->row_array()['COUNT(source_id)'];
+        $num_photos = $this->db->query($num_photos_sql)->row_array()['COUNT(source_id)'];
 
         $num_videos_sql = sprintf('SELECT COUNT(source_id) FROM activities
                                     WHERE (actor_id IN(%s) AND source_id NOT IN(%s) AND activity = \'video\')',
                                     $friends_ids_str, $shared_videos_ids_str);
-        $num_videos = $this->utility_model->run_query($num_videos_sql)->row_array()['COUNT(source_id)'];
+        $num_videos = $this->db->query($num_videos_sql)->row_array()['COUNT(source_id)'];
 
         $num_links_sql = sprintf('SELECT COUNT(source_id) FROM activities
                                  WHERE (actor_id IN(%s) AND source_id NOT IN(%s) AND activity = \'link\')',
                                  $friends_ids_str, $shared_links_ids_str);
-        $num_links = $this->utility_model->run_query($num_links_sql)->row_array()['COUNT(source_id)'];
+        $num_links = $this->db->query($num_links_sql)->row_array()['COUNT(source_id)'];
 
         $num_shared_items_sql = sprintf('SELECT COUNT(source_id) FROM activities
                                         WHERE (actor_id IN(%s) AND activity = \'share\' AND
                                             source_type IN(\'post\',\'photo\',\'video\',\'link\') AND subject_id != %d)',
                                         $friends_ids_str, $user_id);
-        $num_shared_items = $this->utility_model->run_query($num_shared_items_sql)->row_array()['COUNT(source_id)'];
+        $num_shared_items = $this->db->query($num_shared_items_sql)->row_array()['COUNT(source_id)'];
 
         return ($num_posts + $num_photos + $num_videos + $num_links + $num_shared_items);
     }
@@ -193,7 +193,7 @@ class News_feed_model extends CI_Model
                                         $friends_ids_str, $latest_shared_videos_user_ids_str, $user_id,
                                         $friends_ids_str, $latest_shared_links_user_ids_str, $user_id,
                                         $unfollowed_user_ids_str, $offset, $limit);
-        $news_feed_items = $this->utility_model->run_query($news_feed_items_sql)->result_array();
+        $news_feed_items = $this->db->query($news_feed_items_sql)->result_array();
 
         foreach ($news_feed_items as &$r) {
             switch ($r['source_type']) {
@@ -259,7 +259,7 @@ class News_feed_model extends CI_Model
         $user_ids_sql = sprintf('SELECT DISTINCT sharer_id FROM shares s1
                                 WHERE (sharer_id IN(%s) AND subject_type = \'%s\' AND date_shared = (%s))',
                                 $friends_ids_str, $item, $latest_share_date_sql);
-        $user_ids_results = $this->utility_model->run_query($user_ids_sql)->result_array();
+        $user_ids_results = $this->db->query($user_ids_sql)->result_array();
 
         $user_ids = [];
         foreach ($user_ids_results as $r) {

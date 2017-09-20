@@ -10,9 +10,7 @@ class Comment_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
-        $this->load->model([
-            'utility_model', 'activity_model', 'user_model', 'reply_model'
-        ]);
+        $this->load->model(['activity_model', 'user_model', 'reply_model']);
     }
 
     /**
@@ -31,7 +29,7 @@ class Comment_model extends CI_Model
                                 LEFT JOIN users u ON(c.commenter_id = u.user_id)
                                 WHERE (comment_id = %d AND parent_id = 0)",
                                 $comment_id);
-        $comment_query = $this->utility_model->run_query($comment_sql);
+        $comment_query = $this->db->query($comment_sql);
         if ($comment_query->num_rows() == 0) {
             throw new NotFoundException();
         }
@@ -77,7 +75,7 @@ class Comment_model extends CI_Model
         // Get the id of the user who commented.
         $owner_sql = sprintf("SELECT commenter_id FROM comments WHERE comment_id = %d",
                             $comment_id);
-        $owner_query = $this->utility_model->run_query($owner_sql);
+        $owner_query = $this->db->query($owner_sql);
         if ($owner_query->num_rows() == 0) {
             throw new NotFoundException();
         }
@@ -108,7 +106,7 @@ class Comment_model extends CI_Model
         // Get the id of the user who commented.
         $owner_sql = sprintf("SELECT commenter_id FROM comments WHERE comment_id = %d",
                             $comment_id);
-        $owner_result= $this->utility_model->run_query($owner_sql)->row_array();
+        $owner_result= $this->db->query($owner_sql)->row_array();
         $owner_id = $owner_result['commenter_id'];
 
         // Record the reply.
@@ -150,7 +148,7 @@ class Comment_model extends CI_Model
                                 WHERE (source_type = 'comment' AND parent_id = %d)
                                 LIMIT %d, %d",
                                 $comment_id, $offset, $limit);
-        $replies_query = $this->utility_model->run_query($replies_sql);
+        $replies_query = $this->db->query($replies_sql);
         $results = $replies_query->result_array();
 
         $replies = array();

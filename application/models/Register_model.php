@@ -7,7 +7,6 @@ class Register_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('utility_model');
     }
 
     /**
@@ -29,7 +28,7 @@ class Register_model extends CI_Model
                             $this->db->escape($data['uname']),
                             $this->db->escape(password_hash($data['passwd'], PASSWORD_BCRYPT)),
                             $this->db->escape($profile_name));
-        $this->utility_model->run_query($reg_sql);
+        $this->db->query($reg_sql);
 
         $user_id = $this->db->insert_id();
 
@@ -37,7 +36,7 @@ class Register_model extends CI_Model
         $update_sql = sprintf("UPDATE user_emails SET user_id = %d, is_primary = 1, is_backup = 0
                                 WHERE (id = %d)",
                                 $user_id, $data['user_email_id']);
-        $this->utility_model->run_query($update_sql);
+        $this->db->query($update_sql);
 
         return $user_id;
     }

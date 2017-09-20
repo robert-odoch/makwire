@@ -9,7 +9,6 @@ class Logout_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('utility_model');
     }
 
     /**

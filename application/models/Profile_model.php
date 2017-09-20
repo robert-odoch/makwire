@@ -10,7 +10,7 @@ class Profile_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('utility_model', 'photo_model');
+        $this->load->model(['photo_model']);
     }
 
     /**
@@ -32,14 +32,14 @@ class Profile_model extends CI_Model
         $update_sql = sprintf("UPDATE users SET profile_pic_path = %s WHERE (user_id = %d) LIMIT 1",
                                 $this->db->escape($profile_pic_path),
                                 $user_id);
-        $this->utility_model->run_query($update_sql);
+        $this->db->query($update_sql);
 
         // Dispatch an activity.
         $activity_sql = sprintf("INSERT INTO activities
                                 (actor_id, subject_id, source_id, source_type, activity)
                                 VALUES (%d, %d, %d, 'photo', 'profile_pic_change')",
                                 $user_id, $user_id, $photo_id);
-        $this->utility_model->run_query($activity_sql);
+        $this->db->query($activity_sql);
     }
 
     /**
@@ -56,7 +56,7 @@ class Profile_model extends CI_Model
                                 LEFT JOIN countries c ON (d.country_id = c.country_id)
                                 WHERE (user_id = %d)",
                                 $user_id);
-        $origin_query = $this->utility_model->run_query($origin_sql);
+        $origin_query = $this->db->query($origin_sql);
         $data['origin'] = $origin_query->row_array();
 
         // Get the schools.
@@ -65,7 +65,7 @@ class Profile_model extends CI_Model
                                 FROM user_schools us LEFT JOIN schools s ON (us.school_id = s.school_id)
                                 WHERE (us.user_id = %d) ORDER BY date_to DESC",
                                 $user_id);
-        $schools_query = $this->utility_model->run_query($schools_sql);
+        $schools_query = $this->db->query($schools_sql);
 
         $data['schools'] = $schools_query->result_array();
         foreach ($data['schools'] as &$s) {
@@ -74,7 +74,7 @@ class Profile_model extends CI_Model
                                     LEFT JOIN schools s ON (c.college_id = s.college_id)
                                     WHERE (s.school_id = %d)",
                                     $s['school_id']);
-            $college_query = $this->utility_model->run_query($college_sql);
+            $college_query = $this->db->query($college_sql);
             if ($college_query->num_rows() == 0) {
                 $s['college_name'] = NULL;
             }
@@ -87,7 +87,7 @@ class Profile_model extends CI_Model
                                         LEFT JOIN programmes p ON (up.programme_id = p.programme_id)
                                         WHERE (up.user_school_id = %d)",
                                         $s['id']);
-            $programme_query = $this->utility_model->run_query($programme_sql);
+            $programme_query = $this->db->query($programme_sql);
             $s['has_programme'] = FALSE;
             if ($programme_query->num_rows() > 0) {
                 $s['has_programme'] = TRUE;
@@ -104,7 +104,7 @@ class Profile_model extends CI_Model
                                 WHERE (uh.user_id = %d)
                                 ORDER BY date_to DESC",
                                 $user_id);
-        $halls_query = $this->utility_model->run_query($halls_sql);
+        $halls_query = $this->db->query($halls_sql);
         $data['halls'] = $halls_query->result_array();
 
         // Get the hostels.
@@ -115,7 +115,7 @@ class Profile_model extends CI_Model
                                 WHERE (user_id = %d)
                                 ORDER BY date_to DESC",
                                 $user_id);
-        $hostels_query = $this->utility_model->run_query($hostels_sql);
+        $hostels_query = $this->db->query($hostels_sql);
         $data['hostels'] = $hostels_query->result_array();
 
         return $data;
@@ -130,7 +130,7 @@ class Profile_model extends CI_Model
     {
         $schools_sql = sprintf("SELECT school_id, college_id, school_name
                                 FROM schools ORDER BY school_name");
-        $schools_query = $this->utility_model->run_query($schools_sql);
+        $schools_query = $this->db->query($schools_sql);
 
         return $schools_query->result_array();
     }
@@ -147,7 +147,7 @@ class Profile_model extends CI_Model
         $programmes_sql = sprintf("SELECT programme_id, programme_name FROM programmes
                                     WHERE (school_id = %d) ORDER BY programme_name",
                                     $school_id);
-        $programmes_query = $this->utility_model->run_query($programmes_sql);
+        $programmes_query = $this->db->query($programmes_sql);
 
         return $programmes_query->result_array();
     }
@@ -163,7 +163,7 @@ class Profile_model extends CI_Model
                                 LEFT JOIN users u ON(h.gender = u.gender)
                                 WHERE u.user_id = %d ORDER BY hall_name",
                                 $user_id);
-        $halls_query = $this->utility_model->run_query($halls_sql);
+        $halls_query = $this->db->query($halls_sql);
 
         return $halls_query->result_array();
     }
@@ -177,7 +177,7 @@ class Profile_model extends CI_Model
     {
         $hostels_sql = sprintf("SELECT hostel_id, hostel_name FROM hostels
                                 ORDER BY hostel_name");
-        $hostels_query = $this->utility_model->run_query($hostels_sql);
+        $hostels_query = $this->db->query($hostels_sql);
 
         return $hostels_query->result_array();
     }
@@ -201,7 +201,7 @@ class Profile_model extends CI_Model
         $districts_sql = sprintf("SELECT district_id, district_name FROM districts
                                     WHERE MATCH(district_name) AGAINST (%s IN BOOLEAN MODE)",
                                     $this->db->escape($key));
-        $districts_query = $this->utility_model->run_query($districts_sql);
+        $districts_query = $this->db->query($districts_sql);
 
         return $districts_query->result_array();
     }
@@ -224,7 +224,7 @@ class Profile_model extends CI_Model
                                     LEFT JOIN schools s ON (us.school_id = s.school_id)
                                     WHERE (us.id = %d AND us.user_id = %d)",
                                     $user_school_id, $user_id);
-        $user_school_query = $this->utility_model->run_query($user_school_sql);
+        $user_school_query = $this->db->query($user_school_sql);
 
         if ($user_school_query->num_rows() == 0) {
             throw new NotFoundException();
@@ -249,7 +249,7 @@ class Profile_model extends CI_Model
                                         LEFT JOIN programmes p ON(up.programme_id = p.programme_id)
                                         WHERE (up.id = %d AND up.user_id = %d)",
                                         $user_programme_id, $user_id);
-        $user_programme_query = $this->utility_model->run_query($user_programme_sql);
+        $user_programme_query = $this->db->query($user_programme_sql);
 
         if ($user_programme_query->num_rows() == 0) {
             throw new NotFoundException();
@@ -276,7 +276,7 @@ class Profile_model extends CI_Model
                                     LEFT JOIN halls h ON(uh.hall_id = h.hall_id)
                                     WHERE (id = %d AND user_id = %d)",
                                     $user_hall_id, $user_id);
-        $user_hall_query = $this->utility_model->run_query($user_hall_sql);
+        $user_hall_query = $this->db->query($user_hall_sql);
 
         if ($user_hall_query->num_rows() == 0) {
             throw new NotFoundException();
@@ -304,7 +304,7 @@ class Profile_model extends CI_Model
                                     LEFT JOIN hostels h ON(uh.hostel_id = h.hostel_id)
                                     WHERE (id = %d AND user_id = %d)",
                                     $user_hostel_id, $user_id);
-        $user_hostel_query = $this->utility_model->run_query($user_hostel_sql);
+        $user_hostel_query = $this->db->query($user_hostel_sql);
 
         if ($user_hostel_query->num_rows() == 0) {
             throw new NotFoundException();
@@ -327,7 +327,7 @@ class Profile_model extends CI_Model
 
         $dates_sql = sprintf("SELECT date_from, date_to FROM user_schools WHERE (user_id = %d)",
                                 $user_id);
-        $dates_query = $this->utility_model->run_query($dates_sql);
+        $dates_query = $this->db->query($dates_sql);
         $dates_results = $dates_query->result_array();
         foreach ($dates_results as $d) {
             $date_from = date_create($d['date_from']);
@@ -343,7 +343,7 @@ class Profile_model extends CI_Model
                                     $user_id, $data['school_id'],
                                     $this->db->escape($data['start_date']),
                                     $this->db->escape($data['end_date']));
-        $this->utility_model->run_query($add_college_sql);
+        $this->db->query($add_college_sql);
 
         return TRUE;
     }
@@ -361,7 +361,7 @@ class Profile_model extends CI_Model
                                     VALUES(%d, %d, %d, '%d', %d)",
                                     $user_id, $data['programme_id'], $data['user_school_id'],
                                     $data['year_of_study'], $data['graduated']);
-        $this->utility_model->run_query($programme_sql);
+        $this->db->query($programme_sql);
     }
 
     /**
@@ -378,7 +378,7 @@ class Profile_model extends CI_Model
         $hall_dates_sql = sprintf("SELECT date_from, date_to FROM user_halls WHERE (user_id = %d)",
                                     $user_id);
 
-        $hall_dates_results = $this->utility_model->run_query($hall_dates_sql)->result_array();
+        $hall_dates_results = $this->db->query($hall_dates_sql)->result_array();
         foreach ($hall_dates_results as $d) {
             $date_from = date_create($d['date_from']);
             $date_to = date_create($d['date_to']);
@@ -392,7 +392,7 @@ class Profile_model extends CI_Model
         if ($data['resident'] == 1) {
             $hostel_dates_sql = sprintf("SELECT date_from, date_to FROM user_hostels WHERE (user_id = %d)",
                                         $user_id);
-            $hostel_dates_results = $this->utility_model->run_query($hostel_dates_sql)->result_array();
+            $hostel_dates_results = $this->db->query($hostel_dates_sql)->result_array();
             foreach ($hostel_dates_results as $d) {
                 $date_from = date_create($d['date_from']);
                 $date_to = date_create($d['date_to']);
@@ -409,7 +409,7 @@ class Profile_model extends CI_Model
                                 $this->db->escape($data['start_date']),
                                 $this->db->escape($data['end_date']),
                                 $data['resident']);
-        $this->utility_model->run_query($add_hall_sql);
+        $this->db->query($add_hall_sql);
 
         return TRUE;
     }
@@ -428,7 +428,7 @@ class Profile_model extends CI_Model
 
         $hall_dates_sql = sprintf("SELECT date_from, date_to, resident FROM user_halls WHERE (user_id = %d)",
                                     $user_id);
-        $hall_dates_query = $this->utility_model->run_query($hall_dates_sql);
+        $hall_dates_query = $this->db->query($hall_dates_sql);
 
         $hall_dates_results = $hall_dates_query->result_array();
         foreach ($hall_dates_results as $d) {
@@ -445,7 +445,7 @@ class Profile_model extends CI_Model
         // Next check whether a hostel already exists in the range of years provided.
         $hostel_dates_sql = sprintf("SELECT date_from, date_to FROM user_hostels WHERE (user_id = %d)",
                                     $user_id);
-        $hostel_dates_query = $this->utility_model->run_query($hostel_dates_sql);
+        $hostel_dates_query = $this->db->query($hostel_dates_sql);
 
         $hostel_dates_results = $hostel_dates_query->result_array();
         foreach ($hostel_dates_results as $d) {
@@ -462,7 +462,7 @@ class Profile_model extends CI_Model
                                     $user_id, $data['hostel_id'],
                                     $this->db->escape($data['start_date']),
                                     $this->db->escape($data['end_date']));
-        $this->utility_model->run_query($add_hostel_sql);
+        $this->db->query($add_hostel_sql);
 
         return TRUE;
     }
@@ -488,14 +488,14 @@ class Profile_model extends CI_Model
         $profile_sql = sprintf("SELECT district_id FROM users
                                 WHERE (user_id = %d AND district_id IS NOT NULL)",
                                 $user_id);
-        $profile_query = $this->utility_model->run_query($profile_sql);
+        $profile_query = $this->db->query($profile_sql);
         if ($profile_query->num_rows() != 0) {
             return FALSE;
         }
 
         $profile_sql = sprintf("UPDATE users SET district_id = %d WHERE user_id = %d",
                                 $district_id, $user_id);
-        $this->utility_model->run_query($profile_sql);
+        $this->db->query($profile_sql);
 
         return TRUE;
     }
@@ -514,7 +514,7 @@ class Profile_model extends CI_Model
         $dates_sql = sprintf("SELECT date_from, date_to FROM user_schools
                                 WHERE (user_id = %d AND id != %d)",
                                 $user_id, $data['user_school_id']);
-        $dates_query = $this->utility_model->run_query($dates_sql);
+        $dates_query = $this->db->query($dates_sql);
         $dates_results = $dates_query->result_array();
         foreach ($dates_results as $d) {
             $date_from = date_create($d['date_from']);
@@ -529,7 +529,7 @@ class Profile_model extends CI_Model
                                         $this->db->escape($data['start_date']),
                                         $this->db->escape($data['end_date']),
                                         $data['user_school_id']);
-        $this->utility_model->run_query($update_school_sql);
+        $this->db->query($update_school_sql);
 
         return TRUE;
     }
@@ -545,7 +545,7 @@ class Profile_model extends CI_Model
                                 SET year_of_study = '%d', graduated = %d
                                 WHERE (id = %d)", $data['year_of_study'],
                                 $data['graduated'], $data['user_programme_id']);
-        $this->utility_model->run_query($update_sql);
+        $this->db->query($update_sql);
     }
 
     /**
@@ -564,7 +564,7 @@ class Profile_model extends CI_Model
         $dates_sql = sprintf("SELECT date_from, date_to FROM user_halls.
                                 WHERE (user_id = %d AND id != %d)",
                                 $user_id, $data['user_hall_id']);
-        $dates_query = $this->utility_model->run_query($dates_sql);
+        $dates_query = $this->db->query($dates_sql);
 
         $dates_results = $dates_query->result_array();
         foreach ($dates_results as $d) {
@@ -582,7 +582,7 @@ class Profile_model extends CI_Model
                                     $this->db->escape($data['start_date']),
                                     $this->db->escape($data['end_date']),
                                     $data['resident'], $data['user_hall_id']);
-        $this->utility_model->run_query($update_hall_sql);
+        $this->db->query($update_hall_sql);
 
         return TRUE;
     }
@@ -601,7 +601,7 @@ class Profile_model extends CI_Model
 
         $hall_dates_sql = sprintf("SELECT date_from, date_to, resident FROM user_halls WHERE (user_id = %d)",
                                     $user_id);
-        $hall_dates_query = $this->utility_model->run_query($hall_dates_sql);
+        $hall_dates_query = $this->db->query($hall_dates_sql);
 
         $hall_dates_results = $hall_dates_query->result_array();
         foreach ($hall_dates_results as $d) {
@@ -618,7 +618,7 @@ class Profile_model extends CI_Model
         // Next, check whether a hostel already exists in the range of years provided.
         $hostel_dates_sql = sprintf("SELECT date_from, date_to FROM user_hostels WHERE (user_id = %d AND id != %d)",
                                     $user_id, $data['user_hostel_id']);
-        $hostel_dates_query = $this->utility_model->run_query($hostel_dates_sql);
+        $hostel_dates_query = $this->db->query($hostel_dates_sql);
 
         $hostel_dates_results = $hostel_dates_query->result_array();
         foreach ($hostel_dates_results as $d) {
@@ -634,7 +634,7 @@ class Profile_model extends CI_Model
                                         $this->db->escape($data['start_date']),
                                         $this->db->escape($data['end_date']),
                                         $data['user_hostel_id']);
-        $this->utility_model->run_query($update_hostel_sql);
+        $this->db->query($update_hostel_sql);
 
         return TRUE;
     }
@@ -648,7 +648,7 @@ class Profile_model extends CI_Model
         $programmes_sql = sprintf("SELECT id, last_updated FROM user_programmes
                                     WHERE (user_id = %d AND graduated IS FALSE)",
                                     $user_id);
-        $programmes_query = $this->utility_model->run_query($programmes_sql);
+        $programmes_query = $this->db->query($programmes_sql);
         $programmes_result = $programmes_query->result_array();
         foreach ($programmes_result as $pr) {
             $last_updated = new DateTime();

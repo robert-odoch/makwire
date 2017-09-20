@@ -10,34 +10,7 @@ class Utility_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('user_model');
-    }
-
-    /**
-     * Handle database errors.
-     *
-     * @param $error the resulting error from running a query.
-     */
-    public function handle_error($error)
-    {
-        print($error);
-        exit(1);
-    }
-
-    /**
-     * Runs a query againsts the database.
-     *
-     * @param $sql the SQL query to be run.
-     * @return query object.
-     */
-    public function run_query($sql)
-    {
-        $query = $this->db->query($sql);
-        if (!$query) {
-            $this->handle_error($this->db->error());
-        }
-
-        return $query;
+        $this->load->model(['user_model']);
     }
 
     /**
@@ -68,7 +41,7 @@ class Utility_model extends CI_Model
         $ids_sql = sprintf('SELECT DISTINCT subject_id FROM shares
                             WHERE (sharer_id IN(%s) AND subject_type = \'%s\')',
                             $sharers_ids_str, $item);
-        $ids_results = $this->utility_model->run_query($ids_sql)->result_array();
+        $ids_results = $this->db->query($ids_sql)->result_array();
 
         $ids = [];
         foreach ($ids_results as $r) {

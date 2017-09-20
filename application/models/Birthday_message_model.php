@@ -10,9 +10,7 @@ class Birthday_message_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
-        $this->load->model([
-            'utility_model', 'activity_model', 'user_model'
-        ]);
+        $this->load->model(['activity_model', 'user_model']);
     }
 
     /**
@@ -30,7 +28,7 @@ class Birthday_message_model extends CI_Model
                                 LEFT JOIN users u ON(b.sender_id = u.user_id)
                                 WHERE (id = %d)",
                                 $birthday_message_id);
-        $message_query = $this->utility_model->run_query($message_sql);
+        $message_query = $this->db->query($message_sql);
         if ($message_query->num_rows() == 0) {
             throw new NotFoundException();
         }
@@ -73,7 +71,7 @@ class Birthday_message_model extends CI_Model
         // Get the id of the user who sent the message.
         $owner_sql = sprintf("SELECT user_id, sender_id FROM birthday_messages WHERE id = %d",
                             $birthday_message_id);
-        $owner_query = $this->utility_model->run_query($owner_sql);
+        $owner_query = $this->db->query($owner_sql);
         if ($owner_query->num_rows() == 0) {
             throw new NotFoundException();
         }
@@ -122,7 +120,7 @@ class Birthday_message_model extends CI_Model
         // Get the ID of the owner of this photo.
         $owner_sql = sprintf("SELECT sender_id FROM birthday_messages WHERE id = %d",
                             $message_id);
-        $owner_result = $this->utility_model->run_query($owner_sql)->row_array();
+        $owner_result = $this->db->query($owner_sql)->row_array();
         $owner_id = $owner_result['sender_id'];
 
         // Record the reply.
@@ -154,7 +152,7 @@ class Birthday_message_model extends CI_Model
     {
         $sql = sprintf("SELECT COUNT(id) FROM birthday_messages WHERE (user_id = %d AND age = %d)",
                         $user_id, $age);
-        $query = $this->utility_model->run_query($sql);
+        $query = $this->db->query($sql);
 
         return $query->row_array()['COUNT(id)'];
     }
@@ -172,7 +170,7 @@ class Birthday_message_model extends CI_Model
         $sql = sprintf("SELECT id FROM birthday_messages WHERE (user_id = %d AND age = %d)
                         LIMIT %d, %d",
                         $user_id, $age, $offset, $limit);
-        $query = $this->utility_model->run_query($sql);
+        $query = $this->db->query($sql);
         $messages = $query->result_array();
 
         foreach ($messages as &$m) {
@@ -197,14 +195,14 @@ class Birthday_message_model extends CI_Model
                         VALUES (%d, %d, %s, %d)",
                         $receiver_id, $sender_id,
                         $this->db->escape($message), $age);
-        $this->utility_model->run_query($sql);
+        $this->db->query($sql);
 
         // Dispatch an activity.
         $activity_sql = sprintf("INSERT INTO activities
                                 (actor_id, subject_id, source_id, source_type, activity)
                                 VALUES (%d, %d, %d, 'user', 'message')",
                                 $sender_id, $receiver_id, $receiver_id);
-        $this->utility_model->run_query($activity_sql);
+        $this->db->query($activity_sql);
     }
 }
 ?>

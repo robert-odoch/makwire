@@ -30,7 +30,7 @@ class Video_model extends CI_Model
                                 LEFT JOIN users u ON(v.user_id = u.user_id)
                                 WHERE video_id = %d",
                                 $video_id);
-        $video_query = $this->utility_model->run_query($video_sql);
+        $video_query = $this->db->query($video_sql);
         if ($video_query->num_rows() == 0) {
             throw new NotFoundException();
         }
@@ -67,7 +67,7 @@ class Video_model extends CI_Model
         // Record video data in the videos table.
         $video_sql = sprintf('INSERT INTO videos (user_id, url) VALUES (%d, %s) ',
                             $user_id, $this->db->escape($url));
-        $this->utility_model->run_query($video_sql);
+        $this->db->query($video_sql);
         $video_id = $this->db->insert_id();
 
         // Dispatch an activity.
@@ -75,7 +75,7 @@ class Video_model extends CI_Model
                                 (actor_id, subject_id, source_id, source_type, activity)
                                 VALUES (%d, %d, %d, "video", "video")',
                                 $user_id, $user_id, $video_id);
-        $this->utility_model->run_query($activity_sql);
+        $this->db->query($activity_sql);
     }
 
     /**
@@ -90,7 +90,7 @@ class Video_model extends CI_Model
     {
         $sql = sprintf('UPDATE videos SET description = %s WHERE (video_id = %d)',
                         $this->db->escape($description), $video_id);
-        $this->utility_model->run_query($sql);
+        $this->db->query($sql);
     }
 
     /**
@@ -106,7 +106,7 @@ class Video_model extends CI_Model
     {
         // Get the id of the owner of this video.
         $owner_sql = sprintf('SELECT user_id FROM videos WHERE video_id = %d', $video_id);
-        $owner_query = $this->utility_model->run_query($owner_sql);
+        $owner_query = $this->db->query($owner_sql);
         if ($owner_query->num_rows() == 0) {
             throw new NotFoundException();
         }
@@ -135,7 +135,7 @@ class Video_model extends CI_Model
     public function share($video_id)
     {
         $owner_sql = sprintf('SELECT user_id FROM videos WHERE video_id = %d', $video_id);
-        $owner_query = $this->utility_model->run_query($owner_sql);
+        $owner_query = $this->db->query($owner_sql);
         if ($owner_query->num_rows() == 0) {
             throw new NotFoundException();
         }
@@ -161,7 +161,7 @@ class Video_model extends CI_Model
     {
         // Get the ID of the owner of this video.
         $owner_sql = sprintf('SELECT user_id FROM videos WHERE video_id = %d', $video_id);
-        $owner_result = $this->utility_model->run_query($owner_sql)->row_array();
+        $owner_result = $this->db->query($owner_sql)->row_array();
         $owner_id = $owner_result['user_id'];
 
         // Record the comment.

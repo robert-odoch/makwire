@@ -27,7 +27,7 @@ class Post_model extends CI_Model
                             LEFT JOIN users u ON(p.user_id = u.user_id)
                             WHERE post_id = %d",
                             $post_id);
-        $post_query = $this->utility_model->run_query($post_sql);
+        $post_query = $this->db->query($post_sql);
         if ($post_query->num_rows() == 0){
             throw new NotFoundException();
         }
@@ -72,14 +72,14 @@ class Post_model extends CI_Model
         // Save the post.
         $post_sql = sprintf("INSERT INTO posts (post, user_id) VALUES (%s, %d)",
                             $this->db->escape($post), $user_id);
-        $this->utility_model->run_query($post_sql);
+        $this->db->query($post_sql);
 
         // Dispatch an activity.
         $activity_sql = sprintf("INSERT INTO activities
                                 (actor_id, subject_id, source_id, source_type, activity)
                                 VALUES (%d, %d, %d, 'post', 'post')",
                                 $user_id, $user_id, $this->db->insert_id());
-        $this->utility_model->run_query($activity_sql);
+        $this->db->query($activity_sql);
     }
 
     /**
@@ -96,7 +96,7 @@ class Post_model extends CI_Model
         // Get the ID of the owner of this post.
         $owner_sql = sprintf("SELECT user_id FROM posts WHERE post_id = %d",
                             $post_id);
-        $owner_query = $this->utility_model->run_query($owner_sql);
+        $owner_query = $this->db->query($owner_sql);
         if ($owner_query->num_rows() == 0) {  // Post doesn't exist.
             throw new NotFoundException();
         }
@@ -130,7 +130,7 @@ class Post_model extends CI_Model
         // Get the ID of the owner of this post.
         $owner_sql = sprintf("SELECT user_id FROM posts WHERE post_id = %d",
                             $post_id);
-        $owner_query = $this->utility_model->run_query($owner_sql);
+        $owner_query = $this->db->query($owner_sql);
         if ($owner_query->num_rows() == 0) {
             throw new NotFoundException();
         }
@@ -161,7 +161,7 @@ class Post_model extends CI_Model
         // Get the ID of the owner of this post.
         $owner_sql = sprintf("SELECT user_id FROM posts WHERE post_id = %d",
                             $post_id);
-        $owner_result = $this->utility_model->run_query($owner_sql)->row_array();
+        $owner_result = $this->db->query($owner_sql)->row_array();
         $owner_id = $owner_result['user_id'];
 
         // Record the comment.
