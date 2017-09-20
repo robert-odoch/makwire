@@ -19,8 +19,9 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
             </ul>
         <?php } else { ?>
             <p>
-                It seems the district you entered <?= "<em><b>{$district}</b></em>"; ?>
-                is not in our records. However, you can
+                It seems the district you entered <em><b><?= "{$district}"; ?></b></em>
+                is not in our records, please make sure that you have spelt it correcty.
+                If you you are sure that is the correct spelling, then you can
                 <a href='<?= base_url('request-admin/add-district'); ?>'>
                     request the administrator to add it to the records
                 </a>.

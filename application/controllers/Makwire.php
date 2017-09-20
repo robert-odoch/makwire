@@ -66,6 +66,8 @@ class Makwire extends CI_Controller
 
         // Defaults.
         $title = 'Success! - Makwire';
+        $heading = 'Success';
+        $message = 'Thanks for passing by...';
 
         // Allow calls to override.
         if ( ! empty($_SESSION['title'])) {

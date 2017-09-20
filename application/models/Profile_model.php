@@ -385,7 +385,7 @@ class Profile_model extends CI_Model
         $hall_dates_sql = sprintf("SELECT date_from, date_to FROM user_halls WHERE (user_id = %d)",
                                     $user_id);
 
-        $hall_dates_results = $this->utility_model->run_query($dates_sql)->result_array();
+        $hall_dates_results = $this->utility_model->run_query($hall_dates_sql)->result_array();
         foreach ($hall_dates_results as $d) {
             $date_from = date_create($d['date_from']);
             $date_to = date_create($d['date_to']);
