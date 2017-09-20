@@ -320,7 +320,7 @@ class Profile extends CI_Controller
         $data['title'] = 'Add hall of attachment/residence';
         $this->load->view('common/header', $data);
 
-        $data['halls'] = $this->profile_model->get_halls();
+        $data['halls'] = $this->profile_model->get_halls($_SESSION['user_id']);
 
         $data['heading'] = 'Add Hall';
         $data['form_action'] = base_url('profile/add-hall');

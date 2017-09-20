@@ -155,9 +155,11 @@ class Profile_model extends CI_Model
      *
      * @return all halls in the halls table.
      */
-    public function get_halls()
+    public function get_halls($user_id)
     {
-        $halls_sql = sprintf("SELECT hall_id, hall_name FROM halls");
+        $halls_sql = sprintf("SELECT hall_id, hall_name FROM halls h
+                                LEFT JOIN users u ON(h.gender = u.gender)
+                                WHERE u.user_id = %d", $user_id);
         $halls_query = $this->utility_model->run_query($halls_sql);
 
         return $halls_query->result_array();
