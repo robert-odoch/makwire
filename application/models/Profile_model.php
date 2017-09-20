@@ -128,7 +128,8 @@ class Profile_model extends CI_Model
      */
     public function get_schools()
     {
-        $schools_sql = sprintf("SELECT school_id, college_id, school_name FROM schools");
+        $schools_sql = sprintf("SELECT school_id, college_id, school_name
+                                FROM schools ORDER BY school_name");
         $schools_query = $this->utility_model->run_query($schools_sql);
 
         return $schools_query->result_array();
@@ -143,7 +144,8 @@ class Profile_model extends CI_Model
     public function get_programmes($school_id)
     {
         // Get all programmes under that school.
-        $programmes_sql = sprintf("SELECT programme_id, programme_name FROM programmes WHERE (school_id = %d)",
+        $programmes_sql = sprintf("SELECT programme_id, programme_name FROM programmes
+                                    WHERE (school_id = %d) ORDER BY programme_name",
                                     $school_id);
         $programmes_query = $this->utility_model->run_query($programmes_sql);
 
@@ -159,7 +161,8 @@ class Profile_model extends CI_Model
     {
         $halls_sql = sprintf("SELECT hall_id, hall_name FROM halls h
                                 LEFT JOIN users u ON(h.gender = u.gender)
-                                WHERE u.user_id = %d", $user_id);
+                                WHERE u.user_id = %d ORDER BY hall_name",
+                                $user_id);
         $halls_query = $this->utility_model->run_query($halls_sql);
 
         return $halls_query->result_array();
@@ -172,7 +175,8 @@ class Profile_model extends CI_Model
      */
     public function get_hostels()
     {
-        $hostels_sql = sprintf("SELECT hostel_id, hostel_name FROM hostels");
+        $hostels_sql = sprintf("SELECT hostel_id, hostel_name FROM hostels
+                                ORDER BY hostel_name");
         $hostels_query = $this->utility_model->run_query($hostels_sql);
 
         return $hostels_query->result_array();
