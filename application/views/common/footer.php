@@ -21,7 +21,7 @@
             <span class='clearfix'></span>
         </div> <!-- #wrapper-* -->
 
-        <footer role='contentinfo' class='footer'>
+        <footer role='contentinfo' class='site-footer'>
             <div class='wrapper'>
                 <p id='site-copyright'>Copyright &copy; <?php echo date('Y'); ?> makwire</p>
             </div>

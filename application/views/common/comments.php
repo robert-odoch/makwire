@@ -22,7 +22,7 @@
 
         <div class='comments'>
             <?php foreach($comments as $comment) { ?>
-                <div class='media'>
+                <div class='media separated'>
                     <div class='media-left'>
                         <img src='<?= $comment['profile_pic_path']; ?>'
                                 alt='<?= $comment['commenter']; ?>' class='media-object profile-pic-sm'>

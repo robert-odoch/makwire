@@ -42,7 +42,7 @@ switch ($object) {
     ?>
     <div class='shares'>
         <?php foreach($shares as $share) { ?>
-        <div class='media'>
+        <div class='media separated'>
             <div class='media-left'>
                 <img src='<?= $share['profile_pic_path']; ?>'
                         alt='<?= $share['sharer']; ?>' class='media-object profile-pic-sm'>

@@ -13,9 +13,9 @@ require_once('common/user-page-start.php');
             </p>
         </div>
     <?php } else { ?>
-        <div class='chat-friends'>
+        <div class='chat-users'>
             <?php foreach ($chat_users as $cu) { ?>
-                <div class='media'>
+                <div class='media separated'>
                     <div class='media-left'>
                         <img src='<?= $cu['profile_pic_path']; ?>'
                                 alt='<?= $cu['profile_name']; ?>' class='media-object profile-pic-sm'>

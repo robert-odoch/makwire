@@ -16,7 +16,7 @@ require_once(dirname(__FILE__) . '/../common/secondary-user-nav.php');
     <?php } else { ?>
     <div class='friends'>
         <?php foreach($friends as $fr) { ?>
-        <div class='media'>
+        <div class='media separated'>
             <div class='media-left'>
                 <img src='<?= $fr['profile_pic_path']; ?>'
                     alt='<?= $fr['profile_name']; ?>' class='media-object profile-pic-sm'>

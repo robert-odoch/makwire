@@ -21,7 +21,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
     ?>
     <div class='messages'>
         <?php foreach ($messages as $m) { ?>
-        <article class='media message'>
+        <article class='media message separated'>
             <div class='media-body'>
                 <p>
                     <strong class='object'>

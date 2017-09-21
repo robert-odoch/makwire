@@ -70,7 +70,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
     <div class='box birthday-messages'>
         <h4>Birthday Messages</h4>
         <?php foreach ($birthday_messages as $msg) { ?>
-            <div class='media'>
+            <div class='media separated'>
                 <div class='media-left'>
                     <img src='<?= $msg['profile_pic_path']; ?>' alt='<?= $msg['sender']; ?>'
                             class='media-object profile-pic-sm'>

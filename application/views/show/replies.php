@@ -31,7 +31,7 @@ else if ($object == 'birthday-message') {
     ?>
     <div class='replies'>
         <?php foreach($replies as $reply) { ?>
-        <div class='media'>
+        <div class='media separated'>
             <div class='media-left'>
                 <img src='<?= $reply['profile_pic_path']; ?>'
                         alt='<?= $reply['commenter']; ?>' class='media-object profile-pic-sm'>

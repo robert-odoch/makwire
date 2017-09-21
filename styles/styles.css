@@ -162,31 +162,26 @@ a:focus {
     line-height: normal;
 }
 
-div.likes div.media,
-div.shares div.media,
-div.replies div.media,
-div.friends div.media,
-div.comments div.media,
-div.messages article.media,
-div.chat-friends div.media,
-div.suggested-users div.media,
-div.birthday-messages div.media {
+.separated {
     border-bottom: 1px dotted #8FBC8F;
     padding-bottom: 2px;
 }
+.separated:last-child {
+    padding-bottom: 0;
+    border: none;
+}
 
-div.media:last-child,
-article.media:last-child {
+.media:last-child {
     margin-bottom: 0 !important;
     border: none !important;
 }
 
-div#secondary-user ul li {
+#secondary-user ul li {
     margin-right: -5px;
     display: inline;
 }
 
-div#secondary-user ul li a {
+#secondary-user ul li a {
     text-decoration: none;
     display: inline-block;
     font-weight: bold;
@@ -194,12 +189,29 @@ div#secondary-user ul li a {
     color: #000;
 }
 
-div#secondary-user ul li a.active {
+#secondary-user ul li a.active {
     border-bottom: 5px solid #2E8B57;
     padding-bottom: 0px;
 }
 
-nav.user-nav {
+#primary-user {
+    margin: 0;
+}
+
+#primary-user .profile-pic-xs {
+    border-radius: 3px;
+}
+
+#primary-user .media-heading a {
+    color: #2E8B57;
+    font-weight: bold;
+}
+
+#primary-user a:hover {
+    text-decoration: none;
+}
+
+.user-nav {
     margin-top: 5px;
 }
 .user-nav p {
@@ -208,60 +220,37 @@ nav.user-nav {
 .user-nav a {
     text-decoration: none;
 }
-nav.user-nav ul li a.active {
+.user-nav .active {
     background-color: #2E8B57;
 }
-
-div#primary-user.media {
-    margin: 0;
-}
-
-div#primary-user .profile-pic-xs {
-    border-radius: 3px;
-}
-
-div#primary-user h4.media-heading a {
-    color: #2E8B57;
-    font-weight: bold;
-}
-
-div#primary-user a:hover {
-    text-decoration: none;
-}
-
-nav.user-nav ul {
+.user-nav ul {
     background-color: #8FBC8F;
     border-radius: 3px;
 }
-
-nav.user-nav ul li {
+.user-nav ul li {
     border-bottom: 1px solid #fff;
 }
-
-nav.user-nav li a {
+.user-nav li a {
     text-decoration: none;
     font-weight: bold;
     display: block;
     padding: 5px;
     color: #000;
 }
-
-nav.user-nav li a:hover,
-nav.user-nav li a:focus {
+.user-nav li a:hover,
+.user-nav li a:focus {
     background-color: #2E8B57;
 }
-
-nav.user-nav > ul > li:first-child > a:hover,
-nav.user-nav > ul > li:first-child > a:focus {
+.user-nav > ul > li:first-child > a:hover,
+.user-nav > ul > li:first-child > a:focus {
     border-radius: 3px 3px 0 0;
 }
-
-nav.user-nav > ul > li:last-child > a:hover,
-nav.user-nav > ul > li:last-child > a:focus {
+.user-nav > ul > li:last-child > a:hover,
+.user-nav > ul > li:last-child > a:focus {
     border-radius: 0 0 3px 3px;
 }
 
-nav#short-cuts h5 {
+#short-cuts h5 {
     color: #2E8B57;
     font-weight: bold;
     margin-bottom: 3px;
@@ -269,20 +258,17 @@ nav#short-cuts h5 {
     border-bottom: 1px solid #e2e2e2;
     font-variant: small-caps;
 }
-
-nav#short-cuts ul li {
+#short-cuts ul li {
     margin-bottom: 1px;
 }
-
-nav#short-cuts ul li a {
+#short-cuts ul li a {
     display: block;
     padding: 5px 0;
     margin-left: 18px;
     text-decoration: none;
 }
-
-nav#short-cuts ul li:hover,
-nav#short-cuts ul li.active {
+#short-cuts ul li:hover,
+#short-cuts ul li.active {
     background-color: #EFEEE5;
 }
 
@@ -295,21 +281,18 @@ ul.account-settings li:not(:last-child) {
     margin-bottom: 3px;
 }
 
-div.active-users div.media {
+.active-users .media {
     border-radius: 3px;
     margin-top: 0;
     padding: 5px;
 }
-
-div.active-users div:hover {
+.active-users div:hover {
     background-color: #8FBC8F;
 }
-
-div.active-users div:hover a {
+.active-users div:hover a {
     color: #fff;
 }
-
-div.active-users img {
+.active-users img {
     border-radius: 50%;
 }
 
@@ -347,25 +330,22 @@ div.active-users img {
     border-radius: 0 3px 0 3px;
 }
 
-small.time {
+.time {
     display: inline-block;
 }
 
-div.suggestions > h4 {
+.suggestions > h4 {
     border-bottom: 1px solid #8FBC8F;
     padding-bottom: 3px;
     margin-top: 8px;
 }
 
 .navbar-right .badge {
+    padding: 2px 5px;
     background-color: #f00;
 }
 
-.navbar-right .badge {
-    padding: 2px 5px;
-}
-
-footer.footer {
+.site-footer {
     border-top: 2px solid #f00;
     background-color: #2E8B57;
     padding: 5px 2%;
@@ -375,23 +355,23 @@ footer.footer {
     bottom: 0;
 }
 
-p#site-copyright {
+#site-copyright {
     text-align: center;
 }
 
-div.main-content {
+.main-content {
     border-radius: 3px;
     float: right;
     width: 69%;
 }
 
-div.side-content {
+.side-content {
     float: left;
     width: 30%;
 }
 
-div.side-content > div,
-div.side-content > nav {
+.side-content > div,
+.side-content > nav {
     padding: 5px;
     margin-bottom: 5px;
     border-radius: 3px;
@@ -399,36 +379,34 @@ div.side-content > nav {
     box-shadow: 0 0 4px #2E8B57;
 }
 
-div.box {
+.box {
     box-shadow: 0 0 4px #2E8B57;
     background-color: #fff;
     border-radius: 2px;
     margin-bottom: 5px;
     padding: 8px;
 }
-
-div.box:last-child {
+.box:last-child {
     margin-bottom: 0;
 }
-
-div.box > h4 {
+.box > h4 {
     border-bottom: 1px solid #8FBC8F;
     padding-bottom: 3px;
     margin-bottom: 5px;
     margin-top: 3px;
 }
 
-div.wrapper-md legend {
+.wrapper-md legend {
     border-bottom: 1px solid #8FBC8F;
     padding-bottom: 5px;
 }
 
-div.show-profile h4 {
+.show-profile h4 {
     font-weight: bold;
     color: #2E8B57;
 }
 
-div.show-profile ul.profile > span {
+.show-profile ul.profile > span {
     background-color: #8FBC8F;
     border-radius: 3px;
     display: block;
@@ -439,7 +417,7 @@ ul.profile {
     margin-bottom: 15px;
 }
 
-div.show-profile ul:last-child {
+.show-profile ul:last-child {
     margin-bottom: 0;
 }
 
@@ -476,14 +454,14 @@ ul.notifications li a {
 }
 
 article.photo > img,
-div#add-description > img {
+#add-description > img {
     max-width: 100%;
     width: 100%;
     border: 1px solid rgba(143, 188, 143, .2);
 }
-div#add-description > img,
-div#add-description > .panel,
-div#add-description > .embed-responsive {
+#add-description > img,
+#add-description > .panel,
+#add-description > .embed-responsive {
     margin-bottom: 5px;
 }
 
@@ -551,28 +529,25 @@ form label {
     margin-bottom: 0;
 }
 
-form div.input-group div label {
-    font-weight: normal;
-}
-
-form div.input-group {
+.input-group {
     margin-bottom: 10px;
 }
-
-form div.input-group p {
+.input-group label {
+    font-weight: normal;
+}
+.input-group p {
     margin-bottom: 0;
 }
-
-form div.input-group div {
+.input-group div {
     display: inline-block;
 }
 
-form textarea,
-form input[type="url"],
-form input[type="text"],
-form input[type="email"],
-form input[type="search"],
-form input[type="password"] {
+textarea,
+input[type="url"],
+input[type="text"],
+input[type="email"],
+input[type="search"],
+input[type="password"] {
     border-radius: 1px 1px 3px 3px;
     border: 1px solid #8FBC8F;
     border-top: 2px solid #2E8B57;
@@ -582,12 +557,10 @@ form input[type="password"] {
     width: 60%;
     color: #fff;
 }
-
-form textarea {
+textarea {
     resize: none;
 }
-
-form input[type="file"] {
+input[type="file"] {
     background-color: #fff;
     border-radius: 0;
     border: none;
@@ -599,19 +572,19 @@ form input[type="file"] {
     width: 100% !important;
 }
 
-form .has-error {
+.has-error {
     border: 1px solid #EBCCD1 !important;
     border-top: 2px solid rgba(255,0,0,.3) !important;
     background-color: #F2DEDE !important;
     color: #A94442 !important;
 }
 
-span.error {
+.error {
     display: block;
     color: #A94442;
 }
 
-span.logged-in {
+.logged-in {
     display: inline-block;
     width: 10px;
     height: 10px;
@@ -623,24 +596,24 @@ span.logged-in {
     margin-bottom: 0;
 }
 
-form input:focus,
-form select:focus,
-form textarea:focus {
+input:focus,
+select:focus,
+textarea:focus {
     background-color: #fff;
     font-weight: normal;
     color: #000;
 }
 
-div.form-group {
+.form-group {
     margin-bottom: 5px;
 }
 
 fieldset > p,
-div.input-group p {
+.input-group p {
     font-weight: bold;
 }
 
-span.help-block {
+.help-block {
     margin-top: 0;
     margin-bottom: 5px;
 }
@@ -649,48 +622,47 @@ p.post a.more {
     display: inline-block;
 }
 
-div.more a,
-a.previous {
+.more a,
+.previous {
     display: block;
     font-variant: small-caps;
 }
-
-a.previous {
+.previous {
     padding: 2px;
     margin: -5px 0 2px 0;
     border-bottom: 1px solid #e2e2e2;
 }
 
-div#comment {
+#comment {
     margin-bottom: 2.5px;
 }
 
-div#reply h4.media-heading,
-div.replies h4.media-heading,
-div#comment h4.media-heading,
-div.comments h4.media-heading,
-div#birthday-message h4.media-heading,
-div.birthday-messages h4.media-heading {
+#reply .media-heading,
+.replies .media-heading,
+#comment .media-heading,
+.comments .media-heading,
+#birthday-message .media-heading,
+.birthday-messages .media-heading {
     display: inline-block;
     margin-right: 5px;
 }
 
-div#reply div.media-body > span,
-div.replies div.media-body > span,
-div#comment div.media-body > span,
-div.comments div.media-body > span,
-div#birthday-message div.media-body > span,
-div.birthday-messages div.media-body > span {
+#reply .media-body > span,
+.replies .media-body > span,
+#comment .media-body > span,
+.comments .media-body > span,
+#birthday-message .media-body > span,
+.birthday-messages .media-body > span {
     display: block;
     margin: -5px 0;
 }
 
-div#reply div.media-body > span a,
-div.replies div.media-body > span a,
-div#comment div.media-body > span a,
-div.comments div.media-body > span a,
-div#birthday-message div.media-body > span a,
-div.birthday-messages div.media-body > span a {
+#reply .media-body > span a,
+.replies .media-body > span a,
+#comment .media-body > span a,
+.comments .media-body > span a,
+#birthday-message .media-body > span a,
+.birthday-messages .media-body > span a {
     display: inline-block;
 }
 
@@ -726,7 +698,7 @@ div.birthday-messages div.media-body > span a {
 
 
 /*** Make these divs stick to their positions ***/
-div.side-content {
+.side-content {
     position: fixed;
     width: 15.222585%;  /* (((30 / 100) *69.5) / 100) * 74.5) / 100) * 98 */
 }
@@ -826,9 +798,9 @@ div.side-content {
         margin-bottom: 37px;
     }
 
-    form input[type="text"],
-    form input[type="email"],
-    form input[type="password"] {
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
         width: 100% !important;
     }
 
@@ -903,7 +875,7 @@ div.side-content {
         line-height: 1.3;
     }
 
-    footer.footer {
+    .site-footer {
         height: auto;
     }
 
@@ -911,15 +883,6 @@ div.side-content {
         display: block;
         text-align: center;
         margin-bottom: 3px;
-    }
-
-    article footer ul li a {
-        width: auto;
-    }
-
-    article footer .comment,
-    article footer .share {
-        text-align: left;
     }
 }
 
@@ -940,7 +903,7 @@ div.side-content {
         width: 100%;
     }
 
-    div.side-content {
+    .side-content {
         position: static;
         width: 30%;
     }
@@ -959,21 +922,17 @@ div.side-content {
         margin: auto;
     }
 
-    div#secondary-user h4 {
+    #secondary-user h4 {
         margin-bottom: 5px;
     }
 
-    article footer > ul > li > a {
-        width: auto;
-    }
-
-    footer.footer {
+    .site-footer {
         height: auto;
     }
 }
 
 @media (min-width: 768px) and (max-width: 971px) {
-    div.suggestions h4 {
+    .suggestions h4 {
         margin-top: 5px;
         padding-bottom: 5px;
     }
@@ -982,7 +941,7 @@ div.side-content {
         width: 100%;
     }
 
-    div.side-content {
+    .side-content {
         position: static;
         width: 30%;
     }
@@ -992,7 +951,7 @@ div.side-content {
         width: 30%;
     }
 
-    div.col-small {
+    .col-small {
         display: none;
     }
 }

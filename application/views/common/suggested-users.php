@@ -5,7 +5,7 @@
     <h4>People you may know</h4>
     <div class='suggested-users'>
         <?php foreach ($people_you_may_know as $p) { ?>
-            <div class='media'>
+            <div class='media separated'>
                 <div class='media-left'>
                     <img src='<?= $p['profile_pic_path']; ?>'
                             alt='<?= $p['profile_name']; ?>' class='media-object profile-pic-md'>
