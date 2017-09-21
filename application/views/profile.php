@@ -123,7 +123,7 @@ require_once("common/secondary-user-nav.php");
             </ul>
         <?php } // if ($profile['halls'] || $profile['hostels']) ?>
 
-        <?php if (!$is_visitor || $profile['origin']) { ?>
+        <?php if (!$is_visitor || $profile['origin']['district_name']) { ?>
             <h4>Origin</h4>
             <ul class='profile'>
                 <?php
@@ -142,10 +142,10 @@ require_once("common/secondary-user-nav.php");
                     }
                 } else {
                 ?>
-                    <li>From
+                    <li>
                     <?php
                     if ($profile['origin']['district_name']) {
-                        print " {$profile['origin']['district_name']}, {$profile['origin']['country_name']}.";
+                        print "From {$profile['origin']['district_name']}, {$profile['origin']['country_name']}.";
                     }
                     ?>
                     </li>
