@@ -121,7 +121,7 @@ class Profile extends CI_Controller
 
         // User reaches here if he has just opened this page, or
         // there is an error in submitted form data.
-        $data['schools'] = $this->profile_model->get_schools();
+        $data['schools'] = $this->profile_model->get_schools($_SESSION['user_id']);
 
         $data['heading'] = 'Add School';
         $data['form_action'] = base_url('profile/add-school');

@@ -10,7 +10,7 @@ class Profile_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
-        $this->load->model(['photo_model']);
+        $this->load->model(['photo_model', 'account_model']);
     }
 
     /**
@@ -126,10 +126,31 @@ class Profile_model extends CI_Model
      *
      * @return all schools in the schools table.
      */
-    public function get_schools()
+    public function get_schools($user_id)
     {
+        // Get the user's mak email(s).
+        $sql = sprintf('SELECT email FROM user_emails WHERE user_id = %d',
+                        $user_id);
+        $query = $this->db->query($sql);
+        $results = $query->result_array();
+
+        $colleges = [0];  // Extra element added for safety of IN clause.
+        foreach ($results as $r) {
+            if ($this->account_model->is_valid_mak_email($r['email'])) {
+                $domain = substr($r['email'], stripos($r['email'], '@')+1);
+
+                // Get the college with this domain.
+                $sql = sprintf('SELECT college_id FROM colleges WHERE domain = %s',
+                                $this->db->escape($domain));
+                $query = $this->db->query($sql);
+                $result = $query->row_array();
+                $colleges[] = $result['college_id'];
+            }
+        }
+
         $schools_sql = sprintf("SELECT school_id, college_id, school_name
-                                FROM schools ORDER BY school_name");
+                                FROM schools WHERE college_id IN(%s) ORDER BY school_name",
+                                implode(',', $colleges));
         $schools_query = $this->db->query($schools_sql);
 
         return $schools_query->result_array();
