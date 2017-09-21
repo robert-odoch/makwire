@@ -7,11 +7,9 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
     <h4><?= $heading; ?></h4>
     <?php if (isset($error_message)) { ?>
         <div class='alert alert-danger' role='alert'>
-            <p>
-                <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
-                <span class='sr-only'>Error: </span>
-                <?= $error_message; ?>
-            </p>
+            <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
+            <span class='sr-only'>Error: </span>
+            <p><?= $error_message; ?></p>
         </div>
     <?php } ?>
 

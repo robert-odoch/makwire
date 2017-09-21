@@ -19,7 +19,8 @@
                         </span>
                     </p>
 
-                    <div class='alert alert-warning'>
+                    <div class='alert alert-warning' role='alert'>
+                        <span class='glyphicon glyphicon-warning-sign' aria-hidden='true'></span>
                         <p>Are you sure you want to delete your account?</p>
                         <form action='<?= base_url('account/delete'); ?>' method='post'
                                 accept-charset='utf-8' role='form'>

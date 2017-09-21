@@ -8,10 +8,8 @@ require_once(dirname(__FILE__) . '/helper functions/show_notifications_functions
     <h4>Notifications</h4>
     <?php if (count($notifications) == 0) { ?>
     <div class='alert alert-info' role='alert'>
-        <p>
-            <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
-            No new notifications to show.
-        </p>
+        <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
+        <p>No new notifications to show.</p>
     </div>
     <?php } else {
         if (isset($has_prev)) {

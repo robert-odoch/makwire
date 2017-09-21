@@ -7,9 +7,11 @@
 
             <?php
             if (isset($login_errors) && array_key_exists('login', $login_errors)) {
-                print "<div class='alert alert-danger' role='alert'>" .
-                        "<span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span> " .
-                        "{$login_errors['login']}</div>";
+                print "<div class='alert alert-danger' role='alert'>
+                        <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
+                        <span class='sr-only'>Error: </span>
+                        <p>{$login_errors['login']}</p>
+                        </div>";
             }
             elseif (isset($info_message)) {
                 show_message($info_message, 'info');

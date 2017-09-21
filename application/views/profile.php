@@ -16,9 +16,9 @@ require_once("common/secondary-user-nav.php");
     // If there is nothing to show.
     if ($is_visitor && !$profile['schools'] && !$profile['halls']
         && !$profile['hostels'] && !$profile['origin']['district']) {
-        print "<div class='alert alert-info' role='alert'>" .
-                "<span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span> " .
-                "Nothing to show.</div>";
+        print "<div class='alert alert-info' role='alert'>
+                <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
+                <p>Nothing to show.</p></div>";
     }
     else {
     ?>

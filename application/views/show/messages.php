@@ -7,10 +7,8 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
     <h4>Messages</h4>
     <?php if (count($messages) == 0) { ?>
     <div class='alert alert-info' role='alert'>
-        <p>
-            <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
-            No messages to show.
-        </p>
+        <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
+        <p>No messages to show.</p>
     </div>
     <?php } else {
         if (isset($has_prev)) {

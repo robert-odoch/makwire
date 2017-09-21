@@ -8,10 +8,8 @@ require_once(dirname(__FILE__) . '/../common/secondary-user-nav.php');
 <div class='box'>
     <?php if (count($friends) == 0) { ?>
     <div class='alert alert-info' role='alert'>
-        <p>
-            <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
-            No friends to show.
-        </p>
+        <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
+        <p>No friends to show.</p>
     </div>
     <?php } else { ?>
     <div class='friends'>

@@ -80,6 +80,16 @@ p.text {
     margin-bottom: 0;
     padding: 15px 10px;
 }
+.alert .glyphicon {
+    float: left;
+    margin-top: 4px;
+}
+.alert p {
+    margin-left: 20px;
+}
+.alert form {
+    margin-top: 5px;
+}
 
 .panel {
     margin-bottom: 0;
@@ -97,6 +107,10 @@ p.text {
     padding: 5px 10px;
 }
 /* End override */
+
+#status-nav + form label {
+    margin-top: 10px;
+}
 
 .table {
     margin-bottom: 5px;
@@ -586,9 +600,10 @@ input[type="file"] {
 }
 
 .logged-in {
-    display: inline-block;
     width: 10px;
     height: 10px;
+    margin-left: 5px;
+    display: inline-block;
     border: 1px solid #000;
 }
 

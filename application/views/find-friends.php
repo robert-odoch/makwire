@@ -24,7 +24,7 @@ require_once('common/user-page-start.php');
         <h4>Search results</h4>
         <div class='users'>
             <?php foreach ($search_results as $user) { ?>
-                <div class='media'>
+                <div class='media separated'>
                     <div class='media-left'>
                         <img src='<?= $user['profile_pic_path']; ?>'
                             alt='<?= $user['profile_name']; ?>' class='media-object profile-pic-md'>
@@ -52,10 +52,8 @@ require_once('common/user-page-start.php');
     <div class='box'>
         <h4>Search results</h4>
         <div class='alert alert-info' role='alert'>
-            <p>
-                <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
-                You search query returned no results.
-            </p>
+            <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
+            <p>You search query returned no results.</p>
         </div>
     </div>
 <?php } ?>
@@ -65,7 +63,7 @@ require_once('common/user-page-start.php');
         <h4>People you may know</h4>
         <div class='suggested-users'>
             <?php foreach ($suggested_users as $user) { ?>
-            <div class='media'>
+            <div class='media separated'>
                 <div class='media-left'>
                     <img src='<?= $user['profile_pic_path']; ?>'
                             alt='<?= $user['profile_name']; ?>' class='media-object profile-pic-md'>

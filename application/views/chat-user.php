@@ -6,7 +6,7 @@
             <img src='<?= $receiver['profile_pic_path']; ?>' class='media-object profile-pic-sm'>
         </div>
         <div class='media-body'>
-            <h4 class='media-heading'>
+            <h4>
                 <a href='<?= base_url("user/{$receiver['user_id']}"); ?>'>
                     <?= $receiver['profile_name']; ?>
                 </a>

@@ -14,7 +14,9 @@ require_once(__DIR__ . '/../common/user-page-start.php');
 
     <?php if (isset($error)) { ?>
     <div class='alert alert-danger' role='alert'>
-        <?= $error; ?>
+        <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
+        <span class='sr-only'>Error: </span>
+        <p><?= $error; ?></p>
     </div>
     <?php } ?>
 

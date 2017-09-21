@@ -7,7 +7,8 @@ require_once(dirname(__FILE__) . '/../common/secondary-user-nav.php');
 
 <?php if (count($photos) == 0): ?>
     <div class='box'>
-        <div class='alert alert-info'>
+        <div class='alert alert-info' role='alert'>
+            <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
             <p>No photos to show.</p>
         </div>
     </div>

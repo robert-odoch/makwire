@@ -4,9 +4,8 @@
     <h4>Comments</h4>
     <?php if (count($comments) == 0) { ?>
         <div class='alert alert-info' role='alert'>
-            <p>
-                <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span> No comments to show.
-            </p>
+            <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
+            <p>No comments to show.</p>
         </div>
     <?php } else { ?>
         <?php

@@ -11,11 +11,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 endif;
 ?>
         <div class='box'>
-            <h4>
-                <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
-                <?= $heading; ?>
-            </h4>
+            <h4><?= $heading; ?></h4>
             <div class='alert alert-danger' role='alert'>
+                <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
                 <p><?= $message; ?></p>
             </div>
         </div>

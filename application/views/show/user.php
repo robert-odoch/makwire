@@ -22,10 +22,8 @@ if (!$is_visitor) {
     if (empty($items) && $is_visitor) { ?>
         <div class='box'>
             <div class='alert alert-info' role='alert'>
-                <p>
-                    <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
-                    When they do, their status updates will show up here.
-                </p>
+                <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
+                <p>When they do, their status updates will show up here.</p>
             </div>
         </div>
     <?php

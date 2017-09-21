@@ -25,10 +25,8 @@ switch ($object) {
     <h4>Shares</h4>
     <?php if (count($shares) == 0) { ?>
     <div class='alert alert-info' role='alert'>
-        <p>
-            <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
-            No shares to show.
-        </p>
+        <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
+        <p>No shares to show.</p>
     </div>
     <?php } else {
         if (isset($has_prev)) {

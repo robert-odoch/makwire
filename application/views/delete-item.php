@@ -4,7 +4,8 @@ require_once(dirname(__FILE__) . '/common/user-page-start.php');
 ?>
 
 <div class='box'>
-    <div class='alert alert-warning'>
+    <div class='alert alert-warning' role='alert'>
+        <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
         <p>
             <?php if (in_array($item, ['post', 'photo', 'video', 'link'])): ?>
                 <?php if ($item_owner_id != $_SESSION['user_id']) { ?>

@@ -13,10 +13,8 @@ else if ($object == 'birthday-message') {
     <h4>Replies</h4>
     <?php if (count($replies) == 0) { ?>
     <div class='alert alert-info' role='alert'>
-        <p>
-            <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
-            No replies to show.
-        </p>
+        <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
+        <p>No replies to show.</p>
     </div>
     <?php } else {
         $ID = ($object == 'birthday-message') ? $message['id'] : $comment['comment_id'];

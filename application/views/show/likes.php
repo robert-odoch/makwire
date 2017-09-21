@@ -32,10 +32,8 @@ switch ($object) {
     <h4>Likes</h4>
     <?php if (count($likes) == 0) { ?>
     <div class='alert alert-info' role='alert'>
-        <p>
-            <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
-            No likes to show.
-        </p>
+        <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
+        <p>No likes to show.</p>
     </div>
     <?php } else {
         if (isset($has_prev)) {

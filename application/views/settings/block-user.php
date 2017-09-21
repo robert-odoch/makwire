@@ -33,7 +33,8 @@
                     <?php if (isset($search_results)): ?>
                         <h4>Search Results</h4>
                         <?php if (empty($search_results)): ?>
-                            <div class='alert alert-info'>
+                            <div class='alert alert-info' role='alert'>
+                                <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
                                 <p>Your search query returned no results.</p>
                             </div>
                         <?php else: ?>
@@ -61,7 +62,8 @@
                     <?php else: ?>
                         <h4>Blocked Users</h4>
                         <?php if (empty($blocked_users)): ?>
-                            <div class='alert alert-info'>
+                            <div class='alert alert-info' role='alert'>
+                                <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
                                 <p>You haven't blocked any users.</p>
                             </div>
                         <?php else: ?>

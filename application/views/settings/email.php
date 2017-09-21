@@ -13,7 +13,8 @@
                     <h4>Emails</h4>
                     <h5>Primary email address</h5>
                     <?php if (isset($primary_email_success_message)): ?>
-                        <div class='alert alert-success'>
+                        <div class='alert alert-success' role='alert'>
+                            <span class='glyphicon glyphicon-ok-circle' aria-hidden='true'></span>
                             <p><?= $primary_email_success_message; ?></p>
                         </div>
                     <?php else: ?>
@@ -38,7 +39,8 @@
                     <?php if (count($emails) > 1): ?>
                         <h5>Backup email address</h5>
                         <?php if (isset($backup_email_success_message)): ?>
-                            <div class='alert alert-success'>
+                            <div class='alert alert-success' role='alert'>
+                                <span class='glyphicon glyphicon-ok-circle' aria-hidden='true'></span>
                                 <p><?= $backup_email_success_message; ?></p>
                             </div>
                         <?php else: ?>
@@ -69,11 +71,13 @@
 
                     <h5>Add new email address</h5>
                     <?php if (isset($info_message)): ?>
-                        <div class='alert alert-info'>
+                        <div class='alert alert-info' role='alert'>
+                            <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
                             <p><?= $info_message; ?></p>
                         </div>
                     <?php elseif (isset($success_message)): ?>
-                        <div class='alert alert-success'>
+                        <div class='alert alert-success' role='alert'>
+                            <span class='glyphicon glyphicon-ok-circle' aria-hidden='true'></span>
                             <p><?= $success_message; ?></p>
                         </div>
                     <?php else: ?>

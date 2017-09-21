@@ -7,10 +7,8 @@ require_once('common/user-page-start.php');
     <h4>Chat</h4>
     <?php if (count($chat_users) == 0) { ?>
         <div class='alert alert-info' role='alert'>
-            <p>
-                <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
-                None of your friends are on chat at this moment.
-            </p>
+            <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
+            <p>None of your friends are on chat at this moment.</p>
         </div>
     <?php } else { ?>
         <div class='chat-users'>

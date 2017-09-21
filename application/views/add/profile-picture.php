@@ -9,7 +9,9 @@ require_once(__DIR__ . '/../common/user-page-start.php');
         <div class='panel-body'>
             <?php if (isset($error)) { ?>
             <div class='alert alert-danger' role='alert'>
-                <?= $error; ?>
+                <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
+                <span class='sr-only'>Error: </span>
+                <p><?= $error; ?></p>
             </div>
             <?php } ?>
             <form action='<?= base_url('profile/change-profile-picture'); ?>' method='post'
