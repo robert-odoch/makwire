@@ -28,23 +28,7 @@ class Register extends CI_Controller
                 $data['error_message'] = 'Please enter a valid email address!';
             }
             else {
-                $valid_mak_domains = [
-                    'cedat.mak.ac.ug', 'chuss.mak.ac.ug',
-                    'cns.mak.ac.ug', 'cees.mak.ac.ug',
-                    'caes.mak.ac.ug', 'chs.mak.ac.ug',
-                    'law.mak.ac.ug', 'covab.mak.ac.ug',
-                    'cis.mak.ac.ug', 'bams.mak.ac.ug',
-                    'musph.ac.ug', 'dicts.mak.ac.ug'];
-
-                $is_valid_mak_email = FALSE;
-                foreach ($valid_mak_domains as $d) {
-                    if (stripos($email, $d) !== false) {
-                        $is_valid_mak_email = TRUE;
-                        break;
-                    }
-                }
-
-                if ( ! $is_valid_mak_email) {
+                if ( ! $this->account_model->is_valid_mak_email($email)) {
                     $data['error_message'] = 'Please enter a Mak email address!';
                 }
                 elseif ($this->account_model->is_activated_email($email)) {

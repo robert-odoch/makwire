@@ -9,6 +9,28 @@ class Account_model extends CI_Model
         parent::__construct();
     }
 
+    public function is_valid_mak_email($email)
+    {
+        $mak_domains = [
+            'cedat.mak.ac.ug', 'chuss.mak.ac.ug',
+            'cns.mak.ac.ug', 'cees.mak.ac.ug',
+            'caes.mak.ac.ug', 'chs.mak.ac.ug',
+            'law.mak.ac.ug', 'covab.mak.ac.ug',
+            'cis.mak.ac.ug', 'bams.mak.ac.ug',
+            'musph.ac.ug', 'dicts.mak.ac.ug'
+        ];
+
+        $valid = FALSE;
+        foreach ($mak_domains as $d) {
+            if (stripos($email, $d) !== false) {
+                $valid = TRUE;
+                break;
+            }
+        }
+
+        return $valid;
+    }
+
     public function is_username_taken($username)
     {
         $sql = sprintf('SELECT user_id FROM users WHERE uname = %s',
