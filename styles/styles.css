@@ -23,8 +23,16 @@ br + br {
     margin: 5px 0;
 }
 
+.text {
+    font-family: 'Roboto', sans-serif;
+}
 p {
     margin-bottom: 0;
+}
+p.text {
+    text-align: justify;
+    line-height: normal;
+    margin-bottom: 5px;
 }
 
 .navbar-fixed-top {
@@ -464,12 +472,6 @@ article.video header {
     padding-bottom: 2px;
 }
 
-article.link p,
-article.photo p,
-article.video p {
-    margin-bottom: 5px;
-}
-
 article.video .embed-responsive {
     background-color: #000;
 }
@@ -662,10 +664,6 @@ div.input-group p {
 span.help-block {
     margin-top: 0;
     margin-bottom: 5px;
-}
-
-p.post {
-    line-height: normal;
 }
 
 p.post a.more {

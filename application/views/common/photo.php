@@ -47,11 +47,11 @@
 
         <?php
         if ($photo['has_description']) {
-            print "<p class='post'>" . nl2br($photo['description']) . "</p>";
+            print "<p class='text'>" . nl2br($photo['description']) . "</p>";
         }
         elseif ($photo['user_id'] == $_SESSION['user_id'] && !$photo['was_profile_pic']) {
-            print '<a href="' . base_url("photo/add-description/{$photo['photo_id']}") .
-                    '">Say something about this photo</a>';
+            print "<a href='" . base_url("photo/add-description/{$photo['photo_id']}") .
+                    "' class='text'>Say something about this photo</a>";
         }
         ?>
         <img src='<?= $photo['web_path']; ?>' alt="<?= $photo['alt']; ?>">
