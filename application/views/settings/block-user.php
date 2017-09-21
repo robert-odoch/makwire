@@ -42,7 +42,7 @@
                                 <div class='media'>
                                     <div class='media-left'>
                                         <img src='<?= $sr['profile_pic_path']; ?>'
-                                                class='media-object' alt="<?= $sr['profile_name']; ?>">
+                                                class='media-object' alt='<?= $sr['profile_name']; ?>'>
                                     </div>
                                     <div class='media-body'>
                                         <h4 class='media-heading'>

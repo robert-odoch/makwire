@@ -15,7 +15,7 @@ require_once(__DIR__ . '/../common/user-page-start.php');
         <div class='panel panel-default link-panel'>
             <?php if (strlen($link['image']) != 0) { ?>
             <div class='panel-body'>
-                <img src='<?= $link['image']; ?>' alt="" class='link-image'>
+                <img src='<?= $link['image']; ?>' class='link-image'>
             </div>
             <?php } ?>
 
