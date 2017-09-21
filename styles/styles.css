@@ -23,15 +23,15 @@ br + br {
     margin: 5px 0;
 }
 
+p {
+    margin-bottom: 5px;
+}
+
 .text {
     font-family: 'Roboto', sans-serif;
 }
-p {
-    margin-bottom: 0;
-}
 p.text {
     text-align: justify;
-    margin-bottom: 5px;
 }
 
 .profile-pic-xs {
@@ -74,6 +74,11 @@ p.text {
 .nav-tabs + .panel {
     border-radius: 0 0 4px;
 }
+
+.alert {
+    padding: 10px;
+}
+
 .panel {
     margin-bottom: 0;
 }
@@ -213,9 +218,6 @@ a:focus {
 
 .user-nav {
     margin-top: 5px;
-}
-.user-nav p {
-    margin-bottom: 5px;
 }
 .user-nav a {
     text-decoration: none;
@@ -477,10 +479,6 @@ article header a:hover {
     text-decoration: none;
 }
 
-article.photo p {
-    margin-bottom: 5px;
-}
-
 article p a.more {
     display: inline-block;
 }
@@ -556,6 +554,7 @@ input[type="password"] {
     padding: 1px 5px;
     width: 60%;
     color: #fff;
+    line-height: 2;
 }
 textarea {
     resize: none;
@@ -654,7 +653,6 @@ p.post a.more {
 #birthday-message .media-body > span,
 .birthday-messages .media-body > span {
     display: block;
-    margin: -5px 0;
 }
 
 #reply .media-body > span a,

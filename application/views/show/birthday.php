@@ -39,7 +39,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
             </div>
         </div>
     </h4>
-    <?php if ($is_visitor) { ?>
+
     <form action='<?= base_url("user/send-birthday-message/{$user_id}/{$age}") ?>'
             method='post' accept-charset='utf-8' role='form'>
         <fieldset>
@@ -63,7 +63,6 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
         </fieldset>
         <input type='submit' name='submit' value='Send' class='btn btn-sm'>
     </form>
-    <?php } ?>
 </div>
 
 <?php if (count($birthday_messages) > 0) { ?>
