@@ -76,7 +76,9 @@ p.text {
 }
 
 .alert {
-    padding: 10px;
+    border-radius: 3px;
+    margin-bottom: 0;
+    padding: 15px 10px;
 }
 
 .panel {
@@ -590,11 +592,6 @@ input[type="file"] {
     border: 1px solid #000;
 }
 
-.alert {
-    border-radius: 3px;
-    margin-bottom: 0;
-}
-
 input:focus,
 select:focus,
 textarea:focus {
@@ -734,12 +731,8 @@ p.post a.more {
     position: absolute; top: 13px; right: 15px;
     padding: 2px; width: 30px; height: 30px; border-radius: 50%;
 }
-
-.main-content .refresh-chat .glyphicon {
-    top: 8%; left: 21%;
-}
-.col-small .refresh-chat .glyphicon {
-    top: 5px; left: 6px;
+.refresh-chat .glyphicon {
+    top: 1px; left: 6px;
 }
 .refresh-chat:hover {
     background-color: #2E8B57;
