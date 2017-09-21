@@ -31,8 +31,24 @@ p {
 }
 p.text {
     text-align: justify;
-    line-height: normal;
     margin-bottom: 5px;
+}
+
+.profile-pic-xs {
+    width: 35px;
+    height: 35px;
+}
+.profile-pic-sm {
+    width: 45px;
+    height: 45px;
+}
+.profile-pic-md {
+    width: 50px;
+    height: 50px;
+}
+.profile-pic-lg {
+    width: 75px;
+    height: 75px;
 }
 
 .navbar-fixed-top {
@@ -44,6 +60,10 @@ p.text {
 .navbar-brand:active {
     background-color: #2E8B57 !important;
     color: #000 !important;
+}
+
+.media-footer {
+    line-height: 2;
 }
 
  /* Override bootstrap's styles.*/
@@ -137,14 +157,9 @@ a:focus {
     width: 25%;
 }
 
-.profile-pic {
-    border-radius: 3px;
-    height: 50px;
-    width: 50px;
-}
-
-div.media {
+.media {
     margin: 0 0 2px 0;
+    line-height: normal;
 }
 
 div.likes div.media,
@@ -199,6 +214,10 @@ nav.user-nav ul li a.active {
 
 div#primary-user.media {
     margin: 0;
+}
+
+div#primary-user .profile-pic-xs {
+    border-radius: 3px;
 }
 
 div#primary-user h4.media-heading a {
@@ -290,26 +309,7 @@ div.active-users div:hover a {
     color: #fff;
 }
 
-div.likes img.media-object,
-div.shares img.media-object,
-div.replies img.media-object,
-div.members img.media-object,
-div.friends img.media-object,
-div.comments img.media-object,
-div.followers img.media-object,
-div.following img.media-object,
-div.chat-friends img.media-object,
-div.birthday-messages img.media-object {
-    height: 50px;  /* Always match height for div.media-body */
-    width: 50px;
-}
-
-div.active-users img.media-object {
-    height: 42.9px;  /* Always match height for div.media-body */
-    width: 42.9px;
-}
-
-div.active-users img.media-object {
+div.active-users img {
     border-radius: 50%;
 }
 
@@ -322,46 +322,26 @@ div.active-users img.media-object {
     color: #fff;
 }
 
-div.media-body h4 {
+.media-body h4 {
     font-size: 14px;
 }
 
-div#primary-user h4.media-heading,
-div.active-users h4.media-heading {
+#primary-user h4.media-heading,
+.active-users h4.media-heading {
     margin-top: 5px;
 }
 
-div.likes h4.media-heading,
-div.shares h4.media-heading,
-article h4.media-heading {
-    margin-bottom: -2px;
-}
-
-img.media-object {
-    width: 45px;
-    height: 45px;
-}
-
-div#primary-user img.media-object {
-    border-radius: 3px;
-}
-
-div#secondary-user img {
-    height: 75px;
-    width: 75px;
-}
-
-div#secondary-user h4 {
+#secondary-user h4 {
     font-size: 1.5em;
     margin-top: 0;
     text-transform: uppercase;
 }
 
-div#secondary-user h4 a {
+#secondary-user h4 a {
     text-decoration: none;
 }
 
-div#secondary-user nav {
+#secondary-user nav {
     margin-top: 5px;
     background-color: #8FBC8F;
     border-radius: 0 3px 0 3px;
@@ -424,7 +404,6 @@ div.box {
     background-color: #fff;
     border-radius: 2px;
     margin-bottom: 5px;
-    line-height: 2em;
     padding: 8px;
 }
 
@@ -715,14 +694,7 @@ div.birthday-messages div.media-body > span a {
     display: inline-block;
 }
 
-div#reply img.media-object,
-div#comment img.media-object,
-div#birthday-message img.media-object {
-    height: 49.4px;  /* Always the same as the height of media-body */
-}
-
 .link-panel {
-    line-height: normal;
     border-radius: 2px;
 }
 .link-panel .panel-body {
@@ -744,7 +716,6 @@ div#birthday-message img.media-object {
     padding: 3px 0;
 }
 .link-title {
-    line-height: 1.3;
     margin-bottom: 3px;
 }
 .link-site {
@@ -813,10 +784,6 @@ div.side-content {
 }
 .chat input.fluid {
     height: 30px;
-}
-.chat-content img {
-    width: 35px;
-    height: 35px;
 }
 .chat-content p {
     padding: 5px;
@@ -895,7 +862,7 @@ div.side-content {
         margin: 0 2%;
     }
 
-    div.box {
+    .box {
         padding: 5px;
     }
 
@@ -903,20 +870,28 @@ div.side-content {
         padding: 5px 10px;
     }
 
-    div.col-xs-6:last-child {
+    .col-xs-6:last-child {
         margin-bottom: 0;
     }
 
-    div.col-xs-6 {
+    .col-xs-6 {
         width: 100%;
     }
 
-    div#secondary-user img {
-        height: 50px;
+    .profile-pic-lg {
         width: 50px;
+        height: 50px;
+    }
+    .profile-pic-md {
+        width: 45px;
+        height: 45px;
+    }
+    .profile-pic-sm {
+        width: 35px;
+        height: 35px;
     }
 
-    div#secondary-user h4 {
+    #secondary-user h4 {
         font-size: 1.1em;
         margin-bottom: 0;
     }
@@ -928,31 +903,14 @@ div.side-content {
         line-height: 1.3;
     }
 
-    div.likes img.media-object,
-    div.shares img.media-object,
-    div.replies img.media-object,
-    div.members img.media-object,
-    div.friends img.media-object,
-    div.comments img.media-object,
-    div.followers img.media-object,
-    div.following img.media-object,
-    div.chat-friends img.media-object,
-    div.birthday-messages img.media-object {
-        height: 40px;  /* Always match height for div.media-body */
-        width: 38px;
-    }
-
     footer.footer {
         height: auto;
     }
 
-    p#site-copyright {
+    #site-copyright {
         display: block;
         text-align: center;
         margin-bottom: 3px;
-    }
-    p#site-copyright + span {
-        display: none;
     }
 
     article footer ul li a {

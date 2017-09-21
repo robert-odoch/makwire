@@ -26,8 +26,8 @@ require_once('common/user-page-start.php');
             <?php foreach ($search_results as $user) { ?>
                 <div class='media'>
                     <div class='media-left'>
-                        <img class='media-object' src='<?= $user['profile_pic_path']; ?>'
-                            alt="<?= $user['profile_name']; ?>">
+                        <img src='<?= $user['profile_pic_path']; ?>'
+                            alt='<?= $user['profile_name']; ?>' class='media-object profile-pic-md'>
                     </div>
                     <div class='media-body'>
                         <h4 class='media-heading'>
@@ -67,8 +67,8 @@ require_once('common/user-page-start.php');
             <?php foreach ($suggested_users as $user) { ?>
             <div class='media'>
                 <div class='media-left'>
-                    <img class='media-object' src='<?= $user['profile_pic_path']; ?>'
-                            alt="<?= $user['profile_name']; ?>">
+                    <img src='<?= $user['profile_pic_path']; ?>'
+                            alt='<?= $user['profile_name']; ?>' class='media-object profile-pic-md'>
                 </div>
                 <div class='media-body'>
                     <h4 class='media-heading'>

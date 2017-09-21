@@ -51,8 +51,8 @@ switch ($object) {
         <?php foreach($likes as $like) { ?>
         <div class='media'>
             <div class='media-left'>
-                <img class='media-object' src='<?= $like['profile_pic_path']; ?>'
-                    alt="<?= $like['liker']; ?>">
+                <img src='<?= $like['profile_pic_path']; ?>'
+                    alt='<?= $like['liker']; ?>' class='media-object profile-pic-sm'>
             </div>
             <div class='media-body'>
                 <h4 class='media-heading'>

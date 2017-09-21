@@ -7,8 +7,8 @@
         <?php foreach ($people_you_may_know as $p) { ?>
             <div class='media'>
                 <div class='media-left'>
-                    <img class='media-object' src='<?= $p['profile_pic_path']; ?>'
-                            alt="<?= $p['profile_name']; ?>">
+                    <img src='<?= $p['profile_pic_path']; ?>'
+                            alt='<?= $p['profile_name']; ?>' class='media-object profile-pic-md'>
                 </div>
                 <div class='media-body'>
                     <h4 class='media-heading'>

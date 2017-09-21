@@ -1,6 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
-<footer>
+<footer class='media-footer'>
     <?php
     if ($$object['num_likes'] > 0) {
         print "<a href='" . base_url("$object/likes/{$$object[$object . '_id']}") .

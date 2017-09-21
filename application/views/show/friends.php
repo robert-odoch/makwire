@@ -18,8 +18,8 @@ require_once(dirname(__FILE__) . '/../common/secondary-user-nav.php');
         <?php foreach($friends as $fr) { ?>
         <div class='media'>
             <div class='media-left'>
-                <img class='media-object' src='<?= $fr['profile_pic_path']; ?>'
-                    alt="<?= $fr['profile_name']; ?>">
+                <img src='<?= $fr['profile_pic_path']; ?>'
+                    alt='<?= $fr['profile_name']; ?>' class='media-object profile-pic-sm'>
             </div>
             <div class='media-body'>
                 <h4 class='media-heading'>

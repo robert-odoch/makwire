@@ -3,8 +3,8 @@
 <div class='box'>
     <div id='birthday-message' class='media'>
         <div class='media-left'>
-            <img class='media-object' src='<?= $message['profile_pic_path']; ?>'
-                alt="<?= $message['sender']; ?>">
+            <img src='<?= $message['profile_pic_path']; ?>'
+                alt='<?= $message['sender']; ?>' class='media-object profile-pic-md'>
         </div>
         <div class='media-body'>
             <h4 class='media-heading'>

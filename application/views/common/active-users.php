@@ -5,8 +5,8 @@
         <?php foreach($chat_users as $user) { ?>
             <div class='media'>
                 <div class='media-left media-middle'>
-                    <img class='media-object' src='<?= $user['profile_pic_path']; ?>'
-                        alt="<?= $user['profile_name']?>">
+                    <img src='<?= $user['profile_pic_path']; ?>'
+                        alt='<?= $user['profile_name']?>' class='media-object profile-pic-sm'>
                 </div>
                 <div class='media-body'>
                     <h4 class='media-heading'>

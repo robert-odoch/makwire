@@ -3,8 +3,8 @@
 <div class='box'>
     <div id='<?= $object; ?>' class='media'>
         <div class='media-left'>
-            <img class='media-object' src='<?= $$object['profile_pic_path']; ?>'
-                alt="<?= $$object['commenter']; ?>">
+            <img src='<?= $$object['profile_pic_path']; ?>'
+                alt='<?= $$object['commenter']; ?>' class='media-object profile-pic-md'>
         </div>
         <div class='media-body'>
             <h4 class='media-heading'>

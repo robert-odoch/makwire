@@ -5,7 +5,7 @@
         <header>
             <div class='media'>
                 <div class='media-left'>
-                    <img src='<?= $video['profile_pic_path']; ?>' alt="" class='media-object'>
+                    <img src='<?= $video['profile_pic_path']; ?>' class='media-object profile-pic-md'>
                 </div>
                 <div class='media-body'>
                     <h4 class='media-heading'>

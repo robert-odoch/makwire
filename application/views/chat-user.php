@@ -3,7 +3,7 @@
 <div class='chat'>
     <div class='media receiver'>
         <div class='media-left media-middle'>
-            <img src='<?= $receiver['profile_pic_path']; ?>' class='media-object'>
+            <img src='<?= $receiver['profile_pic_path']; ?>' class='media-object profile-pic-sm'>
         </div>
         <div class='media-body'>
             <h4 class='media-heading'>

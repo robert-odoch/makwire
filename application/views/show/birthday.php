@@ -7,7 +7,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
     <h4>
         <div class='media'>
             <div class='media-left'>
-                <img src='<?= $user_profile_pic_path; ?>' class='media-object' alt="<?= $user; ?>">
+                <img src='<?= $user_profile_pic_path; ?>' class='media-object profile-pic-md' alt='<?= $user; ?>'>
             </div>
             <div class='media-body'>
                 <h4 class='media-heading'>
@@ -72,8 +72,8 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
         <?php foreach ($birthday_messages as $msg) { ?>
             <div class='media'>
                 <div class='media-left'>
-                    <img src='<?= $msg['profile_pic_path']; ?>' alt="<?= $msg['sender']; ?>"
-                            class='media-object'>
+                    <img src='<?= $msg['profile_pic_path']; ?>' alt='<?= $msg['sender']; ?>'
+                            class='media-object profile-pic-sm'>
                 </div>
                 <div class='media-body'>
                     <h4 class='media-heading'>

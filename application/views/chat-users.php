@@ -17,8 +17,8 @@ require_once('common/user-page-start.php');
             <?php foreach ($chat_users as $cu) { ?>
                 <div class='media'>
                     <div class='media-left'>
-                        <img class='media-object' src='<?= $cu['profile_pic_path']; ?>'
-                                alt="<?= $cu['profile_name']; ?>">
+                        <img src='<?= $cu['profile_pic_path']; ?>'
+                                alt='<?= $cu['profile_name']; ?>' class='media-object profile-pic-sm'>
                     </div>
                     <div class='media-body'>
                         <a href='<?= base_url("user/send-message/{$cu['user_id']}"); ?>' class='send-message'>
