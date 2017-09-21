@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 20, 2017 at 02:30 PM
+-- Generation Time: Sep 21, 2017 at 01:59 PM
 -- Server version: 10.1.10-MariaDB
 -- PHP Version: 7.0.2
 
@@ -59,8 +59,26 @@ CREATE TABLE `birthday_messages` (
 
 CREATE TABLE `colleges` (
   `college_id` int(11) UNSIGNED NOT NULL,
-  `college_name` varchar(100) NOT NULL
+  `college_name` varchar(100) NOT NULL,
+  `short_name` varchar(10) NOT NULL,
+  `domain` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `colleges`
+--
+
+INSERT INTO `colleges` (`college_id`, `college_name`, `short_name`, `domain`) VALUES
+(1, 'College of Agricultural and Environmental Sciences', 'CAES', 'caes.mak.ac.ug'),
+(2, 'College of Business and Management Sciences', 'CoBAMS', 'bams.mak.ac.ug'),
+(3, 'College of Computing and Information Sciences', 'CoCIS', 'cis.mak.ac.ug'),
+(4, 'College of Education and External Studies', 'CEES', 'cees.mak.ac.ug'),
+(5, 'College of Engineering, Design, Art and Technology', 'CEDAT', 'cedat.mak.ac.ug'),
+(6, 'College of Health Sciences', 'CHS', 'chs.mak.ac.ug'),
+(7, 'College of Humanities and Social Sciences', 'CHUSS', 'chuss.mak.ac.ug'),
+(8, 'College of Natural Sciences', 'CoNAS', 'cns.mak.ac.ug'),
+(9, 'College of Veterinary Medicine, Animal Resources & Bio-security', 'CoVAB', 'covab.mak.ac.ug'),
+(10, 'School of Law', 'LAW', 'law.mak.ac.ug');
 
 -- --------------------------------------------------------
 
@@ -388,9 +406,43 @@ CREATE TABLE `programmes` (
 
 CREATE TABLE `schools` (
   `school_id` int(11) UNSIGNED NOT NULL,
-  `college_id` int(11) UNSIGNED DEFAULT NULL,
+  `college_id` int(11) UNSIGNED NOT NULL,
   `school_name` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `schools`
+--
+
+INSERT INTO `schools` (`school_id`, `college_id`, `school_name`) VALUES
+(1, 1, 'School of Agricultural Sciences'),
+(2, 1, 'School of Forestry, Environmental and Geographical Sciences'),
+(3, 1, 'School of Food Technology, Nutrition and Bio-engineering'),
+(4, 2, 'School of Economics'),
+(5, 2, 'School of Business'),
+(6, 2, 'School of Statistics and Applied Economics'),
+(7, 3, 'School of Computing and Informatics Technology'),
+(8, 3, 'East African School of Library and Information Sciences'),
+(9, 4, 'School of Education'),
+(10, 4, 'School of Distance and Lifelong Learning'),
+(11, 5, 'School of Engineering'),
+(12, 5, 'School of the Built Environment'),
+(13, 5, 'Margaret Trowell School of Industrial and Fine Art'),
+(14, 6, 'School of Medicine'),
+(15, 6, 'School of Public Health'),
+(16, 6, 'School of Biomedical Sciences'),
+(17, 6, 'School of Health Sciences'),
+(18, 7, 'School of Liberal and Performing Arts'),
+(19, 7, 'School of Women and Gender Studies'),
+(20, 7, 'School of Languages, Literature and Communication'),
+(21, 7, 'School of Psychology'),
+(22, 7, 'School of Social Sciences'),
+(23, 7, 'Makerere Institute of Social Research'),
+(24, 8, 'School of Physical Sciences'),
+(25, 8, 'School of Biological Sciences'),
+(26, 9, 'School of Bio-security, Biotechnical and Laboratory Sciences'),
+(27, 9, 'School of Veterinary and Animal Resources'),
+(28, 10, 'School of Law');
 
 -- --------------------------------------------------------
 
@@ -1000,7 +1052,7 @@ ALTER TABLE `programmes`
 -- Constraints for table `schools`
 --
 ALTER TABLE `schools`
-  ADD CONSTRAINT `schools_ibfk_1` FOREIGN KEY (`college_id`) REFERENCES `colleges` (`college_id`);
+  ADD CONSTRAINT `schools_ibfk_1` FOREIGN KEY (`college_id`) REFERENCES `colleges` (`college_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `shares`
