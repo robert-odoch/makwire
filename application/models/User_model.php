@@ -315,11 +315,19 @@ class User_model extends CI_Model
     public function get_num_messages($user_id, $filter = TRUE)
     {
         if ($filter) {
-            $sql = sprintf("SELECT COUNT(message_id) FROM messages WHERE (receiver_id = %d AND seen IS FALSE)",
+            $sql = sprintf("SELECT COUNT(message_id) FROM messages m1
+                            WHERE date_sent=(
+                                SELECT MAX(date_sent) FROM messages m2
+                                WHERE m1.sender_id = m2.sender_id AND m1.receiver_id = %d
+                            ) AND seen IS FALSE",
                             $user_id);
         }
         else {
-            $sql = sprintf("SELECT COUNT(message_id) FROM messages WHERE receiver_id = %d",
+            $sql = sprintf("SELECT COUNT(message_id) FROM messages m1
+                            WHERE date_sent=(
+                                SELECT MAX(date_sent) FROM messages m2
+                                WHERE m1.sender_id = m2.sender_id AND m1.receiver_id = %d
+                            )",
                             $user_id);
         }
 
@@ -337,12 +345,33 @@ class User_model extends CI_Model
     public function get_messages($user_id, $offset, $limit, $filter = TRUE)
     {
         if ($filter) {
-            $sql = sprintf("SELECT * FROM messages WHERE (receiver_id = %d AND seen IS FALSE)
+            $sql = sprintf('SELECT DISTINCT sender_id FROM messages
+                            WHERE receiver_id = %d AND seen IS FALSE',
+                            $user_id);
+            $query = $this->db->query($sql);
+            $results = $query->result_array();
+
+            $sender_ids = [0];
+            foreach ($results as $r) {
+                $sender_ids[] = $r['sender_id'];
+            }
+
+            $sql = sprintf("SELECT u.profile_name AS sender, m1.* FROM messages m1
+                            LEFT JOIN users u ON(m1.sender_id = u.user_id)
+                            WHERE date_sent=(
+                                SELECT MAX(date_sent) FROM messages m2
+                                WHERE m1.sender_id = m2.sender_id AND m1.receiver_id = %d
+                            ) AND seen IS FALSE
                             ORDER BY date_sent DESC LIMIT %d, %d",
                             $user_id, $offset, $limit);
         }
         else {
-            $sql = sprintf("SELECT * FROM messages WHERE (receiver_id = %d)
+            $sql = sprintf("SELECT u.profile_name AS sender, m1.* FROM messages m1
+                            LEFT JOIN users u ON(m1.sender_id = u.user_id)
+                            WHERE date_sent=(
+                                SELECT MAX(date_sent) FROM messages m2
+                                WHERE m1.sender_id = m2.sender_id AND m1.receiver_id = %d
+                            )
                             ORDER BY date_sent DESC LIMIT %d, %d",
                             $user_id, $offset, $limit);
         }
@@ -355,8 +384,6 @@ class User_model extends CI_Model
                                         $msg['message_id']);
                 $this->db->query($update_sql);
             }
-
-            $msg['sender'] = $this->get_profile_name($msg['sender_id']);
             $msg['timespan'] = timespan(mysql_to_unix($msg['date_sent']), now(), 1);
         }
         unset($msg);
