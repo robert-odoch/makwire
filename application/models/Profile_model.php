@@ -51,7 +51,7 @@ class Profile_model extends CI_Model
     public function get_profile($user_id)
     {
         // Get the country and district.
-        $origin_sql = sprintf("SELECT country_name, district_name FROM users u
+        $origin_sql = sprintf("SELECT country_name AS country, district_name AS district FROM users u
                                 LEFT JOIN districts d ON (u.district_id = d.district_id)
                                 LEFT JOIN countries c ON (d.country_id = c.country_id)
                                 WHERE (user_id = %d)",
