@@ -234,7 +234,7 @@ class Profile extends CI_Controller
         }
 
         $data['user_school'] = $user_school;
-        $data['programmes'] = $this->profile_model->get_programmes($user_school['school_id']);
+        $data['programmes'] = $this->profile_model->get_programmes($user_school['college_id']);
 
         $data['heading'] = 'Add Programme';
         $data['form_action'] = base_url('profile/add-programme');
