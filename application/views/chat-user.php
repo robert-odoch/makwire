@@ -13,7 +13,7 @@
             </h4>
             <div class='media-footer'>
                 <a href='<?php echo base_url("user/send-message/{$receiver['user_id']}/0/1"); ?>'
-                    class='refresh-chat' title='Refresh'>
+                    class='refresh-chat' title='Refresh' data-toggle='tooltip' data-placement='left'>
                     <span class='glyphicon glyphicon-refresh'></span>
                 </a>
             </div>

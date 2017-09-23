@@ -13,7 +13,7 @@ defined('PAGE') OR define('PAGE', '')
         <div id='primary-user' class='media'>
             <div class='media-left media-middle'>
                 <a href='<?= base_url("profile/change-profile-picture"); ?>'
-                        title='Change profile picture'>
+                        data-toggle='tooltip' data-placement='right' title='Change profile picture'>
                 <img src='<?= $profile_pic_path; ?>' alt='<?= $primary_user; ?>'
                         class='profile-pic-xs'>
                 </a>

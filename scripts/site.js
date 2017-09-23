@@ -1,3 +1,6 @@
+/*** Tooltips ***/
+$('[data-toggle="tooltip"]').tooltip();
+
 /*** Status updates ***/
 $('#status-nav li a').click(function(event) {
     event.preventDefault();
@@ -39,6 +42,9 @@ $('body').on('click', 'a.send-message', function(event) {
     $('.col-small').load(url, function() {
         $('.col-small .chat-content').scrollTo('100%', 1000);
         $('.new-message').find(':input:text').focus();
+
+        // Enable tooltip for refresh-chat.
+        $('[data-toggle="tooltip"]').tooltip();
     });
 });
 

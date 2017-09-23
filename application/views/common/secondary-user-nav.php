@@ -5,7 +5,8 @@
         <div class='media'>
             <div class='media-left'>
                 <?php if ($suid == $_SESSION['user_id']) { ?>
-                <a href='<?= base_url('profile/change-profile-picture'); ?>' title='Change profile picture'>
+                <a href='<?= base_url('profile/change-profile-picture'); ?>' data-toggle='tooltip'
+                        data-placement='right' title='Change profile picture'>
                     <img src='<?= $su_profile_pic_path; ?>' alt='<?= $secondary_user; ?>' class='profile-pic-lg'>
                 </a>
                 <?php } else { ?>
