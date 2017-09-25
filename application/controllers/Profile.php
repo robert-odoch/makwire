@@ -314,6 +314,13 @@ class Profile extends CI_Controller
             }
         }
 
+        if ( ! $this->profile_model->can_add_hall($_SESSION['user_id'])) {
+            $_SESSION['title'] = 'Permission denied!';
+            $_SESSION['heading'] = 'Permission denied';
+            $_SESSION['message'] = 'You must add a school first in order to add a hall.';
+            redirect(base_url('error'));
+        }
+
         $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Add hall of attachment/residence';
         $this->load->view('common/header', $data);

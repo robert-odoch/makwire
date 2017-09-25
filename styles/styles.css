@@ -82,7 +82,7 @@ p.text {
 }
 .alert .glyphicon {
     float: left;
-    margin-top: 4px;
+    margin-top: 3px;
 }
 .alert p,
 .alert form {
@@ -425,11 +425,11 @@ ul.account-settings li:not(:last-child) {
 .profile a {
     display: inline-block;
 }
-.profile .year {
+.profile .title {
     font-weight: bold;
     border-bottom: 1px solid #8FBC8F;
 }
-.profile .year span {
+.profile .title span {
     padding: 4px 2px;
     display: inline-block;
     background-color: #8FBC8F;

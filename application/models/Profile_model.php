@@ -13,6 +13,19 @@ class Profile_model extends CI_Model
         $this->load->model(['photo_model', 'account_model']);
     }
 
+    public function can_add_hall($user_id)
+    {
+        $sql = sprintf('SELECT COUNT(us.id) AS num_schools, COUNT(uh.id) AS num_halls
+                        FROM user_schools us
+                        LEFT JOIN user_halls uh ON(us.user_id = uh.user_id)
+                        WHERE us.user_id = %d',
+                        $user_id);
+        $query = $this->db->query($sql);
+        $result = $query->row_array();
+
+        return ($result['num_schools'] > 0 && $result['num_halls'] < $result['num_schools']);
+    }
+
     /**
      * Sets a new profile picture for a user.
      */
@@ -106,6 +119,9 @@ class Profile_model extends CI_Model
                                 $user_id);
         $halls_query = $this->db->query($halls_sql);
         $data['halls'] = $halls_query->result_array();
+
+        // Is the user allowed to add another hall?
+        $data['can_add_hall'] = $this->can_add_hall($user_id);
 
         // Get the hostels.
         $hostels_sql = sprintf("SELECT id, date_from, date_to, YEAR(date_from) AS start_year,

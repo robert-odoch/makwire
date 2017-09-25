@@ -15,7 +15,7 @@ if ( ! empty($profile_questions)) {
 }
 
 // If there is nothing to show.
-if ($is_visitor && !$profile['schools'] && !$profile['halls']
+if ($is_visitor && ! $profile['schools'] && ! $profile['halls']
     && !$profile['hostels'] && !$profile['origin']['district']) {
     print "<div class='box'>
                 <div class='alert alert-info' role='alert'>
@@ -26,13 +26,13 @@ if ($is_visitor && !$profile['schools'] && !$profile['halls']
 }
 ?>
 
-<?php if (!$is_visitor || $profile['schools']) { ?>
+<?php if ( ! $is_visitor || $profile['schools']) { ?>
     <div class='box profile'>
         <h4>Education</h4>
         <?php
         if ($profile['schools']) {
             foreach ($profile['schools'] as $sch) {
-                print "<p class='year'><span>{$sch['start_year']} - {$sch['end_year']}</span></p>";
+                print "<p class='title'><span>{$sch['start_year']} - {$sch['end_year']}</span></p>";
 
                 print "<table class='table table-bordered'>";
 
@@ -81,77 +81,98 @@ if ($is_visitor && !$profile['schools'] && !$profile['halls']
 
 <?php } // (!$is_visitor || $profile['schools']) ?>
 
-<?php if (!$is_visitor || ($profile['hostels'] || $profile['halls'])) { ?>
+<?php if ( ! $is_visitor || $profile['hostels'] || $profile['halls']) { ?>
     <div class='box profile'>
         <h4>Residence</h4>
-        <?php if ($profile['halls'] || $profile['hostels']): ?>
+        <?php if ($profile['halls']): ?>
+            <p class='title'><span>Hall (s)</span></p>
             <table class='table table-bordered'>
                 <thead>
                     <tr>
                         <th>Year</th>
-                        <th>Hall/Hostel</th>
+                        <th>Hall</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
-                    if ($profile['halls']) {
-                        foreach ($profile['halls'] as $hall) {
-                            print "<tr><td>{$hall['start_year']} - {$hall['end_year']}</td>";
-                            if ($hall['resident']) {
-                                print "<td>Resident of {$hall['hall_name']}";
-                                if (!$is_visitor) {
-                                    print " <a href='" . base_url("profile/edit-hall/{$hall['id']}") .
-                                            "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Edit</a>";
-                                }
-                                print "</td>";
-                            }
-                            else {
-                                print "<td>Attached to {$hall['hall_name']}";
-                                if (!$is_visitor) {
-                                    print " <a href='" . base_url("profile/edit-hall/{$hall['id']}") .
-                                            "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Edit</a>";
-                                }
-                                print "</td>";
-                            }
-                            print "</tr>";
-                        }
-                    }
-
-                    if ($profile['hostels']) {
-                        foreach ($profile['hostels'] as $hostel) {
-                            print "<tr><td>{$hostel['start_year']} - {$hostel['end_year']}</td>";
-
-                            print "<td>{$hostel['hostel_name']}";
+                    foreach ($profile['halls'] as $hall) {
+                        print "<tr><td>{$hall['start_year']} - {$hall['end_year']}</td>";
+                        if ($hall['resident']) {
+                            print "<td>Resident of {$hall['hall_name']}";
                             if (!$is_visitor) {
-                                print " <a href='" . base_url("profile/edit-hostel/{$hostel['id']}") .
+                                print " <a href='" . base_url("profile/edit-hall/{$hall['id']}") .
                                         "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Edit</a>";
                             }
-                            print "</td></tr>";
+                            print "</td>";
                         }
+                        else {
+                            print "<td>Attached to {$hall['hall_name']}";
+                            if (!$is_visitor) {
+                                print " <a href='" . base_url("profile/edit-hall/{$hall['id']}") .
+                                        "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Edit</a>";
+                            }
+                            print "</td>";
+                        }
+                        print "</tr>";
                     }
                     ?>
                 </tbody>
             </table>
+        <?php endif; ?>
 
-            <?php
-            if (!$is_visitor) {
-                print "<a href='" . base_url("profile/add-hall") . "' class='pull-right'>Add hall</a>
-                        <span class='pull-right'>&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
-                        <a href='" . base_url("profile/add-hostel") . "' class='pull-right'>Add hostel</a>
+        <?php if ($profile['hostels']): ?>
+            <p class='title'><span>Hostel (s)</span></p>
+            <table class='table table-bordered'>
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Hostel</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    foreach ($profile['hostels'] as $hostel) {
+                        print "<tr><td>{$hostel['start_year']} - {$hostel['end_year']}</td>";
+
+                        print "<td>{$hostel['hostel_name']}";
+                        if (!$is_visitor) {
+                            print " <a href='" . base_url("profile/edit-hostel/{$hostel['id']}") .
+                                    "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Edit</a>";
+                        }
+                        print "</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
+
+        <?php
+        if ($profile['halls'] || $profile['hostels']) {
+            if ( ! $is_visitor) {
+                if ($profile['can_add_hall']) {
+                    print "<a href='" . base_url("profile/add-hall") . "' class='pull-right'>Add hall</a>
+                            <span class='pull-right'>&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>";
+                }
+
+                print "<a href='" . base_url("profile/add-hostel") . "' class='pull-right'>Add hostel</a>
                         <span class='clearfix'></span>";
             }
-            ?>
-        <?php else:
-            if (!$is_visitor) {
-                print "<a href='" . base_url("profile/add-hall") . "'>Add hall</a>
-                        <span>&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
-                        <a href='" . base_url("profile/add-hostel") . "'>Add hostel</a>";
+        }
+        else {
+            if ( ! $is_visitor) {
+                if ($profile['can_add_hall']) {
+                    print "<a href='" . base_url("profile/add-hall") . "'>Add hall</a>
+                            <span>&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>";
+                }
+
+                print "<a href='" . base_url("profile/add-hostel") . "'>Add hostel</a>";
             }
-        endif;?>
+        }
+        ?>
     </div>
 <?php } // if ($profile['halls'] || $profile['hostels']) ?>
 
-<?php if (!$is_visitor || $profile['origin']['district']) { ?>
+<?php if ( ! $is_visitor || $profile['origin']['district']) { ?>
     <div class='box profile'>
         <h4>Origin</h4>
         <?php
