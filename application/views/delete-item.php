@@ -18,7 +18,7 @@ require_once(dirname(__FILE__) . '/common/user-page-start.php');
         <form action='<?= $form_action; ?>' method='post'>
             <input type='submit' value='Delete' class='btn btn-sm'
                     style='background-color: red; border: 1px solid red;'>
-            <a href='<?= $cancel_url; ?>' class='btn btn-sm'>Cancel</a>
+            <a href='<?= $cancel_url; ?>' class='btn btn-sm btn-default'>Cancel</a>
         </form>
     </div>
 </div>
