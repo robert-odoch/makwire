@@ -84,7 +84,8 @@ p.text {
     float: left;
     margin-top: 4px;
 }
-.alert p {
+.alert p,
+.alert form {
     margin-left: 20px;
 }
 .alert form {

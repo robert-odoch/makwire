@@ -552,16 +552,27 @@ class User extends CI_Controller
 
     public function unfriend($friend_id = 0)
     {
-        try {
-            $this->user_model->unfriend_user($_SESSION['user_id'], $friend_id);
-            redirect(base_url("user/{$friend_id}"));
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            try {
+                $this->user_model->unfriend_user($_SESSION['user_id'], $friend_id);
+                redirect(base_url("user/{$friend_id}"));
+            }
+            catch (IllegalAccessException $e) {
+                $_SESSION['title'] = 'Permission Denied!';
+                $_SESSION['heading'] = 'Permission Denied';
+                $_SESSION['message'] = $e->getMessage();
+                redirect(base_url('error'));
+            }
         }
-        catch (IllegalAccessException $e) {
-            $_SESSION['title'] = 'Permission Denied!';
-            $_SESSION['heading'] = 'Permission Denied';
-            $_SESSION['message'] = $e->getMessage();
-            redirect(base_url('error'));
-        }
+
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
+        $data['title'] = 'Unfriend user';
+        $this->load->view('common/header', $data);
+
+        $data['form_action'] = base_url("user/unfriend/{$friend_id}");
+        $data['cancel_url'] = base_url("user/{$friend_id}");
+        $this->load->view('unfriend-user', $data);
+        $this->load->view('common/footer');
     }
 
     public function follow($user_id)
@@ -580,16 +591,27 @@ class User extends CI_Controller
 
     public function unfollow($user_id = 0)
     {
-        try {
-            $this->user_model->unfollow_user($_SESSION['user_id'], $user_id);
-            redirect(base_url("user/{$user_id}"));
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            try {
+                $this->user_model->unfollow_user($_SESSION['user_id'], $user_id);
+                redirect(base_url("user/{$user_id}"));
+            }
+            catch (IllegalAccessException $e) {
+                $_SESSION['title'] = 'Permission Denied!';
+                $_SESSION['heading'] = 'Permission Denied';
+                $_SESSION['message'] = $e->getMessage();
+                redirect(base_url('error'));
+            }
         }
-        catch (IllegalAccessException $e) {
-            $_SESSION['title'] = 'Permission Denied!';
-            $_SESSION['heading'] = 'Permission Denied';
-            $_SESSION['message'] = $e->getMessage();
-            redirect(base_url('error'));
-        }
+
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
+        $data['title'] = 'Unfollow user';
+        $this->load->view('common/header', $data);
+
+        $data['form_action'] = base_url("user/unfollow/{$user_id}");
+        $data['cancel_url'] = base_url("user/{$user_id}");
+        $this->load->view('unfollow-user', $data);
+        $this->load->view('common/footer');
     }
 
     public function messages($offset = 0)
