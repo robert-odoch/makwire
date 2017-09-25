@@ -59,9 +59,8 @@ class Login extends CI_Controller
                     $data['login_errors']['login'] = 'Invalid login, please try again.';
                 }
             }
-            else {
-                $data['identifier'] = $identifier;
-            }
+
+            $data['identifier'] = $identifier;
         }
 
         $data['title'] = 'Log in to your account';
