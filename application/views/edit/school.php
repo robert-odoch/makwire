@@ -39,8 +39,27 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
             </div>
         </fieldset>
 
+        <fieldset>
+            <div class='form-group'>
+                <label for='level'>Level</label>
+                <select name='level' id='level' class='form-control' required>
+                    <optgroup>
+                        <option value='undergraduate'
+                            <?php if (isset($level) && $level == 'undergraduate') print ' selected'; ?>
+                            >Undergraduate</option>
+                        <option value='graduate'
+                            <?php if (isset($level) && $level == 'graduate') print ' selected'; ?>
+                            >Graduate</option>
+                        <option value='postgraduate'
+                            <?php if (isset($level) && $level == 'postgraduate') print ' selected'; ?>
+                            >Postgraduate</option>
+                    </optgroup>
+                </select>
+            </div>
+        </fieldset>
+
         <?php
-        require_once(dirname(__FILE__) . '/../common/show-date-input.php');
+        require_once(__DIR__ . '/../common/show-date-input.php');
 
         // Only show this if the user is  editing an existing school.
         if (isset($user_school)) {

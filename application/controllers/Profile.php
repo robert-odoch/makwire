@@ -77,6 +77,9 @@ class Profile extends CI_Controller
         $data = [];
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $data['school_id'] = $this->input->post('school');
+            $data['level'] = $this->input->post('level');
+
             $data['start_day'] = $this->input->post('start-day');
             $data['start_month'] = $this->input->post('start-month');
             $data['start_year'] = $this->input->post('start-year');
@@ -96,10 +99,6 @@ class Profile extends CI_Controller
             }
             else {
                 $data['error_message'] = 'Invalid dates entered! Please check the dates and try again.';
-            }
-
-            if (empty($data['error_message'])) {
-                $data['school_id'] = $this->input->post('school');
             }
 
             if (empty($data['error_message'])) {
@@ -134,10 +133,11 @@ class Profile extends CI_Controller
         $data = [];
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // DON'T try to remove this line,
-            // $user_college_id useful when re-displaying the form.
-            $user_school_id = $this->input->post('user-school-id');
+            $data['user_school_id'] = $user_school_id;
+            $data['school_id'] = $this->input->post('school-id');
+            $data['level'] = $this->input->post('level');
 
+            // Get the dates.
             $data['start_day'] = $this->input->post('start-day');
             $data['start_month'] = $this->input->post('start-month');
             $data['start_year'] = $this->input->post('start-year');
@@ -157,11 +157,6 @@ class Profile extends CI_Controller
             }
             else {
                 $data['error_message'] = 'Invalid dates entered! Please check the dates and try again.';
-            }
-
-            if (empty($data['error_message'])) {
-                $data['user_school_id'] = $user_school_id;
-                $data['school_id'] = $this->input->post('school-id');
             }
 
             if (empty($data['error_message'])) {
@@ -192,6 +187,8 @@ class Profile extends CI_Controller
         if (empty($data['error_message'])) {
             // Use values from the database if visitor is viewing this page
             // for the first time.
+            $data['level'] = $user_school['level'];
+            
             $data['start_year'] = $user_school['start_year'];
             $data['start_month'] = $user_school['start_month'];
             $data['start_day'] = $user_school['start_day'];
