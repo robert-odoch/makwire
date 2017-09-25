@@ -124,7 +124,7 @@ class Profile extends CI_Controller
 
         $data['heading'] = 'Add School';
         $data['form_action'] = base_url('profile/add-school');
-        $this->load->view('edit/school', $data);
+        $this->load->view('add/school', $data);
         $this->load->view('common/footer');
     }
 
@@ -133,6 +133,7 @@ class Profile extends CI_Controller
         $data = [];
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $user_school_id = $this->input->post('user-school-id');
             $data['user_school_id'] = $user_school_id;
             $data['school_id'] = $this->input->post('school-id');
             $data['level'] = $this->input->post('level');
@@ -188,7 +189,7 @@ class Profile extends CI_Controller
             // Use values from the database if visitor is viewing this page
             // for the first time.
             $data['level'] = $user_school['level'];
-            
+
             $data['start_year'] = $user_school['start_year'];
             $data['start_month'] = $user_school['start_month'];
             $data['start_day'] = $user_school['start_day'];
@@ -231,7 +232,7 @@ class Profile extends CI_Controller
         }
 
         $data['user_school'] = $user_school;
-        $data['programmes'] = $this->profile_model->get_programmes($user_school['college_id']);
+        $data['programmes'] = $this->profile_model->get_programmes($user_school['college_id'], $user_school['level']);
 
         $data['heading'] = 'Add Programme';
         $data['form_action'] = base_url('profile/add-programme');

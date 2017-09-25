@@ -162,12 +162,13 @@ class Profile_model extends CI_Model
      * @param $college_id the ID a college in the colleges table.
      * @return programmes offered under a particular school.
      */
-    public function get_programmes($college_id)
+    public function get_programmes($college_id, $level)
     {
         // Get all programmes under that school.
         $programmes_sql = sprintf("SELECT programme_id, programme_name FROM programmes
-                                    WHERE (college_id = %d) ORDER BY programme_name",
-                                    $college_id);
+                                    WHERE (college_id = %d AND level = %s)
+                                    ORDER BY programme_name",
+                                    $college_id, $this->db->escape($level));
         $programmes_query = $this->db->query($programmes_sql);
 
         return $programmes_query->result_array();
@@ -237,7 +238,7 @@ class Profile_model extends CI_Model
      */
     public function get_user_school($user_school_id, $user_id)
     {
-        $user_school_sql = sprintf("SELECT s.school_name, us.id, us.school_id, us.level,
+        $user_school_sql = sprintf("SELECT s.school_name, s.college_id, us.id, us.school_id, us.level,
                                     DAY(us.date_from) AS start_day, MONTH(us.date_from) AS start_month,
                                     YEAR(us.date_from) AS start_year, DAY(us.date_to) AS end_day,
                                     MONTH(us.date_to) AS end_month, YEAR(us.date_to) AS end_year
