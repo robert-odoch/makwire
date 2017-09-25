@@ -130,7 +130,7 @@ if ($is_visitor && !$profile['schools'] && !$profile['halls']
                         }
                     }
                     ?>
-                </tdoby>
+                </tbody>
             </table>
 
             <?php
@@ -159,10 +159,7 @@ if ($is_visitor && !$profile['schools'] && !$profile['halls']
             print "<table class='table table-bordered'>";
 
             if ($profile['origin']['district']) {
-                print "<tr><td><b>District</b></td><td>{$profile['origin']['district']}
-                        <a href='" . base_url("profile/edit-district") .
-                        "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Edit</a>
-                        </td></tr>";
+                print "<tr><td><b>District</b></td><td>{$profile['origin']['district']}</td></tr>";
 
                 print "<tr><td><b>Country</b></td><td>{$profile['origin']['country']}</td></tr>";
             }
