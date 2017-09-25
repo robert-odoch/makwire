@@ -420,24 +420,14 @@ ul.account-settings li:not(:last-child) {
     padding-bottom: 5px;
 }
 
-.show-profile h4 {
+.profile .year {
     font-weight: bold;
-    color: #2E8B57;
+    border-bottom: 1px solid #8FBC8F;
 }
-
-.show-profile ul.profile > span {
+.profile .year span {
+    padding: 4px 2px;
+    display: inline-block;
     background-color: #8FBC8F;
-    border-radius: 3px;
-    display: block;
-    padding: 0 5px;
-}
-
-ul.profile {
-    margin-bottom: 15px;
-}
-
-.show-profile ul:last-child {
-    margin-bottom: 0;
 }
 
 article.link header,
