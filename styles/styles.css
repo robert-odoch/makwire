@@ -109,7 +109,7 @@ p.text {
 /* End override */
 
 #status-nav + form label {
-    margin-top: 10px;
+    margin: 10px 0;
 }
 
 .table {
