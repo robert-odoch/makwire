@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-require_once(dirname(__FILE__) . '/../common/user-page-start.php');
+require_once(__DIR__ . '/../common/user-page-start.php');
 ?>
 
 <div class='box'>
@@ -13,62 +13,24 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
         </div>
     <?php } ?>
 
+    <table class='table table-bordered'>
+            <tr>
+                <td><b>School</b></td>
+                <td><?= $user_school['school_name']; ?></td>
+            </tr>
+            <tr>
+                <td><b>Level</b></td>
+                <td><?= ucfirst($user_school['level']); ?></td>
+            </tr>
+    </table>
     <form action='<?= $form_action ?>' method='post' accept-charset='utf-8' role='form'>
-        <fieldset>
-            <div class='form-group'>
-                <label for='school'>School</label>
-                <?php if (isset($schools)) { ?>
-                    <select name='school' id='school' class='form-control' required>
-                        <optgroup>
-                        <?php
-                        foreach ($schools as $s) {
-                            print "<option value='{$s['school_id']}'";
-                            if (isset($school_id) && ($school_id == $s['school_id'])) {
-                                print ' selected';
-                            }
-                            print ">{$s['school_name']}</option>";
-                        }
-                        ?>
-                        </optgroup>
-                    </select>
-                <?php
-                } else {  // Editing a school.
-                    print "<p>{$user_school['school_name']}</p>";
-                }
-                ?>
-            </div>
-        </fieldset>
+        <?php require_once(__DIR__ . '/../common/show-date-input.php'); ?>
 
         <fieldset>
-            <div class='form-group'>
-                <label for='level'>Level</label>
-                <select name='level' id='level' class='form-control' required>
-                    <optgroup>
-                        <option value='undergraduate'
-                            <?php if (isset($level) && $level == 'undergraduate') print ' selected'; ?>
-                            >Undergraduate</option>
-                        <option value='graduate'
-                            <?php if (isset($level) && $level == 'graduate') print ' selected'; ?>
-                            >Graduate</option>
-                        <option value='postgraduate'
-                            <?php if (isset($level) && $level == 'postgraduate') print ' selected'; ?>
-                            >Postgraduate</option>
-                    </optgroup>
-                </select>
-            </div>
-        </fieldset>
-
-        <?php
-        require_once(__DIR__ . '/../common/show-date-input.php');
-
-        // Only show this if the user is  editing an existing school.
-        if (isset($user_school)) {
-        ?>
-        <fieldset>
-            <input type='hidden' name='user-school-id' value='<?php echo $user_school['id']; ?>'>
+            <input type='hidden' name='user-school-id' value='<?= $user_school['id']; ?>'>
             <input type='hidden' name='school-id' value='<?= $user_school['school_id']; ?>'>
         </fieldset>
-        <?php } ?>
+
         <input type='submit' value='Save' class='btn btn-sm'>
     </form>
 </div><!-- box -->
