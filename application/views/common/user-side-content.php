@@ -54,6 +54,9 @@ defined('PAGE') OR define('PAGE', '')
                     >Find Friends</a>
             </li>
         </ul>
-        <h5><span class='glyphicon glyphicon-link' aria-hidden='true'></span> Shortcuts</h5>
+        
+        <?php if ( ! empty($shortcuts)): ?>
+            <h5><span class='glyphicon glyphicon-bookmark' aria-hidden='true'></span> Shortcuts</h5>
+        <?php endif; ?>
     </nav>
 </div>
