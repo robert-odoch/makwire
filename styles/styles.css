@@ -376,9 +376,22 @@ ul.account-settings li:not(:last-child) {
     margin-top: 8px;
 }
 
+.mobile-nav a,
+.navbar-right a {
+    display: inline-block;
+    position: relative;
+}
+
+.mobile-nav .badge,
 .navbar-right .badge {
     padding: 2px 5px;
+    position: absolute;
     background-color: #f00;
+}
+
+.navbar-right .badge {
+    top: 8px;
+    right: 0;
 }
 
 .site-footer {
@@ -905,6 +918,33 @@ p.post a.more {
         display: block;
         text-align: center;
         margin-bottom: 3px;
+    }
+}
+
+@media (max-width: 767px) {
+    body {
+        padding-top: 40px;
+    }
+    .mobile-nav {
+        position: fixed;
+        top: 0;
+        z-index: 4000;
+        background-color: #000;
+	    border-bottom: 2px solid #f00;
+    }
+    .mobile-nav .btn {
+        background-color: #000;
+        color: #fff;
+        border-color: #000;
+        border-radius: 0;
+    }
+    .mobile-nav .btn.active {
+        background-color: #2E8B57;
+        color: #fff;
+        border-color: #2E8B57;
+    }
+    header .navbar {
+        display: none;
     }
 }
 

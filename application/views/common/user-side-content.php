@@ -46,6 +46,16 @@ defined('PAGE') OR define('PAGE', '')
     <nav role='navigation' id='short-cuts' class='hidden-xs'>
         <h5><span class='glyphicon glyphicon-paperclip' aria-hidden='true'></span> Quick Access</h5>
         <ul>
+            <li<?php if (PAGE == 'chat') print " class='active'"; ?>>
+                <a href='<?= base_url('user/chat'); ?>'
+                    >Chat
+                    <?php
+                    if ($num_active_friends > 0) {
+                        print "<span class='badge pull-right'>{$num_active_friends}</span>";
+                    }
+                    ?>
+                </a>
+            </li>
             <li<?php if (PAGE == 'news-feed') print " class='active'"; ?>>
                 <a href='<?= base_url('news-feed'); ?>'>News Feed</a>
             </li>

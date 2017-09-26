@@ -29,6 +29,47 @@
     </head>
     <body>
         <header>
+            <nav role='navigation' class='mobile-nav visible-xs'>
+                <div class='wrapper-lg'>
+                    <div class='btn-group btn-group-justified'>
+                        <a href='<?= base_url('news-feed'); ?>' class='btn active'>
+                            <span class='glyphicon glyphicon-home'></span>
+                            <span class='sr-only'>News feed</span>
+                        </a>
+                        <a href='<?= base_url('user/notifications'); ?>' class='btn'>
+                            <span class='glyphicon glyphicon-bell'></span>
+                            <span class='sr-only'>Notifications</span>
+                            <?php
+                            if ($num_new_notifs > 0) {
+                                print " <span class='badge'>{$num_new_notifs}</span>";
+                            }
+                            ?>
+                        </a>
+                        <a href='<?= base_url('user/messages'); ?>' class='btn'>
+                            <span class='glyphicon glyphicon-envelope'></span>
+                            <span class='sr-only'>Messages</span>
+                            <?php
+                            if ($num_new_messages > 0) {
+                                print "<span class='badge'>{$num_new_messages}</span>";
+                            }
+                            ?>
+                        </a>
+                        <a href='<?= base_url('user/friend-requests'); ?>' class='btn'>
+                            <span class='glyphicon glyphicon-user'></span>
+                            <span class='sr-only'>Friend requests</span>
+                            <?php
+                            if ($num_friend_requests > 0) {
+                                print " <span class='badge'>{$num_friend_requests}</span>";
+                            }
+                            ?>
+                        </a>
+                        <a href='<?= base_url('user/menu'); ?>' class='btn'>
+                            <span class='glyphicon glyphicon-menu-hamburger'></span>
+                            <span class='sr-only'>Menu</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
             <nav role='navigation' class='navbar navbar-inverse navbar-fixed-top'>
                 <div class='wrapper-lg'>
                     <div class='navbar-header'>
@@ -45,19 +86,10 @@
                         <ul class='nav navbar-nav navbar-right'>
                             <?php
                             if (isset($_SESSION['user_id'])) { ?>
-                            <li class='hidden-lg'>
-                                <a href='<?= base_url('user/chat'); ?>'>
-                                    <span class='glyphicon glyphicon-signal' aria-hidden='true'></span> Chat
-                                    <?php
-                                    if ($num_active_friends > 0) {
-                                        print "<span class='badge'>{$num_active_friends}</span>";
-                                    }
-                                    ?>
-                                </a>
-                            </li>
                             <li>
                                 <a href='<?= base_url('user/messages'); ?>'>
-                                    <span class='glyphicon glyphicon-envelope' aria-hidden='true'></span> Messages
+                                    <span class='glyphicon glyphicon-envelope' aria-hidden='true'></span>
+                                    <span class='sr-only'>Messages</span>
                                     <?php
                                     if ($num_new_messages > 0) {
                                         print "<span class='badge'>{$num_new_messages}</span>";
@@ -67,7 +99,8 @@
                             </li>
                             <li>
                                 <a href='<?= base_url('user/notifications'); ?>'>
-                                    <span class='glyphicon glyphicon-bell' aria-hidden='true'></span> Notifications
+                                    <span class='glyphicon glyphicon-bell' aria-hidden='true'></span>
+                                    <span class='sr-only'>Notifications</span>
                                     <?php
                                     if ($num_new_notifs > 0) {
                                         print " <span class='badge'>{$num_new_notifs}</span>";
@@ -77,32 +110,13 @@
                             </li>
                             <li>
                                 <a href='<?= base_url('user/friend-requests'); ?>'>
-                                    <span class='glyphicon glyphicon-user' aria-hidden='true'></span> Friends Requests
+                                    <span class='glyphicon glyphicon-user' aria-hidden='true'></span>
+                                    <span class='sr-only'>Friends Requests</span>
                                     <?php
                                     if ($num_friend_requests > 0) {
                                         print " <span class='badge'>{$num_friend_requests}</span>";
                                     }
                                     ?>
-                                </a>
-                            </li>
-                            <li class='hidden-sm hidden-md hidden-lg'>
-                                <a href='<?= base_url('user/find-friends'); ?>'>
-                                    <span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Find Friends
-                                </a>
-                            </li>
-                            <li class='hidden-sm hidden-md hidden-lg'>
-                                <a href='<?= base_url('user/profile'); ?>'>
-                                    <span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Edit profile
-                                </a>
-                            </li>
-                            <li class='hidden-sm hidden-md hidden-lg'>
-                                <a href='<?= base_url('settings/account'); ?>'>
-                                    <span class='glyphicon glyphicon-cog' aria-hidden='true'></span> Settings
-                                </a>
-                            </li>
-                            <li class='hidden-sm hidden-md hidden-lg'>
-                                <a href='<?= base_url('user/news-feed'); ?>'>
-                                    <span class='glyphicon glyphicon-equalizer' aria-hidden='true'></span> News Feed
                                 </a>
                             </li>
                             <li>
