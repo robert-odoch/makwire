@@ -198,6 +198,14 @@ a:focus {
     border: none !important;
 }
 
+#secondary-user {
+    border: 1px dashed #2E8B57;
+}
+
+#secondary-user .profile-pic-lg {
+    border-radius: 50%;
+}
+
 #secondary-user ul li {
     margin-right: -5px;
     display: inline;
@@ -222,6 +230,16 @@ a:focus {
 
 #primary-user .profile-pic-xs {
     border-radius: 3px;
+}
+
+#primary-user .media-heading a,
+.active-users .media-heading a,
+.suggested-users .media-heading a {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 80%;
 }
 
 #primary-user .media-heading a {
@@ -335,7 +353,6 @@ ul.account-settings li:not(:last-child) {
 
 #secondary-user h4 {
     font-size: 1.5em;
-    margin-top: 0;
     text-transform: uppercase;
 }
 

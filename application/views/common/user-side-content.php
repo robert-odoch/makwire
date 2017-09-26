@@ -14,7 +14,7 @@ defined('PAGE') OR define('PAGE', '')
             <div class='media-left media-middle'>
                 <a href='<?= base_url("profile/change-profile-picture"); ?>'
                         data-toggle='tooltip' data-placement='right' title='Change profile picture'>
-                <img src='<?= $profile_pic_path; ?>' alt='<?= $primary_user; ?>'
+                    <img src='<?= $profile_pic_path; ?>' alt='<?= $primary_user; ?>'
                         class='profile-pic-xs'>
                 </a>
             </div>
@@ -54,7 +54,7 @@ defined('PAGE') OR define('PAGE', '')
                     >Find Friends</a>
             </li>
         </ul>
-        
+
         <?php if ( ! empty($shortcuts)): ?>
             <h5><span class='glyphicon glyphicon-bookmark' aria-hidden='true'></span> Shortcuts</h5>
         <?php endif; ?>

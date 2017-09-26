@@ -14,9 +14,7 @@
                 <?php } ?>
             </div>
             <div class='media-body'>
-                <h4 class='media-heading'>
-                    <a href='<?= base_url("user/{$suid}"); ?>'><?= $secondary_user; ?></a>
-                </h4>
+                <h4><a href='<?= base_url("user/{$suid}"); ?>'><?= $secondary_user; ?></a></h4>
                 <div class='btn-group btn-group-xs'>
                     <?php
                     if ($friendship_status['are_friends']) {
