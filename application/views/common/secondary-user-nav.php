@@ -89,10 +89,6 @@
                 <a href='<?= base_url("user/friends/{$suid}"); ?>'
                     <?php if (PAGE == 'friends') print " class='active'"; ?>>Friends</a>
             </li>
-            <li>
-                <a href='<?= base_url("user/groups/{$suid}"); ?>'
-                    <?php if (PAGE == 'groups') print " class='active'"; ?>>Groups</a>
-            </li>
         </ul>
     </nav>
 </div>
