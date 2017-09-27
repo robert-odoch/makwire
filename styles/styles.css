@@ -938,6 +938,12 @@ p.post a.more {
         border-color: #000;
         border-radius: 0;
     }
+
+    .mobile-nav .btn:hover {
+        border-color: #8FBC8F;
+        background-color: #8FBC8F;
+    }
+
     .mobile-nav .btn.active {
         background-color: #2E8B57;
         color: #fff;
