@@ -1,3 +1,4 @@
+var loading = "<div class='loading'><img src='http://localhost/makwire/images/ajax-loader.gif'></div>";
 /*** Tooltips ***/
 $('[data-toggle="tooltip"]').tooltip();
 
@@ -90,8 +91,14 @@ $('body').on('submit', 'form.send-message', function(event) {
 $('body').on('click', '.refresh-chat', function(event) {
     event.preventDefault();
 
+    // Show loading feedback.
+    $(loading).insertBefore('.chat-content .new-message');
+
     var url = $(this).attr('href');
     $.get(url, function(data) {
+        // Remove the loading feedback.
+        $('.chat-content .loading').remove();
+
         var html = $.parseHTML(data);
         if (html !== null) {
             // Insert the message immediately above the form.

@@ -811,6 +811,12 @@ p.post a.more {
 .chat-content .message.received small {
     margin-left: 45px;
 }
+
+.chat-content .loading img {
+    display: block;
+    margin: auto;
+}
+
 .new-message {
     margin: 5px;
 }
