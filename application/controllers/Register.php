@@ -65,6 +65,7 @@ class Register extends CI_Controller
         }
 
         $data['title'] = 'Sign Up: step 1 of 3';
+        $data['page'] = 'register';
         $this->load->view('common/header', $data);
 
         $this->load->view('register/step-one', $data);
@@ -143,6 +144,7 @@ class Register extends CI_Controller
         }
 
         $data['title'] = 'Sign Up: step 2 of 3';
+        $data['page'] = 'register';
         $this->load->view('common/header', $data);
 
         $this->load->view('register/step-two', $data);
@@ -228,6 +230,7 @@ class Register extends CI_Controller
         }
 
         $data['title'] = 'Sign Up: step 3 of 3';
+        $data['page'] = 'register';
         $this->load->view('common/header', $data);
 
         $this->load->view('register/step-three', $data);

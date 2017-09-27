@@ -424,6 +424,7 @@ class User extends CI_Controller
 
         $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Notifications';
+        $data['page'] = 'notifications';
         $this->load->view('common/header', $data);
 
         $this->load->view('show/notifications', $data);
@@ -505,6 +506,7 @@ class User extends CI_Controller
 
         $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Friend Requests';
+        $data['page'] = 'friend-requests';
         $this->load->view('common/header', $data);
 
         $this->load->view('friend-requests', $data);
@@ -662,6 +664,7 @@ class User extends CI_Controller
 
         $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Messages';
+        $data['page'] = 'messages';
         $this->load->view('common/header', $data);
 
         $this->load->view('show/messages', $data);

@@ -1,4 +1,7 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+isset($page) OR $page = '';  // Default value for page.
+?>
 
 <!DOCTYPE html>
 <html lang='en'>
@@ -32,40 +35,62 @@
             <nav role='navigation' class='mobile-nav visible-xs'>
                 <div class='wrapper-lg'>
                     <div class='btn-group btn-group-justified'>
-                        <a href='<?= base_url('news-feed'); ?>' class='btn active'>
-                            <span class='glyphicon glyphicon-home'></span>
-                            <span class='sr-only'>News feed</span>
-                        </a>
-                        <a href='<?= base_url('user/notifications'); ?>' class='btn'>
-                            <span class='glyphicon glyphicon-bell'></span>
-                            <span class='sr-only'>Notifications</span>
-                            <?php
-                            if ($num_new_notifs > 0) {
-                                print " <span class='badge'>{$num_new_notifs}</span>";
-                            }
-                            ?>
-                        </a>
-                        <a href='<?= base_url('user/messages'); ?>' class='btn'>
-                            <span class='glyphicon glyphicon-envelope'></span>
-                            <span class='sr-only'>Messages</span>
-                            <?php
-                            if ($num_new_messages > 0) {
-                                print "<span class='badge'>{$num_new_messages}</span>";
-                            }
-                            ?>
-                        </a>
-                        <a href='<?= base_url('user/friend-requests'); ?>' class='btn'>
-                            <span class='glyphicon glyphicon-user'></span>
-                            <span class='sr-only'>Friend requests</span>
-                            <?php
-                            if ($num_friend_requests > 0) {
-                                print " <span class='badge'>{$num_friend_requests}</span>";
-                            }
-                            ?>
-                        </a>
-                        <a href='<?= base_url('user/menu'); ?>' class='btn'>
+                        <?php if (isset($_SESSION['user_id'])): ?>
+                            <a href='<?= base_url('news-feed'); ?>' class='btn
+                                <?php if ($page == 'news-feed') print 'active'; ?>
+                                '>
+                                <span class='glyphicon glyphicon-home'></span>
+                                <span class='sr-only'>News feed</span>
+                            </a>
+                            <a href='<?= base_url('user/notifications'); ?>' class='btn
+                                <?php if ($page == 'notifications') print 'active'; ?>
+                                '>
+                                <span class='glyphicon glyphicon-bell'></span>
+                                <span class='sr-only'>Notifications</span>
+                                <?php
+                                if ($num_new_notifs > 0) {
+                                    print " <span class='badge'>{$num_new_notifs}</span>";
+                                }
+                                ?>
+                            </a>
+                            <a href='<?= base_url('user/messages'); ?>' class='btn
+                                <?php if ($page == 'messages') print 'active'; ?>
+                                '>
+                                <span class='glyphicon glyphicon-envelope'></span>
+                                <span class='sr-only'>Messages</span>
+                                <?php
+                                if ($num_new_messages > 0) {
+                                    print "<span class='badge'>{$num_new_messages}</span>";
+                                }
+                                ?>
+                            </a>
+                            <a href='<?= base_url('user/friend-requests'); ?>' class='btn
+                                <?php if ($page == 'friend-requests') print 'active'; ?>
+                                '>
+                                <span class='glyphicon glyphicon-user'></span>
+                                <span class='sr-only'>Friend requests</span>
+                                <?php
+                                if ($num_friend_requests > 0) {
+                                    print " <span class='badge'>{$num_friend_requests}</span>";
+                                }
+                                ?>
+                            </a>
+                        <?php else: ?>
+                            <a href='<?= base_url('login'); ?>' class='btn
+                                <?php if ($page == 'login') print ' active'; ?>
+                                '>
+                                <span class='glyphicon glyphicon-log-in' aria-hidden='true'></span>&nbsp; Log In
+                            </a>
+                            <a href='<?= base_url('register/step-one'); ?>' class='btn
+                                <?php if ($page == 'register') print ' active'; ?>
+                                '>Register
+                            </a>
+                        <?php endif; ?>
+                        <a href='<?= base_url('user/menu'); ?>' class='btn
+                            <?php if ($page == 'menu') print ' active'; ?>
+                            '>
                             <span class='glyphicon glyphicon-menu-hamburger'></span>
-                            <span class='sr-only'>Menu</span>
+                            <span class='sr-only'>&nbsp; Menu</span>
                         </a>
                     </div>
                 </div>

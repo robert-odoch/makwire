@@ -64,6 +64,7 @@ class Login extends CI_Controller
         }
 
         $data['title'] = 'Log in to your account';
+        $data['page'] = 'login';
         $this->load->view('common/header', $data);
 
         if ( ! empty($_SESSION['message'])) {

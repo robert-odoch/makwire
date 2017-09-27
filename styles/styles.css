@@ -391,7 +391,7 @@ ul.account-settings li:not(:last-child) {
 
 .navbar-right .badge {
     top: 8px;
-    right: 0;
+    right: 5px;
 }
 
 .site-footer {

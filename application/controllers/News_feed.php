@@ -16,6 +16,7 @@ class News_feed extends CI_Controller
     {
         $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'Makwire - News Feed';
+        $data['page'] = 'news-feed';
         $this->load->view('common/header', $data);
 
         if (isset($_SESSION['post_error']) && !empty($_SESSION['post_error'])) {
@@ -34,7 +35,6 @@ class News_feed extends CI_Controller
         $news_feed_items = $this->news_feed_model->get_news_feed_items($_SESSION['user_id'], $offset, $limit);
         $data['items'] = $news_feed_items;
         $data['is_visitor'] = FALSE;
-        $data['page'] = 'news-feed';
         $this->load->view('show/user', $data);
         $this->load->view('common/footer');
     }
