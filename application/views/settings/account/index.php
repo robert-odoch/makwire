@@ -11,10 +11,18 @@
             <div class='main-content'>
                 <div class='box'>
                     <h4>Account settings</h4>
-                    <ul class='account-settings'>
-                        <li><a href='<?= base_url('account/change-password'); ?>'>Change password</a></li>
-                        <li><a href='<?= base_url('account/set-prefered-name'); ?>'>Prefered profile name</a></li>
-                        <li><a href='<?= base_url('account/change-name'); ?>'>Change name</a></li>
-                        <li><a href='<?= base_url('account/delete'); ?>'>Delete account</a></li>
+                    <div class='list-group'>
+                        <a href='<?= base_url('account/set-prefered-name'); ?>' class='list-group-item'>
+                            Prefered profile name
+                        </a>
+                        <a href='<?= base_url('account/change-password'); ?>' class='list-group-item'>
+                            Change password
+                        </a>
+                        <a href='<?= base_url('account/change-name'); ?>' class='list-group-item'>
+                            Change name
+                        </a>
+                        <a href='<?= base_url('account/delete'); ?>' class='list-group-item'>
+                            Delete account
+                        </a>
                     </ul>
                 </div>

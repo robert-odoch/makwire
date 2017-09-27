@@ -311,8 +311,7 @@ a:focus {
 
 ul.about li:not(:last-child),
 ul.profile li:not(:last-child),
-ul.notifications li:not(:last-child),
-ul.account-settings li:not(:last-child) {
+ul.notifications li:not(:last-child) {
     border-bottom: 1px dotted #8FBC8F;
     padding-bottom: 2px;
     margin-bottom: 3px;
