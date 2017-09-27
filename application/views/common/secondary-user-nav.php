@@ -62,7 +62,7 @@
                     elseif ($suid != $_SESSION['user_id']) {
                         print "<a href='" . base_url("user/add-friend/{$suid}") .
                                     "' class='btn btn-xs'>
-                                    <span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span>
+                                    <span class='fa fa-user-plus' aria-hidden='true'></span>
                                     Add Friend
                                 </a>";
                     }

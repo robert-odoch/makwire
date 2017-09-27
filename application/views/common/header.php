@@ -40,13 +40,13 @@ isset($page) OR $page = '';  // Default value for page.
                             <a href='<?= base_url('news-feed'); ?>' class='btn
                                 <?php if ($page == 'news-feed') print 'active'; ?>
                                 '>
-                                <span class='glyphicon glyphicon-home'></span>
+                                <span class='fa fa-home'></span>
                                 <span class='sr-only'>News feed</span>
                             </a>
                             <a href='<?= base_url('user/notifications'); ?>' class='btn
                                 <?php if ($page == 'notifications') print 'active'; ?>
                                 '>
-                                <span class='glyphicon glyphicon-bell'></span>
+                                <span class='fa fa-bell'></span>
                                 <span class='sr-only'>Notifications</span>
                                 <?php
                                 if ($num_new_notifs > 0) {
@@ -57,7 +57,7 @@ isset($page) OR $page = '';  // Default value for page.
                             <a href='<?= base_url('user/messages'); ?>' class='btn
                                 <?php if ($page == 'messages') print 'active'; ?>
                                 '>
-                                <span class='glyphicon glyphicon-envelope'></span>
+                                <span class='fa fa-envelope'></span>
                                 <span class='sr-only'>Messages</span>
                                 <?php
                                 if ($num_new_messages > 0) {
@@ -68,7 +68,7 @@ isset($page) OR $page = '';  // Default value for page.
                             <a href='<?= base_url('user/friend-requests'); ?>' class='btn
                                 <?php if ($page == 'friend-requests') print 'active'; ?>
                                 '>
-                                <span class='glyphicon glyphicon-user'></span>
+                                <span class='fa fa-user'></span>
                                 <span class='sr-only'>Friend requests</span>
                                 <?php
                                 if ($num_friend_requests > 0) {
@@ -80,17 +80,18 @@ isset($page) OR $page = '';  // Default value for page.
                             <a href='<?= base_url('login'); ?>' class='btn
                                 <?php if ($page == 'login') print ' active'; ?>
                                 '>
-                                <span class='glyphicon glyphicon-log-in' aria-hidden='true'></span>&nbsp; Log In
+                                <span class='fa fa-sign-in' aria-hidden='true'></span>&nbsp; Log In
                             </a>
                             <a href='<?= base_url('register/step-one'); ?>' class='btn
                                 <?php if ($page == 'register') print ' active'; ?>
-                                '>Register
+                                '>
+                                <span class='fa fa-registered'></span>&nbsp;Register
                             </a>
                         <?php endif; ?>
                         <a href='<?= base_url('menu'); ?>' class='btn
                             <?php if ($page == 'menu') print ' active'; ?>
                             '>
-                            <span class='glyphicon glyphicon-menu-hamburger'></span>
+                            <span class='fa fa-navicon'></span>
                             <span class='sr-only'>&nbsp; Menu</span>
                         </a>
                     </div>

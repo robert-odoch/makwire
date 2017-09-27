@@ -24,7 +24,7 @@
                         Edit profile
                     </a>
                     <a href='<?= base_url('user/find-friends'); ?>' class='list-group-item'>
-                        <span class='fa fa-fw fa-user-plus'></span>&nbsp;
+                        <span class='fa fa-fw fa-search-plus'></span>&nbsp;
                         Find friends
                     </a>
                     <a href='<?= base_url('news-feed'); ?>' class='list-group-item'>
