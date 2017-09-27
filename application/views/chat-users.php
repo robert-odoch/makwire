@@ -1,5 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+define('PAGE', 'chat');
 require_once('common/user-page-start.php');
 ?>
 

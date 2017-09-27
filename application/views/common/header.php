@@ -15,6 +15,7 @@ isset($page) OR $page = '';  // Default value for page.
         <link rel='icon' href='<?= base_url('images/favicon.ico'); ?>' type='image/x-icon'>
 
         <link rel='stylesheet' href='<?= base_url('styles/bootstrap.min.css'); ?>'>
+        <link rel='stylesheet' href='<?= base_url('styles/font-awesome-4.7.0/css/font-awesome.min.css'); ?>'>
 
         <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
         <link rel='stylesheet' href='<?= base_url('styles/ie10-viewport-bug-workaround.css'); ?>'>
@@ -86,7 +87,7 @@ isset($page) OR $page = '';  // Default value for page.
                                 '>Register
                             </a>
                         <?php endif; ?>
-                        <a href='<?= base_url('user/menu'); ?>' class='btn
+                        <a href='<?= base_url('menu'); ?>' class='btn
                             <?php if ($page == 'menu') print ' active'; ?>
                             '>
                             <span class='glyphicon glyphicon-menu-hamburger'></span>

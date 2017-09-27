@@ -6,7 +6,24 @@ class Makwire extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+
         session_start();
+        if (isset($_SESSION['user_id'])) {
+            $this->load->model('user_model');
+        }
+    }
+
+    public function menu()
+    {
+        if (isset($_SESSION['user_id'])) {
+            $data = $this->user_model->initialize_user($_SESSION['user_id']);
+        }
+
+        $data['title'] = 'Menu';
+        $data['page'] = 'menu';
+        $this->load->view('common/header', $data);
+        $this->load->view('show/menu');
+        $this->load->view('common/footer');
     }
 
     public function help()
