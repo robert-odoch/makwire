@@ -8,6 +8,9 @@ defined('PAGE') OR define('PAGE', '')
         $suid == $_SESSION['user_id']) {
         print ' hidden-xs';
     }
+    if ($page == 'menu') {
+        print ' menu';
+    }
 ?>'>
     <div>
         <div id='primary-user' class='media'>
