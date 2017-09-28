@@ -15,10 +15,11 @@ $('#status-nav li a').click(function(event) {
     var $this = $(this);
     var $box = $this.parents('div.box');
 
-    // Remove current form and show loading indicator.
+    // Remove any alerts and replace form with loading indicator.
     var $form = $box.find('form');
     var formHeight = $form.css('height');
 
+    $box.find('.alert').remove();
     $form.replaceWith($(loadingMarkup));
     $box.find('.loading div').css({
         height: formHeight,
