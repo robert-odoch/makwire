@@ -1,14 +1,14 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 define('PAGE', 'friends');
-require_once(dirname(__FILE__) . '/../common/user-page-start.php');
-require_once(dirname(__FILE__) . '/../common/secondary-user-nav.php');
+require_once(__DIR__ . '/../common/user-page-start.php');
+require_once(__DIR__ . '/../common/secondary-user-nav.php');
 ?>
 
 <div class='box'>
     <?php if (count($friends) == 0) { ?>
     <div class='alert alert-info' role='alert'>
-        <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
+        <span class='fa fa-info-circle' aria-hidden='true'></span>
         <p>No friends to show.</p>
     </div>
     <?php } else { ?>
@@ -29,8 +29,8 @@ require_once(dirname(__FILE__) . '/../common/secondary-user-nav.php');
                 <?php  // Show link for sending message.
                 if ($suid == $_SESSION['user_id']) {
                     echo "<a href='" . base_url("user/send-message/{$fr['friend_id']}") .
-                         "' title='Send message' class='send-message'>
-                            <span class='glyphicon glyphicon-envelope'></span>
+                         "' data-toggle='tooltip' data-placement='right' title='Send message' class='send-message'>
+                            <span class='fa fa-envelope-o'></span>
                         </a>";
                 }
                 ?>

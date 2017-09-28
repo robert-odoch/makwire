@@ -1,26 +1,26 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-require_once(dirname(__FILE__) . '/../common/user-page-start.php');
+require_once(__DIR__ . '/../common/user-page-start.php');
 
 switch ($object) {
     case 'post':
-        require_once(dirname(__FILE__) . '/../common/post.php');
+        require_once(__DIR__ . '/../common/post.php');
         break;
     case 'photo':
-        require_once(dirname(__FILE__) . '/../common/photo.php');
+        require_once(__DIR__ . '/../common/photo.php');
         break;
     case 'video':
-        require_once(dirname(__FILE__) . '/../common/video.php');
+        require_once(__DIR__ . '/../common/video.php');
         break;
     case 'link':
-        require_once(dirname(__FILE__) . '/../common/link.php');
+        require_once(__DIR__ . '/../common/link.php');
         break;
     case 'comment':
     case 'reply':
-        require_once(dirname(__FILE__) . '/../common/comment-or-reply.php');
+        require_once(__DIR__ . '/../common/comment-or-reply.php');
         break;
     case 'message':
-        require_once(dirname(__FILE__) . '/../common/birthday-message.php');
+        require_once(__DIR__ . '/../common/birthday-message.php');
         break;
     default:
         // Do nothing.
@@ -32,7 +32,7 @@ switch ($object) {
     <h4>Likes</h4>
     <?php if (count($likes) == 0) { ?>
     <div class='alert alert-info' role='alert'>
-        <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
+        <span class='fa fa-info-circle' aria-hidden='true'></span>
         <p>No likes to show.</p>
     </div>
     <?php } else {
@@ -59,7 +59,7 @@ switch ($object) {
                     </a>
                 </h4>
                 <small class='time'>
-                    <span class='glyphicon glyphicon-time' aria-hidden='true'></span>
+                    <span class='fa fa-clock-o' aria-hidden='true'></span>
                     <?= $like['timespan']; ?> ago
                 </small>
             </div>

@@ -17,54 +17,52 @@
                 <h4><a href='<?= base_url("user/{$suid}"); ?>'><?= $secondary_user; ?></a></h4>
                 <div class='btn-group btn-group-xs'>
                     <?php
-                    if ($friendship_status['are_friends']) {
-                        print "<a href='" . base_url("user/send-message/{$suid}") .
-                                "' class='btn btn-xs btn-default send-message'>
-                                <span class='glyphicon glyphicon-envelope'></span> Message</a>";
+                    if ($suid !== $_SESSION['user_id']) {
+                        if ($friendship_status['are_friends']) {
+                            print "<a href='" . base_url("user/send-message/{$suid}") .
+                                    "' class='btn btn-xs btn-default send-message'>
+                                    <span class='fa fa-envelope-o'></span> Message</a>";
 
-                        if ($following) {
-                            print "<a href='" . base_url("user/unfollow/{$suid}") .
-                                    "' class='btn btn-xs btn-default' title='unfollow'>
-                                    <span class='glyphicon glyphicon-eye-close'></span> Unfollow</a>";
+                            if ($following) {
+                                print "<a href='" . base_url("user/unfollow/{$suid}") .
+                                        "' class='btn btn-xs btn-default' title='unfollow'>
+                                        <span class='fa fa-eye-slash'></span> Unfollow</a>";
+                            }
+                            else {
+                                print "<a href='" . base_url("user/follow/{$suid}") .
+                                        "' class='btn btn-xs btn-default' title='follow'>
+                                        <span class='fa fa-eye'></span> Follow</a>";
+                            }
+
+                            print "<a href='" . base_url("user/unfriend/{$suid}") .
+                                    "' class='btn btn-xs btn-default' title='unfriend'>
+                                    <span class='fa fa-user-times'></span> Unfriend</a>";
+                        }
+                        elseif ($friendship_status['fr_sent']) {
+                            if ($friendship_status['target_id'] == $_SESSION['user_id']) {
+                                print "<a href='" . base_url("user/accept-friend/{$suid}") .
+                                        "' class='btn btn-xs'>
+                                        <span class='fa fa-user-plus' aria-hidden='true'></span>
+                                        Confirm Friend</a>";
+                            }
+                            if ($friendship_status['user_id'] == $_SESSION['user_id']) {
+                                print "<span class='btn btn-xs btn-default'>
+                                        <span class='fa fa-check-circle-o' aria-hidden='true'></span>
+                                        Request Sent</span>";
+                            }
+
+                            print "<a href='" . base_url("user/delete-friend-request/{$suid}") . "'
+                                        class='btn btn-xs btn-default'>
+                                    <span class='fa fa-trash'></span> Delete Request
+                                    </a>";
                         }
                         else {
-                            print "<a href='" . base_url("user/follow/{$suid}") .
-                                    "' class='btn btn-xs btn-default' title='follow'>
-                                    <span class='glyphicon glyphicon-eye-open'></span> Follow</a>";
+                            print "<a href='" . base_url("user/add-friend/{$suid}") .
+                                        "' class='btn btn-xs'>
+                                        <span class='fa fa-user-plus' aria-hidden='true'></span>
+                                        Add Friend
+                                    </a>";
                         }
-
-                        print "<a href='" . base_url("user/unfriend/{$suid}") .
-                                "' class='btn btn-xs btn-default' title='unfriend'>
-                                <span class='glyphicon glyphicon-minus-sign'></span> Unfriend</a>";
-                    }
-                    elseif ($friendship_status['fr_sent'] &&
-                            $friendship_status['target_id'] == $_SESSION['user_id']) {
-                        print "<a href='" . base_url("user/accept-friend/{$suid}") .
-                                "' class='btn btn-xs'>Confirm Friend</a>
-
-                                <a href='" . base_url("user/delete-friend-request/{$suid}") . "'
-                                    class='btn btn-xs btn-default'>
-                                    <span class='glyphicon glyphicon-trash'></span> Delete Request
-                                </a>";
-                    }
-                    elseif ($friendship_status['fr_sent'] &&
-                            $friendship_status['user_id'] == $_SESSION['user_id']) {
-                        print "<span class='btn btn-xs btn-default'>
-                                <span class='glyphicon glyphicon-ok' aria-hidden='true'></span>
-                                Request Sent</span>
-
-                                <a href='" . base_url("user/delete-friend-request/{$suid}") . "'
-                                    class='btn btn-xs btn-default'>
-                                    <span class='glyphicon glyphicon-trash' aria-hidden='true'></span>
-                                    Delete Request
-                                </a>";
-                    }
-                    elseif ($suid != $_SESSION['user_id']) {
-                        print "<a href='" . base_url("user/add-friend/{$suid}") .
-                                    "' class='btn btn-xs'>
-                                    <span class='fa fa-user-plus' aria-hidden='true'></span>
-                                    Add Friend
-                                </a>";
                     }
                     ?>
                 </div>

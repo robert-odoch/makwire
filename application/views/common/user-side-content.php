@@ -1,6 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-defined('PAGE') OR define('PAGE', '')
+defined('PAGE') OR define('PAGE', '');
+isset($page) OR $page = '';
 ?>
 
 <div class='side-content<?php
@@ -47,7 +48,7 @@ defined('PAGE') OR define('PAGE', '')
     </div>
 
     <nav role='navigation' id='short-cuts' class='hidden-xs'>
-        <h5><span class='glyphicon glyphicon-paperclip' aria-hidden='true'></span> Quick Access</h5>
+        <h5><span class='fa fa-gg' aria-hidden='true'></span> Quick Access</h5>
         <ul>
             <li<?php if (PAGE == 'chat') print " class='active'"; ?>>
                 <a href='<?= base_url('user/chat'); ?>'
@@ -69,7 +70,7 @@ defined('PAGE') OR define('PAGE', '')
         </ul>
 
         <?php if ( ! empty($shortcuts)): ?>
-            <h5><span class='glyphicon glyphicon-bookmark' aria-hidden='true'></span> Shortcuts</h5>
+            <h5><span class='fa fa-bookmark' aria-hidden='true'></span> Shortcuts</h5>
         <?php endif; ?>
     </nav>
 </div>

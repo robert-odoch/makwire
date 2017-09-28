@@ -5,7 +5,7 @@
         <div role='main' class='main user-home'>
             <?php
             define('PAGE', 'account');
-            require_once(dirname(__FILE__) . '/../../common/account-settings-nav.php');
+            require_once(__DIR__ . '/../../common/account-settings-nav.php');
             ?>
 
             <div class='main-content'>

@@ -14,7 +14,7 @@
             <div class='media-footer'>
                 <a href='<?php echo base_url("user/send-message/{$receiver['user_id']}/0/1"); ?>'
                     class='refresh-chat' title='Refresh' data-toggle='tooltip' data-placement='left'>
-                    <span class='glyphicon glyphicon-refresh'></span>
+                    <span class='fa fa-refresh' aria-hidden='true'></span>
                 </a>
             </div>
         </div>

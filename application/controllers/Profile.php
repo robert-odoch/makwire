@@ -66,8 +66,13 @@ class Profile extends CI_Controller
 
         $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Change profile picture';
-        $this->load->view('common/header', $data);
+        $data['is_visitor'] = FALSE;
 
+        $data['suid'] = $_SESSION['user_id'];
+        $data['secondary_user'] = $data['primary_user'];
+        $data['su_profile_pic_path'] = $data['profile_pic_path'];
+
+        $this->load->view('common/header', $data);
         $this->load->view('add/profile-picture', $data);
         $this->load->view('common/footer');
     }

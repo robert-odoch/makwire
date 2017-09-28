@@ -5,7 +5,7 @@
         <div role='main' class='main user-home'>
             <?php
             define('PAGE', 'emails');
-            require_once(dirname(__FILE__) . '/../common/account-settings-nav.php');
+            require_once(__DIR__ . '/../common/account-settings-nav.php');
             ?>
 
             <div class='main-content'>
@@ -14,7 +14,7 @@
                     <h5>Primary email address</h5>
                     <?php if (isset($primary_email_success_message)): ?>
                         <div class='alert alert-success' role='alert'>
-                            <span class='glyphicon glyphicon-ok-circle' aria-hidden='true'></span>
+                            <span class='fa fa-check-circle' aria-hidden='true'></span>
                             <p><?= $primary_email_success_message; ?></p>
                         </div>
                     <?php else: ?>
@@ -40,7 +40,7 @@
                         <h5>Backup email address</h5>
                         <?php if (isset($backup_email_success_message)): ?>
                             <div class='alert alert-success' role='alert'>
-                                <span class='glyphicon glyphicon-ok-circle' aria-hidden='true'></span>
+                                <span class='fa fa-check-circle' aria-hidden='true'></span>
                                 <p><?= $backup_email_success_message; ?></p>
                             </div>
                         <?php else: ?>
@@ -72,12 +72,12 @@
                     <h5>Add new email address</h5>
                     <?php if (isset($info_message)): ?>
                         <div class='alert alert-info' role='alert'>
-                            <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
+                            <span class='fa fa-info-circle' aria-hidden='true'></span>
                             <p><?= $info_message; ?></p>
                         </div>
                     <?php elseif (isset($success_message)): ?>
                         <div class='alert alert-success' role='alert'>
-                            <span class='glyphicon glyphicon-ok-circle' aria-hidden='true'></span>
+                            <span class='fa fa-check-circle' aria-hidden='true'></span>
                             <p><?= $success_message; ?></p>
                         </div>
                     <?php else: ?>

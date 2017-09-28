@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-require_once(dirname(__FILE__) . '/../common/user-page-start.php');
+require_once(__DIR__ . '/../common/user-page-start.php');
 ?>
 
 <div class='box'>
@@ -84,7 +84,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
 
                     <span>
                         <small class='time'>
-                            <span class='glyphicon glyphicon-time' aria-hidden='true'></span>
+                            <span class='fa fa-clock-o' aria-hidden='true'></span>
                             <?= $msg['timespan']; ?> ago
                         </small>
                         <?php

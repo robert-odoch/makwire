@@ -19,7 +19,7 @@ if ($is_visitor && ! $profile['schools'] && ! $profile['halls']
     && !$profile['hostels'] && !$profile['origin']['district']) {
     print "<div class='box'>
                 <div class='alert alert-info' role='alert'>
-                    <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
+                    <span class='fa fa-info-circle' aria-hidden='true'></span>
                     <p>Nothing to show.</p>
                 </div>
             </div>";
@@ -43,7 +43,7 @@ if ($is_visitor && ! $profile['schools'] && ! $profile['halls']
                 print "<tr><td><b>School</b></td><td>{$sch['school_name']}";
                 if (!$is_visitor) {
                     print " <a href='" . base_url("profile/edit-school/{$sch['id']}") .
-                        "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Edit</a>";
+                        "'><span class='fa fa-pencil' aria-hidden='true'></span> Edit</a>";
                 }
                 print "</td></tr>";
 
@@ -51,7 +51,7 @@ if ($is_visitor && ! $profile['schools'] && ! $profile['halls']
                     print "<tr><td><b>Programme</b></td><td>{$sch['programme']['programme_name']}";
                     if (!$is_visitor) {
                         print " <a href='" . base_url("profile/edit-programme/{$sch['programme']['id']}") .
-                            "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Edit</a>";
+                            "'><span class='fa fa-pencil' aria-hidden='true'></span> Edit</a>";
                     }
                     print "</td></tr>";
                 }
@@ -101,7 +101,7 @@ if ($is_visitor && ! $profile['schools'] && ! $profile['halls']
                             print "<td>Resident of {$hall['hall_name']}";
                             if (!$is_visitor) {
                                 print " <a href='" . base_url("profile/edit-hall/{$hall['id']}") .
-                                        "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Edit</a>";
+                                        "'><span class='fa fa-pencil' aria-hidden='true'></span> Edit</a>";
                             }
                             print "</td>";
                         }
@@ -109,7 +109,7 @@ if ($is_visitor && ! $profile['schools'] && ! $profile['halls']
                             print "<td>Attached to {$hall['hall_name']}";
                             if (!$is_visitor) {
                                 print " <a href='" . base_url("profile/edit-hall/{$hall['id']}") .
-                                        "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Edit</a>";
+                                        "'><span class='fa fa-pencil' aria-hidden='true'></span> Edit</a>";
                             }
                             print "</td>";
                         }
@@ -137,7 +137,7 @@ if ($is_visitor && ! $profile['schools'] && ! $profile['halls']
                         print "<td>{$hostel['hostel_name']}";
                         if (!$is_visitor) {
                             print " <a href='" . base_url("profile/edit-hostel/{$hostel['id']}") .
-                                    "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Edit</a>";
+                                    "'><span class='fa fa-pencil' aria-hidden='true'></span> Edit</a>";
                         }
                         print "</td></tr>";
                     }

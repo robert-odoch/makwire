@@ -5,7 +5,7 @@
         <div role='main' class='main user-home'>
             <?php
             define('PAGE', 'blocked-users');
-            require_once(dirname(__FILE__) . '/../common/account-settings-nav.php');
+            require_once(__DIR__ . '/../common/account-settings-nav.php');
             ?>
 
             <div class='main-content'>
@@ -34,7 +34,7 @@
                         <h4>Search Results</h4>
                         <?php if (empty($search_results)): ?>
                             <div class='alert alert-info' role='alert'>
-                                <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
+                                <span class='fa fa-info-circle' aria-hidden='true'></span>
                                 <p>Your search query returned no results.</p>
                             </div>
                         <?php else: ?>
@@ -63,7 +63,7 @@
                         <h4>Blocked Users</h4>
                         <?php if (empty($blocked_users)): ?>
                             <div class='alert alert-info' role='alert'>
-                                <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
+                                <span class='fa fa-info-circle' aria-hidden='true'></span>
                                 <p>You haven't blocked any users.</p>
                             </div>
                         <?php else: ?>

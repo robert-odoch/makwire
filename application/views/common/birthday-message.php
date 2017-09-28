@@ -19,7 +19,7 @@
 
             <span>
                 <small class='time'>
-                    <span class='glyphicon glyphicon-time' aria-hidden='true'></span>
+                    <span class='fa fa-clock-o' aria-hidden='true'></span>
                     <?= $message['timespan']; ?> ago
                 </small>
 

@@ -5,22 +5,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <ul class='nav nav-tabs' id='status-nav'>
     <li role='presentation' <?php if (STATUS == 'post') print "class='active'"; ?>>
         <a href='<?= base_url('post/new'); ?>' id='new-post'>
-            <span class='glyphicon glyphicon-edit' aria-hidden='true'></span> Post
+            <span class='fa fa-pencil-square-o' aria-hidden='true'></span>&nbsp; Post
         </a>
     </li>
     <li role='presentation' <?php if (STATUS == 'photo') print "class='active'"; ?>>
         <a href='<?= base_url('photo/new'); ?>' id='new-photo'>
-            <span class='glyphicon glyphicon-picture' aria-hidden='true'></span> Photo
+            <span class='fa fa-file-image-o' aria-hidden='true'></span>&nbsp; Photo
         </a>
     </li>
     <li role='presentation' <?php if (STATUS == 'link') print "class='active'"; ?>>
         <a href='<?= base_url('link/new'); ?>' id='new-link'>
-            <span class='glyphicon glyphicon-link' aria-hidden='true'></span> Link
+            <span class='fa fa-external-link' aria-hidden='true'></span>&nbsp; Link
         </a>
     </li>
     <li role='presentation' <?php if (STATUS == 'video') print "class='active'"; ?>>
         <a href='<?= base_url('video/new'); ?>' id='new-video'>
-            <span class='glyphicon glyphicon-film' aria-hidden='true'></span> Video
+            <span class='fa fa-film' aria-hidden='true'></span>&nbsp; Video
         </a>
     </li>
 </ul>

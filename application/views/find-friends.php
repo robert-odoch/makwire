@@ -52,7 +52,7 @@ require_once('common/user-page-start.php');
     <div class='box'>
         <h4>Search results</h4>
         <div class='alert alert-info' role='alert'>
-            <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
+            <span class='fa fa-info-circle' aria-hidden='true'></span>
             <p>You search query returned no results.</p>
         </div>
     </div>

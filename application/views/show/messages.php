@@ -1,13 +1,13 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-require_once(dirname(__FILE__) . '/../common/user-page-start.php');
+require_once(__DIR__ . '/../common/user-page-start.php');
 ?>
 
 <div class='box'>
     <h4>Messages</h4>
     <?php if (count($messages) == 0) { ?>
     <div class='alert alert-info' role='alert'>
-        <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
+        <span class='fa fa-info-circle' aria-hidden='true'></span>
         <p>No messages to show.</p>
     </div>
     <?php } else {
@@ -29,7 +29,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
                     <?= htmlspecialchars($m['message']); ?>
                 </p>
                 <small class='time'>
-                    <span class='glyphicon glyphicon-time' aria-hidden='true'></span>
+                    <span class='fa fa-clock-o' aria-hidden='true'></span>
                     <?= $m['timespan']; ?> ago
                 </small>
             </div>

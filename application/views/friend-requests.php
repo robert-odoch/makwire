@@ -7,7 +7,7 @@ require_once('common/user-page-start.php');
     <h4>Friends Requests</h4>
     <?php if (count($friend_requests) == 0) { ?>
         <div class='alert alert-info' role='alert'>
-            <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
+            <span class='fa fa-info-circle' aria-hidden='true'></span>
             <p>No friend requests to show.</p>
         </div>
     <?php } else { ?>
@@ -23,10 +23,12 @@ require_once('common/user-page-start.php');
                         <a href='<?= base_url("user/{$fr['user_id']}"); ?>'><?= $fr['profile_name']; ?></a>
                     </h4>
                     <a href='<?= base_url("user/accept-friend/{$fr['user_id']}"); ?>'
-                            class='btn btn-xs'>Confirm</a>
+                            class='btn btn-xs'>
+                            <span class='fa fa-user-plus'></span>
+                            Confirm</a>
                     <a href='<?= base_url("user/delete-friend-request/{$fr['user_id']}"); ?>'
                         class='btn btn-xs btn-default'>
-                        <span class='glyphicon glyphicon-trash'></span> Delete
+                        <span class='fa fa-trash'></span> Delete
                     </a>
                 </div>
             </div>

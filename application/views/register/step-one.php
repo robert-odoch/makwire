@@ -6,12 +6,12 @@
             <h4>Sign Up: step 1 of 3</h4>
             <?php if (isset($info_message)) { ?>
                 <div class='alert alert-info' role='alert'>
-                    <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
+                    <span class='fa fa-info-circle' aria-hidden='true'></span>
                     <p><?= $info_message; ?></p>
                 </div>
             <?php } elseif (isset($success_message)) { ?>
                 <div class='alert alert-info' role='alert'>
-                    <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
+                    <span class='fa fa-info-circle' aria-hidden='true'></span>
                     <p><?= $success_message; ?></p>
                 </div>
             <?php } else { ?>

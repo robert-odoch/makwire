@@ -1,20 +1,20 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 define('PAGE', 'photos');
-require_once(dirname(__FILE__) . '/../common/user-page-start.php');
-require_once(dirname(__FILE__) . '/../common/secondary-user-nav.php');
+require_once(__DIR__ . '/../common/user-page-start.php');
+require_once(__DIR__ . '/../common/secondary-user-nav.php');
 ?>
 
 <?php if (count($photos) == 0): ?>
     <div class='box'>
         <div class='alert alert-info' role='alert'>
-            <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
+            <span class='fa fa-info-circle' aria-hidden='true'></span>
             <p>No photos to show.</p>
         </div>
     </div>
 <?php else:
     foreach ($photos as $photo) {
-        require(dirname(__FILE__) . '/../common/photo.php');
+        require(__DIR__ . '/../common/photo.php');
     }
 endif;
 ?>

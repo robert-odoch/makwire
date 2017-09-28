@@ -1,11 +1,11 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-require_once(dirname(__FILE__) . '/../common/user-page-start.php');
+require_once(__DIR__ . '/../common/user-page-start.php');
 if ($object == 'comment') {
-    require_once(dirname(__FILE__) . '/../common/comment-or-reply.php');
+    require_once(__DIR__ . '/../common/comment-or-reply.php');
 }
 else if ($object == 'birthday-message') {
-    require_once(dirname(__FILE__) . '/../common/birthday-message.php');
+    require_once(__DIR__ . '/../common/birthday-message.php');
 }
 ?>
 
@@ -13,7 +13,7 @@ else if ($object == 'birthday-message') {
     <h4>Replies</h4>
     <?php if (count($replies) == 0) { ?>
     <div class='alert alert-info' role='alert'>
-        <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>
+        <span class='fa fa-info-circle' aria-hidden='true'></span>
         <p>No replies to show.</p>
     </div>
     <?php } else {
@@ -45,7 +45,7 @@ else if ($object == 'birthday-message') {
 
                 <span>
                     <small class='time'>
-                        <span class='glyphicon glyphicon-time' aria-hidden='true'></span>
+                        <span class='fa fa-clock-o' aria-hidden='true'></span>
                         <?= $reply['timespan']; ?> ago
                     </small>
 

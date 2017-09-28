@@ -1,6 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 require_once(__DIR__ . '/../common/user-page-start.php');
+require_once(__DIR__ . '/../common/secondary-user-nav.php');
 ?>
 
 <div class='box'>
@@ -9,9 +10,9 @@ require_once(__DIR__ . '/../common/user-page-start.php');
         <div class='panel-body'>
             <?php if (isset($error)) { ?>
             <div class='alert alert-danger' role='alert'>
-                <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
+                <span class='fa fa-exclamation-circle' aria-hidden='true'></span>
                 <span class='sr-only'>Error: </span>
-                <p><?= $error; ?></p>
+                <?= $error;  // Errors for images come embedded in a paragraph. ?>
             </div>
             <?php } ?>
             <form action='<?= base_url('profile/change-profile-picture'); ?>' method='post'

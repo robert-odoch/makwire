@@ -7,7 +7,7 @@ require_once('common/user-page-start.php');
 switch ($object) {
     case 'comment':
     case 'reply':
-        require_once(dirname(__FILE__) . '/common/comment-or-reply.php');
+        require_once(__DIR__ . '/common/comment-or-reply.php');
         break;
     default:
         # do nothing...

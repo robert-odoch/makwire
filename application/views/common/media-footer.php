@@ -37,21 +37,21 @@
             <li>
                 <a href='<?= base_url("$object/like/{$$object[$object . '_id']}"); ?>'
                     data-toggle='tooltip' data-placement='top' title='Like this <?= $object; ?>'>
-                    <span class='glyphicon glyphicon-thumbs-up' aria-hidden='true'></span> Like
+                    <span class='fa fa-thumbs-o-up' aria-hidden='true'></span> Like
                 </a>
                 <span> &middot; </span>
             </li>
             <li>
                 <a href='<?= base_url("$object/comment/{$$object[$object . '_id']}"); ?>'
                     data-toggle='tooltip' data-placement='top' title='Comment on this <?= $object; ?>'>
-                    <span class='glyphicon glyphicon-comment' aria-hidden='true'></span> Comment
+                    <span class='fa fa-comment-o' aria-hidden='true'></span> Comment
                 </a>
                 <span> &middot; </span>
             </li>
             <li>
                 <a href='<?= base_url("$object/share/{$$object[$object . '_id']}"); ?>'
                     data-toggle='tooltip' data-placement='top' title='Share this <?= $object; ?>'>
-                    <span class='glyphicon glyphicon-share-alt' aria-hidden='true'></span> Share
+                    <span class='fa fa-share' aria-hidden='true'></span> Share
                 </a>
             </li>
 

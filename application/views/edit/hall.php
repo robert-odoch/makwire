@@ -1,13 +1,13 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-require_once(dirname(__FILE__) . '/../common/user-page-start.php');
+require_once(__DIR__ . '/../common/user-page-start.php');
 ?>
 
 <div class='box'>
     <h4><?= $heading; ?></h4>
     <?php if (isset($error_message)) { ?>
         <div class='alert alert-danger' role='alert'>
-            <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
+            <span class='fa fa-exclamation-circle' aria-hidden='true'></span>
             <span class='sr-only'>Error: </span>
             <p><?= $error_message; ?></p>
         </div>
@@ -63,7 +63,7 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
                 </div>
             </div>
         </fieldset>
-        <?php require_once(dirname(__FILE__) . '/../common/show-date-input.php'); ?>
+        <?php require_once(__DIR__ . '/../common/show-date-input.php'); ?>
         <?php if (isset($user_hall)) { ?>
             <fieldset>
                 <input type='hidden' name='user-hall-id' value='<?= $user_hall['id']; ?>'>

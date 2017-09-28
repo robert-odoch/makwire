@@ -13,7 +13,7 @@ endif;
         <div class='box'>
             <h4><?= $heading; ?></h4>
             <div class='alert alert-danger' role='alert'>
-                <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
+                <span class='fa fa-exclamation-circle' aria-hidden='true'></span>
                 <p><?= $message; ?></p>
             </div>
         </div>
