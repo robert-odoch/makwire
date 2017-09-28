@@ -170,3 +170,24 @@ $('.col-small').on('click', '.back-btn', function(event) {
     var url = $(this).attr('href');
     $colSmall.load(url);
 });
+
+/*** Loading more news feed and timeline items. ***/
+function moreNewsFeedTimelineItems(event) {
+    event.preventDefault();
+
+    var $this = $(this);
+    var $parent = $this.parents('div.more');
+
+    // Show loading indicator.
+    $this.replaceWith($(loadingMarkup));
+
+    var url = $this.attr('href');
+    $.get(url, function(data) {
+        // Load and display more items.
+        var html = $.parseHTML(data);
+        $parent.replaceWith($(html));
+    });
+}
+
+$('.more').on('click', '.timeline', moreNewsFeedTimelineItems);
+$('.more').on('click', '.news-feed', moreNewsFeedTimelineItems);

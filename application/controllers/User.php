@@ -17,6 +17,27 @@ class User extends CI_Controller
 
     public function index($user_id = 0, $offset = 0)
     {
+
+        $limit = 10;  // Maximum number of items to show.
+
+        if (is_ajax_request()) {
+            $data['has_next'] = FALSE;
+            $num_timeline_items = $this->user_model->get_num_timeline_items($user_id);
+            if (($num_timeline_items - $offset) > $limit) {
+                $data['has_next'] = TRUE;
+                $data['next_offset'] = ($offset + $limit);
+            }
+
+            $timeline_items = $this->user_model->get_timeline_items($user_id, $_SESSION['user_id'], $offset, $limit);
+            $data['items'] = $timeline_items;
+            $data['page'] = 'timeline';
+            $data['user_id'] = $user_id;
+
+            $html = $this->load->view('common/items', $data, TRUE);
+            echo $html;
+            return;
+        }
+
         $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = format_name($data['primary_user']) . ' posts';
 
@@ -42,7 +63,6 @@ class User extends CI_Controller
             unset($_SESSION['post_error']);
         }
 
-        $limit = 10;  // Maximum number of items to show.
         $data['has_next'] = FALSE;
         $num_timeline_items = $this->user_model->get_num_timeline_items($user_id);
         if (($num_timeline_items - $offset) > $limit) {

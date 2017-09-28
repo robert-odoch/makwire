@@ -14,6 +14,25 @@ class News_feed extends CI_Controller
 
     public function index($offset = 0)
     {
+        $limit = 10;  // Maximum number of items to show.
+
+        if (is_ajax_request()) {
+            $data['has_next'] = FALSE;
+            $num_news_feed_items = $this->news_feed_model->get_num_news_feed_items($_SESSION['user_id']);
+            if (($num_news_feed_items - $offset) > $limit) {
+                $data['has_next'] = TRUE;
+                $data['next_offset'] = ($offset + $limit);
+            }
+
+            $news_feed_items = $this->news_feed_model->get_news_feed_items($_SESSION['user_id'], $offset, $limit);
+            $data['page'] = 'news-feed';
+            $data['items'] = $news_feed_items;
+
+            $html = $this->load->view('common/items', $data, TRUE);
+            echo $html;
+            return;
+        }
+
         $data = $this->user_model->initialize_user($_SESSION['user_id']);
         $data['title'] = 'Makwire - News Feed';
         $data['page'] = 'news-feed';
@@ -24,7 +43,6 @@ class News_feed extends CI_Controller
             unset($_SESSION['post_error']);
         }
 
-        $limit = 10;  // Maximum number of items to show.
         $data['has_next'] = FALSE;
         $num_news_feed_items = $this->news_feed_model->get_num_news_feed_items($_SESSION['user_id']);
         if (($num_news_feed_items - $offset) > $limit) {
