@@ -1,4 +1,10 @@
-var loading = "<div class='loading'><img src='http://localhost/makwire/images/ajax-loader.gif'></div>";
+var loadingMarkup = "<div class='loading'>" +
+                        "<div>" +
+                            "<img src='http://localhost/makwire/images/ajax-loader.gif'>" +
+                            "<span>&nbsp;Loading...</span>" +
+                        "</div>" +
+                    "</div>";
+
 /*** Tooltips ***/
 $('[data-toggle="tooltip"]').tooltip();
 
@@ -7,17 +13,28 @@ $('#status-nav li a').click(function(event) {
     event.preventDefault();
 
     var $this = $(this);
+    var $box = $this.parents('div.box');
+
+    // Remove current form and show loading indicator.
+    var $form = $box.find('form');
+    var formHeight = $form.css('height');
+
+    $form.replaceWith($(loadingMarkup));
+    $box.find('.loading div').css({
+        height: formHeight,
+        paddingTop: '40px'
+    });
+
     var url = $this.attr('href');
     $.get(url, function(data) {
         var html = $.parseHTML(data);
-        var $box = $this.parents('div.box');
 
         // Move the active class to the li parent for this link.
         $box.find('.active').removeClass('active');
         $this.parents('li').addClass('active');
 
-        // Remove the old form.
-        $box.find('form').remove();
+        // Remove loading indicator.
+        $box.find('.loading').remove();
 
         // Show the new form.
         $(html).appendTo($box);
@@ -38,6 +55,9 @@ $('body').on('click', 'a.send-message', function(event) {
     }
 
     event.preventDefault();
+
+    // Remove current chat users and show loading indicator.
+    $('.active-users').replaceWith($(loadingMarkup));
 
     var url = $(this).attr('href');
     $('.col-small').load(url, function() {
@@ -91,15 +111,16 @@ $('body').on('submit', 'form.send-message', function(event) {
 $('body').on('click', '.refresh-chat', function(event) {
     event.preventDefault();
 
-    // Show loading feedback.
-    $(loading).insertBefore('.chat-content .new-message');
+    // Show loading indicator.
+    $(loadingMarkup).insertBefore('.chat-content .new-message');
 
     var url = $(this).attr('href');
     $.get(url, function(data) {
-        // Remove the loading feedback.
+        var html = $.parseHTML(data);
+
+        // Remove the loading indicator.
         $('.chat-content .loading').remove();
 
-        var html = $.parseHTML(data);
         if (html !== null) {
             // Insert the message immediately above the form.
             $(html).insertBefore('.chat-content .new-message');
@@ -117,13 +138,17 @@ $('body').on('click', '.refresh-chat', function(event) {
 function previousMessages(event) {
     event.preventDefault();
 
+    // Remove the link for viewing previous messages and show loading indicator.
+    $('.chat-content .previous').replaceWith($(loadingMarkup));
+
     var url = $(this).attr('href');
     $.get(url, function(data) {
-        // Remove the link for viewing previous messages.
-        $('.chat-content .previous').remove();
+        var html = $.parseHTML(data);
+
+        // Remove the loading indicator.
+        $('.chat-content .loading').remove();
 
         // Insert the returned HTML at the beginning of the div.
-        var html = $.parseHTML(data);
         $(html).prependTo('.chat-content');
     });
 }
@@ -135,6 +160,13 @@ $('.col-small').on('click', '.previous', previousMessages);
 $('.col-small').on('click', '.back-btn', function(event) {
     event.preventDefault();
 
+    // Remove current chat user and show loading indicator.
+    var $colSmall = $('.col-small');
+
+    $colSmall.empty();
+    $(loadingMarkup).prependTo($colSmall);
+
+    // Load active users.
     var url = $(this).attr('href');
-    $('.col-small').load(url);
+    $colSmall.load(url);
 });

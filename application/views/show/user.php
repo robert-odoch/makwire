@@ -8,7 +8,7 @@ if ($page !== 'news-feed') {
 
 if (!$is_visitor) {
 ?>
-    <div class='box'>
+    <div id='update-status' class='box'>
 
         <?php
         define('STATUS', 'post');

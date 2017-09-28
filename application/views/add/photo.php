@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require_once(__DIR__ . '/../common/user-page-start.php');
 ?>
 
-<div class='box'>
+<div id='update-status' class='box'>
 
     <?php
     define('STATUS', 'photo');

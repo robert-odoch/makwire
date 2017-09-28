@@ -113,7 +113,7 @@ p.text {
 }
 /* End override */
 
-#status-nav + form label {
+#update-status form label {
     margin: 10px 0;
 }
 
@@ -737,6 +737,22 @@ p.post a.more {
     text-transform: uppercase;
 }
 
+.loading {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: separate;
+}
+.loading div {
+    display: table-cell;
+    text-align: center;
+    width: 100%;
+}
+.loading img {
+    width: 25px;
+    height: 25px;
+}
+
 
 
 /*** Make these divs stick to their positions ***/
@@ -810,11 +826,6 @@ p.post a.more {
 .chat-content .message.received p,
 .chat-content .message.received small {
     margin-left: 45px;
-}
-
-.chat-content .loading img {
-    display: block;
-    margin: auto;
 }
 
 .new-message {
