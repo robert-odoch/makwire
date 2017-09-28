@@ -38,10 +38,6 @@ class Video_model extends CI_Model
         $video['profile_pic_path'] = $this->user_model->get_profile_pic_path($video['user_id']);
         $video['timespan'] = timespan(mysql_to_unix($video['date_entered']), now(), 1);
 
-        // Add data used by views.
-        $video['has_description'] = strlen($video['description']) != 0;
-        $video['shared'] = FALSE;
-
         // Check whether the user currently viewing the page is a friend to the
         // owner of the video. This will allow us to only show the like, comment
         // and share buttons to friends of the owner.
@@ -53,6 +49,11 @@ class Video_model extends CI_Model
         $video['num_comments'] = $this->activity_model->getNumComments($simpleVideo);
         $video['num_shares'] = $this->activity_model->getNumShares($simpleVideo);
 
+        // Add data used by views.
+        $video['has_description'] = strlen($video['description']) != 0;
+        $video['shared'] = FALSE;
+        $video['liked'] = $this->activity_model->isLiked($simpleVideo, $visitor_id);
+
         return $video;
     }
 
@@ -62,7 +63,7 @@ class Video_model extends CI_Model
      * @param $url.
      * @return $video_id the ID of the video in the user_videos table.
      */
-    public function publish($user_id, $url)
+    public function publish($url, $user_id)
     {
         // Record video data in the videos table.
         $video_sql = sprintf('INSERT INTO videos (user_id, url) VALUES (%d, %s) ',
@@ -102,7 +103,7 @@ class Video_model extends CI_Model
      *
      * @param $video_id the ID of the video in the user_videos table.
      */
-    public function like($video_id)
+    public function like($video_id, $user_id)
     {
         // Get the id of the owner of this video.
         $owner_sql = sprintf('SELECT user_id FROM videos WHERE video_id = %d', $video_id);
@@ -120,7 +121,13 @@ class Video_model extends CI_Model
             );
         }
 
-        $this->activity_model->like(new SimpleVideo($video_id, $owner_id));
+        $simpleVideo = new SimpleVideo($video_id, $owner_id);
+        $this->activity_model->like(
+            $simpleVideo,
+            $user_id
+        );
+
+        return $this->activity_model->getNumLikes($simpleVideo);
     }
 
     /**
@@ -132,7 +139,7 @@ class Video_model extends CI_Model
      *
      * @param $video_id the ID of the video in the user_videos table.
      */
-    public function share($video_id)
+    public function share($video_id, $user_id)
     {
         $owner_sql = sprintf('SELECT user_id FROM videos WHERE video_id = %d', $video_id);
         $owner_query = $this->db->query($owner_sql);
@@ -157,7 +164,7 @@ class Video_model extends CI_Model
      * @param $video_id the ID of the video in the user_videos table.
      * @param $comment the comment a user made.
      */
-    public function comment($video_id, $comment)
+    public function comment($video_id, $comment, $user_id)
     {
         // Get the ID of the owner of this video.
         $owner_sql = sprintf('SELECT user_id FROM videos WHERE video_id = %d', $video_id);

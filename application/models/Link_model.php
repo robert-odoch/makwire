@@ -34,13 +34,10 @@ class Link_model extends CI_Model
         if ($link_query->num_rows() == 0) {
             throw new NotFoundException();
         }
+
         $link = $link_query->row_array();
         $link['profile_pic_path'] = $this->user_model->get_profile_pic_path($link['user_id']);
         $link['timespan'] = timespan(mysql_to_unix($link['date_entered']), now(), 1);
-
-        // Add data used by views.
-        $link['has_comment'] = strlen($link['comment']) != 0;
-        $link['shared'] = FALSE;
 
         // Check whether the user currently viewing the page is a friend to the
         // owner of the link. This will allow us to only show the like, comment
@@ -52,6 +49,11 @@ class Link_model extends CI_Model
         $link['num_likes'] = $this->activity_model->getNumLikes($simpleLink);
         $link['num_comments'] = $this->activity_model->getNumComments($simpleLink);
         $link['num_shares'] = $this->activity_model->getNumShares($simpleLink);
+
+        // Add data used by views.
+        $link['has_comment'] = strlen($link['comment']) != 0;
+        $link['shared'] = FALSE;
+        $link['liked'] = $this->activity_model->isLiked($simpleLink, $visitor_id);
 
         return $link;
     }
@@ -123,10 +125,13 @@ class Link_model extends CI_Model
             );
         }
 
+        $simpleLink = new SimpleLink($link_id, $owner_id);
         $this->activity_model->like(
-            new SimpleLink($link_id, $owner_id),
+            $simpleLink,
             $user_id
         );
+
+        return $this->activity_model->getNumLikes($simpleLink);
     }
 
     /**

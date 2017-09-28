@@ -34,7 +34,7 @@
                         </h4>
 
                         <p class='comment'><?= htmlspecialchars($comment['comment']); ?></p>
-                        <span>
+                        <span class='footer'>
                             <small class='time'>
                                 <span class='fa fa-clock-o' aria-hidden='true'></span>
                                 <?= $comment['timespan']; ?> ago

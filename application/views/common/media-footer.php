@@ -1,12 +1,16 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
-<footer class='media-footer'>
+<footer class='footer media-footer'>
     <?php
     if ($$object['num_likes'] > 0) {
         print "<a href='" . base_url("$object/likes/{$$object[$object . '_id']}") .
-                "'>{$$object['num_likes']}";
+                "' class='likes'>{$$object['num_likes']}";
         print ($$object['num_likes'] == 1) ? " like" : " likes";
         print "</a>";
+    }
+    else {
+        print "<a href='" . base_url("{$object}/likes/{$$object[$object . '_id']}") .
+                "' class='likes hidden'></a>";
     }
 
     if ($$object['num_likes'] > 0 && $$object['num_comments'] > 0) {
@@ -35,9 +39,14 @@
     <?php if ($$object['viewer_is_friend_to_owner']) { ?>
         <ul>
             <li>
-                <a href='<?= base_url("$object/like/{$$object[$object . '_id']}"); ?>'
+                <a href='<?= base_url("$object/like/{$$object[$object . '_id']}"); ?>' class='like'
                     data-toggle='tooltip' data-placement='top' title='Like this <?= $object; ?>'>
-                    <span class='fa fa-thumbs-o-up' aria-hidden='true'></span> Like
+                    <?php if ($$object['liked']): ?>
+                        <span class='fa fa-thumbs-up' aria-hidden='true'></span>
+                    <?php else: ?>
+                        <span class='fa fa-thumbs-o-up' aria-hidden='true'></span>
+                    <?php endif; ?>
+                    Like
                 </a>
                 <span> &middot; </span>
             </li>

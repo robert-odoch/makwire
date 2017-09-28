@@ -46,11 +46,6 @@ class Photo_model extends CI_Model
         // Add timespan.
         $photo['timespan'] = timespan(mysql_to_unix($photo['date_entered']), now(), 1);
 
-        // Add data used by views.
-        $photo['has_description'] = strlen($photo['description']) != 0;
-        $photo['shared'] = FALSE;
-        $photo['alt'] = format_name($photo['author']) . ' photo';
-
         // Check whether the user currently viewing the page is a friend to the
         // owner of the photo. This will allow us to only show the like, comment
         // and share buttons to friends of the owner.
@@ -86,14 +81,16 @@ class Photo_model extends CI_Model
 
         $simplePhoto = new SimplePhoto($photo['photo_id'], $photo['user_id']);
 
-        // Get the number of likes.
+        // Get the number of likes, comments, and shares.
         $photo['num_likes'] = $this->activity_model->getNumLikes($simplePhoto);
-
-        // Get the number of comments.
         $photo['num_comments'] = $this->activity_model->getNumComments($simplePhoto);
-
-        // Get the number of shares.
         $photo['num_shares'] = $this->activity_model->getNumShares($simplePhoto);
+
+        // Add data used by views.
+        $photo['has_description'] = strlen($photo['description']) != 0;
+        $photo['shared'] = FALSE;
+        $photo['liked'] = $this->activity_model->isLiked($simplePhoto, $visitor_id);
+        $photo['alt'] = format_name($photo['author']) . ' photo';
 
         return $photo;
     }
@@ -158,10 +155,13 @@ class Photo_model extends CI_Model
             );
         }
 
+        $simplePhoto = new SimplePhoto($photo_id, $owner_id);
         $this->activity_model->like(
-            new SimplePhoto($photo_id, $owner_id),
+            $simplePhoto,
             $user_id
         );
+
+        return $this->activity_model->getNumLikes($simplePhoto);
     }
 
     /**

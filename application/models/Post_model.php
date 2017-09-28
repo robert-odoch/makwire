@@ -40,9 +40,6 @@ class Post_model extends CI_Model
         // Get the timespan.
         $post['timespan'] = timespan(mysql_to_unix($post['date_entered']), now(), 1);
 
-        // Add data used by views.
-        $post['shared'] = FALSE;
-
         // Check whether the user currently viewing the page is a friend to the
         // original author of the post. This will allow us to only show the
         // like, comment and share buttons to friends of the original author.
@@ -50,14 +47,14 @@ class Post_model extends CI_Model
 
         $simplePost = new SimplePost($post['post_id'], $post['user_id']);
 
-        // Get the number of likes.
+        // Get the number of likes, comments, and shares.
         $post['num_likes'] = $this->activity_model->getNumLikes($simplePost);
-
-        // Get the number of comments.
         $post['num_comments'] = $this->activity_model->getNumComments($simplePost);
-
-        // Get the number of shares.
         $post['num_shares'] = $this->activity_model->getNumShares($simplePost);
+
+        // Add data used by views.
+        $post['shared'] = FALSE;
+        $post['liked'] = $this->activity_model->isLiked($simplePost, $visitor_id);
 
         return $post;
     }
@@ -103,17 +100,20 @@ class Post_model extends CI_Model
 
         $owner_result = $owner_query->row_array();
         $owner_id = $owner_result['user_id'];
-        if (!$this->user_model->are_friends($user_id, $owner_id)) {
+        if ( ! $this->user_model->are_friends($user_id, $owner_id)) {
             throw new IllegalAccessException(
                 "You don't have the proper permissions to like this post."
             );
         }
 
         // Record the like.
+        $simplePost = new SimplePost($post_id, $owner_id);
         $this->activity_model->like(
-            new SimplePost($post_id, $owner_id),
+            $simplePost,
             $user_id
         );
+
+        return $this->activity_model->getNumLikes($simplePost);
     }
 
     /**

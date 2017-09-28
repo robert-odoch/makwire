@@ -17,7 +17,7 @@
 
             <p class='birthday-message'><?= htmlspecialchars($message['message']); ?></p>
 
-            <span>
+            <span class='footer'>
                 <small class='time'>
                     <span class='fa fa-clock-o' aria-hidden='true'></span>
                     <?= $message['timespan']; ?> ago

@@ -30,7 +30,7 @@ class Video extends CI_Controller
                 $replacement = 'embed/';
                 $youtube_video_url = preg_replace($pattern, $replacement, $youtube_video_url);
 
-                $this->video_model->publish($_SESSION['user_id'], $youtube_video_url);
+                $this->video_model->publish($youtube_video_url, $_SESSION['user_id']);
                 redirect(base_url("user/{$_SESSION['user_id']}"));
             } else {
                 $data['error_message'] = $error_message;
@@ -169,6 +169,20 @@ class Video extends CI_Controller
 
     public function like($video_id = 0)
     {
+        if (is_ajax_request()) {
+            try {
+                $num_likes = $this->video_model->like($video_id, $_SESSION['user_id']);
+                $num_likes .= ($num_likes == 1) ? ' like' : ' likes';
+                echo $num_likes;
+            }
+            catch (NotFoundException $e) {
+            }
+            catch (IllegalAccessException $e) {
+            }
+
+            return;
+        }
+
         try {
             $this->video_model->like($video_id, $_SESSION['user_id']);
             redirect($_SERVER['HTTP_REFERER']);

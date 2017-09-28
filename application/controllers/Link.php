@@ -161,6 +161,20 @@ class Link extends CI_Controller
 
     public function like($link_id = 0)
     {
+        if (is_ajax_request()) {
+            try {
+                $num_likes = $this->link_model->like($link_id, $_SESSION['user_id']);
+                $num_likes .= ($num_likes == 1) ? ' like' : ' likes';
+                echo $num_likes;
+            }
+            catch (NotFoundException $e) {
+            }
+            catch (IllegalAccessException $e) {
+            }
+
+            return;
+        }
+
         try {
             $this->link_model->like($link_id, $_SESSION['user_id']);
             redirect($_SERVER['HTTP_REFERER']);

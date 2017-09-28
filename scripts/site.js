@@ -42,6 +42,25 @@ $('#status-nav li a').click(function(event) {
     });
 });
 
+/*** Liking an item. ***/
+$('body').on('click', '.like', function(event) {
+    event.preventDefault();
+
+    var $this = $(this);
+    var url = $this.attr('href');
+    $.get(url, function(numLikes) {
+        // Indicate that the item has been liked.
+        $this.find('.fa').removeClass('fa-thumbs-o-up').addClass('fa-thumbs-up');
+
+        // Update the likes link.
+        var $likesLink = $this.parents('.footer').find('.likes');
+        if ($likesLink.hasClass('hidden')) {
+            $likesLink.removeClass('hidden');
+        }
+        $likesLink.text(numLikes);
+    });
+});
+
 /*** Sending a message. ***/
 
 // Always scroll to the end of the messages.

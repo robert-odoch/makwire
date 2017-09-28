@@ -124,6 +124,20 @@ class Post extends CI_Controller
 
     public function like($post_id = 0)
     {
+        if (is_ajax_request()) {
+            try {
+                $num_likes = $this->post_model->like($post_id, $_SESSION['user_id']);
+                $num_likes .= ($num_likes == 1) ? ' like' : ' likes';
+                echo $num_likes;
+            }
+            catch (NotFoundException $e) {
+            }
+            catch (IllegalAccessException $e) {
+            }
+
+            return;
+        }
+
         try {
             $this->post_model->like($post_id, $_SESSION['user_id']);
             redirect($_SERVER['HTTP_REFERER']);

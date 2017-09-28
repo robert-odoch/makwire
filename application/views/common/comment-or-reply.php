@@ -17,7 +17,7 @@
 
             <p class='comment'><?= htmlspecialchars($$object['comment']); ?></p>
 
-            <span>
+            <span class='footer'>
                 <small class='time'>
                     <span class='fa fa-clock-o' aria-hidden='true'></span>
                     <?= $$object['timespan']; ?> ago
