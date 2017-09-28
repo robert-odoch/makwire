@@ -22,12 +22,10 @@ require_once(dirname(__FILE__) . '/../common/user-page-start.php');
         <article class='media message separated'>
             <div class='media-body'>
                 <p>
-                    <strong class='object'>
                     <a href='<?= base_url("user/send-message/{$m['sender_id']}"); ?>'
                         title='<?= $m['sender']; ?>' class='send-message'>
-                        <?= $m['sender']; ?>
-                    </a>
-                    </strong>
+                        <strong class='object'><?= $m['sender']; ?></strong>
+                    </a>&nbsp;
                     <?= htmlspecialchars($m['message']); ?>
                 </p>
                 <small class='time'>
