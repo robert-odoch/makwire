@@ -116,6 +116,9 @@ p.text {
 #update-status form label {
     margin: 10px 0;
 }
+#update-status input[type="file"] {
+    margin-bottom: 10px;
+}
 #update-status .alert {
     margin-top: 5px;
 }

@@ -19,6 +19,9 @@ $('#status-nav li a').click(function(event) {
     var $form = $box.find('form');
     var formHeight = $form.css('height');
 
+    // Add 10px for margin-top on labels.
+    formHeight = parseInt(formHeight) + 10 + 'px';
+
     $box.find('.alert').remove();
     $form.replaceWith($(loadingMarkup));
     $box.find('.loading div').css({
