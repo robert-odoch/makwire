@@ -43,17 +43,6 @@ isset($page) OR $page = '';  // Default value for page.
                                 <span class='fa fa-home' aria-hidden='true'></span>
                                 <span class='sr-only'>News feed</span>
                             </a>
-                            <a href='<?= base_url('user/notifications'); ?>' class='btn
-                                <?php if ($page == 'notifications') print 'active'; ?>
-                                '>
-                                <span class='fa fa-bell' aria-hidden='true'></span>
-                                <span class='sr-only'>Notifications</span>
-                                <?php
-                                if ($num_new_notifs > 0) {
-                                    print " <span class='badge'>{$num_new_notifs}</span>";
-                                }
-                                ?>
-                            </a>
                             <a href='<?= base_url('user/messages'); ?>' class='btn
                                 <?php if ($page == 'messages') print 'active'; ?>
                                 '>
@@ -62,6 +51,17 @@ isset($page) OR $page = '';  // Default value for page.
                                 <?php
                                 if ($num_new_messages > 0) {
                                     print "<span class='badge'>{$num_new_messages}</span>";
+                                }
+                                ?>
+                            </a>
+                            <a href='<?= base_url('user/notifications'); ?>' class='btn
+                                <?php if ($page == 'notifications') print 'active'; ?>
+                                '>
+                                <span class='fa fa-bell' aria-hidden='true'></span>
+                                <span class='sr-only'>Notifications</span>
+                                <?php
+                                if ($num_new_notifs > 0) {
+                                    print " <span class='badge'>{$num_new_notifs}</span>";
                                 }
                                 ?>
                             </a>
