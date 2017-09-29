@@ -24,7 +24,8 @@ isset($page) OR $page = '';
             </div>
             <div class='media-body'>
                 <h4 class='media-heading'>
-                    <a href='<?= base_url("user/{$_SESSION['user_id']}"); ?>'>
+                    <a href='<?= base_url("user/{$_SESSION['user_id']}"); ?>'
+                            data-toggle='tooltip' data-placement='right' title='Timeline'>
                         <?= $primary_user; ?>
                     </a>
                 </h4>
