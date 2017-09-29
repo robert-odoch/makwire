@@ -24,6 +24,15 @@
                 </small>
 
                 <?php
+                if ($message['viewer_is_friend_to_owner']) {
+                    print "<span> &middot; </span>" .
+                            "<a href='" . base_url("birthday-message/like/{$message['id']}") .
+                            "' class='like'>Like</a>";
+                    print "<span> &middot; </span>" .
+                            "<a href='" . base_url("birthday-message/reply/{$message['id']}") .
+                            "'>Reply</a>";
+                }
+
                 if ($message['num_likes'] > 0) {
                     print "<span> &middot; </span>" .
                             "<a href='" . base_url("birthday-message/likes/{$message['id']}") .

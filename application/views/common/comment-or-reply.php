@@ -24,6 +24,17 @@
                 </small>
 
                 <?php
+                if ($$object['viewer_is_friend_to_owner']) {
+                    print "<span> &middot; </span>" .
+                            "<a href='" . base_url("{$object}/like/{$$object['comment_id']}") .
+                            "' class='like'>Like</a>";
+
+                    if ($object == 'comment') {
+                        print "<span> &middot; </span>
+                                <a href='" . base_url("comment/reply/{$$object['comment_id']}") .
+                                "'>Reply</a>";
+                    }
+                }
                 if ($$object['num_likes'] > 0) {
                     print "<span> &middot; </span>" .
                             "<a href='" . base_url("{$object}/likes/{$$object['comment_id']}") .
