@@ -21,10 +21,10 @@ require_once(__DIR__ . '/../common/user-page-start.php');
             <p>
                 It seems the district you entered <em><b><?= "{$district}"; ?></b></em>
                 is not in our records, please make sure that you have spelt it correcty.
-                If you you are sure that is the correct spelling, then you can
+                If you are sure that is the correct spelling, then you can
                 <a href='<?= base_url('request-admin/add-district'); ?>'>
-                    request the administrator to add it to the records
-                </a>.
+                    request
+                </a> the administrator to add it to the records.
             </p>
         <?php } // count($districts) > 0). ?>
 

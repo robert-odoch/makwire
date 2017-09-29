@@ -79,6 +79,7 @@ p.text {
     border-radius: 3px;
     margin-bottom: 0;
     padding: 15px 10px;
+    text-align: justify;
 }
 .alert .fa {
     float: left;
