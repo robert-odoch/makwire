@@ -104,7 +104,8 @@ isset($page) OR $page = '';  // Default value for page.
                         <?php
                         if (isset($_SESSION['user_id'])) { ?>
                         <li>
-                            <a href='<?= base_url('user/messages'); ?>'>
+                            <a href='<?= base_url('user/messages'); ?>'
+                                    data-toggle='tooltip' data-placement='bottom' title='Messages'>
                                 <span class='fa fa-envelope' aria-hidden='true'></span>
                                 <span class='sr-only'>Messages</span>
                                 <?php
@@ -115,7 +116,8 @@ isset($page) OR $page = '';  // Default value for page.
                             </a>
                         </li>
                         <li>
-                            <a href='<?= base_url('user/notifications'); ?>'>
+                            <a href='<?= base_url('user/notifications'); ?>'
+                                    data-toggle='tooltip' data-placement='bottom' title='Notifications'>
                                 <span class='fa fa-bell' aria-hidden='true'></span>
                                 <span class='sr-only'>Notifications</span>
                                 <?php
@@ -126,7 +128,8 @@ isset($page) OR $page = '';  // Default value for page.
                             </a>
                         </li>
                         <li>
-                            <a href='<?= base_url('user/friend-requests'); ?>'>
+                            <a href='<?= base_url('user/friend-requests'); ?>'
+                                    data-toggle='tooltip' data-placement='bottom' title='Friend requests'>
                                 <span class='fa fa-user-plus' aria-hidden='true'></span>
                                 <span class='sr-only'>Friends Requests</span>
                                 <?php
