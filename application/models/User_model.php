@@ -345,17 +345,6 @@ class User_model extends CI_Model
     public function get_messages($user_id, $offset, $limit, $filter = TRUE)
     {
         if ($filter) {
-            $sql = sprintf('SELECT DISTINCT sender_id FROM messages
-                            WHERE receiver_id = %d AND seen IS FALSE',
-                            $user_id);
-            $query = $this->db->query($sql);
-            $results = $query->result_array();
-
-            $sender_ids = [0];
-            foreach ($results as $r) {
-                $sender_ids[] = $r['sender_id'];
-            }
-
             $sql = sprintf("SELECT u.profile_name AS sender, m1.* FROM messages m1
                             LEFT JOIN users u ON(m1.sender_id = u.user_id)
                             WHERE date_sent=(
