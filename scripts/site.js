@@ -45,6 +45,17 @@ $('#status-nav li a').click(function(event) {
     });
 });
 
+/*** View more of a long post. ***/
+$('.more.post').click(function(event) {
+    event.preventDefault();
+
+    var $this = $(this);
+    var url = $this.attr('href');
+    $.get(url, function(post) {
+        $this.parents('p').text(post);
+    });
+});
+
 /*** Liking an item. ***/
 $('body').on('click', '.like', function(event) {
     event.preventDefault();

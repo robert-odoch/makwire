@@ -279,6 +279,17 @@ class User extends CI_Controller
 
     public function post($post_id = 0, $offset = 0)
     {
+        if (is_ajax_request()) {
+            try {
+                $post = $this->post_model->get_post($post_id, $_SESSION['user_id']);
+                echo $post['post'];
+            }
+            catch (NotFoundException $e) {
+            }
+
+            return;
+        }
+
         try {
             $post = $this->post_model->get_post($post_id, $_SESSION['user_id']);
         }

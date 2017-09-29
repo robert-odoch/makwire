@@ -257,7 +257,9 @@ class User_model extends CI_Model
 
                     // Get only 540 characters from post if possible.
                     $post_url = base_url("user/post/{$r['post']['post_id']}");
-                    $r['post']['post'] = character_limiter($r['post']['post'], 540, "&#8230;<a href='{$post_url}'>view more</a>");
+                    $r['post']['post'] = character_limiter(
+                        $r['post']['post'], 540,
+                        "&#8230;<a href='{$post_url}' class='more post'>view more</a>");
 
                     // Was it shared from another user?
                     $r['post']['shared'] = FALSE;
