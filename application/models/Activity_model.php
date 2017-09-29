@@ -118,7 +118,7 @@ class Activity_model extends CI_Model
         $likes_sql = sprintf("SELECT l.*, u.profile_name AS liker FROM likes l
                                 LEFT JOIN users u ON(liker_id = u.user_id)
                                 WHERE (source_type = '%s' AND source_id = %d)
-                                LIMIT %d, %d",
+                                ORDER BY date_liked DESC LIMIT %d, %d",
                                 $object->getType(), $object->getId(), $offset, $limit);
         $likes_query = $this->db->query($likes_sql);
 
@@ -138,7 +138,7 @@ class Activity_model extends CI_Model
                                 FROM shares s
                                 LEFT JOIN users u ON(sharer_id = u.user_id)
                                 WHERE (subject_id = %d AND subject_type = '%s')
-                                LIMIT %d, %d",
+                                ORDER BY date_shared DESC LIMIT %d, %d",
                                 $object->getId(), $object->getType(), $offset, $limit);
         $shares_query = $this->db->query($shares_sql);
 
@@ -156,7 +156,7 @@ class Activity_model extends CI_Model
     {
         $replies_sql = sprintf("SELECT comment_id FROM comments
                                 WHERE (source_type = '%s' AND parent_id = %d)
-                                LIMIT %d, %d",
+                                ORDER BY date_entered DESC LIMIT %d, %d",
                                 $object->getType(), $object->getId(), $offset, $limit);
         $replies_query = $this->db->query($replies_sql);
         $results = $replies_query->result_array();
@@ -177,7 +177,7 @@ class Activity_model extends CI_Model
 
         $comments_sql = sprintf("SELECT comment_id FROM comments
                                 WHERE (source_type = '%s' AND source_id = %d AND parent_id = %d)
-                                LIMIT %d, %d",
+                                ORDER BY date_entered DESC LIMIT %d, %d",
                                 $object->getType(), $object->getId(), 0, $offset, $limit);
         $comments_query = $this->db->query($comments_sql);
         $results = $comments_query->result_array();
