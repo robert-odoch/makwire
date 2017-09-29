@@ -56,11 +56,16 @@ $('body').on('click', '.like', function(event) {
         $this.find('.fa').removeClass('fa-thumbs-o-up').addClass('fa-thumbs-up');
 
         // Update the likes link.
-        var $likesLink = $this.parents('.footer').find('.likes');
-        if ($likesLink.hasClass('hidden')) {
-            $likesLink.removeClass('hidden');
+        if (parseInt(numLikes) > 0) {
+            var $parent = $this.parents('.footer');
+            $parent.find('span.likes').removeClass('hidden');
+
+            var $likesLink = $parent.find('a.likes');
+            if ($likesLink.hasClass('hidden')) {
+                $likesLink.removeClass('hidden');
+            }
+            $likesLink.text(numLikes);
         }
-        $likesLink.text(numLikes);
     });
 });
 

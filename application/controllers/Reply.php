@@ -14,6 +14,20 @@ class Reply extends CI_Controller
 
     public function like($reply_id = 0)
     {
+        if (is_ajax_request()) {
+            try {
+                $num_likes = $this->reply_model->like($reply_id, $_SESSION['user_id']);
+                $num_likes .= ($num_likes == 1) ? ' like' : ' likes';
+                echo $num_likes;
+            }
+            catch (NotFoundException $e) {
+            }
+            catch (IllegalAccessException $e) {
+            }
+
+            return;
+        }
+
         try {
             $this->reply_model->like($reply_id, $_SESSION['user_id']);
             redirect($_SERVER['HTTP_REFERER']);

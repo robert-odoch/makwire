@@ -27,9 +27,14 @@
                 if ($$object['num_likes'] > 0) {
                     print "<span> &middot; </span>" .
                             "<a href='" . base_url("{$object}/likes/{$$object['comment_id']}") .
-                            "'>{$$object['num_likes']}";
+                            "' class='likes'>{$$object['num_likes']}";
                     print ($$object['num_likes'] == 1) ? " like" : " likes";
                     print "</a>";
+                }
+                else {
+                    print "<span class='likes hidden'> &middot; </span>" .
+                            "<a href='" . base_url("{$object}/likes/{$$object['comment_id']}") .
+                            "' class='likes hidden'></a>";
                 }
 
                 if ($object == 'comment') {

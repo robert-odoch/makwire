@@ -86,10 +86,13 @@ class Birthday_message_model extends CI_Model
         }
 
         // Record the like.
+        $simpleBirthdayMessage = new SimpleBirthdayMessage($birthday_message_id, $owner_id);
         $this->activity_model->like(
-            new SimpleBirthdayMessage($birthday_message_id, $owner_id),
+            $simpleBirthdayMessage,
             $user_id
         );
+
+        return $this->activity_model->getNumLikes($simpleBirthdayMessage);
     }
 
     /**

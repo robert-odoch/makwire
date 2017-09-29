@@ -82,33 +82,40 @@ require_once(__DIR__ . '/../common/user-page-start.php');
                     </h4>
                     <p class='birthday-message'><?= $msg['message']; ?></p>
 
-                    <span>
+                    <span class='footer'>
                         <small class='time'>
                             <span class='fa fa-clock-o' aria-hidden='true'></span>
                             <?= $msg['timespan']; ?> ago
                         </small>
                         <?php
+                        if ($msg['viewer_is_friend_to_owner']) {
+                            print "<span> &middot; </span>" .
+                                    "<a href='" . base_url("birthday-message/like/{$msg['id']}") .
+                                    "' class='like'>Like</a>";
+                            print "<span> &middot; </span>" .
+                                    "<a href='" . base_url("birthday-message/reply/{$msg['id']}") .
+                                    "'>Reply</a>";
+                        }
+
                         if ($msg['num_likes'] > 0) {
                             print "<span> &middot; </span>" .
                                     "<a href='" . base_url("birthday-message/likes/{$msg['id']}") .
-                                    "'>{$msg['num_likes']}";
+                                    "' class='likes'>{$msg['num_likes']}";
                             print ($msg['num_likes'] == 1) ? " like" : " likes";
                             print "</a>";
                         }
+                        else {
+                            print "<span class='likes hidden'> &middot; </span>" .
+                                    "<a href='" . base_url("birthday-message/likes/{$msg['id']}") .
+                                    "' class='likes hidden'></a>";
+                        }
+
                         if ($msg['num_replies'] > 0) {
                             print "<span> &middot; </span>" .
                                     "<a href='" . base_url("birthday-message/replies/{$msg['id']}") .
                                     "'>{$msg['num_replies']}";
                             print ($msg['num_replies'] == 1) ? ' reply' : ' replies';
                             print "</a>";
-                        }
-                        if ($msg['viewer_is_friend_to_owner']) {
-                            print "<span> &middot; </span>" .
-                                    "<a href='" . base_url("birthday-message/like/{$msg['id']}") .
-                                    "'>Like</a>";
-                            print "<span> &middot; </span>" .
-                                    "<a href='" . base_url("birthday-message/reply/{$msg['id']}") .
-                                    "'>Reply</a>";
                         }
                         ?>
                     </span>

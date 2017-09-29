@@ -41,7 +41,7 @@ class Reply_model extends CI_Model
         $reply['timespan'] = timespan(mysql_to_unix($reply['date_entered']), now(), 1);
 
         // Add data used by views.
-        $reply['viewer_is_friend_to_owner'] = $this->user_model->are_friends($visitor_id, $reply['commenter_id']);
+        $reply['viewer_is_friend_to_owner'] = $this->user_model->are_friends($reply['commenter_id'], $visitor_id);
 
         $simpleReply = new SimpleReply($reply['comment_id'], $reply['commenter_id']);
 
@@ -81,10 +81,13 @@ class Reply_model extends CI_Model
         }
 
         // Record the like.
+        $simpleReply = new SimpleReply($reply_id, $owner_id);
         $this->activity_model->like(
-            new SimpleReply($reply_id, $owner_id),
+            $simpleReply,
             $user_id
         );
+
+        return $this->activity_model->getNumLikes($simpleReply);
     }
 
     /**

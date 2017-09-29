@@ -27,10 +27,16 @@
                 if ($message['num_likes'] > 0) {
                     print "<span> &middot; </span>" .
                             "<a href='" . base_url("birthday-message/likes/{$message['id']}") .
-                            "'>{$message['num_likes']}";
+                            "' class='likes'>{$message['num_likes']}";
                     print ($message['num_likes'] == 1) ? " like" : " likes";
                     print "</a>";
                 }
+                else {
+                    print "<span class='likes hidden'> &middot; </span>" .
+                            "<a href='" . base_url("birthday-message/likes/{$message['id']}") .
+                            "' class='likes hidden'></a>";
+                }
+
                 if ($message['num_replies'] > 0) {
                     print "<span> &middot; </span>" .
                             "<a href='" . base_url("birthday-message/replies/{$message['id']}") .

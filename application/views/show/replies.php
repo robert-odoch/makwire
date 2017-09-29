@@ -43,7 +43,7 @@ else if ($object == 'birthday-message') {
 
                 <p class='reply'><?= htmlspecialchars($reply['comment']); ?></p>
 
-                <span>
+                <span class='footer'>
                     <small class='time'>
                         <span class='fa fa-clock-o' aria-hidden='true'></span>
                         <?= $reply['timespan']; ?> ago
@@ -51,14 +51,21 @@ else if ($object == 'birthday-message') {
 
                     <?php
                     if ($reply['viewer_is_friend_to_owner']) {
-                        print '<span> &middot; </span>' .
-                                '<a href="' . base_url("reply/like/{$reply['comment_id']}") . '">Like</a>';
+                        print "<span> &middot; </span>" .
+                                "<a href='" . base_url("reply/like/{$reply['comment_id']}") .
+                                "' class='like'>Like</a>";
                     }
                     if ($reply['num_likes'] > 0) {
                         print "<span> &middot; </span>";
-                        print "<a href='" . base_url("reply/likes/{$reply['comment_id']}") . "'>{$reply['num_likes']}";
+                        print "<a href='" . base_url("reply/likes/{$reply['comment_id']}") .
+                                "' class='likes'>{$reply['num_likes']}";
                         print ($reply['num_likes'] == 1) ? " like" : " likes";
                         print "</a>";
+                    }
+                    else {
+                        print "<span class='likes hidden'> &middot; </span>";
+                        print "<a href='" . base_url("reply/likes/{$reply['comment_id']}") .
+                                "' class='likes hidden'></a>";
                     }
 
                     if ($reply['commenter_id'] == $_SESSION['user_id']) {

@@ -89,10 +89,13 @@ class Comment_model extends CI_Model
         }
 
         // Record the like.
+        $simpleComment = new SimpleComment($comment_id, $owner_id);
         $this->activity_model->like(
-            new SimpleComment($comment_id, $owner_id),
+            $simpleComment,
             $user_id
         );
+
+        return $this->activity_model->getNumLikes($simpleComment);
     }
 
     /**
@@ -142,23 +145,14 @@ class Comment_model extends CI_Model
      * @param $limit the maximum number of records to return.
      * @return the replies on this comment.
      */
-    public function get_replies($comment_id, $offset, $limit, $visitor_id)
+    public function get_replies(&$comment, $offset, $limit, $visitor_id)
     {
-        $replies_sql = sprintf("SELECT comment_id FROM comments
-                                WHERE (source_type = 'comment' AND parent_id = %d)
-                                LIMIT %d, %d",
-                                $comment_id, $offset, $limit);
-        $replies_query = $this->db->query($replies_sql);
-        $results = $replies_query->result_array();
-
-        $replies = array();
-        foreach ($results as $r) {
-            // Get the detailed reply.
-            $reply = $this->reply_model->get_reply($visitor_id, $r['comment_id']);
-            array_push($replies, $reply);
-        }
-
-        return $replies;
+        return $this->activity_model->getReplies(
+            new SimpleComment($comment['comment_id'], $comment['commenter_id']),
+            $offset,
+            $limit,
+            $visitor_id
+        );
     }
 
     public function update_comment($comment_id, $new_comment)

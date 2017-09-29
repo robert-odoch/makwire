@@ -25,9 +25,9 @@
     }
 
     if (($$object['num_likes'] > 0 && $$object['num_shares'] > 0) ||
-        ($$object['num_comments'] > 0 && $$object['num_shares'] > 0)) {
-            print("<span> &middot; </span>");
-        }
+            ($$object['num_comments'] > 0 && $$object['num_shares'] > 0)) {
+        print("<span> &middot; </span>");
+    }
 
     if ($$object['num_shares'] > 0) {
         print "<a href='" . base_url("$object/shares/{$$object[$object . '_id']}") .
@@ -41,7 +41,7 @@
             <li>
                 <a href='<?= base_url("$object/like/{$$object[$object . '_id']}"); ?>' class='like'
                     data-toggle='tooltip' data-placement='top' title='Like this <?= $object; ?>'>
-                    <?php if ($$object['liked']): ?>
+                    <?php if ($$object['liked'] && $$object['user_id'] != $_SESSION['user_id']): ?>
                         <span class='fa fa-thumbs-up' aria-hidden='true'></span>
                     <?php else: ?>
                         <span class='fa fa-thumbs-o-up' aria-hidden='true'></span>

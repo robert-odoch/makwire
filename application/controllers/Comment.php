@@ -14,6 +14,20 @@ class Comment extends CI_Controller
 
     public function like($comment_id = 0)
     {
+        if (is_ajax_request()) {
+            try {
+                $num_likes = $this->comment_model->like($comment_id, $_SESSION['user_id']);
+                $num_likes .= ($num_likes == 1) ? ' like' : ' likes';
+                echo $num_likes;
+            }
+            catch (NotFoundException $e) {
+            }
+            catch (IllegalAccessException $e) {
+            }
+
+            return;
+        }
+
         try {
             $this->comment_model->like($comment_id, $_SESSION['user_id']);
             redirect($_SERVER['HTTP_REFERER']);
@@ -145,7 +159,7 @@ class Comment extends CI_Controller
             $data['next_offset'] = ($offset + $limit);
         }
 
-        $data['replies'] = $this->comment_model->get_replies($comment_id, $offset, $limit, $_SESSION['user_id']);
+        $data['replies'] = $this->comment_model->get_replies($comment, $offset, $limit, $_SESSION['user_id']);
         $data['object'] = 'comment';
         $data['comment'] = $comment;
         $this->load->view('show/replies', $data);

@@ -42,22 +42,28 @@
 
                             <?php
                             if ($comment['viewer_is_friend_to_owner']) {
-                                print '<span> &middot; </span>' .
-                                        '<a href="' . base_url("comment/like/{$comment['comment_id']}") .
-                                        '">Like</a>' .
-                                        '<span> &middot; </span>';
+                                print "<span> &middot; </span>" .
+                                        "<a href='" . base_url("comment/like/{$comment['comment_id']}") .
+                                        "' class='like'>Like</a>";
 
-                                print '<a href="' . base_url("comment/reply/{$comment['comment_id']}") .
-                                        '">Reply</a>';
+                                print "<span> &middot; </span>
+                                        <a href='" . base_url("comment/reply/{$comment['comment_id']}") .
+                                        "'>Reply</a>";
                             }
 
                             if ($comment['num_likes'] > 0) {
                                 print "<span> &middot; </span>" .
                                       "<a href='" . base_url("comment/likes/{$comment['comment_id']}") .
-                                      "'>{$comment['num_likes']}";
+                                      "' class='likes'>{$comment['num_likes']}";
                                 print ($comment['num_likes'] == 1) ? " like" : " likes";
                                 print "</a>";
                             }
+                            else {
+                                print "<span class='likes hidden'> &middot; </span>" .
+                                      "<a href='" . base_url("comment/likes/{$comment['comment_id']}") .
+                                      "' class='likes hidden'></a>";
+                            }
+
                             if ($object != 'comment' && $comment['num_replies'] > 0) {
                                 print "<span> &middot; </span>" .
                                       "<a href='" . base_url("comment/replies/{$comment['comment_id']}") .

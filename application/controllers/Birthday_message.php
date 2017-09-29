@@ -16,6 +16,20 @@ class Birthday_message extends CI_Controller
 
     public function like($message_id = 0)
     {
+        if (is_ajax_request()) {
+            try {
+                $num_likes = $this->birthday_message_model->like($message_id, $_SESSION['user_id']);
+                $num_likes .= ($num_likes == 1) ? ' like' : ' likes';
+                echo $num_likes;
+            }
+            catch (NotFoundException $e) {
+            }
+            catch (IllegalAccessException $e) {
+            }
+
+            return;
+        }
+
         try {
             $this->birthday_message_model->like($message_id, $_SESSION['user_id']);
             redirect($_SERVER['HTTP_REFERER']);
