@@ -85,7 +85,7 @@ if ($is_visitor && ! $profile['schools'] && ! $profile['halls']
     <div class='box profile'>
         <h4>Residence</h4>
         <?php if ($profile['halls']): ?>
-            <p class='title'><span>Hall (s)</span></p>
+            <p class='title'><span>Halls</span></p>
             <table class='table table-bordered'>
                 <thead>
                     <tr>
@@ -121,7 +121,7 @@ if ($is_visitor && ! $profile['schools'] && ! $profile['halls']
         <?php endif; ?>
 
         <?php if ($profile['hostels']): ?>
-            <p class='title'><span>Hostel (s)</span></p>
+            <p class='title'><span>Hostels</span></p>
             <table class='table table-bordered'>
                 <thead>
                     <tr>
