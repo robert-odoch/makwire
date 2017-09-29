@@ -52,6 +52,9 @@ $('body').on('click', '.like', function(event) {
     var $this = $(this);
     var url = $this.attr('href');
     $.get(url, function(numLikes) {
+        // Remove focus from this link.
+        $this.trigger('blur');
+
         // Indicate that the item has been liked.
         $this.find('.fa').removeClass('fa-thumbs-o-up').addClass('fa-thumbs-up');
 
