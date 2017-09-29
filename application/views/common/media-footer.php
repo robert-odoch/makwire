@@ -10,7 +10,8 @@
     }
     else {
         print "<a href='" . base_url("{$object}/likes/{$$object[$object . '_id']}") .
-                "' class='likes hidden'></a>";
+                "' class='likes hidden'></a>
+                <span class='likes hidden'> &middot; </span>";
     }
 
     if ($$object['num_likes'] > 0 && $$object['num_comments'] > 0) {

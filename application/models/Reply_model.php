@@ -82,10 +82,20 @@ class Reply_model extends CI_Model
 
         // Record the like.
         $simpleReply = new SimpleReply($reply_id, $owner_id);
-        $this->activity_model->like(
-            $simpleReply,
-            $user_id
-        );
+        return $this->activity_model->like($simpleReply, $user_id);
+    }
+
+    public function get_num_likes($reply_id)
+    {
+        $owner_sql = sprintf('SELECT commenter_id FROM comments WHERE comment_id = %d',
+                                $reply_id);
+        $owner_query = $this->db->query($owner_sql);
+        if ($owner_query->num_rows() == 0) {
+            throw new NotFoundException();
+        }
+
+        $owner_id = $owner_query->row_array()['commenter_id'];
+        $simpleReply = new SimpleReply($reply_id, $owner_id);
 
         return $this->activity_model->getNumLikes($simpleReply);
     }

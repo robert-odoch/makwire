@@ -51,7 +51,9 @@ $('body').on('click', '.like', function(event) {
 
     var $this = $(this);
     var url = $this.attr('href');
-    $.get(url, function(numLikes) {
+    $.get(url, function(data) {
+        var result = $.parseJSON(data);
+
         // Remove focus from this link.
         $this.trigger('blur');
 
@@ -59,15 +61,34 @@ $('body').on('click', '.like', function(event) {
         $this.find('.fa').removeClass('fa-thumbs-o-up').addClass('fa-thumbs-up');
 
         // Update the likes link.
-        if (parseInt(numLikes) > 0) {
+        if (parseInt(result.numLikes) > 0) {
             var $parent = $this.parents('.footer');
-            $parent.find('span.likes').removeClass('hidden');
+
+            // Only show middot if there are other links besides.
+            if ($this.siblings('a').length > 0) {
+                $parent.find('span.likes').removeClass('hidden');
+            }
 
             var $likesLink = $parent.find('a.likes');
             if ($likesLink.hasClass('hidden')) {
                 $likesLink.removeClass('hidden');
             }
-            $likesLink.text(numLikes);
+            $likesLink.text(result.numLikes);
+
+            // If we are on the page for likes, show the like.
+            if (result.like) {
+                var likeMarkup = $.parseHTML(result.like);
+                var $likesDiv = $('div.likes');
+
+                // Remove alert for no likes.
+                $likesDiv.siblings('.alert').remove();
+
+                // Show the like.
+                if ($likesDiv.hasClass('hidden')) {
+                    $likesDiv.removeClass('hidden');
+                }
+                $(likeMarkup).prependTo($likesDiv);
+            }
         }
     });
 });

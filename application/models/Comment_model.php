@@ -90,12 +90,7 @@ class Comment_model extends CI_Model
 
         // Record the like.
         $simpleComment = new SimpleComment($comment_id, $owner_id);
-        $this->activity_model->like(
-            $simpleComment,
-            $user_id
-        );
-
-        return $this->activity_model->getNumLikes($simpleComment);
+        return $this->activity_model->like($simpleComment, $user_id);
     }
 
     /**
@@ -118,6 +113,21 @@ class Comment_model extends CI_Model
             $reply,
             $user_id
         );
+    }
+
+    public function get_num_likes($comment_id)
+    {
+        $owner_sql = sprintf('SELECT commenter_id FROM comments WHERE comment_id = %d',
+                                $comment_id);
+        $owner_query = $this->db->query($owner_sql);
+        if ($owner_query->num_rows() == 0) {
+            throw new NotFoundException();
+        }
+
+        $owner_id = $owner_query->row_array()['commenter_id'];
+        $simpleComment = new SimpleComment($comment_id, $owner_id);
+
+        return $this->activity_model->getNumLikes($simpleComment);
     }
 
     /**

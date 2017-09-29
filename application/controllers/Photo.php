@@ -186,9 +186,23 @@ class Photo extends CI_Controller
     {
         if (is_ajax_request()) {
             try {
-                $num_likes = $this->photo_model->like($photo_id, $_SESSION['user_id']);
+                $like_id = $this->photo_model->like($photo_id, $_SESSION['user_id']);
+                $num_likes = $this->photo_model->get_num_likes($photo_id);
                 $num_likes .= ($num_likes == 1) ? ' like' : ' likes';
-                echo $num_likes;
+                $result['numLikes'] = $num_likes;
+
+                if ( ! empty($like_id)) {
+                    // Check if request has been sent from the likes page.
+                    $referer = $_SERVER['HTTP_REFERER'];
+                    $base_url = str_replace('/', '\/', base_url());
+                    $pattern = "/^{$base_url}[a-z-]+\/likes\/[0-9]+(\/[0-9]+)?/";
+                    if (preg_match($pattern, $referer)) {
+                        $data['like'] = $this->activity_model->getLike($like_id);
+                        $result['like'] = $this->load->view('common/like', $data, TRUE);
+                    }
+                }
+
+                echo json_encode($result);
             }
             catch (NotFoundException $e) {
             }

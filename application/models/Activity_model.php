@@ -24,6 +24,7 @@ class Activity_model extends CI_Model
                             VALUES (%d, %d, '%s')",
                             $user_id, $object->getId(), $object->getType());
         $this->db->query($like_sql);
+        $like_id = $this->db->insert_id();
 
         // Dispatch an activity.
         $activity_sql = sprintf("INSERT INTO activities
@@ -32,6 +33,8 @@ class Activity_model extends CI_Model
                                 $user_id, $object->getOwnerId(), $object->getId(),
                                 $object->getType(), 'like');
         $this->db->query($activity_sql);
+
+        return $like_id;
     }
 
     public function share(Shareable $object, $user_id)
@@ -91,6 +94,23 @@ class Activity_model extends CI_Model
                                 $user_id, $object->getOwnerId(), $object->getId(),
                                 $object->getType(), 'comment');
         $this->db->query($activity_sql);
+    }
+
+    public function getLike($like_id)
+    {
+        $sql = sprintf('SELECT u.profile_name AS liker, l.* FROM likes l
+                        LEFT JOIN users u ON(l.liker_id = u.user_id)
+                        WHERE l.like_id = %d', $like_id);
+        $query = $this->db->query($sql);
+        if ($query->num_rows() == 0) {
+            throw new NotFoundException();
+        }
+
+        $like = $query->row_array();
+        $like['profile_pic_path'] = $this->user_model->get_profile_pic_path($like['liker_id']);
+        $like['timespan'] = timespan(mysql_to_unix($like['date_liked']), now(), 1);
+
+        return $like;
     }
 
     public function getLikes(Likeable $object, $offset, $limit)

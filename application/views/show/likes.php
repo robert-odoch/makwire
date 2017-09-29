@@ -35,6 +35,8 @@ switch ($object) {
         <span class='fa fa-info-circle' aria-hidden='true'></span>
         <p>No likes to show.</p>
     </div>
+    <div class='likes hidden'>
+    </div>
     <?php } else {
         if (isset($has_prev)) {
             $url = "$object/likes/{$$object[$object . '_id']}";
@@ -46,25 +48,11 @@ switch ($object) {
         }
     ?>
     <div class='likes'>
-        <?php foreach($likes as $like) { ?>
-        <div class='media separated'>
-            <div class='media-left'>
-                <img src='<?= $like['profile_pic_path']; ?>'
-                    alt='<?= $like['liker']; ?>' class='media-object profile-pic-sm'>
-            </div>
-            <div class='media-body'>
-                <h4 class='media-heading'>
-                    <a href='<?= base_url("user/{$like['liker_id']}"); ?>'>
-                        <strong><?= $like['liker']; ?></strong>
-                    </a>
-                </h4>
-                <small class='time'>
-                    <span class='fa fa-clock-o' aria-hidden='true'></span>
-                    <?= $like['timespan']; ?> ago
-                </small>
-            </div>
-        </div>
-        <?php } ?>
+        <?php
+        foreach($likes as $like) {
+            require(__DIR__ . '/../common/like.php');
+        }
+        ?>
     </div>
     <?php } ?>
 </div><!-- box -->

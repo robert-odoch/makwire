@@ -126,12 +126,7 @@ class Link_model extends CI_Model
         }
 
         $simpleLink = new SimpleLink($link_id, $owner_id);
-        $this->activity_model->like(
-            $simpleLink,
-            $user_id
-        );
-
-        return $this->activity_model->getNumLikes($simpleLink);
+        return $this->activity_model->like($simpleLink, $user_id);
     }
 
     /**
@@ -184,6 +179,21 @@ class Link_model extends CI_Model
             $comment,
             $user_id
         );
+    }
+
+    public function get_num_likes($link_id)
+    {
+        $owner_sql = sprintf('SELECT user_id FROM links WHERE link_id = %d',
+                                $link_id);
+        $owner_query = $this->db->query($owner_sql);
+        if ($owner_query->num_rows() == 0) {
+            throw new NotFoundException();
+        }
+
+        $owner_id = $owner_query->row_array()['user_id'];
+        $simpleLink = new SimpleLink($link_id, $owner_id);
+
+        return $this->activity_model->getNumLikes($simpleLink);
     }
 
     /**

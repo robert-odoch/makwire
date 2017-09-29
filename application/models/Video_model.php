@@ -122,12 +122,7 @@ class Video_model extends CI_Model
         }
 
         $simpleVideo = new SimpleVideo($video_id, $owner_id);
-        $this->activity_model->like(
-            $simpleVideo,
-            $user_id
-        );
-
-        return $this->activity_model->getNumLikes($simpleVideo);
+        return $this->activity_model->like($simpleVideo, $user_id);
     }
 
     /**
@@ -176,6 +171,21 @@ class Video_model extends CI_Model
             new SimpleVideo($video_id, $owner_id),
             $comment
         );
+    }
+
+    public function get_num_likes($video_id)
+    {
+        $owner_sql = sprintf('SELECT user_id FROM videos WHERE video_id = %d',
+                                $video_id);
+        $owner_query = $this->db->query($owner_sql);
+        if ($owner_query->num_rows() == 0) {
+            throw new NotFoundException();
+        }
+
+        $owner_id = $owner_query->row_array()['user_id'];
+        $simpleVideo = new SimpleVideo($video_id, $owner_id);
+
+        return $this->activity_model->getNumLikes($simpleVideo);
     }
 
     /**

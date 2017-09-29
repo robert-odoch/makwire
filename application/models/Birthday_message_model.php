@@ -66,11 +66,11 @@ class Birthday_message_model extends CI_Model
      *
      * @param $birthday_message_id the id of the message in the birthday_messages table.
      */
-    public function like($birthday_message_id, $user_id)
+    public function like($message_id, $user_id)
     {
         // Get the id of the user who sent the message.
         $owner_sql = sprintf("SELECT user_id, sender_id FROM birthday_messages WHERE id = %d",
-                            $birthday_message_id);
+                            $message_id);
         $owner_query = $this->db->query($owner_sql);
         if ($owner_query->num_rows() == 0) {
             throw new NotFoundException();
@@ -86,11 +86,21 @@ class Birthday_message_model extends CI_Model
         }
 
         // Record the like.
-        $simpleBirthdayMessage = new SimpleBirthdayMessage($birthday_message_id, $owner_id);
-        $this->activity_model->like(
-            $simpleBirthdayMessage,
-            $user_id
-        );
+        $simpleBirthdayMessage = new SimpleBirthdayMessage($message_id, $owner_id);
+        return $this->activity_model->like($simpleBirthdayMessage, $user_id);
+    }
+
+    public function get_num_likes($message_id)
+    {
+        $owner_sql = sprintf('SELECT sender_id FROM birthday_messages WHERE id = %d',
+                                $message_id);
+        $owner_query = $this->db->query($owner_sql);
+        if ($owner_query->num_rows() == 0) {
+            throw new NotFoundException();
+        }
+
+        $owner_id = $owner_query->row_array()['sender_id'];
+        $simpleBirthdayMessage = new SimpleBirthdayMessage($message_id, $owner_id);
 
         return $this->activity_model->getNumLikes($simpleBirthdayMessage);
     }

@@ -156,12 +156,7 @@ class Photo_model extends CI_Model
         }
 
         $simplePhoto = new SimplePhoto($photo_id, $owner_id);
-        $this->activity_model->like(
-            $simplePhoto,
-            $user_id
-        );
-
-        return $this->activity_model->getNumLikes($simplePhoto);
+        return $this->activity_model->like($simplePhoto, $user_id);
     }
 
     /**
@@ -217,6 +212,21 @@ class Photo_model extends CI_Model
             $comment,
             $user_id
         );
+    }
+
+    public function get_num_likes($photo_id)
+    {
+        $owner_sql = sprintf('SELECT user_id FROM photos WHERE photo_id = %d',
+                                $photo_id);
+        $owner_query = $this->db->query($owner_sql);
+        if ($owner_query->num_rows() == 0) {
+            throw new NotFoundException();
+        }
+
+        $owner_id = $owner_query->row_array()['user_id'];
+        $simplePhoto = new SimplePhoto($photo_id, $owner_id);
+
+        return $this->activity_model->getNumLikes($simplePhoto);
     }
 
     /**

@@ -108,12 +108,7 @@ class Post_model extends CI_Model
 
         // Record the like.
         $simplePost = new SimplePost($post_id, $owner_id);
-        $this->activity_model->like(
-            $simplePost,
-            $user_id
-        );
-
-        return $this->activity_model->getNumLikes($simplePost);
+        return $this->activity_model->like($simplePost, $user_id);
     }
 
     /**
@@ -172,6 +167,21 @@ class Post_model extends CI_Model
         );
     }
 
+    public function get_num_likes($post_id)
+    {
+        $owner_sql = sprintf('SELECT user_id FROM posts WHERE post_id = %d',
+                                $post_id);
+        $owner_query = $this->db->query($owner_sql);
+        if ($owner_query->num_rows() == 0) {
+            throw new NotFoundException();
+        }
+
+        $owner_id = $owner_query->row_array()['user_id'];
+        $simplePost = new SimplePost($post_id, $owner_id);
+
+        return $this->activity_model->getNumLikes($simplePost);
+    }
+
     /**
      * Get users who liked a post.
      *
@@ -190,7 +200,7 @@ class Post_model extends CI_Model
     }
 
     /**
-     * Gets the users who shared a photo.
+     * Gets the users who shared a post.
      *
      * @param $post an array containing post data.
      * @param offset the position to begin returning records from.
