@@ -12,13 +12,7 @@ require_once(__DIR__ . '/../common/user-page-start.php');
 
     <h4 class='sr-only'>Add a photo</h4>
 
-    <?php if (isset($error)) { ?>
-    <div class='alert alert-danger' role='alert'>
-        <span class='fa fa-exclamation-circle' aria-hidden='true'></span>
-        <span class='sr-only'>Error: </span>
-        <?= $error; ?>
-    </div>
-    <?php } ?>
+    <?php if ( ! empty($error)) { show_message($error, 'danger', FALSE); } ?>
 
     <?php require_once(__DIR__ . '/../forms/new-photo.php'); ?>
 </div>

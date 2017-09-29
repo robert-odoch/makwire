@@ -5,19 +5,17 @@ require_once(__DIR__ . '/../common/user-page-start.php');
 
 <div class='box'>
     <h4><?= $heading; ?></h4>
-    <?php if (isset($programmes) && empty($programmes)): ?>
-        <div class='alert alert-info'>
-            <span class='fa fa-info-circle'></span>
-            <p>
-                Dear user, thanks for your interest in adding
-                a programme of study to your profile. However, at the moment we
-                don't have the list of programmes offered at your school on record
-                and do kindly request that you give us some time to compile the list.<br><br>
-                Thanks for your patience!
-            </p>
-        </div>
+    <?php
+    if (isset($programmes) && empty($programmes)):
+        $message = "Dear user, thanks for your interest in adding
+                    a programme of study to your profile. However, at the moment we
+                    don't have the list of programmes offered at your school on record
+                    and do kindly request that you give us some time to compile the list.<br><br>
+                    Thanks for your patience!";
+        show_message($message, 'info');
 
-    <?php else: ?>
+    else:
+    ?>
         <form action='<?= $form_action; ?>' method='post' accept-charset='utf-8' role='form'>
             <fieldset>
                 <div class='form-group'>

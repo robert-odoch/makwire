@@ -13,9 +13,5 @@ endif;
 
 <div class='box'>
     <h4><?= $heading; ?></h4>
-    <div class='alert alert-success' role='alert'>
-        <span class='fa fa-check-circle' aria-hidden='true'></span>
-        <span class='sr-only'>Success: </span>
-        <p><?= $message; ?></p>
-    </div>
+    <?php show_message($message, 'success'); ?>
 </div>

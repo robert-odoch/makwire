@@ -26,11 +26,26 @@ if (!function_exists('format_name')) {
 }
 
 if (!function_exists('show_message')) {
-    function show_message($message, $type) {
-        echo "<div class='alert alert-{$type}'><p>{$message['header']}</p></div>";
-        if (!empty($message['body'])) {
-            echo "<p>{$message['body']}</p>";
+    function show_message($message, $type, $user_paragraph = TRUE) {
+        print "<div class='alert alert-{$type}' role='alert'>";
+
+        switch ($type) {
+            case 'info': print "<span class='fa fa-info-circle' aria-hidden='true'></span>";
+                break;
+            case 'danger':
+                print "<span class='fa fa-exclamation-circle' aria-hidden='true'></span>";
+                break;
+            case 'success': print "<span class='fa fa-check-circle' aria-hidden='true'></span>";
+                break;
+            case 'warning': print "<span class='fa fa-warning' aria-hidden='true'></span>";
+                break;
+            default:
+                // do nothing...
+                break;
         }
+
+        print ($user_paragraph) ? "<p class='text'>{$message}</p>" : $message;
+        print "</div>";
     }
 }
 ?>

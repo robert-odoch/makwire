@@ -5,15 +5,14 @@ require_once(__DIR__ . '/../common/user-page-start.php');
 
 <div class='box'>
     <h4>Request admin to add district</h4>
-    <?php if (isset($error_message)) { ?>
-    <div class='alert alert-danger' role='alert'>
-        <span class='fa fa-exclamation-circle' aria-hidden='true'></span>
-        <span class='sr-only'>Error: </span>
-        <p><?= $error_message; ?></p>
-    </div>
-    <?php } else { ?>
-        <p>Please fill and submit this form.</p>
-    <?php } ?>
+    <?php
+    if ( ! empty($error_message)) {
+        show_message($error_message, 'danger');
+    }
+    else {
+        print "<p>Please fill and submit this form.</p>";
+    }
+    ?>
 
     <form action='<?= base_url("request-admin/add-district"); ?>' method='post'
             accept-charset='utf-8' role='form'>

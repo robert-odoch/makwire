@@ -4,23 +4,24 @@ require_once(__DIR__ . '/common/user-page-start.php');
 ?>
 
 <div class='box'>
-    <div class='alert alert-warning' role='alert'>
-        <span class='fa fa-warning' aria-hidden='true'></span>
-        <p>
-            <?php if (in_array($item, ['post', 'photo', 'video', 'link'])): ?>
-                <?php if ($item_owner_id != $_SESSION['user_id']) { ?>
-                Deleting this <?= $item; ?> will only remove it from your timeline,
-                the original <?= $item; ?> will not be deleted.&nbsp;
-                <?php } ?>
-            <?php endif; ?>
-            Are you sure you want to delete this <?= $item; ?>?
-        </p>
-        <form action='<?= $form_action; ?>' method='post'>
-            <input type='submit' value='Delete' class='btn btn-sm'
-                    style='background-color: red; border: 1px solid red;'>
-            <a href='<?= $cancel_url; ?>' class='btn btn-sm btn-default'>Cancel</a>
-        </form>
-    </div>
+    <?php
+    $message = "<p>";
+
+    if (in_array($item, ['post', 'photo', 'video', 'link'])) {
+        if ($item_owner_id != $_SESSION['user_id']) {
+            $message .= "Deleting this {$item} will only remove it from your timeline,
+                            the original {$item} will not be deleted.<br><br>";
+        }
+    }
+
+    $message .= "Are you sure you want to delete this {$item}?
+                    </p>
+                    <form action='{$form_action}' method='post'>
+                        <input type='submit' value='Delete' class='btn btn-sm'>
+                        <a href='{$cancel_url}' class='btn btn-sm btn-default'>Cancel</a>
+                    </form>";
+    show_message($message, 'warning', FALSE);
+    ?>
 </div>
 
 <?php

@@ -4,17 +4,15 @@
     <div role='main' class='main'>
         <div class='box'>
             <h4>Sign Up: step 1 of 3</h4>
-            <?php if (isset($info_message)) { ?>
-                <div class='alert alert-info' role='alert'>
-                    <span class='fa fa-info-circle' aria-hidden='true'></span>
-                    <p><?= $info_message; ?></p>
-                </div>
-            <?php } elseif (isset($success_message)) { ?>
-                <div class='alert alert-info' role='alert'>
-                    <span class='fa fa-info-circle' aria-hidden='true'></span>
-                    <p><?= $success_message; ?></p>
-                </div>
-            <?php } else { ?>
+            <?php
+            if ( ! empty($info_message)) {
+                show_message($info_message, 'info');
+            }
+            elseif ( ! empty($success_message)) {
+                show_message($success_message, 'success');
+            }
+            else {
+            ?>
                 <form action='<?= base_url('register/step-one'); ?>' method='post'
                         accept-charset='utf-8' role='form'>
                     <fieldset>

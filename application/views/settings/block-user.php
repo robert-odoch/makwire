@@ -32,12 +32,11 @@
                 <div class='box'>
                     <?php if (isset($search_results)): ?>
                         <h4>Search Results</h4>
-                        <?php if (empty($search_results)): ?>
-                            <div class='alert alert-info' role='alert'>
-                                <span class='fa fa-info-circle' aria-hidden='true'></span>
-                                <p>Your search query returned no results.</p>
-                            </div>
-                        <?php else: ?>
+                        <?php
+                        if (empty($search_results)):
+                            show_message('Your search query returned no results.', 'info');
+                        else:
+                        ?>
                             <div class='users'>
                                 <?php foreach ($search_results as $sr): ?>
                                 <div class='media'>
@@ -61,14 +60,13 @@
 
                     <?php else: ?>
                         <h4>Blocked Users</h4>
-                        <?php if (empty($blocked_users)): ?>
-                            <div class='alert alert-info' role='alert'>
-                                <span class='fa fa-info-circle' aria-hidden='true'></span>
-                                <p>You haven't blocked any users.</p>
-                            </div>
-                        <?php else: ?>
-                            <?php foreach ($blocked_users as $bu): ?>
-                            <div class='media'>
+                        <?php
+                        if (empty($blocked_users)):
+                            show_message("You haven't blocked any users.", 'info');
+                        else:
+                            foreach ($blocked_users as $bu):
+                        ?>
+                                <div class='media'>
                                 <div class='media-left'>
                                     <img src='<?= $bu['profile_pic_path']; ?>'
                                             class='media-object' alt='<?= $bu['profile_name']; ?>'>
@@ -83,7 +81,9 @@
                                         class='btn btn-xs'>Unblock user</a>
                                 </div>
                             </div>
-                            <?php endforeach; ?>
-                        <?php endif; // empty($blocked_users) ?>
+                        <?php
+                            endforeach;
+                        endif; // empty($blocked_users)
+                        ?>
                     <?php endif; // isset($search_results) ?>
                 </div>

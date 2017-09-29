@@ -12,12 +12,11 @@
                 <div class='box'>
                     <h4>Emails</h4>
                     <h5>Primary email address</h5>
-                    <?php if (isset($primary_email_success_message)): ?>
-                        <div class='alert alert-success' role='alert'>
-                            <span class='fa fa-check-circle' aria-hidden='true'></span>
-                            <p><?= $primary_email_success_message; ?></p>
-                        </div>
-                    <?php else: ?>
+                    <?php
+                    if ( ! empty($primary_email_success_message)):
+                        show_message($primary_email_success_message, 'success');
+                    else:
+                    ?>
                         <form action='<?= base_url('settings/emails'); ?>' method='post'
                                 accept-charset='utf-8' role='form'>
                             <div class='form-group'>
@@ -38,12 +37,11 @@
 
                     <?php if (count($emails) > 1): ?>
                         <h5>Backup email address</h5>
-                        <?php if (isset($backup_email_success_message)): ?>
-                            <div class='alert alert-success' role='alert'>
-                                <span class='fa fa-check-circle' aria-hidden='true'></span>
-                                <p><?= $backup_email_success_message; ?></p>
-                            </div>
-                        <?php else: ?>
+                        <?php
+                        if ( ! empty($backup_email_success_message)):
+                            show_message($backup_email_success_message, 'success');
+                        else:
+                        ?>
                             <form action='<?= base_url('settings/emails'); ?>' method='post'
                                     accept-charset='utf-8' role='form'>
                             <div class='form-group'>
@@ -70,17 +68,13 @@
                     <?php endif; ?>
 
                     <h5>Add new email address</h5>
-                    <?php if (isset($info_message)): ?>
-                        <div class='alert alert-info' role='alert'>
-                            <span class='fa fa-info-circle' aria-hidden='true'></span>
-                            <p><?= $info_message; ?></p>
-                        </div>
-                    <?php elseif (isset($success_message)): ?>
-                        <div class='alert alert-success' role='alert'>
-                            <span class='fa fa-check-circle' aria-hidden='true'></span>
-                            <p><?= $success_message; ?></p>
-                        </div>
-                    <?php else: ?>
+                    <?php
+                    if ( ! empty($info_message)):
+                        show_message($info_message, 'info');
+                    elseif (isset($success_message)):
+                        show_message($success_message, 'success');
+                    else:
+                    ?>
                         <form action='<?= base_url('settings/emails'); ?>' method='post'
                                 accept-charset='utf-8' role='form'>
                             <div class='form-group'>

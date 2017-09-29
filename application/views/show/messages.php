@@ -5,37 +5,35 @@ require_once(__DIR__ . '/../common/user-page-start.php');
 
 <div class='box'>
     <h4>Messages</h4>
-    <?php if (count($messages) == 0) { ?>
-    <div class='alert alert-info' role='alert'>
-        <span class='fa fa-info-circle' aria-hidden='true'></span>
-        <p>No messages to show.</p>
-    </div>
-    <?php } else {
+    <?php
+    if (count($messages) == 0) {
+        show_message('No messages to show.', 'info');
+    } else {
         if (isset($has_prev)) {
             $url = 'user/messages';
             $url .= ($prev_offset == 0) ? '' : "/{$prev_offset}";
             print "<a href='" . base_url($url) . "' class='previous'>Show previous messages</a>";
         }
     ?>
-    <div class='messages'>
-        <?php foreach ($messages as $m) { ?>
-        <article class='media message separated'>
-            <div class='media-body'>
-                <p>
-                    <a href='<?= base_url("user/send-message/{$m['sender_id']}"); ?>'
-                        title='<?= $m['sender']; ?>' class='send-message'>
-                        <strong class='object'><?= $m['sender']; ?></strong>
-                    </a>&nbsp;
-                    <?= htmlspecialchars($m['message']); ?>
-                </p>
-                <small class='time'>
-                    <span class='fa fa-clock-o' aria-hidden='true'></span>
-                    <?= $m['timespan']; ?> ago
-                </small>
-            </div>
-        </article>
-        <?php } ?>
-    </div>
+        <div class='messages'>
+            <?php foreach ($messages as $m) { ?>
+            <article class='media message separated'>
+                <div class='media-body'>
+                    <p>
+                        <a href='<?= base_url("user/send-message/{$m['sender_id']}"); ?>'
+                            title='<?= $m['sender']; ?>' class='send-message'>
+                            <strong class='object'><?= $m['sender']; ?></strong>
+                        </a>&nbsp;
+                        <?= htmlspecialchars($m['message']); ?>
+                    </p>
+                    <small class='time'>
+                        <span class='fa fa-clock-o' aria-hidden='true'></span>
+                        <?= $m['timespan']; ?> ago
+                    </small>
+                </div>
+            </article>
+            <?php } ?>
+        </div>
     <?php } ?>
 </div><!-- box -->
 

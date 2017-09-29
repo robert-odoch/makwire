@@ -5,26 +5,18 @@ require_once(__DIR__ . '/../common/user-page-start.php');
 
 <div class='box'>
     <h4><?= $heading; ?></h4>
-    <?php if (empty($schools)): ?>
-        <div class='alert alert-info'>
-            <span class='fa fa-info-circle'></span>
-            <p>
-                Dear user, thanks for your interest in adding a school to your
-                profile. However, at the moment we don't have the list of schools
-                under your college on record and do kindly request that you give
-                us some time to compile the list.<br><br>
-                Thanks for your patience!
-            </p>
-        </div>
+    <?php
+    if (empty($schools)):
+        $message = "Dear user, thanks for your interest in adding a school to your
+                    profile. However, at the moment we don't have the list of schools
+                    under your college on record and do kindly request that you give
+                    us some time to compile the list.<br><br>
+                    Thanks for your patience!";
+        show_message($message, 'info');
+    ?>
 
     <?php else: ?>
-        <?php if (isset($error_message)) { ?>
-            <div class='alert alert-danger' role='alert'>
-                <span class='fa fa-exclamation-circle' aria-hidden='true'></span>
-                <span class='sr-only'>Error: </span>
-                <p><?= $error_message; ?></p>
-            </div>
-        <?php } ?>
+        <?php if ( ! empty($error_message)) { show_message($error_message, 'danger'); } ?>
 
         <form action='<?= $form_action ?>' method='post' accept-charset='utf-8' role='form'>
             <fieldset>

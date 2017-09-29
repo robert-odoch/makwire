@@ -37,32 +37,27 @@ class Account extends CI_Controller
             $email_body = $this->load->view('email', $email_data, true);
             $email_sent = $this->account_model->send_email('robertelvisodoch@gmail.com', $user_data['email'], $subject, $email_body);
             if ($email_sent) {
-                $data['success_message'] = [
-                    'header'=>'Your password has been changed.',
-                    'body'=>"The new, temporary password has been sent to <b>{$user_data['email']}</b>.
-                            Once you have logged in with this password, you may change it by going to
-                            <b>settings > change password</b>."
-                ];
+                $data['success_message'] = "Your password has been changed!<br><br>
+                                            The new, temporary password has been sent to <b>{$user_data['email']}</b>.
+                                            Once you have logged in with this password, you may change it by going to
+                                            <b>settings > change password</b>.";
             }
             else {
-                $data['info_message'] = [
-                    'header'=>'We encountered an error.',
-                    'body'=>'Your password could not be changed due to a system error.
-                                We apologize for the inconvenience.'
-                ];
+                $data['info_message'] = 'Your password could not be changed due to a system error.
+                                            We apologize for the inconvenience.';
             }
         }
         else {
             if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $email_address = $this->input->post('email');
                 if (strlen($email_address) == 0) {
-                    $error_message['header'] = 'Please enter an email address.';
+                    $error_message = 'Please enter an email address.';
                 }
                 elseif ( ! filter_var($email_address, FILTER_VALIDATE_EMAIL)) {
-                    $error_message['header'] = 'Please enter a valid email address.';
+                    $error_message = 'Please enter a valid email address.';
                 }
                 elseif ( ! $this->account_model->is_activated_email($email_address)) {
-                    $error_message['header'] = 'Sorry, makwire does not recognise that email address.';
+                    $error_message = 'Sorry, makwire does not recognise that email address.';
                 }
 
                 if (isset($error_message)) {
@@ -84,18 +79,13 @@ class Account extends CI_Controller
 
                     $email_sent = $this->account_model->send_email('robertelvisodoch@gmail.com', $email_address, $subject, $email_body);
                     if ($email_sent) {
-                        $data['success_message'] = [
-                            'header'=>'We just emailed you.',
-                            'body'=>"An email has been sent to <b>{$email_address}</b>.
-                                    Please use the link in that email to reset your password."
-                        ];
+                        $data['success_message'] = "We just emailed you!<br><br>
+                                                    An email has been sent to <b>{$email_address}</b>.
+                                                    Please use the link in that email to reset your password.";
                     }
                     else {
-                        $data['info_message'] = [
-                            'header'=>'We encountered an error.',
-                            'body'=>'Your password could not be changed due to a system error.
-                                    We apologize for the inconvenience.'
-                        ];
+                        $data['info_message'] = 'Your password could not be changed due to a system error.
+                                                    We apologize for the inconvenience.';
                     }
                 }
             }
@@ -268,11 +258,9 @@ class Account extends CI_Controller
             $this->logout_model->logout($_SESSION['user_id']);
 
             session_start();
-            $_SESSION['message'] = [
-                'header'=>'Please login to continue.',
-                'body'=>'You must login again to verity that you are the rightful owner of this account.
-                        Sorry for the inconvenience.'
-            ];
+            $_SESSION['message'] = 'Please login to continue!<br><br>
+                                    You must login again to verify that you are the rightful owner
+                                    of this account, sorry for the inconvenience.';
             $_SESSION['return_uri'] = $_SERVER['REQUEST_URI'];
             redirect(base_url('login'));
         }
@@ -319,11 +307,9 @@ class Account extends CI_Controller
                         }
 
                         $this->account_model->send_email('robertelvisodoch@gmail.com', $email, $subject, $email_body);
-                        $data['success_message'] = [
-                            'header'=>'We just emailed you.',
-                            'body'=>"An email has been sent to {$email}. Please use the link in that email
-                                    to activate your email address."
-                        ];
+                        $data['success_message'] = "We just emailed you!<br><br>
+                                                    An email has been sent to {$email}. Please use the link in that email
+                                                    to activate your email address.";
                     }
                 }
                 else {

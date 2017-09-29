@@ -11,14 +11,5 @@ require_once(__DIR__ . '/../common/user-page-start.php');
     ?>
 
     <h4 class='sr-only'>Add link to a resource on another website.</h4>
-
-    <?php if (isset($error_message)) { ?>
-    <div class='alert alert-danger' role='alert'>
-        <span class='fa fa-exclamation-circle' aria-hidden='true'></span>
-        <span class='sr-only'>Error: </span>
-        <p><?= $error_message; ?></p>
-    </div>
-    <?php }?>
-
     <?php require_once(__DIR__ . '/../forms/new-link.php'); ?>
 </div>

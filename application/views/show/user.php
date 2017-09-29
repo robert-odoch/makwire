@@ -16,18 +16,16 @@ if (!$is_visitor) {
         require_once(__DIR__ . '/../forms/new-post.php');
         ?>
     </div>
-<?php } // (!$is_visitor) ?>
 
-    <?php
-    if (empty($items) && $is_visitor) { ?>
-        <div class='box'>
-            <div class='alert alert-info' role='alert'>
-                <span class='fa fa-info-circle' aria-hidden='true'></span>
-                <p>When they do, their status updates will show up here.</p>
-            </div>
-        </div>
-    <?php
-    } else {
-        require_once(__DIR__ . '/../common/items.php');
-    }
-    ?>
+<?php
+} // (!$is_visitor)
+
+if (empty($items) && $is_visitor) {
+    print "<div class='box'>";
+    show_message('When they do, their status updates will show up here.', 'info');
+    print "</div>";
+}
+else {
+    require_once(__DIR__ . '/../common/items.php');
+}
+?>

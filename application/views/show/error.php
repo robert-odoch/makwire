@@ -12,8 +12,5 @@ endif;
 ?>
         <div class='box'>
             <h4><?= $heading; ?></h4>
-            <div class='alert alert-danger' role='alert'>
-                <span class='fa fa-exclamation-circle' aria-hidden='true'></span>
-                <p><?= $message; ?></p>
-            </div>
+            <?php show_message($message, 'danger'); ?>
         </div>

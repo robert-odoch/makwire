@@ -11,12 +11,11 @@ else if ($object == 'birthday-message') {
 
 <div class='box'>
     <h4>Replies</h4>
-    <?php if (count($replies) == 0) { ?>
-    <div class='alert alert-info' role='alert'>
-        <span class='fa fa-info-circle' aria-hidden='true'></span>
-        <p>No replies to show.</p>
-    </div>
-    <?php } else {
+    <?php
+    if (count($replies) == 0) {
+        show_message('No replies to show.', 'info');
+    }
+    else {
         $ID = ($object == 'birthday-message') ? $message['id'] : $comment['comment_id'];
         if (isset($has_prev)) {
             $url = "{$object}/replies/{$ID}";
@@ -27,58 +26,58 @@ else if ($object == 'birthday-message') {
             print "<a href='" . base_url($url) . "' class='previous'>Show previous replies</a>";
         }
     ?>
-    <div class='replies'>
-        <?php foreach($replies as $reply) { ?>
-        <div class='media separated'>
-            <div class='media-left'>
-                <img src='<?= $reply['profile_pic_path']; ?>'
-                        alt='<?= $reply['commenter']; ?>' class='media-object profile-pic-sm'>
+        <div class='replies'>
+            <?php foreach($replies as $reply) { ?>
+            <div class='media separated'>
+                <div class='media-left'>
+                    <img src='<?= $reply['profile_pic_path']; ?>'
+                            alt='<?= $reply['commenter']; ?>' class='media-object profile-pic-sm'>
+                </div>
+                <div class='media-body'>
+                    <h4 class='media-heading'>
+                        <a href='<?= base_url("user/{$reply['commenter_id']}"); ?>'>
+                            <strong><?= $reply['commenter']; ?></strong>
+                        </a>
+                    </h4>
+
+                    <p class='reply'><?= htmlspecialchars($reply['comment']); ?></p>
+
+                    <span class='footer'>
+                        <small class='time'>
+                            <span class='fa fa-clock-o' aria-hidden='true'></span>
+                            <?= $reply['timespan']; ?> ago
+                        </small>
+
+                        <?php
+                        if ($reply['viewer_is_friend_to_owner']) {
+                            print "<span> &middot; </span>" .
+                                    "<a href='" . base_url("reply/like/{$reply['comment_id']}") .
+                                    "' class='like'>Like</a>";
+                        }
+                        if ($reply['num_likes'] > 0) {
+                            print "<span> &middot; </span>";
+                            print "<a href='" . base_url("reply/likes/{$reply['comment_id']}") .
+                                    "' class='likes'>{$reply['num_likes']}";
+                            print ($reply['num_likes'] == 1) ? " like" : " likes";
+                            print "</a>";
+                        }
+                        else {
+                            print "<span class='likes hidden'> &middot; </span>";
+                            print "<a href='" . base_url("reply/likes/{$reply['comment_id']}") .
+                                    "' class='likes hidden'></a>";
+                        }
+
+                        if ($reply['commenter_id'] == $_SESSION['user_id']) {
+                            print "<span> &middot; </span>
+                                    <a href='" . base_url("reply/options/{$reply['comment_id']}") . "'
+                                        title='Edit or delete this reply'>More</a>";
+                        }
+                        ?>
+                    </span>
+                </div>
             </div>
-            <div class='media-body'>
-                <h4 class='media-heading'>
-                    <a href='<?= base_url("user/{$reply['commenter_id']}"); ?>'>
-                        <strong><?= $reply['commenter']; ?></strong>
-                    </a>
-                </h4>
-
-                <p class='reply'><?= htmlspecialchars($reply['comment']); ?></p>
-
-                <span class='footer'>
-                    <small class='time'>
-                        <span class='fa fa-clock-o' aria-hidden='true'></span>
-                        <?= $reply['timespan']; ?> ago
-                    </small>
-
-                    <?php
-                    if ($reply['viewer_is_friend_to_owner']) {
-                        print "<span> &middot; </span>" .
-                                "<a href='" . base_url("reply/like/{$reply['comment_id']}") .
-                                "' class='like'>Like</a>";
-                    }
-                    if ($reply['num_likes'] > 0) {
-                        print "<span> &middot; </span>";
-                        print "<a href='" . base_url("reply/likes/{$reply['comment_id']}") .
-                                "' class='likes'>{$reply['num_likes']}";
-                        print ($reply['num_likes'] == 1) ? " like" : " likes";
-                        print "</a>";
-                    }
-                    else {
-                        print "<span class='likes hidden'> &middot; </span>";
-                        print "<a href='" . base_url("reply/likes/{$reply['comment_id']}") .
-                                "' class='likes hidden'></a>";
-                    }
-
-                    if ($reply['commenter_id'] == $_SESSION['user_id']) {
-                        print "<span> &middot; </span>
-                                <a href='" . base_url("reply/options/{$reply['comment_id']}") . "'
-                                    title='Edit or delete this reply'>More</a>";
-                    }
-                    ?>
-                </span>
-            </div>
+            <?php } ?>
         </div>
-        <?php } ?>
-    </div>
     <?php } // (count($replies) == 0) ?>
 </div><!-- box -->
 

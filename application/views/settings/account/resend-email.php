@@ -7,7 +7,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <div class='box'>
             <h4>Resend email activation link</h4>
             <?php
-            if (!empty($success_message)) {
+            if ( ! empty($success_message)) {
                 show_message($success_message, 'success');
             }
             else {

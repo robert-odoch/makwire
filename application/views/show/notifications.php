@@ -6,12 +6,11 @@ require_once(__DIR__ . '/helper functions/show_notifications_functions.php');
 
 <div class='box'>
     <h4>Notifications</h4>
-    <?php if (count($notifications) == 0) { ?>
-    <div class='alert alert-info' role='alert'>
-        <span class='fa fa-info-circle' aria-hidden='true'></span>
-        <p>No new notifications to show.</p>
-    </div>
-    <?php } else {
+    <?php
+    if (count($notifications) == 0) {
+        show_message('No new notifications to show.', 'info');
+    }
+    else {
         if (isset($has_prev)) {
             $url = 'user/notifications';
             if ($prev_offset != 0) {

@@ -19,13 +19,14 @@
                         </span>
                     </p>
 
-                    <div class='alert alert-warning' role='alert'>
-                        <span class='fa fa-warning' aria-hidden='true'></span>
-                        <p>Are you sure you want to delete your account?</p>
-                        <form action='<?= base_url('account/delete'); ?>' method='post'
-                                accept-charset='utf-8' role='form'>
-                            <input type='submit' name='submit' value='Delete' class='btn btn-sm'>
-                            <a href='<?php echo base_url("user/{$_SESSION['user_id']}"); ?>' class='btn btn-sm btn-default'>Cancel</a>
-                        </form>
-                    </div>
+                    <?php
+                    $message = "<p>Are you sure you want to delete your account?</p>
+                                <form action='" . base_url('account/delete') . "'
+                                        method='post' accept-charset='utf-8' role='form'>
+                                    <input type='submit' name='submit' value='Delete' class='btn btn-sm'>
+                                    <a href='" . base_url("user/{$_SESSION['user_id']}") .
+                                            "' class='btn btn-sm btn-default'>Cancel</a>
+                                </form>";
+                    show_message($message, 'warning', FALSE);
+                    ?>
                 </div>

@@ -48,15 +48,14 @@ require_once('common/user-page-start.php');
             <a href='<?= base_url("user/find-friends/{$next_offset}"); ?>'>Show more results</a>
         </div>
     <?php } ?>
-<?php } elseif (isset($search_results)) { ?>
-    <div class='box'>
-        <h4>Search results</h4>
-        <div class='alert alert-info' role='alert'>
-            <span class='fa fa-info-circle' aria-hidden='true'></span>
-            <p>You search query returned no results.</p>
-        </div>
-    </div>
-<?php } ?>
+<?php
+}
+elseif (isset($search_results)) {
+    print "<div class='box'>";
+    show_message('You search query returned no results.', 'info');
+    print "</div>";
+}
+?>
 
 <?php if (isset($suggested_users) && count($suggested_users) > 0) { ?>
     <div class='box'>

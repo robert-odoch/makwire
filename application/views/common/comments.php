@@ -2,13 +2,11 @@
 
 <div class='box'>
     <h4>Comments</h4>
-    <?php if (count($comments) == 0) { ?>
-        <div class='alert alert-info' role='alert'>
-            <span class='fa fa-info-circle' aria-hidden='true'></span>
-            <p>No comments to show.</p>
-        </div>
-    <?php } else { ?>
-        <?php
+    <?php
+    if (count($comments) == 0) {
+        show_message('No comments to show.', 'info');
+
+    } else {
         if (isset($has_prev)) {
             $url = "{$object}/comments/{$$object[$object . '_id']}";
             if ($prev_offset != 0) {
@@ -17,7 +15,7 @@
 
             print "<a href='" . base_url($url) . "' class='previous'>Show previous comments</a>";
         }
-        ?>
+    ?>
 
         <div class='comments'>
             <?php foreach($comments as $comment) { ?>

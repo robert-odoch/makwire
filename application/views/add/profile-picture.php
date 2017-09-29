@@ -8,13 +8,7 @@ require_once(__DIR__ . '/../common/secondary-user-nav.php');
     <div class='panel panel-default'>
         <div class='panel-heading'>Change profile picture</div>
         <div class='panel-body'>
-            <?php if (isset($error)) { ?>
-            <div class='alert alert-danger' role='alert'>
-                <span class='fa fa-exclamation-circle' aria-hidden='true'></span>
-                <span class='sr-only'>Error: </span>
-                <?= $error;  // Errors for images come embedded in a paragraph. ?>
-            </div>
-            <?php } ?>
+            <?php if ( ! empty($error)) { show_message($error, 'danger', FALSE); } ?>
             <form action='<?= base_url('profile/change-profile-picture'); ?>' method='post'
                     enctype='multipart/form-data' role='form'>
                 <div class='form-group'>

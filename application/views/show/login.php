@@ -7,17 +7,14 @@
 
             <?php
             if (isset($login_errors) && array_key_exists('login', $login_errors)) {
-                print "<div class='alert alert-danger' role='alert'>
-                        <span class='fa fa-exclamation-circle' aria-hidden='true'></span>
-                        <span class='sr-only'>Error: </span>
-                        <p>{$login_errors['login']}</p>
-                        </div>";
+                show_message($login_errors['login'], 'danger');
             }
             elseif (isset($info_message)) {
                 show_message($info_message, 'info');
                 unset($info_message);
             }
             ?>
+
             <form action='<?= base_url('login'); ?>' method='post' accept-charset='utf-8' role='form'>
                 <fieldset>
                     <div class='form-group'>

@@ -23,12 +23,11 @@ switch ($object) {
 
 <div class='box'>
     <h4>Shares</h4>
-    <?php if (count($shares) == 0) { ?>
-    <div class='alert alert-info' role='alert'>
-        <span class='fa fa-info-circle' aria-hidden='true'></span>
-        <p>No shares to show.</p>
-    </div>
-    <?php } else {
+    <?php
+    if (count($shares) == 0) {
+        show_message('No shares to show.', 'info');
+    }
+    else {
         if (isset($has_prev)) {
             $url = "{$object}/shares/{$$object[$object . '_id']}";
             if ($prev_offset != 0) {
@@ -38,27 +37,27 @@ switch ($object) {
             print "<a href='" . base_url($url) . "' class='previous'>Show previous shares</a>";
         }
     ?>
-    <div class='shares'>
-        <?php foreach($shares as $share) { ?>
-        <div class='media separated'>
-            <div class='media-left'>
-                <img src='<?= $share['profile_pic_path']; ?>'
-                        alt='<?= $share['sharer']; ?>' class='media-object profile-pic-sm'>
+        <div class='shares'>
+            <?php foreach($shares as $share) { ?>
+            <div class='media separated'>
+                <div class='media-left'>
+                    <img src='<?= $share['profile_pic_path']; ?>'
+                            alt='<?= $share['sharer']; ?>' class='media-object profile-pic-sm'>
+                </div>
+                <div class='media-body'>
+                    <h4 class='media-heading'>
+                        <a href='<?= base_url("user/{$share['sharer_id']}"); ?>'>
+                            <strong><?= $share['sharer']; ?></strong>
+                        </a>
+                    </h4>
+                    <small class='time'>
+                        <span class='fa fa-clock-o' aria-hidden='true'></span>
+                        <?= $share['timespan']; ?> ago
+                    </small>
+                </div>
             </div>
-            <div class='media-body'>
-                <h4 class='media-heading'>
-                    <a href='<?= base_url("user/{$share['sharer_id']}"); ?>'>
-                        <strong><?= $share['sharer']; ?></strong>
-                    </a>
-                </h4>
-                <small class='time'>
-                    <span class='fa fa-clock-o' aria-hidden='true'></span>
-                    <?= $share['timespan']; ?> ago
-                </small>
-            </div>
+            <?php } ?>
         </div>
-        <?php } ?>
-    </div>
     <?php } // (count($shares) == 0) ?>
 </div><!-- box -->
 

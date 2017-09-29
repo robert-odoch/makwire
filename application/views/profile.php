@@ -16,13 +16,10 @@ if ( ! empty($profile_questions)) {
 
 // If there is nothing to show.
 if ($is_visitor && ! $profile['schools'] && ! $profile['halls']
-    && !$profile['hostels'] && !$profile['origin']['district']) {
-    print "<div class='box'>
-                <div class='alert alert-info' role='alert'>
-                    <span class='fa fa-info-circle' aria-hidden='true'></span>
-                    <p>Nothing to show.</p>
-                </div>
-            </div>";
+        && ! $profile['hostels'] && ! $profile['origin']['district']) {
+    print "<div class='box'>";
+    show_message('Nothing to show.', 'info');
+    print "</div>";
 }
 ?>
 

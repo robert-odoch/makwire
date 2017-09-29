@@ -30,14 +30,11 @@ switch ($object) {
 
 <div class='box'>
     <h4>Likes</h4>
-    <?php if (count($likes) == 0) { ?>
-    <div class='alert alert-info' role='alert'>
-        <span class='fa fa-info-circle' aria-hidden='true'></span>
-        <p>No likes to show.</p>
-    </div>
-    <div class='likes hidden'>
-    </div>
-    <?php } else {
+    <?php
+    if (count($likes) == 0) {
+        show_message('No likes to show.', 'info');
+    }
+    else {
         if (isset($has_prev)) {
             $url = "$object/likes/{$$object[$object . '_id']}";
             if ($prev_offset != 0) {
@@ -47,13 +44,13 @@ switch ($object) {
             print "<a href='" . base_url($url) . "' class='previous'>Show previous likes</a>";
         }
     ?>
-    <div class='likes'>
-        <?php
-        foreach($likes as $like) {
-            require(__DIR__ . '/../common/like.php');
-        }
-        ?>
-    </div>
+        <div class='likes'>
+            <?php
+            foreach($likes as $like) {
+                require(__DIR__ . '/../common/like.php');
+            }
+            ?>
+        </div>
     <?php } ?>
 </div><!-- box -->
 
