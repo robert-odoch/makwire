@@ -64,6 +64,10 @@
                         <span class='fa fa-fw fa-sign-in' aria-hidden='true'></span>&nbsp;
                         Log in
                     </a>
+                    <a href='<?= base_url('register/step-one'); ?>' class='list-group-item'>
+                        <span class='fa fa-address-book-o' aria-hidden='true'></span>&nbsp;
+                        Register
+                    </a>
                 <?php endif; ?>
             </div>
         </div>

@@ -40,7 +40,7 @@ if ($is_visitor && ! $profile['schools'] && ! $profile['halls']
                 print "<tr><td><b>School</b></td><td>{$sch['school_name']}";
                 if (!$is_visitor) {
                     print " <a href='" . base_url("profile/edit-school/{$sch['id']}") .
-                        "'><span class='fa fa-pencil' aria-hidden='true'></span> Edit</a>";
+                        "'>&nbsp;<span class='fa fa-pencil' aria-hidden='true'></span> Edit</a>";
                 }
                 print "</td></tr>";
 
@@ -48,7 +48,7 @@ if ($is_visitor && ! $profile['schools'] && ! $profile['halls']
                     print "<tr><td><b>Programme</b></td><td>{$sch['programme']['programme_name']}";
                     if (!$is_visitor) {
                         print " <a href='" . base_url("profile/edit-programme/{$sch['programme']['id']}") .
-                            "'><span class='fa fa-pencil' aria-hidden='true'></span> Edit</a>";
+                            "'>&nbsp;<span class='fa fa-pencil' aria-hidden='true'></span> Edit</a>";
                     }
                     print "</td></tr>";
                 }
@@ -98,7 +98,7 @@ if ($is_visitor && ! $profile['schools'] && ! $profile['halls']
                             print "<td>Resident of {$hall['hall_name']}";
                             if (!$is_visitor) {
                                 print " <a href='" . base_url("profile/edit-hall/{$hall['id']}") .
-                                        "'><span class='fa fa-pencil' aria-hidden='true'></span> Edit</a>";
+                                        "'>&nbsp;<span class='fa fa-pencil' aria-hidden='true'></span> Edit</a>";
                             }
                             print "</td>";
                         }
@@ -106,7 +106,7 @@ if ($is_visitor && ! $profile['schools'] && ! $profile['halls']
                             print "<td>Attached to {$hall['hall_name']}";
                             if (!$is_visitor) {
                                 print " <a href='" . base_url("profile/edit-hall/{$hall['id']}") .
-                                        "'><span class='fa fa-pencil' aria-hidden='true'></span> Edit</a>";
+                                        "'>&nbsp;<span class='fa fa-pencil' aria-hidden='true'></span> Edit</a>";
                             }
                             print "</td>";
                         }
@@ -134,7 +134,7 @@ if ($is_visitor && ! $profile['schools'] && ! $profile['halls']
                         print "<td>{$hostel['hostel_name']}";
                         if (!$is_visitor) {
                             print " <a href='" . base_url("profile/edit-hostel/{$hostel['id']}") .
-                                    "'><span class='fa fa-pencil' aria-hidden='true'></span> Edit</a>";
+                                    "'>&nbsp;<span class='fa fa-pencil' aria-hidden='true'></span> Edit</a>";
                         }
                         print "</td></tr>";
                     }

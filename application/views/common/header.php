@@ -85,7 +85,7 @@ isset($page) OR $page = '';  // Default value for page.
                             <a href='<?= base_url('register/step-one'); ?>' class='btn
                                 <?php if ($page == 'register') print ' active'; ?>
                                 '>
-                                <span class='fa fa-registered' aria-hidden='true'></span>&nbsp;Register
+                                <span class='fa fa-address-book-o' aria-hidden='true'></span>&nbsp;Register
                             </a>
                         <?php endif; ?>
                         <a href='<?= base_url('menu'); ?>' class='btn

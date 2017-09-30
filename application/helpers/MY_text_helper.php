@@ -44,7 +44,7 @@ if (!function_exists('show_message')) {
                 break;
         }
 
-        print ($user_paragraph) ? "<p class='text'>{$message}</p>" : $message;
+        print ($user_paragraph) ? "<p>{$message}</p>" : $message;
         print "</div>";
     }
 }
