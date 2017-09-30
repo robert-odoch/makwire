@@ -12,7 +12,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             }
             else {
             ?>
-                <p>What is your email address again?</p>
                 <form action='<?= $form_action; ?>' method='post'
                         accept-charset='utf-8' role='form'>
                     <fieldset>

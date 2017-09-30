@@ -32,13 +32,25 @@ class Register extends CI_Controller
                     $data['error_message'] = 'Please enter a Mak email address!';
                 }
                 elseif ($this->account_model->is_activated_email($email)) {
+                    if ($this->account_model->email_has_user($email)) {
                         $data['error_message'] = 'This email address is already registered.';
+                    }
+                    else {
+                        $data['info_message'] = "Dear user, it seems the last time you didn't complete the
+                                                    registration process. We need to resend you the registration
+                                                    email again so that you can continue with the registration process,
+                                                    please click on the button below to continue.<br><br>
+
+                                                    <a href='" . base_url('account/resend-email') . "' class='btn btn-sm'>
+                                                        Resend email
+                                                    </a>";
+                    }
                 }
                 elseif ($this->account_model->is_registered_email($email)) {
-                    $data['info_message'] = "Please use the link in the email sent to <strong>{$email}</strong>
-                                            to continue with the registration process. If you cant' find the email,
-                                            then we can <a href='" . base_url("account/resend-email") .
-                                            "'>resend the email.</a>";
+                        $data['info_message'] = "Please use the link in the email sent to <strong>{$email}</strong>
+                                                to continue with the registration process. If you cant' find the email,
+                                                then we can <a href='" . base_url("account/resend-email") .
+                                                "'>resend the email.</a>";
                 }
                 else {
                     $activation_code = $this->account_model->gen_email_verification_code();

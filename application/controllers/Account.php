@@ -272,8 +272,13 @@ class Account extends CI_Controller
     public function resend_email()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-            if ($_SERVER['HTTP_REFERER'] == base_url('register/step-one') ||
-                    $_SERVER['HTTP_REFERER'] == base_url('settings/emails')) {
+            $allowed_referers = [
+                base_url('settings/emails'),
+                base_url('register/step-one')
+            ];
+
+            if (in_array($_SERVER['HTTP_REFERER'], $allowed_referers) ||
+                    strpos($_SERVER['HTTP_REFERER'], base_url()) !== FALSE) {
                 // continue...
             }
             else {
@@ -358,7 +363,22 @@ class Account extends CI_Controller
                         }
                     }
                     catch (NotFoundException $e) {
-                        $error_message = "Sorry, makwire does not recognise that email address.";
+                        if ($this->account_model->is_activated_email($email) &&
+                                ! $this->account_model->email_has_user($email)) {
+
+                            // A user didn't complete the registration process the previous time.
+                            $data['info_message'] = "Dear user, it seems the last time you didn't complete the
+                                                        registration process. We need to resend you the registration
+                                                        email again so that you can continue with the registration process,
+                                                        please click on the button below to continue.<br><br>
+
+                                                        <a href='" . base_url('account/resend-email') . "' class='btn btn-sm'>
+                                                            Resend email
+                                                        </a>";
+                        }
+                        else {
+                            $error_message = "Sorry, makwire does not recognise that email address.";
+                        }
                     }
                 }
                 else {
