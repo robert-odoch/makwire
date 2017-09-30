@@ -140,7 +140,8 @@ if (!function_exists('email_verification_message')) {
                                 add this email address in settings. If this wasn’t you, please ignore this email.
                             </p>";
 
-        $body = $this->load->view('email', $data, TRUE);
+        $CI = &get_instance();
+        $body = $CI->load->view('email', $data, TRUE);
         return $body;
     }
 
@@ -171,7 +172,8 @@ if (!function_exists('registration_email_message')) {
                                     a new <b>makwire</b> account. If this wasn’t you, please ignore this email.
                                 </p>";
 
-        $email_body = $this->load->view('email', $email_data, TRUE);
+        $CI = &get_instance();
+        $email_body = $CI->load->view('email', $email_data, TRUE);
         return $email_body;
     }
 

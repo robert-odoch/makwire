@@ -6,7 +6,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <div role='main' class='main'>
         <div class='box'>
             <h4>Activate your email address</h4>
-            <p>That reminds me of something. What is your email address again?</p>
+            <p>Please remind me of your email address.</p>
             <form action='<?= $form_action; ?>' method='post'
                     accept-charset='utf-8' role='form'>
                 <fieldset>

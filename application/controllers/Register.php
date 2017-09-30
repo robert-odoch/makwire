@@ -76,15 +76,6 @@ class Register extends CI_Controller
     {
         $data = [];
 
-        // Ensure user is visiting this page after activating their email.
-        if (empty($_SESSION['activation_code']) ||
-                $_SESSION['activation_code'] != $activation_code) {
-            redirect(base_url('register/step-one'));
-        }
-        else {
-            unset($_SESSION['activation_code']);
-        }
-
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $lname = trim(strip_tags($this->input->post('lname')));
             if (strlen($lname) == 0) {
@@ -137,9 +128,22 @@ class Register extends CI_Controller
                 session_start();
                 session_regenerate_id(TRUE);
 
+                $data['email'] = $_SESSION['email'];
+                unset($_SESSION['email']);
+
                 $_SESSION['data'] = $data;
                 $_SESSION['access_code'] = md5(uniqid(rand(), true));
-                redirect(base_url("register/step-three/{$data['access_code']}"));
+                redirect(base_url("register/step-three/{$_SESSION['access_code']}"));
+            }
+        }
+        else {
+            // Ensure user is visiting this page after activating their email.
+            if (empty($_SESSION['activation_code']) ||
+                    $_SESSION['activation_code'] != $activation_code) {
+                redirect(base_url('register/step-one'));
+            }
+            else {
+                unset($_SESSION['activation_code']);
             }
         }
 
@@ -210,8 +214,10 @@ class Register extends CI_Controller
                 $email_address = $this->account_model->get_primary_email($user_id);
                 $email_data['email_heading'] = 'Welcome to makwire.';
                 $email_data['message'] = "<p>Hi there, thanks for joining makwire.</p>
-                                            <p>Take your first steps with makwire, visit makwire.com to edit your profile,
-                                            find friends, post interesting stories, upload photos, or share youtube videos etc.</p>";
+                                            <p>Take your first steps with makwire, visit <a href='" .
+                                            base_url() . "'>makwire</a> to edit your profile,
+                                            find friends, post interesting stories, upload photos, share youtube videos,
+                                            and much more...</p>";
                 $email_body = $this->load->view('email', $email_data, true);
                 $this->account_model->send_email('robertelvisodoch@gmail.com', $email_address, $subject, $email_body);
                 unset($_SESSION['data']);

@@ -352,12 +352,13 @@ class Account extends CI_Controller
                             redirect(base_url('success'));
                         }
                         else {
+                            $_SESSION['email'] = $email;
                             $_SESSION['activation_code'] = $activation_code;
                             redirect(base_url("register/step-two/{$activation_code}"));
                         }
                     }
                     catch (NotFoundException $e) {
-                        show_404();
+                        $error_message = "Sorry, makwire does not recognise that email address.";
                     }
                 }
                 else {

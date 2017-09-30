@@ -35,7 +35,7 @@ class Account_model extends CI_Model
     {
         $sql = sprintf('SELECT user_id FROM users WHERE uname = %s',
                         $this->db->escape($username));
-        $query = $this->db->query($username);
+        $query = $this->db->query($sql);
         return ($query->num_rows() == 1);
     }
 

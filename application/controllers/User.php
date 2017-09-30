@@ -38,7 +38,13 @@ class User extends CI_Controller
             return;
         }
 
-        $data = $this->user_model->initialize_user($_SESSION['user_id']);
+        try {
+            $data = $this->user_model->initialize_user($_SESSION['user_id']);
+        }
+        catch (NotFoundException $e) {
+            show_404();
+        }
+
         $data['title'] = format_name($data['primary_user']) . ' posts';
 
         $data['is_visitor'] = ($user_id == $_SESSION['user_id']) ? FALSE : TRUE;

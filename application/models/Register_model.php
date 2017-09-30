@@ -34,8 +34,8 @@ class Register_model extends CI_Model
 
         // Update the user_emails table.
         $update_sql = sprintf("UPDATE user_emails SET user_id = %d, is_primary = 1, is_backup = 0
-                                WHERE (id = %d)",
-                                $user_id, $data['user_email_id']);
+                                WHERE (email = %s)",
+                                $user_id, $this->db->escape($data['email']));
         $this->db->query($update_sql);
 
         return $user_id;
