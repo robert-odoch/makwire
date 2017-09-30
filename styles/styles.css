@@ -80,6 +80,7 @@ p.text {
     margin-bottom: 0;
     padding: 15px 10px;
     text-align: justify;
+    font-family: 'Roboto', sans-serif;
 }
 .alert .fa {
     float: left;
@@ -800,7 +801,7 @@ p.post a.more {
 
 .refresh-chat {
     display: inline-block;
-    position: absolute; top: 13px; right: 15px;
+    position: absolute; top: 20%; right: 10px;
     padding: 2px; width: 30px; height: 30px; border-radius: 50%;
 }
 .refresh-chat .fa {
@@ -846,10 +847,8 @@ p.post a.more {
 }
 
 @media (max-width: 380px) {
-    .wrapper-md input[type="text"],
-    .wrapper-md input[type="email"],
-    .wrapper-md input[type="password"] {
-        width: 100% !important;
+    .alert {
+        text-align: left;
     }
 }
 
@@ -888,7 +887,8 @@ p.post a.more {
     .side-content {
         display: none;
     }
-    .side-content.menu {
+    .side-content.menu,
+    .side-content.settings {
         display: block;
         width: 100%;
         float: none;

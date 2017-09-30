@@ -1,6 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
-<div class='side-content'>
+<div class='side-content settings'>
     <div>
         <div id='primary-user' class='media'>
             <div class='media-left media-middle'>
