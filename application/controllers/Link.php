@@ -19,13 +19,29 @@ class Link extends CI_Controller
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $link_url = $this->input->post('link_url');
             if ( ! filter_var($link_url, FILTER_VALIDATE_URL) ||
-                    !preg_match('/^(http[s]?:\/\/)/', $link_url)) {
+                    ! preg_match('/^(http[s]?:\/\/)/', $link_url)) {
                 $data['link_url'] = $link_url;
-                $data['error_message'] = 'Please enter a valid URL.';
+                $error_message = 'Please enter a valid URL.';
+                if (is_ajax_request()) {
+                    $result['error'] = $error_message;
+                    echo json_encode($result);
+
+                    return;
+                }
+
+                $data['error_message'] = $error_message;
             }
             else {
                 $link_data = $this->get_link_data($link_url);
-                $this->link_model->publish($link_data, $_SESSION['user_id']);
+                $link_id = $this->link_model->publish($link_data, $_SESSION['user_id']);
+                if (is_ajax_request()) {
+                    $data['link'] = $this->link_model->get_link($link_id, $_SESSION['user_id']);
+                    $result['item'] = $this->load->view('common/link', $data, TRUE);
+                    echo json_encode($result);
+
+                    return;
+                }
+
                 redirect(base_url("user/{$_SESSION['user_id']}"));
             }
         }

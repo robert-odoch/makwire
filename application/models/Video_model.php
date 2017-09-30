@@ -77,6 +77,8 @@ class Video_model extends CI_Model
                                 VALUES (%d, %d, %d, "video", "video")',
                                 $user_id, $user_id, $video_id);
         $this->db->query($activity_sql);
+
+        return $video_id;
     }
 
     /**

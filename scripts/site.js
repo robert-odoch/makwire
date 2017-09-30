@@ -9,6 +9,7 @@ var loadingMarkup = "<div class='loading'>" +
 $('[data-toggle="tooltip"]').tooltip();
 
 /*** Status updates ***/
+// Showing forms.
 $('#status-nav li a').click(function(event) {
     event.preventDefault();
 
@@ -42,6 +43,57 @@ $('#status-nav li a').click(function(event) {
 
         // Show the new form.
         $(html).appendTo($box);
+    });
+});
+
+// Posting an update.
+$('#update-status').on('submit', 'form', function(event) {
+    var $this = $(this);
+
+    // For now we can't post photos.
+    if ($this.find('input:file').length > 0) {
+        return;
+    }
+
+    event.preventDefault();
+    var formAction = $this.attr('action');
+    $.post(formAction, $this.serialize(), function(data) {
+        var result = $.parseJSON(data);
+        var $input = $this.find('textarea, input').not(':submit');
+        if (result.error) {
+            if ($input.is(':file')) {  // Adding photo.
+                var errorMarkup = "<div class='alert alert-danger' role='alert'>" +
+                                        "<span class='fa fa-exclamation-circle'></span>" +
+                                        result.error +
+                                    "</div>";
+                $(errorMarkup).insertBefore($this);
+            }
+            else {
+                // Remove any previous error message (s).
+                $this.find('span.error').remove();
+
+                // Show the new error message.
+                if ( ! $input.hasClass('has-error')) {
+                    $input.addClass('has-error');
+                }
+
+                var $errorMarkup = $("<span class='error'>" + result.error + "</span>");
+                $input.after($errorMarkup);
+            }
+        }
+        else {
+            // Remove any previous error message (s).
+            $input.removeClass('has-error');
+            $this.find('span.error').remove();
+
+            // Clear the input field.
+            if ($input.not(':file')) {
+                $input.val('');
+            }
+
+            var item = $.parseHTML(result.item);
+            $(item).insertAfter($this.parents('.box'));
+        }
     });
 });
 

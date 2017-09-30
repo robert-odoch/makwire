@@ -30,6 +30,12 @@ class Photo extends CI_Controller
             // Upload the file.
             if ( ! $this->upload->do_upload('userfile')) {
                 $data['error'] = $this->upload->display_errors();
+                if (is_ajax_request()) {
+                    $result['error'] = $data['error'];
+                    echo json_encode($result);
+
+                    return;
+                }
             }
             else {
                 $upload_data = $this->upload->data();
@@ -48,7 +54,15 @@ class Photo extends CI_Controller
                 $this->image_lib->resize();
 
                 // Record it in the database.
-                $this->photo_model->publish($upload_data, $_SESSION['user_id']);
+                $photo_id = $this->photo_model->publish($upload_data, $_SESSION['user_id']);
+                if (is_ajax_request()) {
+                    $data['photo'] = $this->photo_model->get_photo($photo_id, $_SESSION['user_id']);
+                    $result['item'] = $this->load->view('common/photo', $data, TRUE);
+                    echo json_encode($result);
+
+                    return;
+                }
+
                 redirect(base_url("user/{$_SESSION['user_id']}"));
             }
         }

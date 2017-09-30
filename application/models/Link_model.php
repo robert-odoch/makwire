@@ -81,6 +81,8 @@ class Link_model extends CI_Model
                                 VALUES (%d, %d, %d, "link", "link")',
                                 $user_id, $user_id, $link_id);
         $this->db->query($activity_sql);
+
+        return $link_id;
     }
 
     /**

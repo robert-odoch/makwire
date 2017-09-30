@@ -17,11 +17,27 @@ class Post extends CI_Controller
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $post = trim(strip_tags($this->input->post('post')));
             if (strlen($post) == 0) {
-                $_SESSION['post_error'] = "Post can't be empty!";  // Needed by user/index method.
+                $post_error = "Post can't be empty!";  // Needed by user/index method.
+                if (is_ajax_request()) {
+                    $result['error'] = $post_error;
+                    echo json_encode($result);
+
+                    return;
+                }
+
+                $_SESSION['post_error'] = $post_error;
                 redirect(base_url('post/new'));
             }
 
-            $this->post_model->publish($post, $_SESSION['user_id']);
+            $post_id = $this->post_model->publish($post, $_SESSION['user_id']);
+            if (is_ajax_request()) {
+                $data['post'] = $this->post_model->get_post($post_id, $_SESSION['user_id']);
+                $result['item'] = $this->load->view('common/post', $data, TRUE);
+                echo json_encode($result);
+
+                return;
+            }
+
             redirect(base_url("user/{$_SESSION['user_id']}"));
         }
 

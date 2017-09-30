@@ -30,7 +30,15 @@ class Video extends CI_Controller
                 $replacement = 'embed/';
                 $youtube_video_url = preg_replace($pattern, $replacement, $youtube_video_url);
 
-                $this->video_model->publish($youtube_video_url, $_SESSION['user_id']);
+                $video_id = $this->video_model->publish($youtube_video_url, $_SESSION['user_id']);
+                if (is_ajax_request()) {
+                    $data['video'] = $this->video_model->get_video($video_id, $_SESSION['user_id']);
+                    $result['item'] = $this->load->view('common/video', $data, TRUE);
+                    echo json_encode($result);
+
+                    return;
+                }
+
                 redirect(base_url("user/{$_SESSION['user_id']}"));
             } else {
                 $data['error_message'] = $error_message;

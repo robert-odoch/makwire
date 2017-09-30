@@ -70,13 +70,16 @@ class Post_model extends CI_Model
         $post_sql = sprintf("INSERT INTO posts (post, user_id) VALUES (%s, %d)",
                             $this->db->escape($post), $user_id);
         $this->db->query($post_sql);
+        $post_id = $this->db->insert_id();
 
         // Dispatch an activity.
         $activity_sql = sprintf("INSERT INTO activities
                                 (actor_id, subject_id, source_id, source_type, activity)
                                 VALUES (%d, %d, %d, 'post', 'post')",
-                                $user_id, $user_id, $this->db->insert_id());
+                                $user_id, $user_id, $post_id);
         $this->db->query($activity_sql);
+
+        return $post_id;
     }
 
     /**
