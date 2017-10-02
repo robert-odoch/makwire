@@ -31,36 +31,70 @@ class Profile extends CI_Controller
                 $data['error'] = $this->upload->display_errors();
             }
             else {
-
                 // Upload the file.
                 $upload_data = $this->upload->data();
 
+                // Get SHA1 of file.
+                $sha1 = sha1_file($upload_data['full_path']);
+                $sha1_directory = substr($sha1, 0, 2);
+
+                $photo_directory = "{$upload_data['file_path']}{$sha1_directory}";
+                $profile_pic_directory = "{$upload_data['file_path']}small/{$sha1_directory}";
+
+                $filename = substr($sha1, 2);
+                $file_ext = $upload_data['file_ext'];
+                $photo_full_path = "{$photo_directory}/{$filename}{$file_ext}";
+                $profile_pic_full_path = "{$profile_pic_directory}/{$filename}{$file_ext}";
+
+                // Configure image_lib.
+                $config['thumb_marker'] = "";
+                $config['create_thumb'] = TRUE;
+                $config['maintain_ratio'] = TRUE;
                 $config['image_library'] = 'gd2';
                 $config['source_image'] = $upload_data['full_path'];
-                $config['create_thumb'] = TRUE;
-                $config['thumb_marker'] = "";
-                $config['maintain_ratio'] = TRUE;
 
-                // Create a 60x60 thumbnail for profile picture.
-                $config['new_image'] = "{$upload_data['file_path']}small";
-                $config['width'] = 60;
-                $config['height'] = 60;
-                $this->image_lib->initialize($config);
-                $this->image_lib->resize();
+                // Create directory if not exist.
+                if ( ! is_dir($photo_directory)) {
+                    mkdir($photo_directory, 0777);  // For normal photos.
+                }
 
-                // Create a 480x300 thumbnail for photo.
-                $config['new_image'] = $upload_data['file_path'];
-                $config['width'] = 480;
-                $config['height'] = 300;
-                $this->image_lib->initialize($config);
-                $this->image_lib->resize();
+                if ( ! is_dir($profile_pic_directory)) {
+                    mkdir($profile_pic_directory, 0777);  // For profile pic thumbnails.
+                }
+
+                // Create thumbnails.
+                if ( ! file_exists($profile_pic_full_path)) {
+                    // Create a 60x60 thumbnail for profile picture.
+                    $config['width'] = 60;
+                    $config['height'] = 60;
+                    $config['new_image'] = $profile_pic_full_path;
+
+                    $this->image_lib->initialize($config);
+                    $this->image_lib->resize();
+                }
+
+                if ( ! file_exists($photo_full_path)) {
+                    // Create a 480x300 thumbnail for photo.
+                    $config['width'] = 480;
+                    $config['height'] = 300;
+                    $config['new_image'] = $photo_full_path;
+
+                    $this->image_lib->initialize($config);
+                    $this->image_lib->resize();
+                }
+
+                // Delete the uploaded file, only interested in the resized file.
+                unlink($upload_data['full_path']);
+
+                // Update full_path.
+                $upload_data['full_path'] = $photo_full_path;
 
                 // Record photo data in the photos table.
                 $photo_id = $this->photo_model->add_photo($upload_data, $_SESSION['user_id']);
 
                 // Set profile picture.
                 $this->profile_model->set_profile_picture($photo_id, $_SESSION['user_id']);
-                redirect(base_url("user/{$_SESSION['user_id']}"));
+                // redirect(base_url("user/{$_SESSION['user_id']}"));
             }
         }
 

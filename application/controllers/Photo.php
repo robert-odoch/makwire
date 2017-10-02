@@ -40,18 +40,40 @@ class Photo extends CI_Controller
             else {
                 $upload_data = $this->upload->data();
 
+                // Get SHA1 of file.
+                $sha1 = sha1_file($upload_data['full_path']);
+                $filename = substr($sha1, 2);
+                $file_ext = $upload_data['file_ext'];
+                $directory = $upload_data['file_path'] . substr($sha1, 0, 2);
+                $full_path = "{$directory}/{$filename}{$file_ext}";
+
+                // Configure image_lib.
                 $config['image_library'] = 'gd2';
                 $config['source_image'] = $upload_data['full_path'];
                 $config['create_thumb'] = TRUE;
                 $config['thumb_marker'] = "";
                 $config['maintain_ratio'] = TRUE;
 
-                // Create a 480x300 thumbnail for photo.
-                $config['new_image'] = $upload_data['file_path'];
-                $config['width'] = 480;
-                $config['height'] = 300;
-                $this->image_lib->initialize($config);
-                $this->image_lib->resize();
+                // Create directory if not exist.
+                if ( ! is_dir($directory)) {
+                    mkdir($directory, 0777);
+                }
+
+                if ( ! file_exists($full_path)) {
+                    // Create a 480x300 thumbnail for photo.
+                    $config['width'] = 480;
+                    $config['height'] = 300;
+                    $config['new_image'] = $full_path;
+
+                    $this->image_lib->initialize($config);
+                    $this->image_lib->resize();
+                }
+
+                // Delete the uploaded file, only interested in the resized file.
+                unlink($upload_data['full_path']);
+
+                // Update full_path.
+                $upload_data['full_path'] = $full_path;
 
                 // Record it in the database.
                 $photo_id = $this->photo_model->publish($upload_data, $_SESSION['user_id']);

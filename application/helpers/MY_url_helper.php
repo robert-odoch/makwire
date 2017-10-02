@@ -17,4 +17,10 @@ if (!function_exists('ensure_user_is_logged_in')) {
         }
     }
 }
+
+if (!function_exists('upload_dir')) {
+    function upload_dir() {
+        return base_url('uploads');
+    }
+}
 ?>

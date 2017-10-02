@@ -195,8 +195,6 @@ class User_model extends CI_Model
         }
         else {
             $profile_pic_path = $path_query->row_array()['profile_pic_path'];
-            $profile_pic_path =  str_replace("{$_SERVER['DOCUMENT_ROOT']}makwire/", '', $profile_pic_path);
-            $profile_pic_path = base_url($profile_pic_path);
         }
 
         return $profile_pic_path;
