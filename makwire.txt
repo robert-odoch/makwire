@@ -1,3 +1,7 @@
+#Ubuntu bug
+    - When you select files, right click on them and select `New folder with selected items',
+      nautilus freezes and crashes.
+
 #Personal note
 - Check for php code being ouput near search box on mubali
 - purple background color [#830396]
@@ -43,32 +47,59 @@
 	background-repeat: no-repeat;
 }
 - Green color on linux mint -> #5B9722
+- Green color on mak.ac.ug -> #23A74C
+- Bottom border for lists on mak.ac.ug
+        .content-wrapper ul li {
+	        line-height: 40px;
+	        border-bottom: 1px solid #f1f1f1;
+        }
 
 #Ajax candidates.
 - news feed, timeline.
-- like, comment, share, reply.
-- likes, comments, shares, replies.
+- chat (message, view older messages).
+- like, comment, birthday message, reply, share.
 - add friend, confirm friend, delete request.
-- status, photo, video.
-- show more links(long post, notifications, messages, friend requests, find friends).
-- message, birthday message.
-- chat(view older messages).
+- status, photo, video, link.
+- likes, comments, shares, replies.
+- show more links (
+    long post, notifications, messages, comments,
+    likes, shares, friend requests, find friends
+).
 - settings.
 
 #TODO
-- Look for fonts Adobe Minion Pro(text)
-- Use bootstrap's error classes for form inputs.
-- Go through the code and remove duplicate code.
-- Read through the stylesheet and remove duplicate code.
+- How to post file uploads using jquery ajax.
+- Test adding a link using ajax.
+- Load the hidden divs as required.
+- Group messages in chat by date (e.g. Today, Yesterday, 27th August, 2017).
+- Minimize css and js files for site before hosting.
+  
+- Only allow users to change their names after 60 days.
+- Allow users to add links to other social networks (whatsapp, facebook, twitter, linked in, github).
+- Get Mak hostels.
+- Adding former schools.
 - Document the code.
+
+- *** Broadcast posts (from admin). ***
+
+#INCOMPLETE
+- Help.
+- Request admin.
+
+#FAQ
+- What is a Mak email?
+- How can I get a Mak email?
 
 #Unchecked activities.
 - A youtube video not loading.
 - URLs used for redirects in login.
 
 #IMPROVEMENTS
+- Add &nbsp; after fa icons.
+- Use bootstrap's error classes for form inputs.
+- Go through the code and remove duplicate code.
+- Read through the stylesheet and remove duplicate code.
 - Ensure that every page has a link for viewing more items.
-- Show birthday (if user viewing the page is the celebrant).
 - active users.
 - get[_num]_notifications.
 - Profile questions.
@@ -86,6 +117,8 @@
 - Hunt for bugs.
 
 --------------------------------------------------------------------------------
+- Allow users to send files to other users.
+- Allow users to add a tagline.
 - Add airplane mode.
 - Add favorite quote (only one).
 - Add work experience.
@@ -93,7 +126,6 @@
 - Add options for marking a group as favorite.
 - Group posts should not be shared.
 - consider creating table events to store upcoming events.
-- Allow users to add links to other social networks.
 - Integrate news from external sources.
 - Wish users MERRY CHRISTMAS, Happy Easter, Happy New Year etc.
 - Allow users to upload files (powerpoint, pdf, odt, word, excel, access)
@@ -270,6 +302,61 @@ ________________________________________________________________________________
     (This can be automated by putting foreign key constraints)
 - Improve on the chat sidebar.
 - Allow users to edit a message if it hasn't yet been replied. *
+- Check whether a username hasn't already been taken during registration.
+- Show a refresh link for chat to get new messages.
+- Add title to the refresh link.
+- Remove the friends button.
+- When a user accepts a friend request, delete the activity for the friend request.
+- Don't return users whom a user has already sent a friend request in find friends.
+- How to get viewport width using jquery. [ans:
+    // Returns the width of the browser viewport.
+    $(window).width();
+    
+    // Returns the width of the HTML document.
+    $(document).width();
+]
+- Unfollow a user.
+- Move get formatted email functions to the MY_Email helper.
+- Fix seconday/primary user names.
+- Find a good font for posts, comments etc.
+- Get Mak colleges and schools.
+- Use a user's email to determine the possible schools they are in.
+- Improve show messages.
+- Create and use classes profile-pic-(xs|sm|md|lg)
+- Improve show birthday (if user viewing the page is the celebrant).
+- Use tooltips for link titles. [
+    1. Add tooltip to an element.
+        data-toggle='tooltip'
+    
+    2. Enable tooltip for all elements.
+        <script>
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip(); 
+        });
+        </script>
+    
+    3. Tooltip placement.
+        <a href="#" data-toggle="tooltip" data-placement="top" title="Hooray!">Hover</a>
+        <a href="#" data-toggle="tooltip" data-placement="bottom" title="Hooray!">Hover</a>
+        <a href="#" data-toggle="tooltip" data-placement="left" title="Hooray!">Hover</a>
+        <a href="#" data-toggle="tooltip" data-placement="right" title="Hooray!">Hover</a>
+]
+- Ask a user whether they are sure they want to unfriend/unfollow a friend.
+- Ask for level when adding/editing a school.
+- Ask for duration when adding programme. *
+- Only allow a user to add a hall if she has added atleast one school and the
+  number of halls added is less or equal to number of schools.
+- Improve on the mobile nav.
+- Get Mak programmes (by school not college). *
+- Ajaxify show more news feed and timeline items link.
+- Replace bootstrap glyphs with fa-glyphs.
+- Add AJAX (like [post, photo, video, link]).
+- Add AJAX (like [comment, reply, birthday message]).
+- Fix underline and tooltip when liking an item using AJAX.
+- AJAX: If the user is on the likes page, append the new like to the list of likes.
+- Ajaxify show more for long posts.
+- Fix uploading photos.
+- Remove justificaton on alert text for small devices.
 
             ^^^^^^ The ones marked with * were foregone. ^^^^^^
             ^^^^^^ Take some time later to re-consider them. ^^^^^
