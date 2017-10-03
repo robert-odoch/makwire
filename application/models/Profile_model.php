@@ -37,11 +37,7 @@ class Profile_model extends CI_Model
         $photo_path = $query->row_array()['full_path'];
 
         // Update profile_pic_path in the users table.
-        $path_components = explode('/', $photo_path);
-        $count_path_components = count($path_components);
-        $sha1_filename = $path_components[$count_path_components-1];
-        $sha1_directory = $path_components[$count_path_components-2];
-        $profile_pic_path = upload_dir() . "/small/{$sha1_directory}/{$sha1_filename}";
+        $profile_pic_path = str_replace(upload_dir(), profile_pics_directory(), $photo_path);
         $update_sql = sprintf("UPDATE users SET profile_pic_path = %s WHERE (user_id = %d) LIMIT 1",
                                 $this->db->escape($profile_pic_path),
                                 $user_id);

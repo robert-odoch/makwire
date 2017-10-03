@@ -37,8 +37,7 @@ class Photo_model extends CI_Model
         $photo = $photo_query->row_array();
 
         // Add web path.
-        $web_path = str_replace("{$_SERVER['DOCUMENT_ROOT']}makwire", '', $photo['full_path']);
-        $photo['web_path'] = base_url($web_path);
+        $photo['web_path'] = get_image_web_path($photo['full_path']);
 
         // Add profile picture of the user.
         $photo['profile_pic_path'] = $this->user_model->get_profile_pic_path($photo['user_id']);

@@ -10,7 +10,7 @@ class Profile extends CI_Controller
         ensure_user_is_logged_in();
 
         // Set up and load the upload library.
-        $config['upload_path'] = 'uploads';
+        $config['upload_path'] = upload_dir();
         $config['allowed_types'] = 'gif|png|jpg|jpeg';
         $config['file_ext_tolower'] = TRUE;
         $config['max_size'] = 1024;
@@ -38,13 +38,13 @@ class Profile extends CI_Controller
                 $sha1 = sha1_file($upload_data['full_path']);
                 $sha1_directory = substr($sha1, 0, 2);
 
-                $photo_directory = "{$upload_data['file_path']}{$sha1_directory}";
-                $profile_pic_directory = "{$upload_data['file_path']}small/{$sha1_directory}";
+                $photo_directory = upload_dir() . $sha1_directory . '/';
+                $profile_pic_directory = profile_pics_directory() . $sha1_directory . '/';
 
                 $filename = substr($sha1, 2);
                 $file_ext = $upload_data['file_ext'];
-                $photo_full_path = "{$photo_directory}/{$filename}{$file_ext}";
-                $profile_pic_full_path = "{$profile_pic_directory}/{$filename}{$file_ext}";
+                $photo_full_path = "{$photo_directory}{$filename}{$file_ext}";
+                $profile_pic_full_path = "{$profile_pic_directory}{$filename}{$file_ext}";
 
                 // Configure image_lib.
                 $config['thumb_marker'] = "";

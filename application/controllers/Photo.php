@@ -10,7 +10,7 @@ class Photo extends CI_Controller
         ensure_user_is_logged_in();
 
         // Set up and load the upload library.
-        $config['upload_path'] = 'uploads';
+        $config['upload_path'] = upload_dir();
         $config['allowed_types'] = 'gif|png|jpg|jpeg';
         $config['file_ext_tolower'] = TRUE;
         $config['max_size'] = 1024;
@@ -44,7 +44,7 @@ class Photo extends CI_Controller
                 $sha1 = sha1_file($upload_data['full_path']);
                 $filename = substr($sha1, 2);
                 $file_ext = $upload_data['file_ext'];
-                $directory = $upload_data['file_path'] . substr($sha1, 0, 2);
+                $directory = upload_dir() . substr($sha1, 0, 2);
                 $full_path = "{$directory}/{$filename}{$file_ext}";
 
                 // Configure image_lib.

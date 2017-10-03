@@ -191,13 +191,14 @@ class User_model extends CI_Model
 
         if ($path_query->num_rows() == 0) {
             // No profile pic set, use a dummy picture.
-            $profile_pic_path = base_url("images/missing_user.png");
+            $path = base_url('images/missing_user.png');
         }
         else {
-            $profile_pic_path = $path_query->row_array()['profile_pic_path'];
+            $path = $path_query->row_array()['profile_pic_path'];
+            $path = get_image_web_path($path);
         }
 
-        return $profile_pic_path;
+        return $path;
     }
 
     /**
