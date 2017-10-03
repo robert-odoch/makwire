@@ -763,7 +763,10 @@ p.post a.more {
     height: 25px;
 }
 
-
+.submitting {
+    width: 20px;
+    height: 20px;
+}
 
 /*** Make these divs stick to their positions ***/
 .side-content {

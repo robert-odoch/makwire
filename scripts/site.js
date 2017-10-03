@@ -1,9 +1,10 @@
-var loadingMarkup = "<div class='loading'>" +
-                        "<div>" +
-                            "<img src='http://localhost/makwire/images/ajax-loader.gif'>" +
-                            "<span>&nbsp;Loading...</span>" +
-                        "</div>" +
-                    "</div>";
+var submittingIndicator = "<img src='http://localhost/makwire/images/ajax-loader.gif' class='submitting'>";
+var loadingIndicator    = "<div class='loading'>" +
+                                "<div>" +
+                                    "<img src='http://localhost/makwire/images/ajax-loader.gif'>" +
+                                    "<span>&nbsp;Loading...</span>" +
+                                "</div>" +
+                            "</div>";
 
 /*** Tooltips ***/
 $('[data-toggle="tooltip"]').tooltip();
@@ -24,7 +25,7 @@ $('#status-nav li a').click(function(event) {
     formHeight = parseInt(formHeight) + 10 + 'px';
 
     $box.find('.alert').remove();
-    $form.replaceWith($(loadingMarkup));
+    $form.replaceWith($(loadingIndicator));
     $box.find('.loading div').css({
         height: formHeight,
         paddingTop: '40px'
@@ -50,14 +51,23 @@ $('#status-nav li a').click(function(event) {
 $('#update-status').on('submit', 'form', function(event) {
     var $this = $(this);
 
-    // For now we can't post photos.
+    // For now we can't post photos using AJAX.
     if ($this.find('input:file').length > 0) {
         return;
     }
 
     event.preventDefault();
+
+    // Show submitting indicator.
+    $this.find('input:submit').after($(submittingIndicator));
+    $this.find('img.submitting').css({marginLeft: '5px'});
+
     var formAction = $this.attr('action');
     $.post(formAction, $this.serialize(), function(data) {
+        // Remove submitting indicator.
+        $this.find('img.submitting').remove();
+
+        // Process result.
         var result = $.parseJSON(data);
         var $input = $this.find('textarea, input').not(':submit');
         if (result.error) {
@@ -172,7 +182,7 @@ $('body').on('click', 'a.send-message', function(event) {
     event.preventDefault();
 
     // Remove current chat users and show loading indicator.
-    $('.active-users').replaceWith($(loadingMarkup));
+    $('.active-users').replaceWith($(loadingIndicator));
 
     var url = $(this).attr('href');
     $('.col-small').load(url, function() {
@@ -227,7 +237,7 @@ $('body').on('click', '.refresh-chat', function(event) {
     event.preventDefault();
 
     // Show loading indicator.
-    $(loadingMarkup).insertBefore('.chat-content .new-message');
+    $(loadingIndicator).insertBefore('.chat-content .new-message');
 
     var url = $(this).attr('href');
     $.get(url, function(data) {
@@ -254,7 +264,7 @@ function previousMessages(event) {
     event.preventDefault();
 
     // Remove the link for viewing previous messages and show loading indicator.
-    $('.chat-content .previous').replaceWith($(loadingMarkup));
+    $('.chat-content .previous').replaceWith($(loadingIndicator));
 
     var url = $(this).attr('href');
     $.get(url, function(data) {
@@ -279,7 +289,7 @@ $('.col-small').on('click', '.back-btn', function(event) {
     var $colSmall = $('.col-small');
 
     $colSmall.empty();
-    $(loadingMarkup).prependTo($colSmall);
+    $(loadingIndicator).prependTo($colSmall);
 
     // Load active users.
     var url = $(this).attr('href');
@@ -294,7 +304,7 @@ function moreNewsFeedTimelineItems(event) {
     var $parent = $this.parents('div.more');
 
     // Show loading indicator.
-    $this.replaceWith($(loadingMarkup));
+    $this.replaceWith($(loadingIndicator));
 
     var url = $this.attr('href');
     $.get(url, function(data) {
