@@ -56,8 +56,6 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = TRUE;
 
 // Define routes for the Makwiere controller.
-$route['help'] = 'makwire/help';
 $route['menu'] = 'makwire/menu';
 $route['error'] = 'makwire/error';
 $route['success'] = 'makwire/success';
-$route['welcome'] = 'makwire/welcome';
