@@ -287,6 +287,30 @@ class Photo_model extends CI_Model
     {
         $simplePhoto = new SimplePhoto($photo['photo_id'], $photo['user_id']);
         $this->utility_model->delete_item($simplePhoto, $user_id);
+
+        // If the photo is currently being used as a profile picture,
+        if ($photo['is_curr_profile_pic']) {
+            // Set profile_pic_path to NULL.
+            $sql = sprintf('UPDATE users SET profile_pic_path = NULL WHERE user_id = %d',
+                            $user_id);
+            $this->db->query($sql);
+
+            // And also remove the activity.
+            $activity_sql = sprintf("DELETE FROM activities
+                                        WHERE actor_id = %d AND source_id = %d AND activity = 'profile_pic_change'",
+                                        $user_id, $photo['photo_id']);
+            $this->db->query($activity_sql);
+        }
+    }
+
+    // Checks if some use still has a photo with a given name in the photos table.
+    public function photo_exists($full_path)
+    {
+        $sql = sprintf('SELECT photo_id FROM photos WHERE full_path = %s',
+                        $this->db->escape($full_path));
+        $query = $this->db->query($sql);
+
+        return ($query->num_rows() > 0);
     }
 
     public function update_description($photo_id, $new_description)

@@ -149,7 +149,28 @@ class Photo extends CI_Controller
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             try {
+                // Remove the record from the database for this user.
                 $this->photo_model->delete_photo($photo, $_SESSION['user_id']);
+
+                // If the photo is no longer being used, delete it from the file system.
+                if ( ! $this->photo_model->photo_exists($photo['full_path'])) {
+                    unlink($photo['full_path']);
+
+                    // Also delete the profile pic thumbnail.
+                    $path_components = explode('/', $photo['full_path']);
+                    $count_path_components = count($path_components);
+                    $sha1_filename = $path_components[$count_path_components - 1];
+                    $sha1_directory = $path_components[$count_path_components - 2];
+
+                    // Get the uploads directory.
+                    unset($path_components[$count_path_components - 1], $path_components[$count_path_components - 2]);
+                    $uploads_directory = implode('/', $path_components);
+
+                    $filename = "{$uploads_directory}/small/{$sha1_directory}/{$sha1_filename}";
+                    unlink($filename);
+                }
+
+                // Give feedback.
                 $_SESSION['message'] = 'Your photo has been successfully deleted.';
                 redirect(base_url('success'));
             }
