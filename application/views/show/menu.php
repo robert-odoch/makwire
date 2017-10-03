@@ -49,11 +49,6 @@
                     </a>
                 <?php endif; ?>
 
-                <a href='<?= base_url('help'); ?>' class='list-group-item'>
-                    <span class='fa fa-fw fa-question-circle' aria-hidden='true'></span>&nbsp;
-                    Help
-                </a>
-
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <a href='<?= base_url('logout'); ?>' class='list-group-item'>
                         <span class='fa fa-fw fa-sign-out' aria-hidden='true'></span>&nbsp;

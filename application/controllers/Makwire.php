@@ -26,11 +26,6 @@ class Makwire extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function help()
-    {
-
-    }
-
     public function error()
     {
         if (empty($_SESSION['user_id'])) {

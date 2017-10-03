@@ -151,12 +151,6 @@ isset($page) OR $page = '';  // Default value for page.
                             </a>
                         </li>
                         <?php } ?>
-
-                        <li>
-                            <a href='<?= base_url('help'); ?>'>
-                                <span class='fa fa-question-circle' aria-hidden='true'></span>&nbsp; Help
-                            </a>
-                        </li>
                     </ul>
                 </div>
             </nav>
