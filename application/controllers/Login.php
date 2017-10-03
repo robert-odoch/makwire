@@ -12,7 +12,7 @@ class Login extends CI_Controller
             redirect(base_url('news-feed'));  // Already logged in user.
         }
 
-        $this->load->model('login_model');
+        $this->load->model(['login_model', 'account_model']);
     }
 
     public function index()
