@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 26, 2017 at 11:27 PM
+-- Generation Time: Oct 03, 2017 at 08:29 AM
 -- Server version: 10.1.10-MariaDB
 -- PHP Version: 7.0.2
 
@@ -347,12 +347,13 @@ CREATE TABLE `notification_read` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `password_reset_token`
+-- Table structure for table `password_reset`
 --
 
-CREATE TABLE `password_reset_token` (
+CREATE TABLE `password_reset` (
   `email` varchar(80) NOT NULL,
   `token` varchar(40) NOT NULL,
+  `passwd` varchar(40) DEFAULT NULL,
   `date_entered` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
