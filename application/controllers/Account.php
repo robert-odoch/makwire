@@ -25,7 +25,7 @@ class Account extends CI_Controller
 
             // Update the database.
             $new_passwd = substr(md5(uniqid(rand(), true)), 3, 10);
-            $this->account_model->change_password($user_data['user_id'], $new_passwd);
+            $this->account_model->save_password_reset_password($user_data['email'], $new_passwd);
 
             // Send instructions for re-setting password.
             $subject = 'Makwire: your new password';

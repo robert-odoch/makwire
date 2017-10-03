@@ -11,6 +11,14 @@
             <div class='main-content'>
                 <div class='box'>
                     <h4>Change password</h4>
+
+                    <?php
+                    if ( ! empty($_SESSION['message'])) {
+                        show_message($_SESSION['message'], 'info');
+                        unset($_SESSION['message']);
+                    }
+                    ?>
+
                     <form action='<?= base_url('account/change-password'); ?>'
                             method='post' accept-charset='utf-8' role='form'>
                         <fieldset>
