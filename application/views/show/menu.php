@@ -36,7 +36,7 @@
                         Edit profile
                     </a>
                     <a href='<?= base_url("user/{$_SESSION['user_id']}"); ?>' class='list-group-item'>
-                        <span class='fa fa-fw fa-user' aria-hidden='true'></span>&nbsp;
+                        <span class='fa fa-fw fa-history' aria-hidden='true'></span>&nbsp;
                         Timeline
                     </a>
                     <a href='<?= base_url('news-feed'); ?>' class='list-group-item'>
@@ -55,13 +55,13 @@
                         Log out
                     </a>
                 <?php else: ?>
+                    <a href='<?= base_url('register/step-one'); ?>' class='list-group-item'>
+                        <span class='fa fa-edit' aria-hidden='true'></span>&nbsp;
+                        Register
+                    </a>
                     <a href='<?= base_url('logout'); ?>' class='list-group-item'>
                         <span class='fa fa-fw fa-sign-in' aria-hidden='true'></span>&nbsp;
                         Log in
-                    </a>
-                    <a href='<?= base_url('register/step-one'); ?>' class='list-group-item'>
-                        <span class='fa fa-address-book-o' aria-hidden='true'></span>&nbsp;
-                        Register
                     </a>
                 <?php endif; ?>
             </div>

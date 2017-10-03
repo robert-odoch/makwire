@@ -32,8 +32,9 @@ class Account extends CI_Controller
             $email_data['email_heading'] = 'Makwire password reset';
             $email_data['message'] = "<p>Your password for logging into <b>makwire</b> has
                                         been temporarily changed to {$new_passwd}. Please login
-                                        using this password. Then you may change your password to
-                                        something more familiar.</p>";
+                                        using this password. Then you may change it to something
+                                        more familiar.
+                                        </p>";
             $email_body = $this->load->view('email', $email_data, true);
             $email_sent = $this->account_model->send_email('robertelvisodoch@gmail.com', $user_data['email'], $subject, $email_body);
             if ($email_sent) {

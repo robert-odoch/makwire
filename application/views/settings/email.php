@@ -22,7 +22,8 @@
                             <div class='form-group'>
                                 <p class='help-block'>
                                     You primary makwire email address will be used for
-                                    communications related to your account.
+                                    communications related to your account e.g. when you
+                                    forget your password.
                                 </p>
                                 <select name='primary-email' class='form-control' required>
                                     <?php foreach ($emails as $e): ?>

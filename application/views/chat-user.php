@@ -38,4 +38,4 @@
         </div>
     </div>
 </div>
-<a href='<?= base_url('user/chat'); ?>' class='btn btn-default btn-block back-btn'>&laquo; Active Users</a>
+<a href='<?= base_url('user/chat'); ?>' class='btn btn-default btn-block back-btn'>Active Users</a>

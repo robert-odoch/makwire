@@ -20,8 +20,7 @@
                         <div class='form-group'>
                             <label for='email'>Email Address</label>
                             <span class='help-block'>
-                                Any of your <strong><em>makwire verified</em></strong> email addresses.
-                                Instructions for resetting your password will be sent to this email address.
+                                Any of your makwire verified email addresses.
                             </span>
                             <input type='email' name='email' size='30'
                                     <?php if ( ! empty($email)) print " value='{$email}'" ?>

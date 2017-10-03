@@ -37,8 +37,7 @@
                             <div class='form-group'>
                                 <label for='passwd1'>New password:</label>
                                 <span class='help-block'>
-                                    Must be atleast 6 characters long.<br>
-                                    Include atleast one uppercase letter, a lowercase letter, and a number.
+                                    Must be atleast 6 characters long, and should include atleast one uppercase letter, a lowercase letter, and a number.
                                 </span>
                                 <input type='password' name='passwd1' id='passwd1'
                                 <?php
