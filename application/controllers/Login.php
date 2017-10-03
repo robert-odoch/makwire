@@ -56,19 +56,20 @@ class Login extends CI_Controller
                     }
                 }
                 elseif ($user_id = $this->account_model->password_reset_exists($identifier, $password)) {
-                    $this->account_model->delete_password_reset($identifier, $password);
+                    $this->account_model->update_password_reset($identifier);
 
                     session_start();
                     session_regenerate_id(TRUE);
                     $_SESSION['user_id'] = $user_id;
-                    $_SESSION['message'] = "This is a <strong>one-time</strong> login! For you to be able to login
-                                            next time, select a new password of your choice. Use the password that was sent to
-                                            you by email as your <em>old password</em>.";
+                    $_SESSION['message'] = "This is a <strong>one-time</strong> login!<br><br>
+                                            For you to be able to login next time, change your password
+                                            to a new one of your choice. Use the password that was sent to
+                                            you by email as your old password.";
 
                     redirect(base_url('account/change-password'));
                 }
                 else {
-                    $data['login_errors']['login'] = 'Your login information is incorrect..., please try again.';
+                    $data['login_errors']['login'] = 'Your login information is incorrect... please try again.';
                 }
             }
 

@@ -41,9 +41,29 @@ class Account_model extends CI_Model
 
     public function user_exists($user_id, $password)
     {
+        // First check in the users table.
         $sql = sprintf("SELECT passwd FROM users WHERE user_id = %d", $user_id);
         $query = $this->db->query($sql);
-        return password_verify($password, $query->row()->passwd);
+        $passwd = $query->row_array()['passwd'];
+        if (password_verify($password, $passwd)) {
+            return TRUE;
+        }
+
+        // Check in the password_reset table.
+        $email = $this->get_primary_email($user_id);
+        $reset_sql = sprintf('SELECT passwd FROM password_reset WHERE email = %s',
+                                $this->db->escape($email));
+        $reset_query = $this->db->query($reset_sql);
+        if ($reset_query->num_rows() == 0) {
+            return FALSE;
+        }
+
+        $passwd = $reset_query->row_array()['passwd'];
+        if (password_verify($password, $passwd)) {
+            return TRUE;
+        }
+
+        return FALSE;
     }
 
     public function change_password($user_id, $new_password)
@@ -235,9 +255,16 @@ class Account_model extends CI_Model
 
     public function save_password_reset_token($email, $token)
     {
-        $sql = sprintf("INSERT INTO password_reset (email, token) VALUES (%s, %s)",
-                        $this->db->escape($email), $this->db->escape($token));
+        // Maybe a record already exists.
+        $sql = sprintf('UPDATE password_reset SET token = %s, is_used = 0 WHERE email = %s',
+                        $this->db->escape($token), $this->db->escape($email));
         $this->db->query($sql);
+
+        if ($this->db->affected_rows() == 0) {
+            $sql = sprintf("INSERT INTO password_reset (email, token) VALUES (%s, %s)",
+                            $this->db->escape($email), $this->db->escape($token));
+            $this->db->query($sql);
+        }
     }
 
     public function save_password_reset_password($email, $new_passwd)
@@ -248,53 +275,68 @@ class Account_model extends CI_Model
         $this->db->query($sql);
     }
 
-    public function password_reset_exists($identifier, $password)
+    public function password_reset_exists($identifier)
     {
+        // Get the email.
         if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
-            $user_sql = sprintf('SELECT user_id FROM user_emails WHERE email = %s',
-                                $this->db->escape($identifier));
+            $email = $identifier;
         }
         else {
-            $user_sql = sprintf('SELECT user_id FROM users WHERE uname = %s',
-                                $this->db->escape($identifier));
+            $email_sql = sprintf('SELECT ue.email FROM users u
+                                    LEFT JOIN user_emails ue ON (u.user_id = ue.user_id)
+                                    WHERE u.uname = %s AND ue.is_primary IS TRUE',
+                                    $this->db->escape($identifier));
+            $email_query = $this->db->query($email_sql);
+            if ($email_query->num_rows() == 0) {
+                return FALSE;
+            }
+
+            $email = $email_query->row_array()['email'];
         }
 
-        $user_query = $this->db->query($user_sql);
-        $user_id = $user_query->row_array()['user_id'];
-
-        $passwd_sql = sprintf('SELECT passwd FROM password_reset WHERE user_id = %d',
-                                $user_id);
-        $passwd_query = $this->db->query($passwd_sql);
-        if ($passwd_query->num_rows() == 0) {
+        // Check whether a record exists.
+        $reset_sql = sprintf('SELECT passwd FROM password_reset WHERE email = %s AND is_used IS FALSE',
+                                $this->db->escape($email));
+        $reset_query = $this->db->query($reset_sql);
+        if ($reset_query->num_rows() == 0) {
             return FALSE;
         }
 
-        if (password_verify($password, $passwd_query->row_array()['passwd'])) {
-            return TRUE;
-        }
+        // Get the ID of the user.
+        $user_sql = sprintf('SELECT user_id FROM user_emails WHERE email = %s',
+                            $this->db->escape($email));
+        $user_query = $this->db->query($user_sql);
+        $user_id = $user_query->row_array()['user_id'];
 
         return $user_id;
     }
 
-    public function delete_password_reset($identifier, $password)
+    public function update_password_reset($identifier)
     {
-        // Get user ID.
+        // Get the email.
         if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
-            $user_sql = sprintf('SELECT user_id FROM user_emails WHERE email = %s',
-                                $this->db->escape($identifier));
+            $email = $identifier;
         }
         else {
-            $user_sql = sprintf('SELECT user_id FROM users WHERE uname = %s',
-                                $this->db->escape($identifier));
+            $email_sql = sprintf('SELECT ue.email FROM users u
+                                    LEFT JOIN user_emails ue ON (u.user_id = ue.user_id)
+                                    WHERE u.uname = %s',
+                                    $this->db->escape($identifier));
+            $email_query = $this->db->query($email_sql);
+            if ($email_query->num_rows() == 0) {
+                return FALSE;
+            }
+
+            $email = $email_query->row_array()['email'];
         }
 
-        $user_query = $this->db->query($user_sql);
-        $user_id = $user_query->row_array()['user_id'];
+        $email_query = $this->db->query($email_sql);
+        $email = $email_query->row_array()['email'];
 
         // Delete the reset.
-        $passwd_sql = sprintf("DELETE FROM password_reset WHERE user_id = %d AND passwd = '%s'",
-                                $user_id, password_hash($password, PASSWORD_BCRYPT));
-        $this->db->query($passwd_sql);
+        $sql = sprintf("UPDATE password_reset SET is_used = 1 WHERE email = %s",
+                        $this->db->escape($email));
+        $this->db->query($sql);
     }
 
     public function get_password_reset_user_data($token)
@@ -316,8 +358,8 @@ class Account_model extends CI_Model
 
         $user_id = $query->row_array()['user_id'];
         $data = [
-            'user_id'=>$user_id,
-            'email'=>$email
+            'user_id' => $user_id,
+            'email' => $email
         ];
 
         return $data;
@@ -327,7 +369,9 @@ class Account_model extends CI_Model
     {
         $sql = sprintf('SELECT email FROM user_emails WHERE user_id = %d AND is_primary IS TRUE', $user_id);
         $query = $this->db->query($sql);
-        return $query->row_array()['email'];
+        $email = $query->row_array()['email'];
+
+        return $email;
     }
 }
 ?>
