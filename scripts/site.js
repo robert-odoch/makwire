@@ -92,15 +92,10 @@ $('#update-status').on('submit', 'form', function(event) {
             }
         }
         else {
-            // Remove any previous error message (s).
-            $input.removeClass('has-error');
-            $this.find('span.error').remove();
+            // Re-display the form.
+            $('#status-nav li.active a').trigger('click');
 
-            // Clear the input field.
-            if ($input.not(':file')) {
-                $input.val('');
-            }
-
+            // Show the item just posted.
             var item = $.parseHTML(result.item);
             $(item).insertAfter($this.parents('.box'));
         }
