@@ -8,14 +8,17 @@ class Makwire extends CI_Controller
         parent::__construct();
 
         session_start();
-        if (isset($_SESSION['user_id'])) {
+        if ( ! empty($_SESSION['user_id'])) {
             $this->load->model('user_model');
         }
     }
 
     public function menu()
     {
-        if (isset($_SESSION['user_id'])) {
+        if (empty($_SESSION['user_id'])) {
+            $data = [];
+        }
+        else {
             $data = $this->user_model->initialize_user($_SESSION['user_id']);
         }
 
@@ -32,7 +35,6 @@ class Makwire extends CI_Controller
             $data = [];
         }
         else {
-            $this->load->model('user_model');
             $data = $this->user_model->initialize_user($_SESSION['user_id']);
         }
 
@@ -72,7 +74,6 @@ class Makwire extends CI_Controller
             $data = [];
         }
         else {
-            $this->load->model('user_model');
             $data = $this->user_model->initialize_user($_SESSION['user_id']);
         }
 
@@ -106,8 +107,45 @@ class Makwire extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function welcome()
+    public function mobile_nav()
     {
+        if ( ! is_ajax_request()) {
+            show_404();
+        }
 
+        if (empty($_SESSION['user_id'])) {
+            $data = [];
+        }
+        else {
+            $data = $this->user_model->initialize_user($_SESSION['user_id']);
+        }
+
+        echo $this->load->view('common/mobile-nav', $data, TRUE);
+    }
+
+    public function desktop_nav()
+    {
+        if ( ! is_ajax_request()) {
+            show_404();
+        }
+
+        if (empty($_SESSION['user_id'])) {
+            $data = [];
+        }
+        else {
+            $data = $this->user_model->initialize_user($_SESSION['user_id']);
+        }
+
+        echo $this->load->view('common/desktop-nav', $data, TRUE);
+    }
+
+    public function suggestions()
+    {
+        if ( ! is_ajax_request()) {
+            show_404();
+        }
+
+        $data = $this->user_model->initialize_user($_SESSION['user_id']);
+        echo $this->load->view('common/suggestions', $data, TRUE);
     }
 }

@@ -1,10 +1,73 @@
-var submittingIndicator = "<img src='http://localhost/makwire/images/ajax-loader.gif' class='submitting'>";
+var baseUrl = "http://localhost/makwire/";
+var submittingIndicator = "<img src='" + baseUrl + "images/ajax-loader.gif' class='submitting'>";
 var loadingIndicator    = "<div class='loading'>" +
                                 "<div>" +
-                                    "<img src='http://localhost/makwire/images/ajax-loader.gif'>" +
+                                    "<img src='" + baseUrl + "images/ajax-loader.gif'>" +
                                     "<span>&nbsp;Loading...</span>" +
                                 "</div>" +
                             "</div>";
+
+function updateWindow() {
+    var $window = $(window);
+
+    // Navigation.
+    if ($window.width() > 767) {
+        $('.site-header').load(baseUrl + 'makwire/desktop-nav');
+        $('body').css({paddingTop: '60px'});
+    }
+    else {
+        $('.site-header').load(baseUrl + 'makwire/mobile-nav');
+        $('body').css({paddingTop: '40px'});
+    }
+
+    // The rest of the updates apply to only logged in users.
+    if ($('.wrapper-lg').not('.nav').length == 0) {
+        return;
+    }
+
+    // Suggestions column.
+    if ($window.width() > 767) {
+        if ($('.suggestions').length == 0) {
+            var url = baseUrl + 'makwire/suggestions';
+            $.get(url, function(data) {
+                var html = $.parseHTML(data);
+
+                // $('.suggestions').length might return 0 yet one is already being
+                // loaded. Make a last minute attempt to remove any extra suggestion.
+                $('.suggestions').remove();
+                $(html).insertAfter('div.main');
+            });
+        }
+    }
+    else {
+        // Attempt to remove for small viewports.
+        $('.suggestions').remove();
+    }
+
+    // Chat sidebar.
+    if ($window.width() > 971) {
+        if ($('.col-small').length == 0) {
+            var url = baseUrl + 'user/chat';
+            $.get(url, function(data) {
+                var html = $.parseHTML(data);
+
+                // $('.col-small').length might return 0 yet one is already being
+                // loaded. Make a last minute attempt to remove any extra col-small.
+                $(html).insertAfter('.col-large');
+            });
+        }
+    }
+    else {
+        // Attempt to remove for small viewports.
+        $('.col-small').remove();
+    }
+}
+
+/*** Updating the window first time. ***/
+updateWindow();
+
+/*** Updating the window on resize. ***/
+$(window).resize(updateWindow);
 
 /*** Tooltips ***/
 $('[data-toggle="tooltip"]').tooltip();
@@ -273,11 +336,11 @@ function previousMessages(event) {
     });
 }
 
-$('.chat-content').on('click', '.previous', previousMessages);
-$('.col-small').on('click', '.previous', previousMessages);
+$('body').on('click', '.chat-content .previous', previousMessages);
+$('body').on('click', '.col-small .previous', previousMessages);
 
 /*** Returning back to active users. ***/
-$('.col-small').on('click', '.back-btn', function(event) {
+$('body').on('click', '.col-small .back-btn', function(event) {
     event.preventDefault();
 
     // Remove current chat user and show loading indicator.
@@ -288,7 +351,10 @@ $('.col-small').on('click', '.back-btn', function(event) {
 
     // Load active users.
     var url = $(this).attr('href');
-    $colSmall.load(url);
+    $.get(url, function(data) {
+        var html = $.parseHTML(data);
+        $colSmall.replaceWith($(html));
+    });
 });
 
 /*** Loading more news feed and timeline items. ***/
