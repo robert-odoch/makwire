@@ -19,7 +19,7 @@
         </footer>
 
         <!-- Need JQuery to support Bootstrap JQuery plugins -->
-        <script src='<?php echo base_url('scripts/jquery-1.11.3.js'); ?>'></script>
+        <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js'></script>
 
         <!-- Bootsrap core JavaScript -->
         <script src='<?php echo base_url('scripts/bootstrap.min.js'); ?>'></script>
@@ -29,6 +29,6 @@
 
         <!-- And then our very own. -->
         <script src='<?php echo base_url('scripts/plugins/jquery.scrollTo-2.1.2/jquery.scrollTo.min.js'); ?>'></script>
-        <script src='<?php echo base_url('scripts/site.js'); ?>'></script>
+        <script src='<?php echo base_url('scripts/site.min.js'); ?>'></script>
     </body>
 </html>
