@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 03, 2017 at 08:29 AM
+-- Generation Time: Oct 04, 2017 at 06:12 AM
 -- Server version: 10.1.10-MariaDB
 -- PHP Version: 7.0.2
 
@@ -353,7 +353,8 @@ CREATE TABLE `notification_read` (
 CREATE TABLE `password_reset` (
   `email` varchar(80) NOT NULL,
   `token` varchar(40) NOT NULL,
-  `passwd` varchar(40) DEFAULT NULL,
+  `passwd` varchar(255) DEFAULT NULL,
+  `is_used` tinyint(1) NOT NULL,
   `date_entered` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -380,10 +381,8 @@ CREATE TABLE `photos` (
 
 CREATE TABLE `posts` (
   `post_id` bigint(20) UNSIGNED NOT NULL,
-  `audience_id` int(11) UNSIGNED NOT NULL,
-  `audience` enum('timeline','group') NOT NULL DEFAULT 'timeline',
-  `post` mediumtext NOT NULL,
   `user_id` int(11) UNSIGNED NOT NULL,
+  `post` mediumtext NOT NULL,
   `date_entered` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
