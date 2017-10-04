@@ -36,7 +36,7 @@ class Account extends CI_Controller
                                         more familiar.
                                         </p>";
             $email_body = $this->load->view('email', $email_data, true);
-            $email_sent = $this->account_model->send_email('robertelvisodoch@gmail.com', $user_data['email'], $subject, $email_body);
+            $email_sent = $this->account_model->send_email(admin_email(), $user_data['email'], $subject, $email_body);
             if ($email_sent) {
                 $data['success_message'] = "Your password has been changed!<br><br>
                                             The new, temporary password has been sent to <b>{$user_data['email']}</b>.
@@ -78,7 +78,7 @@ class Account extends CI_Controller
                                                 background-color: #5bc0de;'>Reset Password</a>";
                     $email_body = $this->load->view('email', $email_data, true);
 
-                    $email_sent = $this->account_model->send_email('robertelvisodoch@gmail.com', $email_address, $subject, $email_body);
+                    $email_sent = $this->account_model->send_email(admin_email(), $email_address, $subject, $email_body);
                     if ($email_sent) {
                         $data['success_message'] = "We just emailed you!<br><br>
                                                     An email has been sent to <b>{$email_address}</b>.
@@ -312,7 +312,7 @@ class Account extends CI_Controller
                             $email_body = registration_email_message($activation_code);
                         }
 
-                        $this->account_model->send_email('robertelvisodoch@gmail.com', $email, $subject, $email_body);
+                        $this->account_model->send_email(admin_email(), $email, $subject, $email_body);
                         $data['success_message'] = "We just emailed you!<br><br>
                                                     An email has been sent to {$email}. Please use the link in that email
                                                     to activate your email address.";

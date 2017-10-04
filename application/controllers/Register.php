@@ -57,7 +57,7 @@ class Register extends CI_Controller
                     $this->account_model->add_email(NULL, $email, $activation_code);
                     $subject = 'Makwire: Please verify your email address.';
                     $email_body = registration_email_message($activation_code);
-                    if ( ! $this->account_model->send_email('robertelvisodoch@gmail.com', $email, $subject, $email_body)) {
+                    if ( ! $this->account_model->send_email(admin_email(), $email, $subject, $email_body)) {
                         $data['info_message'] = "Sorry, we couldn't send your activation email.<br>
                                                 The admin has been notified about the issue
                                                 and will fix it as soon as possible.<br>
@@ -231,7 +231,7 @@ class Register extends CI_Controller
                                             find friends, post interesting stories, upload photos, share youtube videos,
                                             and much more...</p>";
                 $email_body = $this->load->view('email', $email_data, true);
-                $this->account_model->send_email('robertelvisodoch@gmail.com', $email_address, $subject, $email_body);
+                $this->account_model->send_email(admin_email(), $email_address, $subject, $email_body);
                 unset($_SESSION['data']);
 
                 $_SESSION['user_id'] = $user_id;

@@ -178,3 +178,9 @@ if (!function_exists('registration_email_message')) {
     }
 
 }
+
+if (!function_exists('admin_email')) {
+    function admin_email() {
+        return 'admin@makwire.com';
+    }
+}

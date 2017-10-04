@@ -64,7 +64,7 @@ class Settings extends CI_Controller
                     $message = 'Please use <a href="' .
                                 base_url("account/activate-email/${activation_code}") .
                                 '">this link</a> to activate your email address.';
-                    if ( ! $this->account_model->send_email('robertelvisodoch@gmail.com', $email, $subject, $message)) {
+                    if ( ! $this->account_model->send_email(admin_email(), $email, $subject, $message)) {
                         $data['info_message'] = "Sorry, we couldn't send your activation email.<br>
                                                 The admin has been notified about the issue
                                                 and will fix it as soon as possible.<br>
