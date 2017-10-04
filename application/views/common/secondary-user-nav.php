@@ -17,7 +17,7 @@
                 <h4><a href='<?= base_url("user/{$suid}"); ?>'><?= $secondary_user; ?></a></h4>
                 <div class='btn-group btn-group-xs'>
                     <?php
-                    if ($suid !== $_SESSION['user_id']) {
+                    if ($suid != $_SESSION['user_id']) {
                         if ($friendship_status['are_friends']) {
                             print "<a href='" . base_url("user/send-message/{$suid}") .
                                     "' class='btn btn-xs btn-default send-message'>
