@@ -163,7 +163,7 @@ $('#update-status').on('submit', 'form', function(event) {
 
             // Show the item just posted.
             var item = $.parseHTML(result.item);
-            $(item).insertAfter($this.parents('.box'));
+            $(item).insertAfter($('#update-status'));
         }
     });
 });
