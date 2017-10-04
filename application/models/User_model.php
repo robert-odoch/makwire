@@ -1292,9 +1292,18 @@ class User_model extends CI_Model
                         $user_id);
         $query = $this->db->query($sql);
 
-        $last_read_notif_id = 0;  // Default if user hasn't read any notifications before.
-        if ($query->num_rows() == 1) {
+        if ($query->num_rows() > 0) {
             $last_read_notif_id = $query->row_array()['activity_id'];
+        }
+        else {
+            // New user (hasn't read any notifications before).
+            // Use the ID of the first activity with date_entered greater than that of user creation.
+            $date_sql = sprintf('SELECT date_created FROM users WHERE user_id = %d');
+            $activity_sql = sprintf('SELECT activity_id FROM activities WHERE date_entered >= (%s)
+                                     ORDER BY date_entered ASC LIMIT 1',
+                                    $date_sql);
+            $activity_query = $this->db-query($activity_sql);
+            $last_read_notif_id = $activity_query->row_array()['activity_id'];
         }
 
         return $last_read_notif_id;
