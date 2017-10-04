@@ -585,9 +585,7 @@ class User_model extends CI_Model
         // the same object.
         $combined_notifs = ['message', 'like', 'comment', 'reply', 'share'];
         $combined_notifs_str = "'message', 'like', 'comment', 'reply', 'share'";
-        $atomic_notifs_str = "'birthday', 'profile_pic_change', 'friend_request',
-                                'join_group_request', 'confirmed_friend_request',
-                                'confirmed_join_group_request'";
+        $atomic_notifs_str = "'birthday', 'profile_pic_change', 'confirmed_friend_request'";
 
         // Get the ID's of all this user's friends.
         $friends_ids = $this->get_friends_ids($user_id);
@@ -644,29 +642,6 @@ class User_model extends CI_Model
 
         $notifs_query = $this->db->query($notifs_sql);
         $notifs_results = $notifs_query->result_array();
-
-        if ($filter) {
-            // Don't count friend_requests that have already been seen.
-            $num_results = count($notifs_results);
-            for ($i = 0; $i < $num_results; ++$i) {
-                if ($notifs_results[$i]['activity'] == 'friend_request') {
-                    $users_sql = sprintf("SELECT actor_id, subject_id FROM  activities WHERE activity_id = %d",
-                                            $notifs_results[$i]['activity_id']);
-                    $users_result = $this->db->query($users_sql)->row_array();
-
-                    $fr_seen_sql = sprintf("SELECT seen FROM friend_requests WHERE user_id = %d AND target_id = %d",
-                                            $users_result['actor_id'], $users_result['subject_id']);
-                    $fr_seen_result = $this->db->query($fr_seen_sql)->row_array();
-                    if ($fr_seen_result['seen']) {
-                        if ($notifs_results[$i]['activity_id'] > $last_read_notif_id) {
-                            $this->update_notification_read($user_id, $notifs_results[$i]['activity_id']);
-                        }
-                        unset($notifs_results[$i]);
-                    }
-                }
-            }
-        }
-
         $num_notifications = count($notifs_results);
 
         if (isset($birthdays_sql)) {
@@ -689,13 +664,6 @@ class User_model extends CI_Model
                     $this->db->query($activity_sql);
                     ++$num_notifications;
                 }
-                else {
-                    // Not so new, but check whether this user has seen it.
-                    if ($query->row()->activity_id > $last_read_notif_id) {
-                        // Hasn't seen.
-                        ++$num_notifications;
-                    }
-                }
             }
         }
 
@@ -717,9 +685,7 @@ class User_model extends CI_Model
         // the same object.
         $combined_notifs = ['message', 'like', 'comment', 'reply', 'share'];
         $combined_notifs_str = "'message', 'like', 'comment', 'reply', 'share'";
-        $atomic_notifs_str = "'birthday', 'profile_pic_change', 'friend_request', " .
-                                "'join_group_request', 'confirmed_friend_request', " .
-                                "'confirmed_join_group_request'";
+        $atomic_notifs_str = "'birthday', 'profile_pic_change', 'confirmed_friend_request'";
 
         // Get the ID's of all this user's friends.
         $friends_ids = $this->get_friends_ids($user_id);
