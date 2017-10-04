@@ -20,7 +20,7 @@ if (!function_exists('ensure_user_is_logged_in')) {
 
 if (!function_exists('host_www_root')) {
     function host_www_root() {
-        return '/home/bobuncle/public_html/';
+        return '/opt/lampp/htdocs/makwire/';
     }
 }
 
