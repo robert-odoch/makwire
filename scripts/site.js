@@ -1,8 +1,8 @@
 var baseUrl = "http://localhost/makwire/";
-var submittingIndicator = "<img src='" + baseUrl + "images/ajax-loader.gif' class='submitting'>";
+var submittingIndicator = "<img src='" + baseUrl + "images/submitting.gif' class='submitting'>";
 var loadingIndicator    = "<div class='loading'>" +
                                 "<div>" +
-                                    "<img src='" + baseUrl + "images/ajax-loader.gif'>" +
+                                    "<img src='" + baseUrl + "images/loading.gif'>" +
                                     "<span>&nbsp;Loading...</span>" +
                                 "</div>" +
                             "</div>";
@@ -120,6 +120,9 @@ $('#update-status').on('submit', 'form', function(event) {
     }
 
     event.preventDefault();
+
+    // Disable the submit button.
+    $this.find('input:submit').attr('disabled', true);
 
     // Show submitting indicator.
     $this.find('input:submit').after($(submittingIndicator));
