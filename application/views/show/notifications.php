@@ -24,11 +24,6 @@ require_once(__DIR__ . '/helper functions/show_notifications_functions.php');
             <?php
             foreach ($notifications as $notif) {
                 switch ($notif['activity']) {
-                case 'friend_request':
-                    print "<li><a href='" . base_url("user/friend-requests/0/{$notif['source_id']}") .
-                            "'><strong class='object'>{$notif['actor']}</strong> sent you a friend request.</a>
-                            <small class='time'><span class='fa fa-clock-o' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>";
-                    break;
                 case 'confirmed_friend_request':
                     print "<li><a href='" . base_url("user/{$notif['actor_id']}") .
                             "'><strong class='object'>{$notif['actor']}</strong> accepted your friend request.</a>
