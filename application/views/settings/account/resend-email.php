@@ -5,7 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <div class='wrapper-md'>
     <div role='main' class='main'>
         <div class='box'>
-            <h4>Resend email activation link</h4>
+            <h4>Resend email verification link</h4>
             <?php
             if ( ! empty($success_message)) {
                 show_message($success_message, 'success');
