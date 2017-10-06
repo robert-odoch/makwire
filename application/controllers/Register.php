@@ -65,7 +65,8 @@ class Register extends CI_Controller
                                                 Please try again later.";
                     }
                     else {
-                        $data['success_message'] = "An email has been sent to <strong>{$email}</strong>.
+                        $data['success_message'] = "We just emailed you!<br><br>
+                                                    An email has been sent to <strong>{$email}</strong>.
                                                     Please use the link in that email to continue with
                                                     the registration process.";
                     }
