@@ -2,20 +2,24 @@
 
 <div class='wrapper-md'>
     <div role='main' class='main'>
+        <?php
+        if ( ! empty($info_message)) {
+            echo "<div class='box'>";
+            show_message($info_message, 'info');
+            echo "</div>";
+
+            unset($info_message);
+        }
+        ?>
+
         <div class='box'>
+            <h4>Log In</h4>
+
             <?php
             if (isset($login_errors) && array_key_exists('login', $login_errors)) {
                 show_message($login_errors['login'], 'danger');
             }
-            elseif (isset($info_message)) {
-                show_message($info_message, 'info');
-                unset($info_message);
-            }
             ?>
-        </div>
-        
-        <div class='box'>
-            <h4>Log In</h4>
 
             <form action='<?= base_url('login'); ?>' method='post' accept-charset='utf-8' role='form'>
                 <fieldset>
