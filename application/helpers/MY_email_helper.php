@@ -184,3 +184,9 @@ if (!function_exists('admin_email')) {
         return 'admin@makwire.com';
     }
 }
+
+if (!function_exists('accounts_email')) {
+    function accounts_email() {
+        return 'accounts@makwire.com';
+    }
+}
