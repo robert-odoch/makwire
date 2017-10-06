@@ -156,6 +156,9 @@ $('#update-status').on('submit', 'form', function(event) {
                 var $errorMarkup = $("<span class='error'>" + result.error + "</span>");
                 $input.after($errorMarkup);
             }
+
+            // Enable the submit button.
+            $this.find('input:submit').attr('disabled', false);
         }
         else {
             // Re-display the form.
