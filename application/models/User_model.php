@@ -1298,7 +1298,7 @@ class User_model extends CI_Model
         else {
             // New user (hasn't read any notifications before).
             // Use the ID of the first activity with date_entered greater than that of user creation.
-            $date_sql = sprintf('SELECT date_created FROM users WHERE user_id = %d');
+            $date_sql = sprintf('SELECT date_created FROM users WHERE user_id = %d', $user_id);
             $activity_sql = sprintf('SELECT activity_id FROM activities WHERE date_entered >= (%s)
                                      ORDER BY date_entered ASC LIMIT 1',
                                     $date_sql);
