@@ -373,8 +373,8 @@ class Profile_model extends CI_Model
 
         // If we have reached this point, then the years are OK.
         $add_school_sql = sprintf("INSERT INTO user_schools (user_id, school_id, level, date_from, date_to)
-                                    VALUES (%d, %d, %s, %s)",
-                                    $user_id, $data['school_id'], $data['level'],
+                                    VALUES (%d, %d, %s, %s, %s)",
+                                    $user_id, $data['school_id'], $this->db->escape($data['level']),
                                     $this->db->escape($data['start_date']),
                                     $this->db->escape($data['end_date']));
         $this->db->query($add_school_sql);
