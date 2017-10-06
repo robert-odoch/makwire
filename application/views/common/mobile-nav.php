@@ -8,7 +8,7 @@
                     <?php if ($page == 'news-feed') print 'active'; ?>
                     '>
                     <span class='fa fa-home' aria-hidden='true'></span>
-                    <span class='sr-only'>News feed</span>
+                    <span class='sr-only'>Home</span>
                 </a>
                 <a href='<?= base_url('user/messages'); ?>' class='btn
                     <?php if ($page == 'messages') print 'active'; ?>

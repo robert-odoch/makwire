@@ -35,17 +35,17 @@
                         <span class='fa fa-fw fa-pencil' aria-hidden='true'></span>&nbsp;
                         Edit profile
                     </a>
+                    <a href='<?= base_url('settings/account'); ?>' class='list-group-item'>
+                        <span class='fa fa-fw fa-cog' aria-hidden='true'></span>&nbsp;
+                        Settings
+                    </a>
                     <a href='<?= base_url("user/{$_SESSION['user_id']}"); ?>' class='list-group-item'>
                         <span class='fa fa-fw fa-history' aria-hidden='true'></span>&nbsp;
                         Timeline
                     </a>
                     <a href='<?= base_url('news-feed'); ?>' class='list-group-item'>
-                        <span class='fa fa-fw fa-feed' aria-hidden='true'></span>&nbsp;
-                        News feed
-                    </a>
-                    <a href='<?= base_url('settings/account'); ?>' class='list-group-item'>
-                        <span class='fa fa-fw fa-cog' aria-hidden='true'></span>&nbsp;
-                        Settings
+                        <span class='fa fa-fw fa-home' aria-hidden='true'></span>&nbsp;
+                        Home
                     </a>
                 <?php endif; ?>
 
