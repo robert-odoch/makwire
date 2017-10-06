@@ -55,6 +55,7 @@ class Register extends CI_Controller
                 else {
                     $activation_code = $this->account_model->gen_email_verification_code();
                     $this->account_model->add_email(NULL, $email, $activation_code);
+
                     $subject = '[Makwire] Please verify your email address.';
                     $email_body = registration_email_message($activation_code);
                     if ( ! $this->account_model->send_email(admin_email(), $email, $subject, $email_body)) {

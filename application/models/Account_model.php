@@ -176,6 +176,15 @@ class Account_model extends CI_Model
      */
     public function add_email($user_id, $email, $activation_code)
     {
+        // If the email already exits, just update its activation code.
+        $sql = sprintf("UPDATE user_emails SET activation_code = '%s' WHERE email = '%s'",
+                        $activation_code, $email);
+        $this->db->query($sql);
+        if ($this->db->affected_rows() > 0) {
+            return;
+        }
+
+        // Otherwise, we can insert a new.
         if ($user_id !== NULL) {
             // Existing user adding another email address.
             $sql = sprintf("INSERT INTO user_emails (user_id, email, activation_code)

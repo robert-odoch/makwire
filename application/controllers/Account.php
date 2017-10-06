@@ -304,6 +304,8 @@ class Account extends CI_Controller
                     }
                     else {
                         $activation_code = $this->account_model->gen_email_verification_code();
+                        $this->account_model->add_email(NULL, $email, $activation_code);
+
                         $subject = '[Makwire] Please verify your email address.';
                         if ($this->account_model->email_has_user($email)) {
                             $email_body = email_verification_message($activation_code);
@@ -332,7 +334,7 @@ class Account extends CI_Controller
         if ( ! empty($_SESSION['user_id'])) {
             $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         }
-        $data['title'] = 'Resend email activation link';
+        $data['title'] = 'Resend email verification link';
         $this->load->view('common/header', $data);
 
         $data['form_action'] = base_url("account/resend-email");
