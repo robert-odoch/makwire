@@ -380,7 +380,9 @@ class Account extends CI_Controller
                                                         </a>";
                         }
                         else {
-                            $error_message = "Sorry, makwire does not recognise that email address.";
+                            $error_message = "Sorry, makwire does not recognise that email address.<br><br>
+                                                If you received many copies of this email, make sure you
+                                                are using the latest one.";
                         }
                     }
                 }
