@@ -18,6 +18,11 @@ h5 {
     font-weight: bold;
 }
 
+nav,
+article {
+    display: block;
+}
+
 br + br {
     display: block;
     margin: 5px 0;
