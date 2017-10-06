@@ -15,7 +15,7 @@
         </div> <!-- #wrapper-* -->
 
         <footer role='contentinfo' class='footer site-footer'>
-            <p id='site-copyright'>Makwire &copy; <?= date('Y'); ?></p>
+            <p id='site-copyright'>&copy; <?= date('Y'); ?> Makwire</p>
         </footer>
 
         <!-- Need JQuery to support Bootstrap JQuery plugins -->
