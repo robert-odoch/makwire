@@ -31,8 +31,8 @@ class Account extends CI_Controller
             $subject = 'Makwire: your new password';
             $email_data['email_heading'] = 'Makwire password reset';
             $email_data['message'] = "<p>Your password for logging into <b>makwire</b> has
-                                        been temporarily changed to {$new_passwd}. Please login
-                                        using this password. Then you may change it to something
+                                        been temporarily changed to <b>{$new_passwd}</b>. Please login
+                                        using this password, then you may change it to something
                                         more familiar.
                                         </p>";
             $email_body = $this->load->view('email', $email_data, true);
@@ -300,11 +300,11 @@ class Account extends CI_Controller
                         $error_message = "Sorry, makwire does not recognise that email address.";
                     }
                     elseif ($this->account_model->is_activated_email($email)) {
-                        $error_message = "This email address was activated LONG T.";
+                        $error_message = "This email address is already registered.";
                     }
                     else {
                         $activation_code = $this->account_model->gen_email_verification_code();
-                        $subject = 'Makwire: Please verify your email address.';
+                        $subject = '[Makwire] Please verify your email address.';
                         if ($this->account_model->email_has_user($email)) {
                             $email_body = email_verification_message($activation_code);
                         }
@@ -314,8 +314,8 @@ class Account extends CI_Controller
 
                         $this->account_model->send_email(admin_email(), $email, $subject, $email_body);
                         $data['success_message'] = "We just emailed you!<br><br>
-                                                    An email has been sent to {$email}. Please use the link in that email
-                                                    to activate your email address.";
+                                                    An email has been sent to <b>{$email}</b>. Please use the link in that email
+                                                    to verify your email address.";
                     }
                 }
                 else {
