@@ -52,7 +52,7 @@ require_once('common/user-page-start.php');
 }
 elseif (isset($search_results)) {
     print "<div class='box'>";
-    show_message('You search query returned no results.', 'info');
+    show_message('Your search query returned no results.', 'info');
     print "</div>";
 }
 ?>
