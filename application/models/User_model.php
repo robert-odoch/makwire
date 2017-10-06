@@ -1302,7 +1302,7 @@ class User_model extends CI_Model
             $activity_sql = sprintf('SELECT activity_id FROM activities WHERE date_entered >= (%s)
                                      ORDER BY date_entered ASC LIMIT 1',
                                     $date_sql);
-            $activity_query = $this->db-query($activity_sql);
+            $activity_query = $this->db->query($activity_sql);
             $last_read_notif_id = $activity_query->row_array()['activity_id'];
         }
 
