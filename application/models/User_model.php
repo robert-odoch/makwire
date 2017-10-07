@@ -249,52 +249,81 @@ class User_model extends CI_Model
                                         $user_id, $user_id, $unfollowed_user_ids_str, $offset, $limit);
         $timeline_items = $this->db->query($timeline_items_sql)->result_array();
 
+        $i = 0;
         foreach ($timeline_items as &$r) {
             switch ($r['source_type']) {
                 case 'post':
-                    $r['post'] = $this->post_model->get_post($r['source_id'], $visitor_id);
+                    try {
+                        $r['post'] = $this->post_model->get_post($r['source_id'], $visitor_id);
 
-                    // Get only 540 characters from post if possible.
-                    $post_url = base_url("user/post/{$r['post']['post_id']}");
-                    $r['post']['post'] = character_limiter(
-                        $r['post']['post'], 540,
-                        "&#8230;<a href='{$post_url}' class='more post'>view more</a>");
+                        // Get only 540 characters from post if possible.
+                        $post_url = base_url("user/post/{$r['post']['post_id']}");
+                        $r['post']['post'] = character_limiter(
+                            $r['post']['post'], 540,
+                            "&#8230;<a href='{$post_url}' class='more post'>view more</a>");
 
-                    // Was it shared from another user?
-                    $r['post']['shared'] = FALSE;
-                    if ($r['activity'] == 'share') {
-                        $r['post']['shared'] = TRUE;
-                        $r = $this->utility_model->update_shared_item_data('post', $r);
+                        // Was it shared from another user?
+                        $r['post']['shared'] = FALSE;
+                        if ($r['activity'] == 'share') {
+                            $r['post']['shared'] = TRUE;
+                            $r = $this->utility_model->update_shared_item_data('post', $r);
+                        }
+
+                        ++$i;
+                    }
+                    catch (NotFoundException $e) {
+                        unset($timeline_items[$i]);
                     }
                     break;
                 case 'photo':
-                    $r['photo'] = $this->photo_model->get_photo($r['source_id'], $visitor_id);
+                    try {
+                        $r['photo'] = $this->photo_model->get_photo($r['source_id'], $visitor_id);
 
-                    // Was it shared from another user?
-                    $r['photo']['shared'] = FALSE;
-                    if($r['activity'] == 'share') {
-                        $r['photo']['shared'] = TRUE;
-                        $r = $this->utility_model->update_shared_item_data('photo', $r);
+                        // Was it shared from another user?
+                        $r['photo']['shared'] = FALSE;
+                        if($r['activity'] == 'share') {
+                            $r['photo']['shared'] = TRUE;
+                            $r = $this->utility_model->update_shared_item_data('photo', $r);
+                        }
+
+                        ++$i;
+                    }
+                    catch (NotFoundException $e) {
+                        unset($timeline_items[$i]);
                     }
                     break;
                 case 'video':
-                    $r['video'] = $this->video_model->get_video($r['source_id'], $visitor_id);
+                    try {
+                        $r['video'] = $this->video_model->get_video($r['source_id'], $visitor_id);
 
-                    // Was it shared from another user?
-                    $r['video']['shared'] = FALSE;
-                    if ($r['activity'] == 'share') {
-                        $r['video']['shared'] = TRUE;
-                        $r = $this->utility_model->update_shared_item_data('video', $r);
+                        // Was it shared from another user?
+                        $r['video']['shared'] = FALSE;
+                        if ($r['activity'] == 'share') {
+                            $r['video']['shared'] = TRUE;
+                            $r = $this->utility_model->update_shared_item_data('video', $r);
+                        }
+
+                        ++$i;
+                    }
+                    catch (NotFoundException $e) {
+                        unset($timeline_items[$i]);
                     }
                     break;
                 case 'link':
-                    $r['link'] = $this->link_model->get_link($r['source_id'], $visitor_id);
+                    try {
+                        $r['link'] = $this->link_model->get_link($r['source_id'], $visitor_id);
 
-                    // Was it shared from another user?
-                    $r['link']['shared'] = FALSE;
-                    if($r['activity'] == 'share') {
-                        $r['link']['shared'] = TRUE;
-                        $r = $this->utility_model->update_shared_item_data('link', $r);
+                        // Was it shared from another user?
+                        $r['link']['shared'] = FALSE;
+                        if($r['activity'] == 'share') {
+                            $r['link']['shared'] = TRUE;
+                            $r = $this->utility_model->update_shared_item_data('link', $r);
+                        }
+
+                        ++$i;
+                    }
+                    catch (NotFoundException $e) {
+                        unset($timeline_items[$i]);
                     }
                     break;
                 default:
