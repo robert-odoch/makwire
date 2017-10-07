@@ -1,6 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+/* Set default timezone. */
+date_default_timezone_set('Africa/Kampala');
+
 /*
 |--------------------------------------------------------------------------
 | Base Site URL
