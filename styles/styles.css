@@ -72,7 +72,10 @@ p.text {
 }
 
  /* Override bootstrap's styles.*/
-.nav-tabs > li.active > a, .nav-tabs > li.active > a:focus, .nav-tabs > li.active > a:hover {
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:focus,
+.nav-tabs > li.active > a:hover {
+    padding: 10px;
 	border: 1px solid #8FBC8F;
 }
 
