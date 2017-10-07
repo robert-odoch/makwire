@@ -9,7 +9,8 @@ if ($page !== 'news-feed') {
 if (!$is_visitor) {
 ?>
     <div id='update-status' class='box'>
-
+        <p class='sr-only'>Update status</p>
+        
         <?php
         define('STATUS', 'post');
         require_once(__DIR__ . '/../common/status-nav.php');
