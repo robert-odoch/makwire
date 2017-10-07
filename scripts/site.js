@@ -348,8 +348,12 @@ $('body').on('click', '.refresh-chat', function(event) {
     // Show loading indicator.
     $(loadingIndicator).insertBefore('.chat-content .new-message');
 
-    var url = $(this).attr('href');
+    var $this = $(this);
+    var url = $this.attr('href');
     $.get(url, function(data) {
+        // Remove focus from the refresh link.
+        $this.trigger('blur');
+        
         var html = $.parseHTML(data);
 
         // Remove the loading indicator.
