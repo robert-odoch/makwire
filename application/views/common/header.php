@@ -9,6 +9,7 @@ isset($page) OR $page = '';  // Default value for page.
         <meta charset='utf-8'>
         <meta http-equiv='X-UA-Compatible' content='IE=edge'>
         <meta name='viewport' content='width=device-width, initial-scale=1'>
+        <meta name='msvalidate.01' content='65F07EE3CDE3AA10362142D958A76A3C'>
         <title><?= $title; ?></title>
 
         <link rel='shortcut icon' href='<?= base_url('images/favicon.ico'); ?>' type='image/x-icon'>
