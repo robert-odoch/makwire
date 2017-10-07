@@ -76,7 +76,7 @@ class Login extends CI_Controller
             $data['identifier'] = $identifier;
         }
 
-        $data['title'] = 'Log in to your account';
+        $data['title'] = 'Welcome to Makwire';
         $data['page'] = 'login';
         $this->load->view('common/header', $data);
 
