@@ -52,14 +52,14 @@
                 <span> &middot; </span>
             </li>
             <li>
-                <a href='<?= base_url("$object/comment/{$$object[$object . '_id']}"); ?>'
+                <a href='<?= base_url("$object/comment/{$$object[$object . '_id']}"); ?>' class='comment'
                     data-toggle='tooltip' data-placement='top' title='Comment on this <?= $object; ?>'>
                     <span class='fa fa-comment-o' aria-hidden='true'></span> Comment
                 </a>
                 <span> &middot; </span>
             </li>
             <li>
-                <a href='<?= base_url("$object/share/{$$object[$object . '_id']}"); ?>'
+                <a href='<?= base_url("$object/share/{$$object[$object . '_id']}"); ?>' class='share'
                     data-toggle='tooltip' data-placement='top' title='Share this <?= $object; ?>'>
                     <span class='fa fa-share' aria-hidden='true'></span> Share
                 </a>
@@ -102,19 +102,15 @@
             </li>
             <?php endif; ?>
         </ul>
-        <form action='<?= base_url("$object/comment/{$$object[$object . '_id']}"); ?>'
-                method='post' accept-charset='utf-8' role='form'>
-            <input type='text' name='comment' placeholder='Write a comment...' class='fluid
-            <?php
-            if (isset($comment_error)) {
-                print(" has-error");
-            }
-            ?>' required>
-            <?php
-            if (isset($comment_error)) {
-                print("<span class='error'>{$comment_error}</span>");
-            }
-            ?>
-        </form>
+
+        <?php
+        if ( ! empty($page) && $page == 'comment') {
+            require_once(__DIR__ . '/../forms/comment.php');
+        }
+        else {
+            print "<span class='comment-form'></span>";
+        }
+        ?>
+
     <?php } // ($$object['viewer_is_friend_to_owner']) ?>
 </footer>

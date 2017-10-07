@@ -239,20 +239,46 @@ class Video extends CI_Controller
             $video = $this->video_model->get_video($video_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
+            if (is_ajax_request()) {
+                $result['error'] = "Sorry, we couldn't find the video.";
+                echo json_encode($result);
+                return;
+            }
+
+            // Normal request.
             show_404();
         }
 
         if ( ! $this->user_model->are_friends($_SESSION['user_id'], $video['user_id'])) {
+            $message = "You don't have the proper permissions to comment on this video.";
+
+            if (is_ajax_request()) {
+                $result['error'] = $message;
+                echo json_encode($result);
+                return;
+            }
+
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
-            $_SESSION['message'] = "You don't have the proper permissions to comment on this video.";
+            $_SESSION['message'] = $message;
             redirect(base_url('error'));
+        }
+
+        // Loading comment from using AJAX.
+        if (is_ajax_request()) {
+            $data['video'] = $video;
+            $data['object'] = 'video';
+            $result['form'] = $this->load->view('forms/comment', $data, TRUE);
+
+            echo json_encode($result);
+            return;
         }
 
         $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Comment on this video';
         $this->load->view('common/header', $data);
 
+        $data['page'] = 'comment';
         $data['video'] = $video;
         $data['object'] = 'video';
         $this->load->view('comment', $data);

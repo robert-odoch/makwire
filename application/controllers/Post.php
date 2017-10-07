@@ -190,7 +190,7 @@ class Post extends CI_Controller
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $comment = trim(strip_tags($this->input->post('comment')));
             if (!$comment) {
-                $data['comment_error'] = "Comment can't be empty";
+                $data['comment_error'] = "Please enter your comment.";
             }
             else {
                 $this->post_model->comment($post_id, $comment, $_SESSION['user_id']);
@@ -202,14 +202,39 @@ class Post extends CI_Controller
             $post = $this->post_model->get_post($post_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
+            if (is_ajax_request()) {
+                $result['error'] = "Sorry, we couldn't find the post.";
+                echo json_encode($result);
+                return;
+            }
+
+            // Normal request.
             show_404();
         }
 
         if ( ! $this->user_model->are_friends($_SESSION['user_id'], $post['user_id'])) {
+            $message = "You don't have the proper permissions to comment on this post.";
+
+            if (is_ajax_request()) {
+                $result['error'] = $message;
+                echo json_encode($result);
+                return;
+            }
+
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
-            $_SESSION['message'] = "You don't have the proper permissions to comment on this post.";
+            $_SESSION['message'] = $message;
             redirect(base_url('error'));
+        }
+
+        // Loading comment from using AJAX.
+        if (is_ajax_request()) {
+            $data['post'] = $post;
+            $data['object'] = 'post';
+            $result['form'] = $this->load->view('forms/comment', $data, TRUE);
+
+            echo json_encode($result);
+            return;
         }
 
         $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
@@ -222,6 +247,7 @@ class Post extends CI_Controller
         );
         $data['post'] = $post;
 
+        $data['page'] = 'comment';
         $data['object'] = 'post';
         $this->load->view('comment', $data);
         $this->load->view('common/footer');

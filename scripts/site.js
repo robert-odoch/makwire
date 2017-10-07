@@ -183,7 +183,7 @@ $('.more.post').click(function(event) {
 });
 
 /*** Liking an item. ***/
-$('body').on('click', '.like', function(event) {
+$('body').on('click', 'a.like', function(event) {
     event.preventDefault();
 
     var $this = $(this);
@@ -229,6 +229,50 @@ $('body').on('click', '.like', function(event) {
         }
     });
 });
+
+/*** Commenting on an item. ***/
+
+// Showing the comment form.
+$('body').on('click', '.media-footer a.comment', function(event) {
+    event.preventDefault();
+
+    var $this = $(this);
+
+    // Remove focus form this link.
+    $this.trigger('blur');
+
+    var $box = $this.parents('.box');
+    if ($box.find('form.comment').length > 0) {
+        // Nothing to do.
+        return;
+    }
+
+    // Show loading indicator.
+    var $footer = $this.parents('footer');
+    $footer.append($(loadingIndicator));
+
+    var url = $this.attr('href');
+    $.get(url, function(data) {
+        // Remove loading indicator.
+        $box.find('.loading').remove();
+
+        // Process result.
+        var result = $.parseJSON(data);
+        if (result.error) {
+            // Remove any previous error message (s).
+            $this.find('span.error').remove();
+
+            // Show the new error message.
+            var errorMarkup = $("<span class='error'>" + result.error + "</span>");
+            $footer.after($(errorMarkup));
+        }
+        else {
+            var form = $.parseHTML(result.form);
+            $footer.after($(form));
+        }
+    });
+});
+$('.media-footer a.comment').trigger('click');
 
 /*** Sending a message. ***/
 

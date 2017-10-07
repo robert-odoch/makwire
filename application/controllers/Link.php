@@ -239,20 +239,48 @@ class Link extends CI_Controller
             $link = $this->link_model->get_link($link_id, $_SESSION['user_id']);
         }
         catch (NotFoundException $e) {
+            if (is_ajax_request()) {
+                $result['error'] = "Sorry, we couldn't find the link.";
+                echo json_encode($result);
+                return;
+            }
+
+
+            // Normal request.
             show_404();
         }
 
         if (!$this->user_model->are_friends($_SESSION['user_id'], $link['user_id'])) {
+            $message = "You don't have the proper permissions to comment on this link.";
+
+            if (is_ajax_request()) {
+                $result['error'] = $message;
+                echo json_encode($result);
+                return;
+            }
+
+
             $_SESSION['title'] = 'Permission Denied!';
             $_SESSION['heading'] = 'Permission Denied';
-            $_SESSION['message'] = 'You don\'t have the proper permissions to comment on this link.';
+            $_SESSION['message'] = $message;
             redirect(base_url('error'));
+        }
+
+        // Loading comment from using AJAX.
+        if (is_ajax_request()) {
+            $data['link'] = $link;
+            $data['object'] = 'link';
+            $result['form'] = $this->load->view('forms/comment', $data, TRUE);
+
+            echo json_encode($result);
+            return;
         }
 
         $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         $data['title'] = 'Comment on this link';
         $this->load->view('common/header', $data);
 
+        $data['page'] = 'comment';
         $data['link'] = $link;
         $data['object'] = 'link';
         $this->load->view('comment', $data);
