@@ -201,16 +201,16 @@ $('body').on('click', '.like', function(event) {
         if (parseInt(result.numLikes) > 0) {
             var $parent = $this.parents('.footer');
 
-            // Only show middot if there are other links besides.
-            if ($this.siblings('a').length > 0) {
-                $parent.find('span.likes').removeClass('hidden');
-            }
-
             var $likesLink = $parent.find('a.likes');
             if ($likesLink.hasClass('hidden')) {
                 $likesLink.removeClass('hidden');
             }
             $likesLink.text(result.numLikes);
+
+            // Only show middot if there are other links besides.
+            if ($likesLink.siblings('a').length > 0) {
+                $parent.find('span.likes').removeClass('hidden');
+            }
 
             // If we are on the page for likes, show the like.
             if (result.like) {
