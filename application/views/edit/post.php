@@ -8,7 +8,7 @@ require_once(__DIR__ . '/../common/user-page-start.php');
     <form action='<?= base_url("post/edit/{$post['post_id']}"); ?>' method='post'
             accept-charset='utf-8' role='form'>
         <div class='form-group'>
-            <label for='post' class='sr-only'>Edit post</label>
+            <label for='post'>Post</label>
             <textarea name='post' class='fluid
                     <?php if (isset($error_message)) { print ' has-error'; } ?>'
                     required autofocus><?= trim($post['post']); ?></textarea>
