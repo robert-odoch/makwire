@@ -12,5 +12,9 @@
     if (isset($comment_error)) {
         print("<span class='error'>{$comment_error}</span>");
     }
+
+    if ( ! empty($page) && $page == 'comment') {
+        print "<br><br><input type='submit' value='Submit' class='btn btn-sm'>";
+    }
     ?>
 </form>
