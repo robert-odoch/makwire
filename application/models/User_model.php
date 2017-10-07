@@ -565,7 +565,9 @@ class User_model extends CI_Model
         $friends_ids = $this->get_friends_ids($visitor_id);
         $pending_fr_user_ids = $this->get_pending_fr_user_ids($visitor_id);
         $exclude_user_ids = array_merge($friends_ids, $pending_fr_user_ids);
-        $exclude_user_ids[] = 0;
+
+        // Also exclude the current user from search.
+        $exclude_user_ids[] = $visitor_id;
         $exclude_user_ids_str = implode(',', $exclude_user_ids);
 
         if (filter_var($search_query, FILTER_VALIDATE_EMAIL)) {
