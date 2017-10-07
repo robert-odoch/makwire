@@ -195,50 +195,79 @@ class News_feed_model extends CI_Model
                                         $unfollowed_user_ids_str, $offset, $limit);
         $news_feed_items = $this->db->query($news_feed_items_sql)->result_array();
 
+        $i = 0;
         foreach ($news_feed_items as &$r) {
             switch ($r['source_type']) {
             case 'post':
-                $r['post'] = $this->post_model->get_post($r['source_id'], $user_id);
+                try {
+                    $r['post'] = $this->post_model->get_post($r['source_id'], $user_id);
 
-                // Get only 540 characters from post if possible.
-                $post_url = base_url("user/post/{$r['post']['post_id']}");
-                $r['post']['post'] = character_limiter($r['post']['post'], 540, "&#8230;<a href='{$post_url}'>view more</a>");
+                    // Get only 540 characters from post if possible.
+                    $post_url = base_url("user/post/{$r['post']['post_id']}");
+                    $r['post']['post'] = character_limiter($r['post']['post'], 540, "&#8230;<a href='{$post_url}'>view more</a>");
 
-                // Was it shared from another user?
-                $r['post']['shared'] = FALSE;
-                if (in_array($r['source_id'], $shared_posts_ids)) {
-                    $r['post']['shared'] = TRUE;
-                    $r = $this->utility_model->update_shared_item_data('post', $r);
+                    // Was it shared from another user?
+                    $r['post']['shared'] = FALSE;
+                    if (in_array($r['source_id'], $shared_posts_ids)) {
+                        $r['post']['shared'] = TRUE;
+                        $r = $this->utility_model->update_shared_item_data('post', $r);
+                    }
+
+                    ++$i;
+                }
+                catch (NotFoundException $e) {
+                    unset($news_feed_items[$i]);
                 }
                 break;
             case 'photo':
-                $r['photo'] = $this->photo_model->get_photo($r['source_id'], $user_id);
+                try {
+                    $r['photo'] = $this->photo_model->get_photo($r['source_id'], $user_id);
 
-                // Was it shared from another user?
-                $r['photo']['shared'] = FALSE;
-                if (in_array($r['source_id'], $shared_photos_ids)) {
-                    $r['photo']['shared'] = TRUE;
-                    $r = $this->utility_model->update_shared_item_data('photo', $r);
+                    // Was it shared from another user?
+                    $r['photo']['shared'] = FALSE;
+                    if (in_array($r['source_id'], $shared_photos_ids)) {
+                        $r['photo']['shared'] = TRUE;
+                        $r = $this->utility_model->update_shared_item_data('photo', $r);
+                    }
+
+                    ++$i;
+                }
+                catch (NotFoundException $e) {
+                    unset($news_feed_items[$i]);
                 }
                 break;
             case 'video':
-                $r['video'] = $this->video_model->get_video($r['source_id'], $user_id);
+                try {
+                    $r['video'] = $this->video_model->get_video($r['source_id'], $user_id);
 
-                // Was it shared from another user?
-                $r['video']['shared'] = FALSE;
-                if (in_array($r['source_id'], $shared_videos_ids)) {
-                    $r['video']['shared'] = TRUE;
-                    $r = $this->utility_model->update_shared_item_data('video', $r);
+                    // Was it shared from another user?
+                    $r['video']['shared'] = FALSE;
+                    if (in_array($r['source_id'], $shared_videos_ids)) {
+                        $r['video']['shared'] = TRUE;
+                        $r = $this->utility_model->update_shared_item_data('video', $r);
+                    }
+
+                    ++$i;
+                }
+                catch (NotFoundException $e) {
+                    unset($news_feed_items[$i]);
                 }
                 break;
             case 'link':
-                $r['link'] = $this->link_model->get_link($r['source_id'], $user_id);
+                try {
+                    $r['link'] = $this->link_model->get_link($r['source_id'], $user_id);
 
-                // Was it shared from another user?
-                $r['link']['shared'] = FALSE;
-                if (in_array($r['source_id'], $shared_links_ids)) {
-                    $r['link']['shared'] = TRUE;
-                    $r = $this->utility_model->update_shared_item_data('link', $r);
+                    // Was it shared from another user?
+                    $r['link']['shared'] = FALSE;
+                    if (in_array($r['source_id'], $shared_links_ids)) {
+                        $r['link']['shared'] = TRUE;
+                        $r = $this->utility_model->update_shared_item_data('link', $r);
+                    }
+
+                    ++$i;
+                }
+                catch (NotFoundException $e) {
+                    unset($news_feed_items[$i]);
                 }
                 break;
             default:
