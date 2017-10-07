@@ -32,8 +32,8 @@ function updateWindow() {
             $.get(url, function(data) {
                 var html = $.parseHTML(data);
 
-                // $('.suggestions').length might return 0 yet one is already being
-                // loaded. Make a last minute attempt to remove any extra suggestion.
+                // $('.suggestions').length might return 0 yet one is already being loaded.
+                // Make a last minute attempt to remove any extra suggestion.
                 $('.suggestions').remove();
                 $(html).insertAfter('div.main');
             });
@@ -51,8 +51,9 @@ function updateWindow() {
             $.get(url, function(data) {
                 var html = $.parseHTML(data);
 
-                // $('.col-small').length might return 0 yet one is already being
-                // loaded. Make a last minute attempt to remove any extra col-small.
+                // $('.col-small').length might return 0 yet one is already being loaded.
+                // Make a last minute attempt to remove any extra col-small.
+                $('.col-small').remove();
                 $(html).insertAfter('.col-large');
             });
         }
