@@ -4,6 +4,7 @@ require_once(__DIR__ . '/../common/user-page-start.php');
 ?>
 
 <div class='box'>
+    <h4>Edit post</h4>
     <form action='<?= base_url("post/edit/{$post['post_id']}"); ?>' method='post'
             accept-charset='utf-8' role='form'>
         <div class='form-group'>
