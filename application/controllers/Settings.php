@@ -60,10 +60,9 @@ class Settings extends CI_Controller
                 else {
                     $activation_code = $this->account_model->gen_email_verification_code();
                     $user_email_id = $this->account_model->add_email($_SESSION['user_id'], $email, $activation_code);
-                    $subject = 'Makwire: Activate your email address.';
-                    $message = 'Please use <a href="' .
-                                base_url("account/activate-email/${activation_code}") .
-                                '">this link</a> to activate your email address.';
+
+                    $subject = '[Makwire]: Please verify your email address.';
+                    $message = email_verification_message($activation_code);
                     if ( ! $this->account_model->send_email('Makwire <' . accounts_email() . '>', $email, $subject, $message)) {
                         $data['info_message'] = "Sorry, we couldn't send your activation email.<br>
                                                 The admin has been notified about the issue
