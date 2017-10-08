@@ -22,7 +22,7 @@ class Makwire extends CI_Controller
             $data = $this->user_model->initialize_user($_SESSION['user_id']);
         }
 
-        $data['title'] = 'Menu';
+        $data['title'] = 'Makwire menu';
         $data['page'] = 'menu';
         $this->load->view('common/header', $data);
         $this->load->view('show/menu');
