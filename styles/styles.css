@@ -112,18 +112,22 @@ p {
     padding: 5px 10px;
 }
 
-.menu .list-group {
+.menu .list-group,
+.settings .list-group {
     margin-bottom: 5px;
 }
-.menu .list-group-item {
+.menu .list-group-item,
+.settings .list-group-item {
     padding: 0;
 }
-.menu .list-group-item a {
+.menu .list-group-item a,
+.settings .list-group-item a {
     color: #555;
     padding: 5px;
     display: block;
 }
-.menu .list-group-item a:hover {
+.menu .list-group-item a:hover,
+.settings .list-group-item a:hover {
     color: #555;
     text-decoration: none;
     background-color: #f5f5f5;
