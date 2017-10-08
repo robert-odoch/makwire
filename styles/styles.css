@@ -35,9 +35,6 @@ p {
 .text {
     font-family: 'Roboto', sans-serif;
 }
-p.text {
-    text-align: justify;
-}
 
 .profile-pic-xs {
     width: 35px;
@@ -90,7 +87,6 @@ p.text {
     border-radius: 3px;
     margin-bottom: 0;
     padding: 15px 10px;
-    text-align: justify;
     font-family: 'Roboto', sans-serif;
 }
 .alert .fa {
@@ -889,12 +885,6 @@ p.post a.more {
 }
 .back-btn {
     margin-top: 5px;
-}
-
-@media (max-width: 380px) {
-    .alert {
-        text-align: left;
-    }
 }
 
 @media (max-width: 480px) {
