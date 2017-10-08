@@ -299,7 +299,8 @@ class Account extends CI_Controller
                     if ( ! $this->account_model->is_registered_email($email)) {
                         $error_message = "Sorry, makwire does not recognise that email address.";
                     }
-                    elseif ($this->account_model->is_activated_email($email)) {
+                    elseif ($this->account_model->is_activated_email($email) &&
+                            $this->account_model->email_has_user($email)) {
                         $error_message = "This email address is already registered.";
                     }
                     else {
@@ -346,64 +347,46 @@ class Account extends CI_Controller
     {
         $data = [];
 
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $email = $this->input->post('email');
-            if (strlen($email) == 0) {
-                $error_message = 'Please enter your email address.';
+        try {
+            $email = $this->account_model->get_email($activation_code);
+            $this->account_model->activate_email($email, $activation_code);
+            if ($this->account_model->email_has_user($email)) {
+                $_SESSION['message'] = 'Your email address has been successfully activated. Enjoy!';
+                redirect(base_url('success'));
             }
             else {
-                if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                    try {
-                        $this->account_model->activate_email($email, $activation_code);
-                        if ($this->account_model->email_has_user($email)) {
-                            $_SESSION['message'] = 'Your email address has been successfully activated. Enjoy!';
-                            redirect(base_url('success'));
-                        }
-                        else {
-                            $_SESSION['email'] = $email;
-                            $_SESSION['activation_code'] = $activation_code;
-                            redirect(base_url("register/step-two/{$activation_code}"));
-                        }
-                    }
-                    catch (NotFoundException $e) {
-                        if ($this->account_model->is_activated_email($email) &&
-                                ! $this->account_model->email_has_user($email)) {
-
-                            // A user didn't complete the registration process the previous time.
-                            $data['info_message'] = "Dear user, it seems the last time you didn't complete the
-                                                        registration process. We need to resend you the registration
-                                                        email again so that you can continue with the registration process,
-                                                        please click on the button below to continue.<br><br>
-
-                                                        <a href='" . base_url('account/resend-email') . "' class='btn btn-sm'>
-                                                            Resend email
-                                                        </a>";
-                        }
-                        else {
-                            $error_message = "Sorry, makwire does not recognise that email address.<br><br>
-                                                If you received many copies of this email, make sure you
-                                                are using the latest one.";
-                        }
-                    }
-                }
-                else {
-                    $error_message = 'Please enter a valid email address.';
-                }
+                $_SESSION['email'] = $email;
+                $_SESSION['activation_code'] = $activation_code;
+                redirect(base_url("register/step-two/{$activation_code}"));
             }
+        }
+        catch (NotFoundException $e) {
+            if ($this->account_model->is_activated_email($email) &&
+                    ! $this->account_model->email_has_user($email)) {
 
-            if (isset($error_message)) {
-                $data['email'] = $email;
-                $data['error_message'] = $error_message;
+                // A user didn't complete the registration process the previous time.
+                $data['info_message'] = "Dear user, it seems the last time you didn't complete the
+                                            registration process. We need to resend you the registration
+                                            email again so that you can continue with the registration process,
+                                            please click on the button below to continue.<br><br>
+
+                                            <a href='" . base_url('account/resend-email') . "' class='btn btn-sm'>
+                                                Resend email
+                                            </a>";
+            }
+            else {
+                $data['info_message'] = "Sorry, makwire does not recognise that email address.<br><br>
+                                        If you received many copies the verification email, make sure you
+                                        are using the latest one.";
             }
         }
 
         if ( ! empty($_SESSION['user_id'])) {
             $data = array_merge($data, $this->user_model->initialize_user($_SESSION['user_id']));
         }
-        $data['title'] = 'Activate your email address';
+        $data['title'] = 'Verify your email address';
         $this->load->view('common/header', $data);
 
-        $data['form_action'] = base_url("account/activate-email/{$activation_code}");
         $this->load->view('settings/account/activate-email', $data);
         $this->load->view('common/footer');
     }

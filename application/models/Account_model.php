@@ -120,10 +120,23 @@ class Account_model extends CI_Model
         $this->db->query($sql);
     }
 
+    public function get_email($activation_code)
+    {
+        $sql = sprintf('SELECT email FROM user_emails WHERE activation_code = %s',
+                        $this->db->escape($activation_code));
+        $query = $this->db->query($sql);
+        if ($query->num_rows() == 0) {
+            throw new NotFoundException();
+        }
+
+        $result = $query->row_array();
+        return $result['email'];
+    }
+
     public function get_emails($user_id)
     {
         $sql = sprintf("SELECT email, is_primary FROM user_emails
-                        WHERE (user_id = %d AND activation_code IS NULL)
+                        WHERE (user_id = %d AND is_activated IS TRUE)
                         ORDER BY is_primary DESC, is_backup DESC",
                         $user_id);
         $query = $this->db->query($sql);
@@ -217,7 +230,7 @@ class Account_model extends CI_Model
     public function is_activated_email($email)
     {
         $sql = sprintf("SELECT id FROM user_emails
-                        WHERE (email = '%s' AND activation_code IS NULL)
+                        WHERE (email = '%s' AND is_activated IS TRUE)
                         LIMIT 1", $email);
         $query = $this->db->query($sql);
         return ($query->num_rows() == 1);
@@ -232,7 +245,7 @@ class Account_model extends CI_Model
      */
     public function activate_email($email, $activation_code)
     {
-        $update_sql = sprintf("UPDATE user_emails SET activation_code = NULL
+        $update_sql = sprintf("UPDATE user_emails SET is_activated = 1
                                 WHERE email = %s AND activation_code = %s",
                                 $this->db->escape($email),
                                 $this->db->escape($activation_code));
