@@ -29,7 +29,7 @@
                 </div>
             </div>
         </header>
-        <p class='text'><?= nl2br($post['post']); ?></p>
+        <p><?= nl2br($post['post']); ?></p>
         <?php
         $object = 'post';
         require('media-footer.php');

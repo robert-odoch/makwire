@@ -16,7 +16,7 @@
             <img src='<?= $receiver['profile_pic_path']; ?>' class='media-object profile-pic-xs' title='<?= $message['sender']; ?>'>
         </div>
         <div class='media-body'>
-            <p class='text'><?= $message['message']; ?></p>
+            <p><?= $message['message']; ?></p>
             <small><?= (new DateTime($message['date_sent']))->format('g:i a'); ?></small>
         </div>
     </div>

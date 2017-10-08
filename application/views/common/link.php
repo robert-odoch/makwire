@@ -33,11 +33,11 @@
 
         <?php
         if ($link['has_comment']) {
-            print "<p class='text'>" . nl2br($link['comment']) . "</p>";
+            print "<p>" . nl2br($link['comment']) . "</p>";
         }
         elseif ($link['user_id'] == $_SESSION['user_id']) {
             print "<a href='" . base_url("link/add-comment/{$link['link_id']}") .
-                    "' class='text'>Say something about this link</a>";
+                    "'>Say something about this link</a>";
         }
         ?>
 
@@ -48,7 +48,7 @@
             </div>
             <?php } ?>
 
-            <div class='panel-footer text'>
+            <div class='panel-footer'>
                 <a href='<?= $link['url']; ?>' target='_blank'>
                     <span class='link-title'><?= $link['title']; ?></span>
                     <span class='link-site'><?= $link['site']; ?></span>

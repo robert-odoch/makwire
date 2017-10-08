@@ -19,7 +19,7 @@ require_once(__DIR__ . '/../common/user-page-start.php');
             </div>
             <?php } ?>
 
-            <div class='panel-footer text'>
+            <div class='panel-footer'>
                 <a href='<?= $link['url']; ?>' target='_blank'>
                     <span class='link-title'><?= $link['title']; ?></span>
                     <span class='link-site'><?= $link['site']; ?></span>
