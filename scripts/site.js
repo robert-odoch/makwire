@@ -353,7 +353,7 @@ $('body').on('click', '.refresh-chat', function(event) {
     $.get(url, function(data) {
         // Remove focus from the refresh link.
         $this.trigger('blur');
-        
+
         var html = $.parseHTML(data);
 
         // Remove the loading indicator.
@@ -392,7 +392,6 @@ function previousMessages(event) {
 }
 
 $('body').on('click', '.chat-content .previous', previousMessages);
-$('body').on('click', '.col-small .previous', previousMessages);
 
 /*** Returning back to active users. ***/
 $('body').on('click', '.col-small .back-btn', function(event) {
