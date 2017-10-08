@@ -139,6 +139,43 @@ class Makwire extends CI_Controller
         echo $this->load->view('common/desktop-nav', $data, TRUE);
     }
 
+    public function side_content()
+    {
+        if ( ! is_ajax_request()) {
+            show_404();
+        }
+
+        $data['profile_pic_path'] = $this->user_model->get_profile_pic_path($_SESSION['user_id']);
+        $data['primary_user'] = $this->user_model->get_profile_name($_SESSION['user_id']);
+        echo $this->load->view('common/user-side-content.php', $data, TRUE);
+    }
+
+    public function user_nav($location)
+    {
+        if ( ! is_ajax_request()) {
+            show_404();
+        }
+
+        $location = explode('.', $location);
+        $data['page'] = in_array('profile', $location) ? 'profile' : '';
+
+        $last = array_pop($location);
+        $data['suid'] = is_integer($last) ? $last : $_SESSION['user_id'];
+
+        echo $this->load->view('common/user-nav', $data, TRUE);
+    }
+
+    public function short_cuts($location)
+    {
+        if ( ! is_ajax_request()) {
+            show_404();
+        }
+
+        $data['location'] = explode('.', $location);
+        $data['num_active_friends'] = $this->user_model->get_num_chat_users($_SESSION['user_id'], TRUE);
+        echo $this->load->view('common/short-cuts', $data, TRUE);
+    }
+
     public function suggestions()
     {
         if ( ! is_ajax_request()) {

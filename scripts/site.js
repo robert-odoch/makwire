@@ -25,6 +25,56 @@ function updateWindow() {
         return;
     }
 
+    // Side content.
+    if ($window.width() > 479) {
+        if ($('.side-content').length == 0) {
+            var url = baseUrl + 'makwire/side-content';
+            $.get(url, function(data) {
+                var sideContent = $.parseHTML(data);
+
+                // $('.side-content').length might return 0 yet one is already being loaded.
+                // Make a last minute attempt to remove any extra side-content.
+                $('.side-content').remove();
+                $(sideContent).prependTo($('.main'));
+            });
+        }
+
+        // Load user nav and shortcuts.
+        if ($('.user-nav').length == 0) {
+            var url = baseUrl + 'makwire/user-nav/' + (new String(window.location)).split('/').join('.');
+            $.get(url, function(data) {
+                var userNav = $.parseHTML(data);
+
+                // $('.user-nav').length might return 0 yet one is already being loaded.
+                // Make a last minute attempt to remove any extra user-nav.
+                $('.user-nav').remove();
+                $(userNav).insertAfter($('#primary-user'));
+            });
+        }
+
+        if ($('#short-cuts').length == 0) {
+            var url = baseUrl + 'makwire/short-cuts/' + (new String(window.location)).split('/').join('.');
+            $.get(url, function(data) {
+                var shortCuts = $.parseHTML(data);
+
+                // $('#short-cuts').length might return 0 yet one is already being loaded.
+                // Make a last minute attempt to remove any extra short-cuts.
+                $('#short-cuts').remove();
+                $(shortCuts).appendTo($('.side-content'));
+            });
+        }
+    }
+    else {
+        // Attempt to remove for small viewports.
+        var $sideContent = $('.side-content');
+        if ($('body').hasClass('menu') || $sideContent.hasClass('settings')) {
+            // Don't remove.
+        }
+        else {
+            $('.side-content').remove();
+        }
+    }
+
     // Suggestions column.
     if ($window.width() > 767) {
         if ($('.suggestions').length == 0) {

@@ -3,5 +3,5 @@
 <div class='wrapper-lg'>
     <div class='col-large'>
         <div role='main' class='main user-home'>
-            <?php require_once('user-side-content.php'); ?>
+            <?php if ( ! empty($page) && $page == 'menu') require_once('user-side-content.php'); ?>
             <div class='main-content'>

@@ -911,11 +911,7 @@ p.post a.more {
         float: none;
         width: 100%;
     }
-
-    .side-content {
-        display: none;
-    }
-    .side-content.menu,
+    .menu .side-content,
     .side-content.settings {
         display: block;
         width: 100%;
