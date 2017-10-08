@@ -32,7 +32,7 @@ isset($page) OR $page = '';  // Default value for page.
           <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
     </head>
-    <body>
+    <body <?php if ( ! empty($page) && $page == 'menu') { print "class= 'menu'"; } ?>>
         <header class='site-header'>
             <?php require_once(__DIR__ . '/mobile-nav.php'); ?>
         </header><?= "\n"; ?>
