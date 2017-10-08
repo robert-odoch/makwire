@@ -42,6 +42,12 @@
                         </a>
                     </li>
                     <li class='list-group-item'>
+                        <a href='<?= base_url('profile/change-profile-picture'); ?>'>
+                            <span class='fa fa-fw fa-photo' aria-hidden='true'></span>
+                            Change profile picture
+                        </a>
+                    </li>
+                    <li class='list-group-item'>
                         <a href='<?= base_url('user/profile'); ?>'>
                             <span class='fa fa-fw fa-pencil' aria-hidden='true'></span>
                             Edit profile
