@@ -187,8 +187,10 @@ class Account_model extends CI_Model
      *
      * @param $email the email to be added.
      */
-    public function add_email($user_id, $email, $activation_code)
+    public function add_email($user_id, $email)
     {
+        $activation_code = $this->gen_email_verification_code();
+
         // If the email already exits, just update its activation code.
         $sql = sprintf("UPDATE user_emails SET activation_code = '%s', is_activated = 0 WHERE email = '%s'",
                         $activation_code, $email);
@@ -197,7 +199,7 @@ class Account_model extends CI_Model
             return;
         }
 
-        // Otherwise, we can insert a new.
+        // Otherwise, we can insert a new!
         if ($user_id !== NULL) {
             // Existing user adding another email address.
             $sql = sprintf("INSERT INTO user_emails (user_id, email, activation_code)
@@ -210,6 +212,8 @@ class Account_model extends CI_Model
                             VALUES ('%s', '%s')", $email, $activation_code);
         }
         $this->db->query($sql);
+
+        return $activation_code;
     }
 
     /**
@@ -254,6 +258,26 @@ class Account_model extends CI_Model
         if ($this->db->affected_rows() == 0) {
             throw new NotFoundException();
         }
+
+        // If a user is activating another mak email, add an entry in user_colleges.
+        // This is not done when registering user for the first time as email is
+        // activated before adding user to record.
+        if ($this->is_valid_mak_email($email) && $this->email_has_user($email)) {
+            $this->load->model('profile_model');
+
+            $user_sql = sprintf('SELECT user_id FROM user_emails WHERE email = %s',
+                                $this->db->escape($email));
+            $user_query = $this->db->query($user_sql);
+
+            $user_id = $user_query->row_array()['user_id'];
+            $college_id = $this->profile_model->get_college_from_email($email);
+            $this->profile_model->add_user_college($userid, $college_id);
+        }
+
+        // Try updating admin invite it come from an invitation.
+        $sql = sprintf('UPDATE admin_invite SET is_used = 1 WHERE email = %s',
+                        $this->db->escape($email));
+        $this->db->query($sql);
     }
 
     public function email_has_user($email)

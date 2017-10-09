@@ -7,6 +7,7 @@ class Register_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
+        $this->load->model(['profile_model']);
     }
 
     /**
@@ -37,6 +38,10 @@ class Register_model extends CI_Model
                                 WHERE (email = %s)",
                                 $user_id, $this->db->escape($data['email']));
         $this->db->query($update_sql);
+
+        // Add the user's college.
+        $college_id = $this->profile_model->get_college_from_email($data['email']);
+        $this->profile_model->add_user_college($user_id, $college_id);
 
         return $user_id;
     }

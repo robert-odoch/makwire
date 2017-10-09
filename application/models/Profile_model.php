@@ -13,6 +13,26 @@ class Profile_model extends CI_Model
         $this->load->model(['photo_model', 'account_model']);
     }
 
+    public function get_college_from_email($email)
+    {
+        if ($this->account_model->is_valid_mak_email($email)) {
+            $domain = substr($email, stripos($email, '@')+1);
+
+            // Get the college with this domain.
+            $sql = sprintf('SELECT college_id FROM colleges WHERE domain = %s',
+                            $this->db->escape($domain));
+        }
+        else {  // Invited by admin.
+            $sql = sprintf('SELECT college_id FROM admin_invite WHERE email = %s',
+                            $this->db->escape($email));
+        }
+
+        $query = $this->db->query($sql);
+        $college_id = $query->row_array()['college_id'];
+
+        return $college_id;
+    }
+
     public function can_add_hall($user_id)
     {
         $sql = sprintf('SELECT COUNT(us.id) AS num_schools, COUNT(uh.id) AS num_halls
@@ -134,30 +154,31 @@ class Profile_model extends CI_Model
     }
 
     /**
+     * @return colleges All colleges on record.
+     */
+    public function get_colleges()
+    {
+        $sql = sprintf('SELECT college_id, short_name FROM colleges');
+        $query = $this->db->query($sql);
+
+        return $query->result_array();
+    }
+
+    /**
      * Gets all schools from the schools table.
      *
      * @return all schools in the schools table.
      */
     public function get_schools($user_id)
     {
-        // Get the user's mak email(s).
-        $sql = sprintf('SELECT email FROM user_emails WHERE user_id = %d',
+        $sql = sprintf('SELECT college_id FROM user_colleges WHERE user_id = %d',
                         $user_id);
         $query = $this->db->query($sql);
         $results = $query->result_array();
 
         $colleges = [0];  // Extra element added for safety of IN clause.
         foreach ($results as $r) {
-            if ($this->account_model->is_valid_mak_email($r['email'])) {
-                $domain = substr($r['email'], stripos($r['email'], '@')+1);
-
-                // Get the college with this domain.
-                $sql = sprintf('SELECT college_id FROM colleges WHERE domain = %s',
-                                $this->db->escape($domain));
-                $query = $this->db->query($sql);
-                $result = $query->row_array();
-                $colleges[] = $result['college_id'];
-            }
+            $colleges[] = $r['college_id'];
         }
 
         $schools_sql = sprintf("SELECT school_id, college_id, school_name
@@ -346,6 +367,13 @@ class Profile_model extends CI_Model
 
         $user_hostel = $user_hostel_query->row_array();
         return $user_hostel;
+    }
+
+    public function add_user_college($user_id, $college_id)
+    {
+        $sql = sprintf('INSERT INTO user_colleges (user_id, college_id) VALUES (%d, %d)',
+                        $user_id, $college_id);
+        $this->db->query($sql);
     }
 
     /**

@@ -145,6 +145,7 @@ class User_model extends CI_Model
      */
     public function initialize_user($user_id)
     {
+        $data['roles'] = $this->get_user_roles($user_id);
         $data['profile_pic_path'] = $this->get_profile_pic_path($user_id);
         $data['primary_user'] = $this->get_profile_name($user_id);
         $data['people_you_may_know'] = $this->get_suggested_users($user_id, 0, 4);
@@ -155,6 +156,31 @@ class User_model extends CI_Model
         $data['chat_users'] = $this->get_chat_users($user_id, TRUE);
 
         return $data;
+    }
+
+    public function get_user_roles($user_id)
+    {
+        $sql = sprintf('SELECT ur.id, r.name FROM user_roles ur
+                        LEFT JOIN roles r ON (ur.role_id = r.id)
+                        WHERE user_id = %d', $user_id);
+        $query = $this->db->query($sql);
+
+        $roles = $query->result_array();
+        foreach ($roles as &$r) {
+            $r['priviledges'] = [];
+
+            $priviledges_sql = sprintf('SELECT p.name FROM role_priviledges rp
+                                        LEFT JOIN priviledges p ON(rp.priviledge_id = p.id)
+                                        WHERE (rp.role_id = %d)', $r['id']);
+            $priviledges_query = $this->db->query($priviledges_sql);
+            $priviledges_results = $priviledges_query->result_array();
+            foreach ($priviledges_results as $pr) {
+                $r['priviledges'][] = $pr['name'];
+            }
+        }
+        unset($r);
+
+        return $roles;
     }
 
     /**

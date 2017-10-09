@@ -172,7 +172,9 @@ class Makwire extends CI_Controller
         }
 
         $data['location'] = explode('.', $location);
+        $data['roles'] = $this->user_model->get_user_roles($_SESSION['user_id']);
         $data['num_active_friends'] = $this->user_model->get_num_chat_users($_SESSION['user_id'], TRUE);
+
         echo $this->load->view('common/short-cuts', $data, TRUE);
     }
 

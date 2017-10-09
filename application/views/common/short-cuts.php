@@ -16,12 +16,24 @@
         <li<?php if (in_array('news-feed', $location)) print " class='active'"; ?>>
             <a href='<?= base_url('news-feed'); ?>'>News Feed</a>
         </li>
-        <li<?php if (in_array('find-friends', $location)) print ' class="active"'; ?>>
+        <li<?php if (in_array('find-friends', $location)) print " class='active'"; ?>>
             <a href='<?= base_url('user/find-friends'); ?>'>Find Friends</a>
         </li>
+
+        <?php
+        foreach ($roles as $r) {
+            if (in_array('invite_users', $r['priviledges'])) {
+        ?>
+                <li<?php if (in_array('invite-user', $location)) print " class='active'"; ?>>
+                    <a href='<?= base_url('sudo/invite-user'); ?>'>Invite user</a>
+                </li>
+        <?php
+            }
+        }
+        ?>
     </ul>
 
-    <?php if ( ! empty($shortcuts)): ?>
-        <h5><span class='fa fa-bookmark' aria-hidden='true'></span> Shortcuts</h5>
+    <?php if ( ! empty($bookmarks)): ?>
+        <h5><span class='fa fa-bookmark' aria-hidden='true'></span> Favorites</h5>
     <?php endif; ?>
 </nav>
