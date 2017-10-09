@@ -68,7 +68,9 @@ function updateWindow() {
         // Attempt to remove for small viewports.
         var $sideContent = $('.side-content');
         if ($('body').hasClass('menu') || $sideContent.hasClass('settings')) {
-            // Don't remove.
+            // Remove user-nav and short-cuts.
+            $('.user-nav').remove();
+            $('#short-cuts').remove();
         }
         else {
             $('.side-content').remove();
@@ -114,11 +116,11 @@ function updateWindow() {
     }
 }
 
-/*** Updating the window first time. ***/
-updateWindow();
-
 /*** Updating the window on resize. ***/
 $(window).resize(updateWindow);
+
+/*** Updating the window first time. ***/
+$(window).trigger('resize');
 
 /*** Tooltips ***/
 $('[data-toggle="tooltip"]').tooltip();
