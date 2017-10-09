@@ -174,18 +174,15 @@ if ($is_visitor && ! $profile['schools'] && ! $profile['halls']
         <h4>Origin</h4>
         <?php
         if (!$is_visitor) {
-            print "<table class='table table-bordered'>";
-
             if ($profile['origin']['district']) {
-                print "<tr><td><b>District</b></td><td>{$profile['origin']['district']}</td></tr>";
-
-                print "<tr><td><b>Country</b></td><td>{$profile['origin']['country']}</td></tr>";
+                print "<table class='table table-bordered'>
+                        <tr><td><b>District</b></td><td>{$profile['origin']['district']}</td></tr>
+                        <tr><td><b>Country</b></td><td>{$profile['origin']['country']}</td></tr>
+                        </table>";
             }
             else {
                 print "<a href='" . base_url("profile/add-district") . "'>Add district</a>";
             }
-
-            print "</table>";
         } else {
         ?>
             <p>
