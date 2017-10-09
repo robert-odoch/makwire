@@ -7,6 +7,34 @@ var loadingIndicator    = "<div class='loading'>" +
                                 "</div>" +
                             "</div>";
 
+function loadUserNav() {
+    if ($('.user-nav').length == 0) {
+        var url = baseUrl + 'makwire/user-nav/' + (new String(window.location)).split('/').join('.');
+        $.get(url, function(data) {
+            var userNav = $.parseHTML(data);
+
+            // $('.user-nav').length might return 0 yet one is already being loaded.
+            // Make a last minute attempt to remove any extra user-nav.
+            $('.user-nav').remove();
+            $(userNav).insertAfter($('#primary-user'));
+        });
+    }
+}
+
+function loadShortCuts() {
+    if ($('#short-cuts').length == 0) {
+        var url = baseUrl + 'makwire/short-cuts/' + (new String(window.location)).split('/').join('.');
+        $.get(url, function(data) {
+            var shortCuts = $.parseHTML(data);
+
+            // $('#short-cuts').length might return 0 yet one is already being loaded.
+            // Make a last minute attempt to remove any extra short-cuts.
+            $('#short-cuts').remove();
+            $(shortCuts).appendTo($('.side-content'));
+        });
+    }
+}
+
 function updateWindow() {
     var $window = $(window);
 
@@ -36,32 +64,16 @@ function updateWindow() {
                 // Make a last minute attempt to remove any extra side-content.
                 $('.side-content').remove();
                 $(sideContent).prependTo($('.main'));
+
+                // Load user nav and short cuts.
+                loadUserNav();
+                loadShortCuts();
             });
         }
-
-        // Load user nav and shortcuts.
-        if ($('.user-nav').length == 0) {
-            var url = baseUrl + 'makwire/user-nav/' + (new String(window.location)).split('/').join('.');
-            $.get(url, function(data) {
-                var userNav = $.parseHTML(data);
-
-                // $('.user-nav').length might return 0 yet one is already being loaded.
-                // Make a last minute attempt to remove any extra user-nav.
-                $('.user-nav').remove();
-                $(userNav).insertAfter($('#primary-user'));
-            });
-        }
-
-        if ($('#short-cuts').length == 0) {
-            var url = baseUrl + 'makwire/short-cuts/' + (new String(window.location)).split('/').join('.');
-            $.get(url, function(data) {
-                var shortCuts = $.parseHTML(data);
-
-                // $('#short-cuts').length might return 0 yet one is already being loaded.
-                // Make a last minute attempt to remove any extra short-cuts.
-                $('#short-cuts').remove();
-                $(shortCuts).appendTo($('.side-content'));
-            });
+        else {
+            // Load user nav and short cuts.
+            loadUserNav();
+            loadShortCuts();
         }
     }
     else {
