@@ -304,9 +304,7 @@ class Account extends CI_Controller
                         $error_message = "This email address is already registered.";
                     }
                     else {
-                        $activation_code = $this->account_model->gen_email_verification_code();
-                        $this->account_model->add_email(NULL, $email, $activation_code);
-
+                        $activation_code = $this->account_model->add_email(NULL, $email);
                         $subject = '[Makwire] Please verify your email address.';
                         if ($this->account_model->email_has_user($email)) {
                             $email_body = email_verification_message($activation_code);

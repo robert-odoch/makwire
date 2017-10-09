@@ -58,9 +58,7 @@ class Settings extends CI_Controller
                                             "'>resend the email.</a>";
                 }
                 else {
-                    $activation_code = $this->account_model->gen_email_verification_code();
-                    $user_email_id = $this->account_model->add_email($_SESSION['user_id'], $email, $activation_code);
-
+                    $activation_code = $this->account_model->add_email($_SESSION['user_id'], $email);
                     $subject = '[Makwire]: Please verify your email address.';
                     $message = email_verification_message($activation_code);
                     if ( ! $this->account_model->send_email('Makwire <' . accounts_email() . '>', $email, $subject, $message)) {
