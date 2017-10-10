@@ -9,7 +9,7 @@
         <?php echo $message; ?>
       </div>
       <div style='color: green; padding: 10px 5px; text-align: center; border-top: 1px solid green;'>
-        Makwire &copy; <?= date('Y'); ?>
+        &copy; <?= date('Y'); ?> Makwire
       </div>
     </div>
 </div>
