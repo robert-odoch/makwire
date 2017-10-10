@@ -196,7 +196,7 @@ class Account_model extends CI_Model
                         $activation_code, $email);
         $this->db->query($sql);
         if ($this->db->affected_rows() > 0) {
-            return;
+            return $activation_code;
         }
 
         // Otherwise, we can insert a new!
