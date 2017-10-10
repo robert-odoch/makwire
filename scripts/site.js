@@ -409,7 +409,8 @@ $('body').on('submit', 'form.send-message', function(event) {
 $('body').on('click', '.refresh-chat', function(event) {
     event.preventDefault();
 
-    // Show loading indicator.
+    // Remove any previous loading indicator and show new loading indicator.
+    $('.chat-content .loading').remove();
     $(loadingIndicator).insertBefore('.chat-content .new-message');
 
     var $this = $(this);
