@@ -47,19 +47,19 @@
                 <a href='<?= base_url('login'); ?>' class='btn
                     <?php if ($page == 'login') print ' active'; ?>
                     '>
-                    <span class='fa fa-sign-in' aria-hidden='true'></span>&nbsp; Log In
+                    <span class='fa fa-sign-in' aria-hidden='true'></span> Log In
                 </a>
                 <a href='<?= base_url('register/step-one'); ?>' class='btn
                     <?php if ($page == 'register') print ' active'; ?>
                     '>
-                    <span class='fa fa-edit' aria-hidden='true'></span>&nbsp;Register
+                    <span class='fa fa-edit' aria-hidden='true'></span>Register
                 </a>
             <?php endif; ?>
             <a href='<?= base_url('menu'); ?>' class='btn
                 <?php if ($page == 'menu') print ' active'; ?>
                 '>
                 <span class='fa fa-navicon' aria-hidden='true'></span>
-                <span class='sr-only'>&nbsp; Menu</span>
+                <span class='sr-only'> Menu</span>
             </a>
         </div>
     </div>
