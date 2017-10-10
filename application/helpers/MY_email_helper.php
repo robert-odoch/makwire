@@ -168,8 +168,8 @@ if (!function_exists('registration_email_message')) {
 
                                 <hr>
                                 <p>
-                                    You are receiving this email because you recently showed interest create
-                                    a new <b>makwire</b> account. If this wasn't you, please ignore this email.
+                                    You are receiving this email because you recently showed interest in
+                                    joining <b>makwire</b>. If this wasn't you, please ignore this email.
                                 </p>";
 
         $CI = &get_instance();
