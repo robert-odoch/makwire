@@ -274,7 +274,7 @@ class Account_model extends CI_Model
             $this->profile_model->add_user_college($userid, $college_id);
         }
 
-        // Try updating admin invite it come from an invitation.
+        // Try updating admin invite if it came from an invitation.
         $sql = sprintf('UPDATE admin_invite SET is_used = 1 WHERE email = %s',
                         $this->db->escape($email));
         $this->db->query($sql);
