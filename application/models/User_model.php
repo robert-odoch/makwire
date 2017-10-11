@@ -673,7 +673,8 @@ class User_model extends CI_Model
         // Query to get the latest notification from a group of activities
         // performed on the same object.
         $latest_notif_sql = sprintf("SELECT MAX(date_entered) FROM activities a2
-                                        WHERE ((%s) OR (%s)) AND activity IN(%s) AND a1.subject_id = a2.subject_id AND
+                                        WHERE ((%s) OR (%s)) AND activity IN(%s) AND
+                                                a1.subject_id = a2.subject_id AND
                                                 a1.source_id = a2.source_id AND
                                                 a1.source_type = a2.source_type AND
                                                 a1.activity = a2.activity",
@@ -683,8 +684,8 @@ class User_model extends CI_Model
             // Query to get all notifications from activities.
     		$notifs_sql = sprintf("SELECT activity_id, subject_id, activity FROM activities a1
                                     LEFT JOIN friends f
-                                        ON (a1.actor_id = f.user_id OR a1.subject_id = f.friend_id OR
-                                            a1.subject_id = f.user_id OR a1.subject_id = f.friend_id)
+                                        ON (a1.actor_id = f.user_id AND a1.subject_id = f.friend_id OR
+                                            a1.actor_id = f.friend_id AND a1.subject_id = f.user_id)
                                     WHERE ((%s) OR (%s)) AND (activity IN(%s) OR a1.date_entered = (%s)) AND activity_id > %d",
                                     $primary_notifs_clause, $other_notifs_clause, $atomic_notifs_str, $latest_notif_sql,
                                     $last_read_notif_id);
@@ -698,8 +699,8 @@ class User_model extends CI_Model
             // Query to get all notifications from activities.
             $notifs_sql = sprintf("SELECT activity_id, subject_id, activity FROM activities a1
                                     LEFT JOIN friends f
-                                        ON (a1.actor_id = f.user_id OR a1.subject_id = f.friend_id OR
-                                            a1.subject_id = f.user_id OR a1.subject_id = f.friend_id)
+                                        ON (a1.actor_id = f.user_id AND a1.subject_id = f.friend_id OR
+                                            a1.actor_id = f.friend_id AND a1.subject_id = f.user_id)
                                     WHERE ((%s) OR (%s)) AND (activity IN(%s) OR a1.date_entered = (%s))",
                                     $primary_notifs_clause, $other_notifs_clause, $atomic_notifs_str, $latest_notif_sql);
         }
@@ -791,8 +792,8 @@ class User_model extends CI_Model
             // Query to get all notifications from activities.
     		$notifs_sql = sprintf("SELECT * FROM activities a1
                                     LEFT JOIN friends f
-                                        ON (a1.actor_id = f.user_id OR a1.subject_id = f.friend_id OR
-                                            a1.subject_id = f.user_id OR a1.subject_id = f.friend_id)
+                                        ON (a1.actor_id = f.user_id AND a1.subject_id = f.friend_id OR
+                                            a1.actor_id = f.friend_id AND a1.subject_id = f.user_id)
                                     WHERE ((%s) OR (%s)) AND (activity IN(%s) OR a1.date_entered = (%s)) AND activity_id > %d
                                     ORDER BY a1.date_entered DESC LIMIT %d, %d",
                                     $primary_notifs_clause, $other_notifs_clause, $atomic_notifs_str, $latest_notif_sql,
@@ -802,8 +803,8 @@ class User_model extends CI_Model
             // Query to get all notifications from activities.
             $notifs_sql = sprintf("SELECT * FROM activities a1
                                     LEFT JOIN friends f
-                                        ON (a1.actor_id = f.user_id OR a1.subject_id = f.friend_id OR
-                                            a1.subject_id = f.user_id OR a1.subject_id = f.friend_id)
+                                        ON (a1.actor_id = f.user_id AND a1.subject_id = f.friend_id OR
+                                            a1.actor_id = f.friend_id AND a1.subject_id = f.user_id)
                                     WHERE ((%s) OR (%s)) AND (activity IN(%s) OR a1.date_entered = (%s))
                                     ORDER BY a1.date_entered DESC LIMIT %d, %d",
                                     $primary_notifs_clause, $other_notifs_clause, $atomic_notifs_str, $latest_notif_sql,
