@@ -409,11 +409,14 @@ $('body').on('submit', 'form.send-message', function(event) {
 $('body').on('click', '.refresh-chat', function(event) {
     event.preventDefault();
 
-    // Remove any previous loading indicator and show new loading indicator.
-    $('.chat-content .loading').remove();
-    $(loadingIndicator).insertBefore('.chat-content .new-message');
-
     var $this = $(this);
+
+    if ($this.is(':focus')) {
+        // Remove any previous loading indicator and show new loading indicator.
+        $('.chat-content .loading').remove();
+        $(loadingIndicator).insertBefore('.chat-content .new-message');
+    }
+
     var url = $this.attr('href');
     $.get(url, function(data) {
         // Remove focus from the refresh link.
@@ -437,6 +440,11 @@ $('body').on('click', '.refresh-chat', function(event) {
     });
 });
 
+// Refresh messages after every 7s.
+setInterval(function() {
+    $('.refresh-chat').trigger('click');
+}, 7*1000);
+
 /*** Viewing previous messages. ***/
 function previousMessages(event) {
     event.preventDefault();
@@ -459,14 +467,15 @@ function previousMessages(event) {
 $('body').on('click', '.chat-content .previous', previousMessages);
 
 /*** Returning back to active users. ***/
-$('body').on('click', '.col-small .back-btn', function(event) {
+function showActiveUsers(event) {
     event.preventDefault();
 
-    // Remove current chat user and show loading indicator.
     var $colSmall = $('.col-small');
-
-    $colSmall.empty();
-    $(loadingIndicator).prependTo($colSmall);
+    if ($('.active-users').length == 0) {
+        // Remove current chat user and show loading indicator.
+        $colSmall.empty();
+        $(loadingIndicator).prependTo($colSmall);
+    }
 
     // Load active users.
     var url = $(this).attr('href');
@@ -474,7 +483,15 @@ $('body').on('click', '.col-small .back-btn', function(event) {
         var html = $.parseHTML(data);
         $colSmall.replaceWith($(html));
     });
-});
+}
+
+$('body').on('click', '.col-small .back-btn', showActiveUsers);
+$('body').on('click', '.col-small .show-active-users', showActiveUsers);
+
+// Refresh active users after every 7 minutes.
+setInterval(function() {
+    $('.col-small .show-active-users').trigger('click');
+}, 7*60*60*1000);
 
 /*** Loading more news feed and timeline items. ***/
 function moreNewsFeedTimelineItems(event) {

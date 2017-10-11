@@ -3,6 +3,9 @@
 <div class='col-small'>
     <?php if (count($chat_users) > 0) { ?>
         <div class='active-users'>
+            <!-- For refreshing chat users using AJAX. -->
+            <a href='<?= base_url('user/chat'); ?>' class='show-active-users'></a>
+
             <?php foreach($chat_users as $user) { ?>
                 <div class='media'>
                     <div class='media-left media-middle'>
