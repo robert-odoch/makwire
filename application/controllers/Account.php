@@ -122,11 +122,7 @@ class Account extends CI_Controller
                     $error_messages['passwd1'] = 'Please enter your new password.';
                 }
                 elseif (strlen($passwd1) < 6) {
-                    $error_messages['passwd1'] = 'Password must be atleast 6 characters long!';
-                }
-                elseif ( ! preg_match('/^(\w*(?=\w*\d)(?=\w*[a-z])(?=\w*[A-Z])\w*){6,}$/', $passwd1)) {
-                        $error_messages['passwd1'] = 'Please ensure that your password meets ' .
-                                                        'the above requirements.';
+                    $error_messages['passwd1'] = 'Password must be atleast 6 characters long.';
                 }
                 else {
                     $passwd2 = $this->input->post('passwd2');
@@ -134,7 +130,7 @@ class Account extends CI_Controller
                         $error_messages['passwd2'] = 'Please confirm your new password.';
                     }
                     elseif ($passwd1 != $passwd2) {
-                        $error_messages['passwd2'] = 'The two passwords do not match!';
+                        $error_messages['passwd2'] = 'The two passwords do not match.';
                     }
                     else {
                         $new_passwd = $passwd1;

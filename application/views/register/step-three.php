@@ -9,10 +9,6 @@
                 <fieldset>
                     <div class='form-group'>
                         <label for='user-name'>Username:</label>
-                        <span class='help-block'>
-                            Must be atleast 3 characters long<br>
-                            Only letters and numbers are allowed.
-                        </span>
                         <input type='text' name='uname' id='user-name' class='fluid
                         <?php
                         if (isset($error_messages) && isset($error_messages['uname'])) {
@@ -33,8 +29,7 @@
                     <div class='form-group'>
                         <label for='passwd1'>Password:</label>
                         <span class='help-block'>
-                            Must be atleast 6 characters long.<br>
-                            Include atleast one uppercase letter, a lowercase letter, and a number.
+                            Must be atleast 6 characters long.
                         </span>
                         <input type='password' name='passwd1' id='passwd1' class='fluid
                         <?php

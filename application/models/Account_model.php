@@ -68,8 +68,9 @@ class Account_model extends CI_Model
 
     public function change_password($user_id, $new_password)
     {
-        $sql = sprintf("UPDATE users SET passwd = '%s' WHERE user_id = %d",
-                        password_hash($new_password, PASSWORD_BCRYPT), $user_id);
+        $sql = sprintf("UPDATE users SET passwd = %s WHERE user_id = %d",
+                        $this->db->escape(password_hash($new_password, PASSWORD_BCRYPT)),
+                        $user_id);
         $this->db->query($sql);
     }
 

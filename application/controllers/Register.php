@@ -173,12 +173,8 @@ class Register extends CI_Controller
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $uname = trim($this->input->post('uname'));
-            if (strlen($uname) < 3) {
-                $error_messages['uname'] = 'Username must be atleast 3 characters long!';
-            }
-            elseif ( ! preg_match('/^[A-Za-z0-9]{3,}$/', $uname)) {
-                $error_messages['uname'] = 'Please ensure that your username meets ' .
-                                            'the above requirements.';
+            if (strlen($uname) == 0) {
+                $error_messages['uname'] = 'Please enter your username.';
             }
             elseif ($this->account_model->is_username_taken($uname)) {
                 $error_messages['uname'] = 'That username is already taken.';
@@ -192,11 +188,7 @@ class Register extends CI_Controller
                 $error_messages['passwd1'] = 'Please enter your password.';
             }
             elseif (strlen($passwd1) < 6) {
-                $error_messages['passwd1'] = 'Password must be atleast 6 characters long!';
-            }
-            elseif ( ! preg_match('/^(\w*(?=\w*\d)(?=\w*[a-z])(?=\w*[A-Z])\w*){6,}$/', $passwd1)) {
-                    $error_messages['passwd1'] = 'Please ensure that your password meets ' .
-                                                    'the above requirements.';
+                $error_messages['passwd1'] = 'Password must be atleast 6 characters long.';
             }
             else {
                 $passwd2 = $this->input->post('passwd2');
@@ -204,7 +196,7 @@ class Register extends CI_Controller
                     $error_messages['passwd2'] = 'Please confirm your password.';
                 }
                 elseif ($passwd1 != $passwd2) {
-                    $error_messages['passwd2'] = 'The two passwords do not match!';
+                    $error_messages['passwd2'] = 'The two passwords do not match.';
                 }
                 else {
                     $data['passwd'] = $passwd1;
