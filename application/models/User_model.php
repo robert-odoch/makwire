@@ -547,7 +547,7 @@ class User_model extends CI_Model
         $friends_ids_str = implode(',', $friends_ids);
 
         $sql = sprintf('SELECT COUNT(user_id) FROM `users`
-                        WHERE last_activity > DATE_SUB(NOW(), INTERVAL 15 MINUTE) AND user_id IN(%s)',
+                        WHERE last_activity > DATE_SUB(NOW(), INTERVAL 7 MINUTE) AND user_id IN(%s)',
                         $friends_ids_str);
         $query = $this->db->query($sql);
         return $query->row_array()['COUNT(user_id)'];
