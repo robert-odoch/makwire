@@ -3,7 +3,7 @@
 <div class='col-small'>
     <!-- For refreshing chat users using AJAX. -->
     <a href='<?= base_url('user/chat'); ?>' class='show-active-users'></a>
-    
+
     <?php if (count($chat_users) > 0) { ?>
         <div class='active-users'>
 

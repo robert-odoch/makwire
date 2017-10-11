@@ -152,7 +152,10 @@ class User extends CI_Controller
     {
         if (is_ajax_request()) {
             $data['chat_users'] = $this->user_model->get_chat_users($_SESSION['user_id'], TRUE);
-            $this->load->view('common/active-users', $data);
+            $result['num'] = $this->user_model->get_num_chat_users($_SESSION['user_id'], TRUE);
+            $result['html'] = $this->load->view('common/active-users', $data, TRUE);
+
+            echo json_encode($result);
             return;
         }
 

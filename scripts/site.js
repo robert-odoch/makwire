@@ -113,7 +113,24 @@ function updateWindow() {
         if ($('.col-small').length == 0) {
             var url = baseUrl + 'user/chat';
             $.get(url, function(data) {
-                var html = $.parseHTML(data);
+                var result = $.parseJSON(data);
+
+                // Update the number of active users in short-cuts.
+                var $badge = $('#short-cuts .badge.active-users');
+                if (result.num == 0) {
+                    if ( ! $badge.is(':hidden')) {
+                        $badge.addClass('hidden');
+                    }
+                }
+                else {
+                    if ($badge.is(':hidden')) {
+                        $badge.removeClass('hidden');
+                    }
+                    $badge.text(result.num);
+                }
+
+                // Show active users.
+                var html = $.parseHTML(result.html);
 
                 // $('.col-small').length might return 0 yet one is already being loaded.
                 // Make a last minute attempt to remove any extra col-small.
@@ -481,7 +498,24 @@ function showActiveUsers(event) {
     // Load active users.
     var url = $(this).attr('href');
     $.get(url, function(data) {
-        var html = $.parseHTML(data);
+        var result = $.parseJSON(data);
+
+        // Update the number of active users in short-cuts.
+        var $badge = $('#short-cuts .badge.active-users');
+        if (result.num == 0) {
+            if ( ! $badge.is(':hidden')) {
+                $badge.addClass('hidden');
+            }
+        }
+        else {
+            if ($badge.is(':hidden')) {
+                $badge.removeClass('hidden');
+            }
+            $badge.text(result.num);
+        }
+
+        // Show active users.
+        var html = $.parseHTML(result.html);
         $colSmall.replaceWith($(html));
     });
 }
@@ -489,10 +523,10 @@ function showActiveUsers(event) {
 $('body').on('click', '.col-small .back-btn', showActiveUsers);
 $('body').on('click', '.col-small .show-active-users', showActiveUsers);
 
-// Refresh active users after every 7 minutes.
+// Refresh active users after every 1 minute.
 setInterval(function() {
     $('.col-small .show-active-users').trigger('click');
-}, 7*60*60*1000);
+}, 1*60*1000);
 
 /*** Loading more news feed and timeline items. ***/
 function moreNewsFeedTimelineItems(event) {

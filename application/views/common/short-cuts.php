@@ -8,7 +8,10 @@
                 Chat
                 <?php
                 if ($num_active_friends > 0) {
-                    print "<span class='badge pull-right'>{$num_active_friends}</span>";
+                    print "<span class='badge active-users pull-right'>{$num_active_friends}</span>";
+                }
+                else {
+                    print "<span class='badge active-users pull-right hidden'></span>";
                 }
                 ?>
             </a>
