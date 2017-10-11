@@ -355,6 +355,7 @@ $('body').on('click', 'a.send-message', function(event) {
     event.preventDefault();
 
     // Remove current chat users and show loading indicator.
+    $('.show-active-users').remove();
     $('.active-users').replaceWith($(loadingIndicator));
 
     var url = $(this).attr('href');
