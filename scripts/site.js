@@ -389,6 +389,10 @@ $('body').on('submit', 'form.send-message', function(event) {
     event.preventDefault();
 
     var $this = $(this);
+
+    // Disable the submit button.
+    $this.find('input:submit').attr('disabled', true);
+
     var $messageField = $this.find(':input:text');
     var message = $messageField.val();
     if (message.length == 0) {  // Show an error message.
@@ -421,6 +425,9 @@ $('body').on('submit', 'form.send-message', function(event) {
 
     // Focus the message input field.
     $messageField.focus();
+
+    // Enable the submit button.
+    $this.find('input:submit').attr('disabled', false);
 });
 
 /*** Refreshing messages. ***/
