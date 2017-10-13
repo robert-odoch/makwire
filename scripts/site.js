@@ -249,6 +249,9 @@ $('#update-status').on('submit', 'form', function(event) {
             // Show the item just posted.
             var item = $.parseHTML(result.item);
             $(item).insertAfter($('#update-status'));
+
+            // Show the comment form.
+            $('.media-footer a.comment').trigger('click');
         }
     });
 });
@@ -550,6 +553,9 @@ function moreNewsFeedTimelineItems(event) {
         // Load and display more items.
         var html = $.parseHTML(data);
         $parent.replaceWith($(html));
+
+        // Show the comment forms.
+        $('.media-footer a.comment').trigger('click');
     });
 }
 
