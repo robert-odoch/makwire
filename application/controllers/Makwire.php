@@ -160,7 +160,7 @@ class Makwire extends CI_Controller
         $data['page'] = in_array('profile', $location) ? 'profile' : '';
 
         $last = array_pop($location);
-        $data['suid'] = is_integer($last) ? $last : $_SESSION['user_id'];
+        $data['suid'] = (int) $last ? $last : $_SESSION['user_id'];
 
         echo $this->load->view('common/user-nav', $data, TRUE);
     }
