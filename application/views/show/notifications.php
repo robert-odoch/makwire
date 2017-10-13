@@ -70,7 +70,7 @@ require_once(__DIR__ . '/helper functions/show_notifications_functions.php');
                     break;
                 case 'profile_pic_change':
                     print("<li><a href='" . base_url("user/photo/{$notif['source_id']}") .
-                            "'><strong class='object'>{$notif['actor']}</strong> updated his profile picture.</a>
+                            "'><strong class='object'>{$notif['actor']}</strong> updated {$notif['subject_gender']} profile picture.</a>
                             <small class='time'><span class='fa fa-clock-o' aria-hidden='true'></span> {$notif['timespan']} ago</small></li>");
                     break;
                 case 'message':

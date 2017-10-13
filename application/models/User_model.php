@@ -909,8 +909,8 @@ class User_model extends CI_Model
                 $notif['post'] = character_limiter($post, 75);
             }
 
-            if (in_array($notif['activity'], array('comment','reply')) &&
-                $notif['subject_id'] != $user_id) {
+            if ((in_array($notif['activity'], ['comment','reply']) && $notif['subject_id'] != $user_id) ||
+                $notif['activity'] == 'profile_pic_change') {
                 // Get the gender of the subject.
                 $gender_sql = sprintf("SELECT gender FROM users WHERE user_id = %d LIMIT 1",
                                         $notif['subject_id']);
