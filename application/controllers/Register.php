@@ -9,7 +9,8 @@ class Register extends CI_Controller
 
         session_start();
         if ( ! empty($_SESSION['user_id'])) {
-            redirect(base_url("user/{$_SESSION['user_id']}"));
+            $this->load->model('logout_model');
+            $this->logout_model->logout($_SESSION['user_id']);
         }
 
         $this->load->model(['register_model', 'account_model']);
