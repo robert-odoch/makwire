@@ -13,22 +13,6 @@ class Makwire extends CI_Controller
         }
     }
 
-    public function menu()
-    {
-        if (empty($_SESSION['user_id'])) {
-            $data = [];
-        }
-        else {
-            $data = $this->user_model->initialize_user($_SESSION['user_id']);
-        }
-
-        $data['title'] = 'Makwire menu';
-        $data['page'] = 'menu';
-        $this->load->view('common/header', $data);
-        $this->load->view('show/menu');
-        $this->load->view('common/footer');
-    }
-
     public function error()
     {
         if (empty($_SESSION['user_id'])) {
@@ -107,6 +91,22 @@ class Makwire extends CI_Controller
         $this->load->view('common/footer');
     }
 
+    public function menu()
+    {
+        if (empty($_SESSION['user_id'])) {
+            $data = [];
+        }
+        else {
+            $data = $this->user_model->initialize_user($_SESSION['user_id']);
+        }
+
+        $data['title'] = 'Makwire menu';
+        $data['page'] = 'menu';
+        $this->load->view('common/header', $data);
+        $this->load->view('show/menu');
+        $this->load->view('common/footer');
+    }
+
     public function mobile_nav()
     {
         if ( ! is_ajax_request()) {
@@ -137,6 +137,18 @@ class Makwire extends CI_Controller
         }
 
         echo $this->load->view('common/desktop-nav', $data, TRUE);
+    }
+
+    public function alerts()
+    {
+        if ( ! is_ajax_request()) {
+            show_404();
+        }
+
+        $result['friends'] = $this->user_model->get_num_friend_requests($_SESSION['user_id'], TRUE);
+        $result['messages'] = $this->user_model->get_num_messages($_SESSION['user_id'], TRUE);
+        $result['notifications'] = $this->user_model->get_num_notifications($_SESSION['user_id'], TRUE);
+        echo json_encode($result);
     }
 
     public function side_content()

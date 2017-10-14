@@ -17,7 +17,10 @@
                     <span class='sr-only'>Messages</span>
                     <?php
                     if ($num_new_messages > 0) {
-                        print "<span class='badge'>{$num_new_messages}</span>";
+                        print "<span class='badge messages'>{$num_new_messages}</span>";
+                    }
+                    else {
+                        print " <span class='badge messages hidden'></span>";
                     }
                     ?>
                 </a>
@@ -28,7 +31,10 @@
                     <span class='sr-only'>Notifications</span>
                     <?php
                     if ($num_new_notifs > 0) {
-                        print " <span class='badge'>{$num_new_notifs}</span>";
+                        print " <span class='badge notifications'>{$num_new_notifs}</span>";
+                    }
+                    else {
+                        print " <span class='badge notifications hidden'></span>";
                     }
                     ?>
                 </a>
@@ -39,7 +45,10 @@
                     <span class='sr-only'>Friend requests</span>
                     <?php
                     if ($num_friend_requests > 0) {
-                        print " <span class='badge'>{$num_friend_requests}</span>";
+                        print " <span class='badge friend-requests'>{$num_friend_requests}</span>";
+                    }
+                    else {
+                        print " <span class='badge friend-requests hidden'></span>";
                     }
                     ?>
                 </a>

@@ -388,7 +388,7 @@ class User_model extends CI_Model
         }
 
         $query = $this->db->query($sql);
-        return $query->row_array()['COUNT(message_id)'];
+        return (int) $query->row_array()['COUNT(message_id)'];
     }
 
     /**
@@ -1081,7 +1081,7 @@ class User_model extends CI_Model
         }
 
         $req_query = $this->db->query($req_sql);
-        return $req_query->row_array()['COUNT(user_id)'];
+        return (int) $req_query->row_array()['COUNT(user_id)'];
     }
 
     /**

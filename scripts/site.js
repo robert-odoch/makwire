@@ -480,9 +480,51 @@ $('body').on('click', '.refresh-chat', function(event) {
     });
 });
 
-// Refresh messages after every 7s.
+// Refresh chat messages, notifications, friends, new messages after every 7s.
 setInterval(function() {
     $('.refresh-chat').trigger('click');
+
+    var url = baseUrl + 'makwire/alerts';
+    $.getJSON(url, function(result) {
+        var $badge = $('.nav .badge.messages');
+        if (result.messages == 0) {
+            if ( ! $badge.is(':hidden')) {
+                $badge.addClass('hidden');
+            }
+        }
+        else {
+            if ($badge.is(':hidden')) {
+                $badge.removeClass('hidden');
+            }
+            $badge.text(result.messages);
+        }
+
+        $badge = $('.nav .badge.notifications');
+        if (result.notifications == 0) {
+            if ( ! $badge.is(':hidden')) {
+                $badge.addClass('hidden');
+            }
+        }
+        else {
+            if ($badge.is(':hidden')) {
+                $badge.removeClass('hidden');
+            }
+            $badge.text(result.notifications);
+        }
+
+        $badge = $('.nav .badge.friend-requests');
+        if (result.friends == 0) {
+            if ( ! $badge.is(':hidden')) {
+                $badge.addClass('hidden');
+            }
+        }
+        else {
+            if ($badge.is(':hidden')) {
+                $badge.removeClass('hidden');
+            }
+            $badge.text(result.friends);
+        }
+    });
 }, 7*1000);
 
 /*** Viewing previous messages. ***/
