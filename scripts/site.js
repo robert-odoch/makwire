@@ -409,6 +409,12 @@ $('body').on('submit', 'form.send-message', function(event) {
 
         // Scroll the form into view.
         $('.chat-content').scrollTo('100%', 1000);
+
+        // Focus the message input field.
+        $messageField.focus();
+
+        // Enable the submit button.
+        $this.find('input:submit').attr('disabled', false);
     }
     else {  // Send the message.
         var url = $(this).attr('action');
@@ -423,6 +429,12 @@ $('body').on('submit', 'form.send-message', function(event) {
 
             // Scroll the form into view.
             $('.chat-content').scrollTo('100%', 1000);
+
+            // Focus the message input field.
+            $messageField.focus();
+
+            // Enable the submit button.
+            $this.find('input:submit').attr('disabled', false);
         });
     }
 
