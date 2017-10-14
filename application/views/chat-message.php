@@ -7,7 +7,14 @@
         </div>
         <div class='media-body'>
             <p><?= $message['message']; ?></p>
-            <small><?= (new DateTime($message['date_sent']))->format('g:i a'); ?></small>
+            <small>
+                <?php
+                    $date = new DateTime($message['date_sent']);
+                    $date->setTimezone(new DateTimeZone('UTC'));
+                    $date->add(new DateInterval('PT3H'));
+                    echo $date->format('g:i a');
+                ?>
+            </small>
         </div>
     </div>
 <?php else: ?>
@@ -17,7 +24,14 @@
         </div>
         <div class='media-body'>
             <p><?= $message['message']; ?></p>
-            <small><?= (new DateTime($message['date_sent']))->format('g:i a'); ?></small>
+            <small>
+                <?php
+                    $date = new DateTime($message['date_sent']);
+                    $date->setTimezone(new DateTimeZone('UTC'));
+                    $date->add(new DateInterval('PT3H'));
+                    echo $date->format('g:i a');
+                ?>
+            </small>
         </div>
     </div>
 <?php endif; ?>
