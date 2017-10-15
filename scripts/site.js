@@ -437,12 +437,6 @@ $('body').on('submit', 'form.send-message', function(event) {
             $this.find('input:submit').attr('disabled', false);
         });
     }
-
-    // Focus the message input field.
-    $messageField.focus();
-
-    // Enable the submit button.
-    $this.find('input:submit').attr('disabled', false);
 });
 
 /*** Refreshing messages. ***/
