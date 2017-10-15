@@ -37,11 +37,15 @@ class Sudo extends CI_Controller
             $return_here = $this->input->post('return');
             $from_marketing = $this->input->post('marketing');
 
+            if ( ! filter_has_var(INPUT_POST, 'marketing')) {
+                $error['marketing'] = 'Please indicate where this is coming from.';
+            }
+
             if ($this->account_model->is_valid_mak_email($email)) {
-                $error = 'Sorry, you can only send invitations to non-mak emails.';
+                $error['email'] = 'Sorry, you can only send invitations to non-mak emails.';
             }
             elseif ($this->account_model->email_has_user($email)) {
-                $error = 'This email address is already registered.';
+                $error['email'] = 'This email address is already registered.';
             }
 
             if (empty($error)) {

@@ -15,8 +15,8 @@ require_once(__DIR__ . '/../common/user-page-start.php');
             <label for='user-email'>Email address</label>
             <input type='email' name='email' id='user-email'
                 <?php if ( ! empty($email)) print " value='{$email}'" ?>class='fluid
-            <?php if ( ! empty($error)) { print " has-error"; } ?>' required>
-            <?php if ( ! empty($error)) { print "<span class='error'>{$error}</span>"; } ?>
+            <?php if ( ! empty($error['email'])) { print " has-error"; } ?>' required>
+            <?php if ( ! empty($error['email'])) { print "<span class='error'>{$error['email']}</span>"; } ?>
         </div>
         <div class='form-group'>
             <label for='user-college'>College</label>
@@ -35,7 +35,7 @@ require_once(__DIR__ . '/../common/user-page-start.php');
                 <label for='yes'>
                     <input type='radio' name='marketing' id='yes' value='1'
                     <?php
-                    if (empty($marketing) || (isset($marketing) && ($marketing == 1))) {
+                    if (isset($marketing) && ($marketing == 1)) {
                         print(" checked");
                     }
                     ?>
@@ -53,6 +53,7 @@ require_once(__DIR__ . '/../common/user-page-start.php');
                     > No
                 </label>
             </div>
+            <?php if ( ! empty($error['marketing'])) { print "<span class='error'>{$error['marketing']}</span>"; } ?>
         </div>
         <div class='checkbox'>
             <label for='return-here' style='font-weight: normal;'>
