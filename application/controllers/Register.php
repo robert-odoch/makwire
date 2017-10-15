@@ -9,8 +9,17 @@ class Register extends CI_Controller
 
         session_start();
         if ( ! empty($_SESSION['user_id'])) {
+            // account/activate-email sends an activation code. Save it before destroying $_SESSION.
+            if ( ! empty ($_SESSION['activation_code'])) {
+                $activation_code = $_SESSION['activation_code'];
+            }
+
             $this->load->model('logout_model');
             $this->logout_model->logout($_SESSION['user_id']);
+
+            if ( ! empty($activation_code)) {
+                $_SESSION['activation_code'] = $activation_code;
+            }
         }
 
         $this->load->model(['register_model', 'account_model']);
