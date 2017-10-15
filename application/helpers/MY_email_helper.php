@@ -179,6 +179,38 @@ if (!function_exists('registration_email_message')) {
 
 }
 
+if (!function_exists('marketing_email_message')) {
+
+    function marketing_email_message($activation_code)
+    {
+        $email_data['email_heading'] = 'makwire invitation';
+        $email_data['message'] = "<p>
+                                    <a href='" . base_url() . "'>Makwire</a> is new facebook like social
+                                    networking site open to only Makerere University students.
+                                    We thought you wouldn't want to miss a chance to join Makwire.
+                                </p>
+                                <p>
+                                  Please use the link below to sign up for a free account on
+                                  Makwire today and start connecting with friends.
+                                </p>
+                                <a href='" .
+                                    base_url("account/activate-email/{$activation_code}") . "'
+                                    style='color: #fff; margin: 5px 0; padding: 10px; display: block; text-align: center; border-radius: 2px;
+                                        border-color: #46b8da; text-decoration: none; box-sizing: border-box; font-variant: small-caps;
+                                        background-color: #5bc0de;'>Sign Up</a>
+
+                                <hr>
+                                <p style='text-align: center;'>
+                                    With love, from the Makwire Marketing Team
+                                </p>";
+
+        $CI = &get_instance();
+        $email_body = $CI->load->view('email', $email_data, TRUE);
+        return $email_body;
+    }
+
+}
+
 if (!function_exists('admin_email')) {
     function admin_email() {
         return 'admin@makwire.com';

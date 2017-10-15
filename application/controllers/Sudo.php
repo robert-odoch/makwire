@@ -35,6 +35,7 @@ class Sudo extends CI_Controller
             $email = $this->input->post('email');
             $college_id = $this->input->post('college');
             $return_here = $this->input->post('return');
+            $from_marketing = $this->input->post('marketing');
 
             if ($this->account_model->is_valid_mak_email($email)) {
                 $error = 'Sorry, you can only send invitations to non-mak emails.';
@@ -46,8 +47,14 @@ class Sudo extends CI_Controller
             if (empty($error)) {
                 $activation_code = $this->account_model->add_email(NULL, $email);
                 $subject = '[Makwire] Special invitation to join makwire.';
-                $message = registration_email_message($activation_code);
-                if ( ! $this->account_model->send_email('Makwire <' . admin_email() . '>', $email, $subject, $message)) {
+                if ($from_marketing) {
+                    $message = marketing_email_message($activation_code);
+                }
+                else {
+                    $message = registration_email_message($activation_code);
+                }
+
+                if ( ! $this->account_model->send_email('Makwire <' . accounts_email() . '>', $email, $subject, $message)) {
                     $data['info_message'] = "Sorry, we couldn't send the invitation.<br><br>
                                             The admin has been notified about the issue
                                             and will fix it as soon as possible. Please try again later.";
@@ -66,6 +73,8 @@ class Sudo extends CI_Controller
             else {
                 $data['email'] = $email;
                 $data['error'] = $error;
+                $data['college'] = $college_id;
+                $data['marketing'] = $from_marketing;
             }
         }
 
