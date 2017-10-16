@@ -7,7 +7,7 @@ require_once(__DIR__ . '/../common/user-page-start.php');
     <h4><?= $heading; ?></h4>
     <?php if (isset($districts)) { ?>
         <?php if (count($districts) > 0) { ?>
-            <p>Districts that matched</p>
+            <p>Please select the best match to complete adding your district.</p>
             <ul>
                 <?php foreach($districts as $district) { ?>
                     <li>
