@@ -363,7 +363,6 @@ $('.media-footer a.comment').trigger('click');
 
 // Always scroll to the end of the messages.
 $('.chat-content').scrollTo('100%', 1000);
-$('.new-message').find(':input:text').focus();
 
 // Chat sidebar.
 $('body').on('click', 'a.send-message', function(event) {
@@ -430,9 +429,6 @@ $('body').on('submit', 'form.send-message', function(event) {
             // Scroll the form into view.
             $('.chat-content').scrollTo('100%', 1000);
 
-            // Focus the message input field.
-            $messageField.focus();
-
             // Enable the submit button.
             $this.find('input:submit').attr('disabled', false);
         });
@@ -468,9 +464,6 @@ $('body').on('click', '.refresh-chat', function(event) {
             // Scroll the form into view.
             $('.chat-content').scrollTo('100%', 1000);
         }
-
-        // Focus the message input field.
-        $('.new-message').find(':input:text').focus();
     });
 });
 
