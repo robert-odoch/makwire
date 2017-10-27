@@ -22,7 +22,7 @@ class Account_model extends CI_Model
 
         $valid = FALSE;
         foreach ($mak_domains as $d) {
-            if (stripos($email, $d) !== false) {
+            if (stripos($email, "@{$d}") !== false) {
                 $valid = TRUE;
                 break;
             }
